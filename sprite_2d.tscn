@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://wcykt038wlbc"]
 
+[ext_resource type="Texture2D" uid="uid://sf1xxakh0jdg" path="res://jermakirk.jpg" id="1_f7cmv"]
+
 [node name="Sprite2D" type="Sprite2D" unique_id=488361360]
 position = Vector2(460, 212)
 
@@ -10,3 +12,8 @@ position = Vector2(460, 212)
 [node name="SpriteLegal" type="AnimatedSprite2D" parent="." unique_id=1240559008]
 
 [node name="Sprite2D3" type="Sprite2D" parent="." unique_id=1607388345]
+
+[node name="Jermakirk" type="Sprite2D" parent="." unique_id=2079143626]
+position = Vector2(-79, 11)
+scale = Vector2(0.3735955, 0.3735955)
+texture = ExtResource("1_f7cmv")
