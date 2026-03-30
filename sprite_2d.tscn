@@ -8,3 +8,5 @@ position = Vector2(460, 212)
 [node name="Sprite2D2" type="Sprite2D" parent="." unique_id=335517447]
 
 [node name="SpriteLegal" type="AnimatedSprite2D" parent="." unique_id=1240559008]
+
+[node name="Sprite2D3" type="Sprite2D" parent="." unique_id=1607388345]
