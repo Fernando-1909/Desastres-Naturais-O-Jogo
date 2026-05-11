@@ -1,11 +1,53 @@
 [gd_scene format=3 uid="uid://5lfugjx2eqnp"]
 
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/main_game.gd" id="1_bvlld"]
-[ext_resource type="Texture2D" uid="uid://dtuqnshrhsbod" path="res://Screenshot_1.jpg" id="2_gdpdu"]
+[ext_resource type="Texture2D" uid="uid://c3lhsy4ofroh6" path="res://tileset placeholder/assets/environment/tiles/dirt_N.png" id="2_w688r"]
+[ext_resource type="Texture2D" uid="uid://bga8bo680wn0o" path="res://tileset placeholder/assets/environment/tiles/stoneSide_S.png" id="3_gt8ao"]
+[ext_resource type="Texture2D" uid="uid://ck4f0dcxib67l" path="res://tileset placeholder/assets/environment/tiles/dirt_S.png" id="4_7orgs"]
+[ext_resource type="Texture2D" uid="uid://bevgawqb6otvl" path="res://Jogo principal/dirtTiles_S.png" id="5_gt8ao"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_7ykna"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nmf63"]
+texture = ExtResource("2_w688r")
+texture_region_size = Vector2i(256, 128)
+0:2/0 = 0
+0:3/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1woaa"]
+texture = ExtResource("3_gt8ao")
+texture_region_size = Vector2i(256, 128)
+0:2/0 = 0
+0:3/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_botex"]
+texture = ExtResource("4_7orgs")
+texture_region_size = Vector2i(256, 512)
+0:2/0 = 0
+0:3/0 = 0
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 182)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7orgs"]
+texture = ExtResource("5_gt8ao")
+texture_region_size = Vector2i(256, 512)
+0:2/0 = 0
+0:3/0 = 0
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(0, 182)
+
+[sub_resource type="TileSet" id="TileSet_bvlld"]
+tile_shape = 1
+tile_size = Vector2i(256, 128)
+sources/0 = SubResource("TileSetAtlasSource_nmf63")
+sources/1 = SubResource("TileSetAtlasSource_1woaa")
+sources/2 = SubResource("TileSetAtlasSource_botex")
+sources/3 = SubResource("TileSetAtlasSource_7orgs")
 
 [node name="MainGame" type="Node2D" unique_id=873718037]
 script = ExtResource("1_bvlld")
 
-[node name="Screenshot1" type="Sprite2D" parent="." unique_id=754103434]
-position = Vector2(628, 300)
-texture = ExtResource("2_gdpdu")
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=601503862]
+material = SubResource("CanvasItemMaterial_7ykna")
+position = Vector2(0, -1)
+tile_set = SubResource("TileSet_bvlld")
