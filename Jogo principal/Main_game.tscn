@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://5lfugjx2eqnp"]
+[gd_scene format=4 uid="uid://5lfugjx2eqnp"]
 
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/main_game.gd" id="1_bvlld"]
 [ext_resource type="Texture2D" uid="uid://c3lhsy4ofroh6" path="res://tileset placeholder/assets/environment/tiles/dirt_N.png" id="2_w688r"]
@@ -50,4 +50,5 @@ script = ExtResource("1_bvlld")
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=601503862]
 material = SubResource("CanvasItemMaterial_7ykna")
 position = Vector2(0, -1)
+tile_map_data = PackedByteArray("AAABAAEAAgAAAAAAAAABAAIAAgAAAAAAAAADAAIAAgAAAAAAAAACAAMAAgAAAAAAAAACAAQAAgAAAAAAAAACAAUAAgAAAAAAAAADAAQAAgAAAAAAAAADAAUAAgAAAAAAAAADAAMAAgAAAAAAAAAEAAYAAgAAAAAAAAAAAAMAAgAAAAAAAAACAAYAAgAAAAAAAAABAAUAAgAAAAAAAAA=")
 tile_set = SubResource("TileSet_bvlld")
