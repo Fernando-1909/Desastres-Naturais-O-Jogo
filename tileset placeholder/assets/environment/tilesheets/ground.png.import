@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bevgawqb6otvl"
-path="res://.godot/imported/dirtTiles_S.png-851136afc47392a95640fcd3d50b4e02.ctex"
+uid="uid://b0vjvdvkrveqw"
+path="res://.godot/imported/ground.png-78e1bfe21cc8dfd9fb868601a4078d04.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Jogo principal/dirtTiles_S.png"
-dest_files=["res://.godot/imported/dirtTiles_S.png-851136afc47392a95640fcd3d50b4e02.ctex"]
+source_file="res://tileset placeholder/assets/environment/tilesheets/ground.png"
+dest_files=["res://.godot/imported/ground.png-78e1bfe21cc8dfd9fb868601a4078d04.ctex"]
 
 [params]
 
