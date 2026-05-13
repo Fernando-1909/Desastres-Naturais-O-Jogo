@@ -18,6 +18,7 @@ func _on_start_pressed() -> void:
 
 func _on_creditos_pressed() -> void:
 	print("Creditos apertado")
+	print(Global.testNum) #apenas testando se a variavel global funciona
 
 
 func _on_exit_pressed() -> void:

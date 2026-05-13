@@ -15,6 +15,11 @@ run/main_scene="uid://dmvjnql5i80qd"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Global="*uid://dgljd7fy4pqnl"
+FolderBlocker="*uid://5ggox4ncsy4w"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
