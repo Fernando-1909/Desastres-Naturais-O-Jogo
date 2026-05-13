@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d0q35qbfbglsg"
-path="res://.godot/imported/test.png-1c927b06d9c0290b01a5e701267a970f.ctex"
+path="res://.godot/imported/test.png-84be4074886d1fd1fe0e5df2f5944881.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tileset placeholder/assets/environment/tilesheets/test.png"
-dest_files=["res://.godot/imported/test.png-1c927b06d9c0290b01a5e701267a970f.ctex"]
+source_file="res://Jogo principal/tilesheets/test.png"
+dest_files=["res://.godot/imported/test.png-84be4074886d1fd1fe0e5df2f5944881.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bevgawqb6otvl"
-path="res://.godot/imported/dirtTiles_S.png-851136afc47392a95640fcd3d50b4e02.ctex"
+path="res://.godot/imported/dirtTiles_S.png-e9119cfe5dbf27fd038927968b1057d8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Jogo principal/dirtTiles_S.png"
-dest_files=["res://.godot/imported/dirtTiles_S.png-851136afc47392a95640fcd3d50b4e02.ctex"]
+source_file="res://tileset placeholder/assets/environment/tiles/dirtTiles_S.png"
+dest_files=["res://.godot/imported/dirtTiles_S.png-e9119cfe5dbf27fd038927968b1057d8.ctex"]
 
 [params]
 
