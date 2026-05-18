@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://xxj6p3oc1xgy"]
+
+[sub_resource type="TileSet" id="TileSet_dgiap"]
+tile_shape = 1
+tile_size = Vector2i(256, 128)
+
+[node name="Node2D" type="Node2D" unique_id=1509634852]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=282937664]
+scale = Vector2(900, 900)
+tile_set = SubResource("TileSet_dgiap")
+navigation_visibility_mode = 1

@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://b6666wrgabjlh"]
+
+[node name="Prefeitura" type="Node2D" unique_id=915283073]
+
+[node name="Label" type="Label" parent="." unique_id=527197744]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Aqui é a prefeitura :)"

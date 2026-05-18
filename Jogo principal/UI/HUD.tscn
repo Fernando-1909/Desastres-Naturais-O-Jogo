@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://cb7r1e8nan7ka"]
+
+[node name="Hud" type="Control" unique_id=364686226]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="DinheiroContainer" type="PanelContainer" parent="." unique_id=274304367]
+layout_mode = 1
+offset_right = 66.0
+offset_bottom = 23.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DinheiroContainer" unique_id=1713289861]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="DinheiroContainer/HBoxContainer" unique_id=1207215051]
+layout_mode = 2
+text = "💰"
+
+[node name="Text" type="Label" parent="DinheiroContainer/HBoxContainer" unique_id=593072602]
+layout_mode = 2
+text = "Dinheiro: 10000"
+
+[node name="PopularidadeContainer" type="PanelContainer" parent="." unique_id=1535273656]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -164.0
+offset_bottom = 23.0
+grow_horizontal = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PopularidadeContainer" unique_id=184562254]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="PopularidadeContainer/HBoxContainer" unique_id=743373105]
+layout_mode = 2
+text = "⭐"
+
+[node name="Text" type="Label" parent="PopularidadeContainer/HBoxContainer" unique_id=430574769]
+layout_mode = 2
+text = "Popularidade: 75%"
+
+[node name="DesastreContainer" type="PanelContainer" parent="." unique_id=1763884610]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -188.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DesastreContainer" unique_id=1374103958]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="DesastreContainer/HBoxContainer" unique_id=1740435829]
+layout_mode = 2
+text = "🌪"
+
+[node name="Text" type="Label" parent="DesastreContainer/HBoxContainer" unique_id=584210493]
+layout_mode = 2
+text = "Desastre em 5 turnos"
+
+[node name="ButtonPausa" type="Button" parent="." unique_id=1989163776]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+offset_right = 76.0
+grow_vertical = 0
+text = "⏸ Pausar"
+
+[node name="ButtonMapa" type="Button" parent="." unique_id=2137597441]
+layout_mode = 0
+offset_left = 77.0
+offset_top = -38.0
+offset_right = 198.0
+offset_bottom = -1.0
+text = "🗺 Abrir mapa"

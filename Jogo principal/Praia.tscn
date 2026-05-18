@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://ebl70w3c3wyf"]
+
+[node name="Praia" type="Node2D" unique_id=256276165]
+
+[node name="Label" type="Label" parent="." unique_id=1434857598]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Aqui é a praia :)"
