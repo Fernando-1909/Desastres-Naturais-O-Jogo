@@ -27,6 +27,14 @@ offset_bottom = 559.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="BotaoTeste" type="Button" parent="Hud" unique_id=2000359191]
+layout_mode = 0
+offset_left = -3.0
+offset_top = 23.0
+offset_right = 54.0
+offset_bottom = 49.0
+text = "Teste"
+
 [node name="MapOverlay" parent="." unique_id=978908937 instance=ExtResource("3_7orgs")]
 visible = false
 z_index = 3
@@ -64,6 +72,7 @@ z_index = 1
 position = Vector2(1361, 610)
 
 [connection signal="pressed" from="Hud/ButtonMapa" to="." method="_on_button_mapa_pressed"]
+[connection signal="pressed" from="Hud/BotaoTeste" to="." method="_on_botao_teste_pressed"]
 [connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]
 [connection signal="pressed" from="MapOverlay/CloseButton" to="MapOverlay" method="_on_close_button_pressed"]
