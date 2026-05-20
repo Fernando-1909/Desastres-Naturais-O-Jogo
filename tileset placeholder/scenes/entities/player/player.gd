@@ -12,3 +12,6 @@ func movement_loop() -> void:
 	var motion: Vector2 = move_direction.normalized() * speed
 	set_velocity(motion)
 	move_and_slide()
+	
+func mostrar_posicao() -> void:
+	print("X: %d | Y: %d" % [global_position.x, global_position.y])

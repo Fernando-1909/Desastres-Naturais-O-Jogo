@@ -69,7 +69,7 @@ tile_set = ExtResource("2_gdpdu")
 
 [node name="Player" parent="." unique_id=1369853595 instance=ExtResource("3_w688r")]
 z_index = 1
-position = Vector2(1361, 610)
+position = Vector2(1144, 761)
 
 [connection signal="pressed" from="Hud/ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="Hud/BotaoTeste" to="." method="_on_botao_teste_pressed"]
