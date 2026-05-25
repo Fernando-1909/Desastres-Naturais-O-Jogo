@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://nhhron0jojxd"
-path="res://.godot/imported/wdwadad.png-06d9b6116a10d8bc4c192e04410cb7b7.ctex"
+uid="uid://crpsgairm6kg7"
+path="res://.godot/imported/Rocks.png-b6a2f14faf8fd74486da56a7029df5a1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://wdwadad.png"
-dest_files=["res://.godot/imported/wdwadad.png-06d9b6116a10d8bc4c192e04410cb7b7.ctex"]
+source_file="res://Tiny Swords (Free Pack)/Terrain/Decorations/Rocks/Rocks.png"
+dest_files=["res://.godot/imported/Rocks.png-b6a2f14faf8fd74486da56a7029df5a1.ctex"]
 
 [params]
 
