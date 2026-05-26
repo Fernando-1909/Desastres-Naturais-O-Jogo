@@ -94,10 +94,10 @@ Durante o jogo, o jogador deverá:
 
 # Autores
 
-Anya Ramos
-Bruno Eduardo
-Fernando Macedo
-José Inácio
+- Anya Ramos
+- Bruno Eduardo
+- Fernando Macedo
+- José Inácio
 
 ---
 
