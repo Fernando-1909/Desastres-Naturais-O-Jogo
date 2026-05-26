@@ -1,4 +1,3 @@
-````markdown
 # Desastres Naturais: O Jogo
 
 Desastres Naturais: O Jogo é um projeto desenvolvido na Godot Engine com foco em gerenciamento urbano e tomada de decisões durante situações de crise causadas por desastres naturais.
@@ -111,4 +110,3 @@ Projeto desenvolvido para fins acadêmicos e educacionais.
 # Repositório
 
 https://github.com/Fernando-1909/Desastres-Naturais-O-Jogo
-````
