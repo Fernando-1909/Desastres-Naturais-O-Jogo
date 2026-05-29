@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/main_game.gd" id="1_bvlld"]
 [ext_resource type="TileSet" uid="uid://bpghut5i2dlyd" path="res://Jogo principal/TileSets/DungeonTiles.tres" id="2_gdpdu"]
+[ext_resource type="Script" uid="uid://byvqcfalf520q" path="res://Jogo principal/dinheiro_label.gd" id="3_1woaa"]
 [ext_resource type="PackedScene" uid="uid://50lqtgqjxc7s" path="res://Jogo principal/UI/MapOverlay.tscn" id="3_7orgs"]
 [ext_resource type="PackedScene" uid="uid://wsbq46vhfxa7" path="res://tileset placeholder/scenes/entities/player/Player.tscn" id="3_w688r"]
+[ext_resource type="Script" uid="uid://cymqnkh3o5fgk" path="res://Jogo principal/popularidade_label.gd" id="4_botex"]
 [ext_resource type="Script" uid="uid://dql7n27qw22bg" path="res://Jogo principal/UI/map_overlay.gd" id="4_nmf63"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
 
@@ -36,6 +38,10 @@ offset_bottom = 23.0
 grow_horizontal = 1
 grow_vertical = 1
 
+[node name="Text" parent="CanvasLayer/Hud/DinheiroContainer/HBoxContainer" parent_id_path=PackedInt32Array(364686226, 1713289861) index="1" unique_id=593072602]
+text = "Dinheiro: 100"
+script = ExtResource("3_1woaa")
+
 [node name="PopularidadeContainer" parent="CanvasLayer/Hud" index="1" unique_id=1535273656]
 layout_mode = 0
 anchors_preset = 0
@@ -49,6 +55,9 @@ offset_right = -236.0
 offset_bottom = 23.0
 grow_horizontal = 1
 grow_vertical = 1
+
+[node name="Text" parent="CanvasLayer/Hud/PopularidadeContainer/HBoxContainer" parent_id_path=PackedInt32Array(364686226, 184562254) index="1" unique_id=430574769]
+script = ExtResource("4_botex")
 
 [node name="DesastreContainer" parent="CanvasLayer/Hud" index="2" unique_id=1763884610]
 layout_mode = 0
@@ -92,12 +101,11 @@ offset_bottom = 37.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="BotaoTeste" type="Button" parent="CanvasLayer/Hud" unique_id=2000359191]
-layout_mode = 0
-offset_left = 400.0
-offset_right = 457.0
-offset_bottom = 31.0
-text = "Teste"
+[node name="ButtonDinheiroMinus" parent="CanvasLayer/Hud" index="7" unique_id=87680337]
+offset_left = -573.0
+offset_top = 618.0
+offset_right = -545.0
+offset_bottom = 649.0
 
 [node name="MapOverlay" parent="CanvasLayer" unique_id=978908937 instance=ExtResource("3_7orgs")]
 visible = false
@@ -175,6 +183,8 @@ position = Vector2(1144, 761)
 
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/BotaoTeste" to="." method="_on_botao_teste_pressed"]
+[connection signal="pressed" from="CanvasLayer/Hud/ButtonDinheiroPlus" to="." method="_on_button_dinheiro_plus_pressed"]
+[connection signal="pressed" from="CanvasLayer/Hud/ButtonDinheiroMinus" to="." method="_on_button_dinheiro_minus_pressed"]
 [connection signal="pressed" from="CanvasLayer/MapOverlay/PrefeituraButton" to="CanvasLayer/MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MapOverlay/PraiaButton" to="CanvasLayer/MapOverlay" method="_on_praia_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MapOverlay/CloseButton" to="CanvasLayer/MapOverlay" method="_on_close_button_pressed"]

@@ -5,10 +5,10 @@ extends Node2D
 func _ready() -> void:
 	pass # Replace with function body.
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+
+#func _process(delta: float) -> void:
+#	pass
 
 
 func _on_button_mapa_pressed() -> void:
@@ -18,3 +18,13 @@ func _on_button_mapa_pressed() -> void:
 func _on_botao_teste_pressed() -> void:
 	FolderBlocker.liberarPraia()
 	print("praia foi liberada!")
+
+
+func _on_button_dinheiro_plus_pressed() -> void:
+	Global.dinheiro += 100
+	Global.popularidade += 50
+
+
+func _on_button_dinheiro_minus_pressed() -> void:
+	Global.dinheiro -= 100
+	Global.popularidade -= 25
