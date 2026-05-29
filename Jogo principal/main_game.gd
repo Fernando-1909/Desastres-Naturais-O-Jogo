@@ -12,7 +12,7 @@ func _process(delta: float) -> void:
 
 
 func _on_button_mapa_pressed() -> void:
-	$MapOverlay.visible = true
+	$CanvasLayer/MapOverlay.visible = true
 
 # Liberar a praia para o jogador
 func _on_botao_teste_pressed() -> void:

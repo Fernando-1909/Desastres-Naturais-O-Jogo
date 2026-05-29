@@ -13,40 +13,142 @@
 y_sort_enabled = true
 script = ExtResource("1_bvlld")
 
-[node name="Hud" parent="." unique_id=364686226 instance=ExtResource("4_w688r")]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2101390061]
+layer = 3
+
+[node name="Hud" parent="CanvasLayer" unique_id=364686226 instance=ExtResource("4_w688r")]
+z_index = 2
+anchors_preset = 13
+anchor_top = 0.0
+anchor_bottom = 1.0
+
+[node name="DinheiroContainer" parent="CanvasLayer/Hud" index="0" unique_id=274304367]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = -600.0
+offset_top = 0.0
+offset_right = -458.0
+offset_bottom = 23.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="PopularidadeContainer" parent="CanvasLayer/Hud" index="1" unique_id=1535273656]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = -400.0
+offset_top = 0.0
+offset_right = -236.0
+offset_bottom = 23.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="DesastreContainer" parent="CanvasLayer/Hud" index="2" unique_id=1763884610]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = -200.0
+offset_top = 0.0
+offset_right = -12.0
+offset_bottom = 40.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="ButtonPausa" parent="CanvasLayer/Hud" index="3" unique_id=1989163776]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 500.0
+offset_top = 0.0
+offset_right = 576.0
+offset_bottom = 31.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="ButtonMapa" parent="CanvasLayer/Hud" index="4" unique_id=2137597441]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 200.0
+offset_top = 0.0
+offset_right = 321.0
+offset_bottom = 37.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="BotaoTeste" type="Button" parent="CanvasLayer/Hud" unique_id=2000359191]
+layout_mode = 0
+offset_left = 400.0
+offset_right = 457.0
+offset_bottom = 31.0
+text = "Teste"
+
+[node name="MapOverlay" parent="CanvasLayer" unique_id=978908937 instance=ExtResource("3_7orgs")]
+visible = false
 z_index = 2
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 1377.0
-offset_top = 559.0
-offset_right = 1377.0
-offset_bottom = 559.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+script = ExtResource("4_nmf63")
+
+[node name="ColorRect" parent="CanvasLayer/MapOverlay" index="0" unique_id=1222339846]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="BotaoTeste" type="Button" parent="Hud" unique_id=2000359191]
-layout_mode = 0
-offset_left = -3.0
-offset_top = 23.0
-offset_right = 54.0
-offset_bottom = 49.0
-text = "Teste"
+[node name="PrefeituraButton" parent="CanvasLayer/MapOverlay" index="2" unique_id=1757545636]
+anchors_preset = -1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = -51.0
+offset_top = -135.0
+offset_right = 22.0
+offset_bottom = -34.0
 
-[node name="MapOverlay" parent="." unique_id=978908937 instance=ExtResource("3_7orgs")]
-visible = false
-z_index = 3
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = 1127.0
-offset_top = 344.0
-offset_right = 1127.0
-offset_bottom = 344.0
-grow_horizontal = 0
-script = ExtResource("4_nmf63")
+[node name="PraiaButton" parent="CanvasLayer/MapOverlay" index="3" unique_id=1398323500]
+offset_left = -94.0
+offset_top = 64.0
+offset_right = 156.0
+offset_bottom = 167.0
+
+[node name="CloseButton" parent="CanvasLayer/MapOverlay" index="4" unique_id=1695172694]
+offset_left = 232.0
+offset_top = -251.0
+offset_right = 250.0
+offset_bottom = -220.0
 
 [node name="TileLayerGround" type="TileMapLayer" parent="." unique_id=601503862]
 y_sort_enabled = true
@@ -71,11 +173,11 @@ tile_set = ExtResource("2_gdpdu")
 z_index = 1
 position = Vector2(1144, 761)
 
-[connection signal="pressed" from="Hud/ButtonMapa" to="." method="_on_button_mapa_pressed"]
-[connection signal="pressed" from="Hud/BotaoTeste" to="." method="_on_botao_teste_pressed"]
-[connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
-[connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]
-[connection signal="pressed" from="MapOverlay/CloseButton" to="MapOverlay" method="_on_close_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/Hud/ButtonMapa" to="." method="_on_button_mapa_pressed"]
+[connection signal="pressed" from="CanvasLayer/Hud/BotaoTeste" to="." method="_on_botao_teste_pressed"]
+[connection signal="pressed" from="CanvasLayer/MapOverlay/PrefeituraButton" to="CanvasLayer/MapOverlay" method="_on_prefeitura_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MapOverlay/PraiaButton" to="CanvasLayer/MapOverlay" method="_on_praia_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/MapOverlay/CloseButton" to="CanvasLayer/MapOverlay" method="_on_close_button_pressed"]
 
-[editable path="Hud"]
-[editable path="MapOverlay"]
+[editable path="CanvasLayer/Hud"]
+[editable path="CanvasLayer/MapOverlay"]

@@ -2,12 +2,27 @@
 
 [node name="Hud" type="Control" unique_id=364686226]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="DinheiroContainer" type="PanelContainer" parent="." unique_id=274304367]
 layout_mode = 1
-offset_right = 66.0
-offset_bottom = 23.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -71.0
+offset_top = -11.5
+offset_right = 71.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DinheiroContainer" unique_id=1713289861]
 layout_mode = 2
@@ -22,12 +37,17 @@ text = "Dinheiro: 10000"
 
 [node name="PopularidadeContainer" type="PanelContainer" parent="." unique_id=1535273656]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -164.0
-offset_bottom = 23.0
-grow_horizontal = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -82.0
+offset_top = -11.5
+offset_right = 82.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PopularidadeContainer" unique_id=184562254]
 layout_mode = 2
@@ -42,15 +62,17 @@ text = "Popularidade: 75%"
 
 [node name="DesastreContainer" type="PanelContainer" parent="." unique_id=1763884610]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -188.0
-offset_top = -40.0
-grow_horizontal = 0
-grow_vertical = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = -20.0
+offset_right = 94.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DesastreContainer" unique_id=1374103958]
 layout_mode = 2
@@ -65,18 +87,30 @@ text = "Desastre em 5 turnos"
 
 [node name="ButtonPausa" type="Button" parent="." unique_id=1989163776]
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -31.0
-offset_right = 76.0
-grow_vertical = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -15.5
+offset_right = 38.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
 text = "⏸ Pausar"
 
 [node name="ButtonMapa" type="Button" parent="." unique_id=2137597441]
-layout_mode = 0
-offset_left = 77.0
-offset_top = -38.0
-offset_right = 198.0
-offset_bottom = -1.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.5
+offset_top = -18.5
+offset_right = 60.5
+offset_bottom = 18.5
+grow_horizontal = 2
+grow_vertical = 2
 text = "🗺 Abrir mapa"
