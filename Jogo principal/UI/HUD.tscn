@@ -150,3 +150,18 @@ offset_top = 285.0
 offset_right = -544.0
 offset_bottom = 316.0
 text = "-"
+
+[node name="PopupTeste" type="Button" parent="." unique_id=244611423]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -95.0
+offset_top = 218.0
+offset_right = 115.0
+offset_bottom = 249.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Abrir menu de construção"

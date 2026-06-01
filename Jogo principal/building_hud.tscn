@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://cxpkd6cw4qwt5"]
+
+[node name="BuildingHUD" type="Control" unique_id=1691753199]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=21600404]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -574.0
+offset_top = -178.0
+offset_right = 577.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" unique_id=1986596549]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_constants/separation = 309
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer" unique_id=607132060]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "awaawawawa"
+
+[node name="Label2" type="Label" parent="PanelContainer/HBoxContainer" unique_id=53178255]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Informações"
+
+[node name="Button" type="Button" parent="PanelContainer/HBoxContainer" unique_id=296858238]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "melhoria"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=476448465]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer" unique_id=623238312]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "  X  "
