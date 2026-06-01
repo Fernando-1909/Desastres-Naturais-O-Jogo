@@ -8,7 +8,10 @@
 [ext_resource type="Script" uid="uid://cymqnkh3o5fgk" path="res://Jogo principal/popularidade_label.gd" id="4_botex"]
 [ext_resource type="Script" uid="uid://dql7n27qw22bg" path="res://Jogo principal/UI/map_overlay.gd" id="4_nmf63"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
+[ext_resource type="PackedScene" uid="uid://c4s0o1ohskwrr" path="res://Jogo principal/UI/VirtualJoystick.tscn" id="5_l2221"]
+[ext_resource type="Script" uid="uid://b0er74bmesged" path="res://Jogo principal/UI/virtual_joystick.gd" id="6_rgx6x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/building_hud.tscn" id="7_botex"]
+[ext_resource type="Script" uid="uid://d0rrf3b3uim2o" path="res://Jogo principal/UI/free_cam.gd" id="10_k7th3"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_7ykna"]
 
@@ -113,6 +116,34 @@ offset_left = -140.0
 offset_top = -49.0
 offset_right = 70.0
 offset_bottom = -18.0
+
+[node name="VirtualJoystick" parent="CanvasLayer/Hud" unique_id=851046592 instance=ExtResource("5_l2221")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -500.0
+offset_top = 76.0
+offset_right = -500.0
+offset_bottom = 76.0
+script = ExtResource("6_rgx6x")
+
+[node name="ButtonFreecam" type="Button" parent="CanvasLayer/Hud" unique_id=956644535]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 530.0
+offset_top = -15.5
+offset_right = 560.0
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "🎥"
 
 [node name="MapOverlay" parent="CanvasLayer" unique_id=978908937 instance=ExtResource("3_7orgs")]
 visible = false
@@ -236,11 +267,17 @@ tile_set = ExtResource("2_gdpdu")
 z_index = 1
 position = Vector2(1144, 761)
 
+[node name="FreeCam" type="Node2D" parent="." unique_id=1608665347]
+script = ExtResource("10_k7th3")
+
+[node name="Camera2D" type="Camera2D" parent="FreeCam" unique_id=2100405366]
+
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/BotaoTeste" to="." method="_on_botao_teste_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonDinheiroPlus" to="." method="_on_button_dinheiro_plus_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonDinheiroMinus" to="." method="_on_button_dinheiro_minus_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/PopupTeste" to="." method="_on_popup_teste_pressed"]
+[connection signal="pressed" from="CanvasLayer/Hud/ButtonFreecam" to="." method="_on_free_cam_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MapOverlay/PrefeituraButton" to="CanvasLayer/MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MapOverlay/PraiaButton" to="CanvasLayer/MapOverlay" method="_on_praia_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MapOverlay/CloseButton" to="CanvasLayer/MapOverlay" method="_on_close_button_pressed"]

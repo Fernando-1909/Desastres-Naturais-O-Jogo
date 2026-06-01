@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://c4s0o1ohskwrr"]
+
+[ext_resource type="Texture2D" uid="uid://bxrp2ocpufgrs" path="res://Jogo principal/UI/JoystickImagem/joystick_base_outline.png" id="1_xa48c"]
+[ext_resource type="Texture2D" uid="uid://dnpvn2ja0le75" path="res://Jogo principal/UI/JoystickImagem/joystick_tip.png" id="2_k5u4u"]
+
+[node name="VirtualJoystick" type="Control" unique_id=851046592]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Base" type="TextureRect" parent="." unique_id=1860943352]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_xa48c")
+
+[node name="Knob" type="TextureRect" parent="." unique_id=992222300]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 150.0
+offset_bottom = 150.0
+texture = ExtResource("2_k5u4u")

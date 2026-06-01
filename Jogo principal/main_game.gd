@@ -1,5 +1,29 @@
 extends Node2D
 
+#CÂMERA
+@onready var player_camera = $Player/Camera2D
+@onready var freecam_camera = $FreeCam/Camera2D
+@onready var freecam = $FreeCam
+
+var freecam_enabled = false
+
+func _on_free_cam_button_pressed():
+	freecam_enabled = !freecam_enabled
+	
+	if freecam_enabled:
+		freecam.global_position = $Player.global_position
+		player_camera.enabled = false
+		freecam_camera.enabled = true
+		freecam.active = true
+		$CanvasLayer/Hud/VirtualJoystick.visible = false
+		$CanvasLayer/Hud/VirtualJoystick.enabled = false
+	else:
+		freecam_camera.enabled = false
+		player_camera.enabled = true
+		freecam.active = false
+		$CanvasLayer/Hud/VirtualJoystick.output = Vector2.ZERO
+		$CanvasLayer/Hud/VirtualJoystick.visible = true
+		$CanvasLayer/Hud/VirtualJoystick.enabled = true
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
