@@ -298,19 +298,69 @@ texture_region_size = Vector2i(32, 32)
 2:2/0/terrains_peering_bit/top_left_corner = 0
 2:2/0/terrains_peering_bit/top_side = 0
 1:5/0 = 0
+1:5/0/terrain_set = 0
+1:5/0/terrain = 1
+1:5/0/terrains_peering_bit/right_side = 1
+1:5/0/terrains_peering_bit/bottom_right_corner = 1
+1:5/0/terrains_peering_bit/bottom_side = 1
+1:5/0/terrains_peering_bit/bottom_left_corner = 1
+1:5/0/terrains_peering_bit/left_side = 1
 0:5/0 = 0
+0:5/0/terrain_set = 0
+0:5/0/terrain = 1
+0:5/0/terrains_peering_bit/right_side = 1
+0:5/0/terrains_peering_bit/bottom_right_corner = 1
+0:5/0/terrains_peering_bit/bottom_side = 1
 0:6/0 = 0
+0:6/0/terrain_set = 0
+0:6/0/terrain = 1
+0:6/0/terrains_peering_bit/right_side = 1
+0:6/0/terrains_peering_bit/bottom_right_corner = 1
+0:6/0/terrains_peering_bit/bottom_side = 1
+0:6/0/terrains_peering_bit/top_side = 1
+0:6/0/terrains_peering_bit/top_right_corner = 1
 0:7/0 = 0
+0:7/0/terrain_set = 0
+0:7/0/terrain = 1
+0:7/0/terrains_peering_bit/right_side = 1
+0:7/0/terrains_peering_bit/top_side = 1
+0:7/0/terrains_peering_bit/top_right_corner = 1
 1:7/0 = 0
+1:7/0/terrain_set = 0
+1:7/0/terrain = 1
+1:7/0/terrains_peering_bit/right_side = 1
+1:7/0/terrains_peering_bit/left_side = 1
+1:7/0/terrains_peering_bit/top_left_corner = 1
+1:7/0/terrains_peering_bit/top_side = 1
+1:7/0/terrains_peering_bit/top_right_corner = 1
 2:7/0 = 0
+2:7/0/terrain_set = 0
+2:7/0/terrain = 1
+2:7/0/terrains_peering_bit/left_side = 1
+2:7/0/terrains_peering_bit/top_left_corner = 1
+2:7/0/terrains_peering_bit/top_side = 1
 2:6/0 = 0
+2:6/0/terrain_set = 0
+2:6/0/terrain = 1
+2:6/0/terrains_peering_bit/bottom_side = 1
+2:6/0/terrains_peering_bit/bottom_left_corner = 1
+2:6/0/terrains_peering_bit/left_side = 1
+2:6/0/terrains_peering_bit/top_left_corner = 1
+2:6/0/terrains_peering_bit/top_side = 1
 2:5/0 = 0
+2:5/0/terrain_set = 0
+2:5/0/terrain = 1
+2:5/0/terrains_peering_bit/bottom_side = 1
+2:5/0/terrains_peering_bit/bottom_left_corner = 1
+2:5/0/terrains_peering_bit/left_side = 1
 
 [sub_resource type="TileSet" id="TileSet_g03pw"]
 tile_size = Vector2i(32, 32)
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Grama"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
+terrain_set_0/terrain_1/name = "Pista 1"
+terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)
 sources/1 = SubResource("TileSetAtlasSource_h32vq")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ryqgr"]
@@ -636,7 +686,7 @@ tile_set = SubResource("TileSet_yo3on")
 
 [node name="Teste" type="TileMapLayer" parent="." unique_id=1133870911]
 z_index = 1
-tile_map_data = PackedByteArray("AADT/xgAAQADAAMAAAAmAAEAAQACAAMAAAAlAAEAAQABAAMAAAAkAAEAAQABAAMAAAAjAAEAAQABAAMAAAAiAAEAAQAAAAMAAAAsAAAAAQADAAMAAAArAAMAAQADAAIAAAArAAIAAQADAAEAAAArAAEAAQADAAAAAAApAAcAAQACAAIAAAApAAYAAQACAAcAAAApAAUAAQACAAUAAAApAAQAAQACAAAAAAAoAAcAAQABAAIAAAAoAAYAAQABAAcAAAAoAAUAAQABAAUAAAAoAAQAAQABAAAAAAAnAAcAAQABAAIAAAAnAAYAAQABAAcAAAAnAAUAAQABAAUAAAAnAAQAAQABAAAAAAAmAAcAAQABAAIAAAAmAAYAAQABAAcAAAAmAAUAAQABAAUAAAAmAAQAAQABAAAAAAAlAAcAAQABAAIAAAAlAAYAAQABAAcAAAAlAAUAAQABAAUAAAAlAAQAAQABAAAAAAAkAAcAAQABAAIAAAAkAAYAAQABAAcAAAAkAAUAAQABAAUAAAAkAAQAAQABAAAAAAAjAAcAAQAAAAIAAAAjAAYAAQAAAAcAAAAjAAUAAQAAAAUAAAAjAAQAAQAAAAAAAAAyAAcAAQACAAcAAAAyAAYAAQACAAYAAAAyAAUAAQACAAUAAAAxAAUAAQABAAUAAAAwAAUAAQABAAUAAAAvAAUAAQABAAUAAAAuAAUAAQAAAAUAAAAuAAYAAQAAAAYAAAAuAAcAAQAAAAcAAAAvAAcAAQABAAcAAAAwAAcAAQABAAcAAAAxAAcAAQABAAcAAAA=")
+tile_map_data = PackedByteArray("AADT/xgAAQADAAMAAAAmAAEAAQACAAMAAAAlAAEAAQABAAMAAAAkAAEAAQABAAMAAAAjAAEAAQABAAMAAAAiAAEAAQAAAAMAAAAsAAAAAQADAAMAAAArAAMAAQADAAIAAAArAAIAAQADAAEAAAArAAEAAQADAAAAAAApAAcAAQACAAMAAAApAAYAAQABAAcAAAApAAQAAQACAAMAAAAoAAcAAQACAAIAAAAoAAYAAQABAAcAAAAoAAUAAQABAAUAAAAoAAQAAQABAAAAAAAnAAcAAQABAAIAAAAnAAYAAQABAAcAAAAnAAUAAQABAAUAAAAnAAQAAQABAAAAAAAmAAcAAQABAAIAAAAmAAYAAQABAAcAAAAmAAUAAQABAAUAAAAmAAQAAQABAAAAAAAlAAcAAQABAAIAAAAlAAYAAQABAAcAAAAlAAUAAQABAAUAAAAlAAQAAQABAAAAAAAkAAcAAQABAAIAAAAkAAYAAQABAAcAAAAkAAUAAQABAAUAAAAkAAQAAQABAAAAAAAjAAcAAQAAAAIAAAAjAAYAAQAAAAcAAAAjAAUAAQAAAAUAAAAjAAQAAQAAAAAAAAAyAAcAAQACAAcAAAAyAAYAAQACAAYAAAAyAAUAAQACAAUAAAAxAAUAAQABAAUAAAAwAAUAAQABAAUAAAAvAAUAAQABAAUAAAAuAAUAAQAAAAUAAAAuAAYAAQAAAAYAAAAuAAcAAQAAAAcAAAAvAAcAAQABAAcAAAAwAAcAAQABAAcAAAAxAAcAAQABAAcAAAApAAUAAQABAAUAAAAqAAUAAQACAAUAAAAqAAYAAQACAAcAAAA9AAcAAQABAAcAAAA8AAcAAQABAAcAAAA7AAcAAQABAAcAAAA6AAcAAQABAAcAAAA5AAcAAQABAAcAAAA4AAcAAQABAAcAAAA3AAcAAQABAAcAAAA2AAwAAQACAAcAAAA2AAsAAQACAAYAAAA2AAoAAQACAAYAAAA2AAkAAQACAAYAAAA2AAgAAQACAAUAAAA+AAcAAQACAAcAAAA2AAcAAQABAAcAAABGAAYAAQABAAUAAABFAAYAAQABAAUAAABEAAYAAQABAAUAAABDAAYAAQABAAUAAABCAAYAAQABAAUAAABBAAYAAQAAAAUAAABIAAYAAQACAAUAAABHAAYAAQABAAUAAAA=")
 tile_set = SubResource("TileSet_g03pw")
 
 [node name="Player" parent="." unique_id=1404097969 instance=ExtResource("1_qv77t")]
