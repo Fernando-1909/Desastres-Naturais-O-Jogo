@@ -57,7 +57,6 @@ func _on_button_dinheiro_minus_pressed() -> void:
 @onready var pop_up_scene = load("res://Jogo principal/building_hud.tscn")
 
 
-
 func _on_button_close_menu_pressed() -> void:
 	$CanvasLayer/BuildingHUD.visible = false
 	for construcao in Global.construcoes:
@@ -66,4 +65,10 @@ func _on_button_close_menu_pressed() -> void:
 func _on_prefeitura_button_pressed() -> void:
 	print("prefeitura clicada")
 	Global.construcoes["prefeitura"] = true
+	$CanvasLayer/BuildingHUD.visible = true
+
+
+func _on_bombeiros_button_pressed() -> void:
+	print("prefeitura clicada")
+	Global.construcoes["bombeiros"] = true
 	$CanvasLayer/BuildingHUD.visible = true

@@ -12,7 +12,8 @@ func _on_close_button_pressed() -> void:
 	visible = false
 
 func _on_prefeitura_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://Jogo principal/Prefeitura.tscn")
+	print("prefeitura apertada vai tomar no cu")
+	get_tree().change_scene_to_file("res://Jogo principal/Map_Prefeitura/Prefeitura.tscn")
 
 func _on_praia_button_pressed() -> void:
 

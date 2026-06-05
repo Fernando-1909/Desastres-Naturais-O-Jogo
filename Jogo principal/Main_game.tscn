@@ -27,6 +27,13 @@ top_level = true
 position = Vector2(747, 787)
 texture_normal = ExtResource("2_rgx6x")
 
+[node name="BombeirosButton" type="Button" parent="." unique_id=342615282]
+offset_left = 861.0
+offset_top = 930.0
+offset_right = 990.0
+offset_bottom = 961.0
+text = "BOMBEIROS!!!!!!"
+
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2101390061]
 layer = 3
 
@@ -276,6 +283,7 @@ script = ExtResource("10_k7th3")
 [node name="Camera2D" type="Camera2D" parent="FreeCam" unique_id=2100405366]
 
 [connection signal="pressed" from="PrefeituraButton" to="." method="_on_prefeitura_button_pressed"]
+[connection signal="pressed" from="BombeirosButton" to="." method="_on_bombeiros_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/BotaoTeste" to="." method="_on_botao_teste_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonDinheiroPlus" to="." method="_on_button_dinheiro_plus_pressed"]
