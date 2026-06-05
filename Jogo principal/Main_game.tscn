@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/main_game.gd" id="1_bvlld"]
 [ext_resource type="TileSet" uid="uid://bpghut5i2dlyd" path="res://Jogo principal/TileSets/DungeonTiles.tres" id="2_gdpdu"]
+[ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="2_rgx6x"]
 [ext_resource type="Script" uid="uid://byvqcfalf520q" path="res://Jogo principal/dinheiro_label.gd" id="3_1woaa"]
 [ext_resource type="PackedScene" uid="uid://50lqtgqjxc7s" path="res://Jogo principal/UI/MapOverlay.tscn" id="3_7orgs"]
 [ext_resource type="PackedScene" uid="uid://wsbq46vhfxa7" path="res://tileset placeholder/scenes/entities/player/Player.tscn" id="3_w688r"]
@@ -12,12 +13,19 @@
 [ext_resource type="Script" uid="uid://b0er74bmesged" path="res://Jogo principal/UI/virtual_joystick.gd" id="6_rgx6x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/building_hud.tscn" id="7_botex"]
 [ext_resource type="Script" uid="uid://d0rrf3b3uim2o" path="res://Jogo principal/UI/free_cam.gd" id="10_k7th3"]
+[ext_resource type="Script" uid="uid://cfuddjs3ujr0" path="res://Jogo principal/building_name.gd" id="11_i63ni"]
+[ext_resource type="Script" uid="uid://c0q4xb2idmdb6" path="res://Jogo principal/building_info.gd" id="12_61lwm"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_7ykna"]
 
 [node name="MainGame" type="Node2D" unique_id=873718037]
 y_sort_enabled = true
 script = ExtResource("1_bvlld")
+
+[node name="PrefeituraButton" type="TouchScreenButton" parent="." unique_id=884864503]
+top_level = true
+position = Vector2(747, 787)
+texture_normal = ExtResource("2_rgx6x")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2101390061]
 layer = 3
@@ -111,12 +119,6 @@ offset_top = 618.0
 offset_right = -545.0
 offset_bottom = 649.0
 
-[node name="PopupTeste" parent="CanvasLayer/Hud" index="8" unique_id=244611423]
-offset_left = -140.0
-offset_top = -49.0
-offset_right = 70.0
-offset_bottom = -18.0
-
 [node name="VirtualJoystick" parent="CanvasLayer/Hud" unique_id=851046592 instance=ExtResource("5_l2221")]
 layout_mode = 1
 anchors_preset = 8
@@ -197,7 +199,6 @@ offset_right = 250.0
 offset_bottom = -220.0
 
 [node name="BuildingHUD" parent="CanvasLayer" unique_id=1691753199 instance=ExtResource("7_botex")]
-visible = false
 
 [node name="PanelContainer2" type="PanelContainer" parent="CanvasLayer/BuildingHUD" unique_id=973475689]
 layout_mode = 1
@@ -218,15 +219,17 @@ size_flags_horizontal = 4
 size_flags_vertical = 8
 theme_override_constants/separation = 309
 
-[node name="Label" type="Label" parent="CanvasLayer/BuildingHUD/PanelContainer2/HBoxContainer" unique_id=1156024012]
+[node name="Building_name" type="Label" parent="CanvasLayer/BuildingHUD/PanelContainer2/HBoxContainer" unique_id=1156024012]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "awaawawawa"
+script = ExtResource("11_i63ni")
 
-[node name="Label2" type="Label" parent="CanvasLayer/BuildingHUD/PanelContainer2/HBoxContainer" unique_id=1252744813]
+[node name="Building_info" type="Label" parent="CanvasLayer/BuildingHUD/PanelContainer2/HBoxContainer" unique_id=1252744813]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Informações"
+script = ExtResource("12_61lwm")
 
 [node name="Button" type="Button" parent="CanvasLayer/BuildingHUD/PanelContainer2/HBoxContainer" unique_id=1103396758]
 layout_mode = 2
@@ -272,11 +275,11 @@ script = ExtResource("10_k7th3")
 
 [node name="Camera2D" type="Camera2D" parent="FreeCam" unique_id=2100405366]
 
+[connection signal="pressed" from="PrefeituraButton" to="." method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/BotaoTeste" to="." method="_on_botao_teste_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonDinheiroPlus" to="." method="_on_button_dinheiro_plus_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonDinheiroMinus" to="." method="_on_button_dinheiro_minus_pressed"]
-[connection signal="pressed" from="CanvasLayer/Hud/PopupTeste" to="." method="_on_popup_teste_pressed"]
 [connection signal="pressed" from="CanvasLayer/Hud/ButtonFreecam" to="." method="_on_free_cam_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MapOverlay/PrefeituraButton" to="CanvasLayer/MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MapOverlay/PraiaButton" to="CanvasLayer/MapOverlay" method="_on_praia_button_pressed"]

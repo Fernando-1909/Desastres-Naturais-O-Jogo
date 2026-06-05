@@ -56,14 +56,14 @@ func _on_button_dinheiro_minus_pressed() -> void:
 #abrir pop-up de melhorias
 @onready var pop_up_scene = load("res://Jogo principal/building_hud.tscn")
 
-func _on_popup_teste_pressed() -> void:
-	print("popup apertado")
-	#print(pop_up_scene)
-	$CanvasLayer/BuildingHUD.visible = true
-	
-	#var new_pop_up = pop_up_scene.instantiate()
-	#add_child(new_pop_up)
 
 
 func _on_button_close_menu_pressed() -> void:
 	$CanvasLayer/BuildingHUD.visible = false
+	for construcao in Global.construcoes:
+		Global.construcoes[construcao] = false
+
+func _on_prefeitura_button_pressed() -> void:
+	print("prefeitura clicada")
+	Global.construcoes["prefeitura"] = true
+	$CanvasLayer/BuildingHUD.visible = true
