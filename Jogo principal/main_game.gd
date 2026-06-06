@@ -69,6 +69,6 @@ func _on_prefeitura_button_pressed() -> void:
 
 
 func _on_bombeiros_button_pressed() -> void:
-	print("prefeitura clicada")
+	print("bombeiros clicado")
 	Global.construcoes["bombeiros"] = true
 	$CanvasLayer/BuildingHUD.visible = true
