@@ -1,8 +1,0 @@
-[gd_scene format=3 uid="uid://cq3jkupixx7md"]
-
-[ext_resource type="Script" uid="uid://d0rrf3b3uim2o" path="res://Jogo principal/UI/free_cam.gd" id="1_0hwbc"]
-
-[node name="FreeCam" type="Node2D" unique_id=482817821]
-script = ExtResource("1_0hwbc")
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=253445893]

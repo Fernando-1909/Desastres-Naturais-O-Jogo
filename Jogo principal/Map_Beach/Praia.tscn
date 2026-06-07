@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cvbb5fpo2j72c" path="res://Tiny Swords (Free Pack)/Terrain/Tileset/Water Background color.png" id="1_5j2g1"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="1_g03pw"]
+[ext_resource type="Script" uid="uid://dcsuqm067cpup" path="res://Jogo principal/Map_Beach/praia.gd" id="1_h32vq"]
 [ext_resource type="PackedScene" uid="uid://wsbq46vhfxa7" path="res://tileset placeholder/scenes/entities/player/Player.tscn" id="1_qv77t"]
 [ext_resource type="Texture2D" uid="uid://cht4g72gf1xau" path="res://Tiny Swords (Free Pack)/Terrain/Tileset/Tilemap_color3.png" id="2_63fbp"]
 [ext_resource type="Texture2D" uid="uid://cq0m5354y700p" path="res://Tiny Swords (Free Pack)/Terrain/Tileset/Tilemap_color1.png" id="3_63fbp"]
@@ -10,14 +11,13 @@
 [ext_resource type="Texture2D" uid="uid://dydlqm48ufeql" path="res://Jogo principal/tilesheets/Grama_Meni.png" id="5_g03pw"]
 [ext_resource type="Texture2D" uid="uid://x4csfle5625" path="res://Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="5_yo3on"]
 [ext_resource type="Texture2D" uid="uid://01jt78xkixyc" path="res://Tiny Swords (Free Pack)/Terrain/Decorations/Bushes/Bushe1.png" id="8_38h03"]
+[ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="8_b8lgx"]
 [ext_resource type="Texture2D" uid="uid://dpiv63tf6qgyb" path="res://Tiny Swords (Free Pack)/Terrain/Decorations/Bushes/Bushe2.png" id="9_7csi2"]
 [ext_resource type="Texture2D" uid="uid://blln1b47yrhi2" path="res://Tiny Swords (Free Pack)/Terrain/Decorations/Bushes/Bushe3.png" id="10_jtvss"]
 [ext_resource type="Texture2D" uid="uid://crpsgairm6kg7" path="res://Tiny Swords (Free Pack)/Terrain/Decorations/Rocks/Rocks.png" id="11_g03pw"]
 [ext_resource type="Texture2D" uid="uid://ch4msx5op2en6" path="res://Tiny Swords (Free Pack)/Terrain/Resources/Wood/Trees/Tree3.png" id="12_h32vq"]
 [ext_resource type="Texture2D" uid="uid://ddtbqfafwra5j" path="res://Tiny Swords (Free Pack)/Terrain/Decorations/Rubber Duck/Rubber duck.png" id="13_38h03"]
 [ext_resource type="Texture2D" uid="uid://bk0slg6nlxp5b" path="res://Tiny Swords (Free Pack)/Terrain/Resources/Wood/Trees/Tree4.png" id="13_b8lgx"]
-[ext_resource type="PackedScene" uid="uid://cq3jkupixx7md" path="res://Jogo principal/free_cam.tscn" id="16_jtvss"]
-[ext_resource type="PackedScene" uid="uid://50lqtgqjxc7s" path="res://Jogo principal/UI/MapOverlay.tscn" id="18_h32vq"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4o1vw"]
 texture = ExtResource("1_5j2g1")
@@ -665,6 +665,7 @@ sources/5 = SubResource("TileSetAtlasSource_7csi2")
 tile_proxies/coords_level = [[16, Vector2i(0, 0)], [21, Vector2i(0, 0)], [17, Vector2i(0, 0)], [21, Vector2i(1, 0)], [18, Vector2i(0, 0)], [21, Vector2i(2, 0)], [19, Vector2i(0, 0)], [21, Vector2i(3, 0)]]
 
 [node name="Praia" type="Node2D" unique_id=256276165]
+script = ExtResource("1_h32vq")
 
 [node name="Label" type="Label" parent="." unique_id=1434857598]
 offset_right = 40.0
@@ -689,8 +690,6 @@ z_index = 1
 tile_map_data = PackedByteArray("AADT/xgAAQADAAMAAAAmAAEAAQACAAMAAAAlAAEAAQABAAMAAAAkAAEAAQABAAMAAAAjAAEAAQABAAMAAAAiAAEAAQAAAAMAAAAsAAAAAQADAAMAAAArAAMAAQADAAIAAAArAAIAAQADAAEAAAArAAEAAQADAAAAAAApAAcAAQACAAMAAAApAAYAAQABAAcAAAApAAQAAQACAAMAAAAoAAcAAQACAAIAAAAoAAYAAQABAAcAAAAoAAUAAQABAAUAAAAoAAQAAQABAAAAAAAnAAcAAQABAAIAAAAnAAYAAQABAAcAAAAnAAUAAQABAAUAAAAnAAQAAQABAAAAAAAmAAcAAQABAAIAAAAmAAYAAQABAAcAAAAmAAUAAQABAAUAAAAmAAQAAQABAAAAAAAlAAcAAQABAAIAAAAlAAYAAQABAAcAAAAlAAUAAQABAAUAAAAlAAQAAQABAAAAAAAkAAcAAQABAAIAAAAkAAYAAQABAAcAAAAkAAUAAQABAAUAAAAkAAQAAQABAAAAAAAjAAcAAQAAAAIAAAAjAAYAAQAAAAcAAAAjAAUAAQAAAAUAAAAjAAQAAQAAAAAAAAAyAAcAAQACAAcAAAAyAAYAAQACAAYAAAAyAAUAAQACAAUAAAAxAAUAAQABAAUAAAAwAAUAAQABAAUAAAAvAAUAAQABAAUAAAAuAAUAAQAAAAUAAAAuAAYAAQAAAAYAAAAuAAcAAQAAAAcAAAAvAAcAAQABAAcAAAAwAAcAAQABAAcAAAAxAAcAAQABAAcAAAApAAUAAQABAAUAAAAqAAUAAQACAAUAAAAqAAYAAQACAAcAAAA9AAcAAQABAAcAAAA8AAcAAQABAAcAAAA7AAcAAQABAAcAAAA6AAcAAQABAAcAAAA5AAcAAQABAAcAAAA4AAcAAQABAAcAAAA3AAcAAQABAAcAAAA2AAwAAQACAAcAAAA2AAsAAQACAAYAAAA2AAoAAQACAAYAAAA2AAkAAQACAAYAAAA2AAgAAQACAAUAAAA+AAcAAQACAAcAAAA2AAcAAQABAAcAAABGAAYAAQABAAUAAABFAAYAAQABAAUAAABEAAYAAQABAAUAAABDAAYAAQABAAUAAABCAAYAAQABAAUAAABBAAYAAQAAAAUAAABIAAYAAQACAAUAAABHAAYAAQABAAUAAAA=")
 tile_set = SubResource("TileSet_g03pw")
 
-[node name="Player" parent="." unique_id=1404097969 instance=ExtResource("1_qv77t")]
-
 [node name="Shadows" type="TileMapLayer" parent="." unique_id=1049034495]
 z_index = 1
 tile_map_data = PackedByteArray("AAABAAQAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAFAAQAAAAAAAAAAAATAAcAAAAAAAAAAAACAAQAAAAAAAAAAAA=")
@@ -708,11 +707,11 @@ y_sort_enabled = true
 tile_map_data = PackedByteArray("AAAIAAgAAwAAAAAAAAADAA4AAwAAAAAAAAACAA4AAwAAAAAAAAANAA8AAwAAAAAAAAATABUAAwAAAAAAAAAHABcAAwAAAAAAAAAOABgAAwAAAAAAAAAYABUAAwAAAAAAAAAjAAoABAAAAAAAAAAqAAoABAAAAAAAAAAoAA0ABAAAAAAAAAAFAAwAFQAAAAAAAAAJAA0AFQAAAAAAAAATAAsAFQABAAAAAAAaAA4AFQABAAAAAAADAAMAFQADAAAAAAANAAIAFQADAAAAAAAXAA0AAgAAAAAAAAAJABgAAgAAAAAAAAAXABcAAgAAAAAAAAAlAAwAAQAAAAAAAAAnAAsAAQAAAAAAAAAHAA0AAQAAAAAAAAANABEAAQAAAAAAAAAKAA4AAQAAAAAAAAAWAAsAAQAAAAAAAAAYAAsAAQAAAAAAAAAGAAMAAQAAAAAAAAAJAAMAAAAAAAAAAAAKAAQAAAAAAAAAAAAYAAYAAAAAAAAAAAAcAAQAAAAAAAAAAAAVAAQAAwAAAAAAAAAaAAMAAwAAAAAAAAAGABYAAQAAAAAAAAAFABgAAQAAAAAAAAANABgAAQAAAAAAAAARABYAAQAAAAAAAAAYABkAAQAAAAAAAAASABgAAQAAAAAAAAAKABUAAAAAAAAAAAAPABUAAAAAAAAAAAAGABQAAAAAAAAAAAANABUAAAAAAAAAAAAXABUAAAAAAAAAAAApAAsAAAAAAAAAAAAEAAsAFQABAAAAAAD//wYAFQADAAAAAAACAAYAAQAAAAAAAAAPAAwABQAAAAAAAAARAAsABQAAAAAAAAASAAcABQAAAAAAAAAfAA4ABQAAAAAAAAAfABMAAwAAAAAAAAArABIAAwAAAAAAAAApABUAAwAAAAAAAAAiABQAAAAAAAAAAAAnABIAAAAAAAAAAAArABUAAAAAAAAAAAAfABUAAAAAAAAAAAAkABIAAAAAAAAAAAAlABQAFQABAAAAAAAhABIAFQACAAAAAAAeABMAFQACAAAAAAA=")
 tile_set = SubResource("TileSet_wkq2h")
 
-[node name="Hud" parent="." unique_id=364686226 instance=ExtResource("1_g03pw")]
-visible = false
+[node name="Player" parent="." unique_id=1404097969 instance=ExtResource("1_qv77t")]
 
-[node name="FreeCam" parent="." unique_id=482817821 instance=ExtResource("16_jtvss")]
-visible = false
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1972120434]
+layer = 10
 
-[node name="MapOverlay" parent="." unique_id=978908937 instance=ExtResource("18_h32vq")]
-visible = false
+[node name="Hud" parent="CanvasLayer" unique_id=364686226 instance=ExtResource("1_g03pw")]
+
+[node name="FreeCamera2D" parent="." unique_id=834210011 instance=ExtResource("8_b8lgx")]
