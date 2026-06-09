@@ -2,6 +2,9 @@ extends Camera2D
 
 var dragging := false
 var last_drag_pos := Vector2.ZERO
+var zoom_min = 0.5
+var zoom_max = 3.0
+var zoom_speed = 0.1
 
 func _input(event):
 	if not enabled:
@@ -18,5 +21,6 @@ func _input(event):
 			dragging = false
 			
 	if event is InputEventMagnifyGesture:
-		zoom *= event.factor
-		zoom = zoom.clamp(Vector2(0.5, 0.5), Vector2(3.0, 3.0))
+		var new_zoom = zoom * event.factor
+		new_zoom = clamp(new_zoom, Vector2(zoom_min, zoom_min), Vector2(zoom_max, zoom_max))
+		zoom = new_zoom
