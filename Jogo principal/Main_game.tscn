@@ -55,6 +55,11 @@ position = Vector2(1144, 761)
 layer = 3
 
 [node name="Hud" parent="CanvasLayer" unique_id=364686226 instance=ExtResource("4_w688r")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 
 [node name="BuildingHUD" parent="CanvasLayer" unique_id=1691753199 instance=ExtResource("7_botex")]
 

@@ -6,9 +6,11 @@
 
 [node name="Hud" type="Control" unique_id=364686226]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_fc0pe")
@@ -121,10 +123,10 @@ text = "🗺 Abrir mapa"
 
 [node name="BotaoTeste" type="Button" parent="." unique_id=2035211888]
 layout_mode = 0
-offset_left = 1028.0
-offset_top = 22.0
-offset_right = 1085.0
-offset_bottom = 53.0
+offset_left = 459.0
+offset_top = -293.0
+offset_right = 524.0
+offset_bottom = -262.0
 text = "Teste"
 
 [node name="ButtonDinheiroPlus" type="Button" parent="." unique_id=1577604004]
@@ -146,10 +148,10 @@ text = "+"
 [node name="ButtonDinheiroMinus" type="Button" parent="." unique_id=87680337]
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 0
-offset_left = 44.0
-offset_top = 574.0
-offset_right = 72.0
-offset_bottom = 605.0
+offset_left = -527.0
+offset_top = 245.0
+offset_right = -499.0
+offset_bottom = 276.0
 text = "-"
 
 [node name="ButtonFreecam" type="Button" parent="." unique_id=1220354645]
@@ -246,6 +248,7 @@ grow_vertical = 2
 text = "X"
 
 [connection signal="pressed" from="ButtonMapa" to="." method="_on_button_mapa_pressed"]
+[connection signal="pressed" from="BotaoTeste" to="." method="_on_botao_teste_pressed"]
 [connection signal="pressed" from="ButtonFreecam" to="." method="_on_button_freecam_pressed"]
 [connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]

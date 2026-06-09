@@ -16,7 +16,6 @@ func _on_prefeitura_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Jogo principal/Map_Prefeitura/Prefeitura.tscn")
 
 func _on_praia_button_pressed() -> void:
-
 	# verifica se o jogador possui acesso
 	if !FolderBlocker.nivelPraia:
 		print("Jogador ainda nao tem permissao para ir para a praia")
