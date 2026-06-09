@@ -2,7 +2,9 @@
 
 [ext_resource type="Script" uid="uid://by83q66ch6uwn" path="res://Jogo principal/UI/hud.gd" id="1_fc0pe"]
 [ext_resource type="Script" uid="uid://dql7n27qw22bg" path="res://Jogo principal/UI/map_overlay.gd" id="1_v1p6u"]
+[ext_resource type="Script" uid="uid://byvqcfalf520q" path="res://Jogo principal/dinheiro_label.gd" id="2_h5rg0"]
 [ext_resource type="Texture2D" uid="uid://q3tnl4cyqfgo" path="res://Jogo principal/UI/MapaImagem/conceptmapa.png" id="3_fc0pe"]
+[ext_resource type="Script" uid="uid://cymqnkh3o5fgk" path="res://Jogo principal/popularidade_label.gd" id="3_k6nrk"]
 
 [node name="Hud" type="Control" unique_id=364686226]
 layout_mode = 3
@@ -40,7 +42,7 @@ text = "💰"
 [node name="Text" type="Label" parent="DinheiroContainer/HBoxContainer" unique_id=593072602]
 layout_mode = 2
 text = "f\"\""
-script = ExtResource("1_v1p6u")
+script = ExtResource("2_h5rg0")
 
 [node name="PopularidadeContainer" type="PanelContainer" parent="." unique_id=1535273656]
 layout_mode = 1
@@ -67,6 +69,7 @@ text = "⭐"
 [node name="Text" type="Label" parent="PopularidadeContainer/HBoxContainer" unique_id=430574769]
 layout_mode = 2
 text = "Popularidade: 75%"
+script = ExtResource("3_k6nrk")
 
 [node name="DesastreContainer" type="PanelContainer" parent="." unique_id=1763884610]
 layout_mode = 1
@@ -259,6 +262,8 @@ text = "X"
 
 [connection signal="pressed" from="ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="BotaoTeste" to="." method="_on_botao_teste_pressed"]
+[connection signal="pressed" from="ButtonDinheiroPlus" to="." method="_on_button_dinheiro_plus_pressed"]
+[connection signal="pressed" from="ButtonDinheiroMinus" to="." method="_on_button_dinheiro_minus_pressed"]
 [connection signal="pressed" from="ButtonFreecam" to="." method="_on_button_freecam_pressed"]
 [connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]
