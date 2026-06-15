@@ -443,6 +443,7 @@ texture_region_size = Vector2i(256, 512)
 2:0/0 = 0
 2:0/0/texture_origin = Vector2i(0, 182)
 2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, 0, 0, 16, 32, 0, 0, -16)
+2:0/0/custom_data_0 = true
 
 [resource]
 tile_shape = 1
@@ -452,6 +453,8 @@ physics_layer_0/collision_mask = 0
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Ground"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
+custom_data_layer_0/name = "clicavel"
+custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_q3sdw")
 sources/33 = SubResource("TileSetAtlasSource_e3ye6")
 sources/37 = SubResource("TileSetAtlasSource_a8hyt")

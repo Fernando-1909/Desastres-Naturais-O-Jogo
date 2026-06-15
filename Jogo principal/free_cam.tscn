@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://cqj3qrg62tnnf"]
+
+[node name="FreeCam" type="Node2D" unique_id=482817821]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=253445893]

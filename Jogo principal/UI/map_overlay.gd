@@ -12,11 +12,9 @@ func _on_close_button_pressed() -> void:
 	visible = false
 
 func _on_prefeitura_button_pressed() -> void:
-	print("prefeitura apertada vai tomar no cu")
-	get_tree().change_scene_to_file("res://Jogo principal/Map_Prefeitura/Prefeitura.tscn")
+	get_tree().change_scene_to_file("res://Jogo principal/Main_game.tscn")
 
 func _on_praia_button_pressed() -> void:
-
 	# verifica se o jogador possui acesso
 	if !FolderBlocker.nivelPraia:
 		print("Jogador ainda nao tem permissao para ir para a praia")

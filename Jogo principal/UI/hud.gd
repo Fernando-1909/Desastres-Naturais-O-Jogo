@@ -18,3 +18,17 @@ func _on_button_freecam_pressed() -> void:
 
 func _on_button_mapa_pressed() -> void:
 	$MapOverlay.visible = !$MapOverlay.visible
+
+
+func _on_botao_teste_pressed() -> void:
+	FolderBlocker.liberarPraia()
+
+
+func _on_button_dinheiro_plus_pressed() -> void:
+	Global.dinheiro += 100
+	Global.popularidade += 50
+
+
+func _on_button_dinheiro_minus_pressed() -> void:
+	Global.dinheiro -= 100
+	Global.popularidade -= 25

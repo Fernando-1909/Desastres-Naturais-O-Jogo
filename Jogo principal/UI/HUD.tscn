@@ -2,13 +2,17 @@
 
 [ext_resource type="Script" uid="uid://by83q66ch6uwn" path="res://Jogo principal/UI/hud.gd" id="1_fc0pe"]
 [ext_resource type="Script" uid="uid://dql7n27qw22bg" path="res://Jogo principal/UI/map_overlay.gd" id="1_v1p6u"]
+[ext_resource type="Script" uid="uid://byvqcfalf520q" path="res://Jogo principal/dinheiro_label.gd" id="2_h5rg0"]
 [ext_resource type="Texture2D" uid="uid://q3tnl4cyqfgo" path="res://Jogo principal/UI/MapaImagem/conceptmapa.png" id="3_fc0pe"]
+[ext_resource type="Script" uid="uid://cymqnkh3o5fgk" path="res://Jogo principal/popularidade_label.gd" id="3_k6nrk"]
 
 [node name="Hud" type="Control" unique_id=364686226]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_fc0pe")
@@ -20,12 +24,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -500.0
-offset_top = -300.0
-offset_right = -357.99997
-offset_bottom = -277.0
+offset_left = -717.0
+offset_top = -307.0
+offset_right = -575.0
+offset_bottom = -284.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(2, 2)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DinheiroContainer" unique_id=1713289861]
 layout_mode = 2
@@ -37,7 +42,7 @@ text = "💰"
 [node name="Text" type="Label" parent="DinheiroContainer/HBoxContainer" unique_id=593072602]
 layout_mode = 2
 text = "f\"\""
-script = ExtResource("1_v1p6u")
+script = ExtResource("2_h5rg0")
 
 [node name="PopularidadeContainer" type="PanelContainer" parent="." unique_id=1535273656]
 layout_mode = 1
@@ -46,12 +51,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -300.0
-offset_right = -136.0
-offset_bottom = -277.0
+offset_left = -416.0
+offset_top = -309.0
+offset_right = -252.0
+offset_bottom = -286.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(2, 2)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PopularidadeContainer" unique_id=184562254]
 layout_mode = 2
@@ -63,6 +69,7 @@ text = "⭐"
 [node name="Text" type="Label" parent="PopularidadeContainer/HBoxContainer" unique_id=430574769]
 layout_mode = 2
 text = "Popularidade: 75%"
+script = ExtResource("3_k6nrk")
 
 [node name="DesastreContainer" type="PanelContainer" parent="." unique_id=1763884610]
 layout_mode = 1
@@ -71,12 +78,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -300.0
-offset_right = 88.0
-offset_bottom = -260.0
+offset_left = -76.0
+offset_top = -310.0
+offset_right = 112.0
+offset_bottom = -270.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(2, 2)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DesastreContainer" unique_id=1374103958]
 layout_mode = 2
@@ -96,12 +104,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 148.0
-offset_top = -296.0
-offset_right = 224.0
-offset_bottom = -265.0
+offset_left = 580.0
+offset_top = -298.0
+offset_right = 656.0
+offset_bottom = -267.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(2, 2)
 text = "⏸ Pausar"
 
 [node name="ButtonMapa" type="Button" parent="." unique_id=2137597441]
@@ -111,20 +120,22 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 276.0
-offset_top = -301.0
-offset_right = 397.0
-offset_bottom = -264.0
+offset_left = 323.0
+offset_top = -308.0
+offset_right = 444.0
+offset_bottom = -271.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(2, 2)
 text = "🗺 Abrir mapa"
 
 [node name="BotaoTeste" type="Button" parent="." unique_id=2035211888]
 layout_mode = 0
-offset_left = 1028.0
-offset_top = 22.0
-offset_right = 1085.0
-offset_bottom = 53.0
+offset_left = -715.0
+offset_top = -227.0
+offset_right = -650.0
+offset_bottom = -196.0
+scale = Vector2(2, 2)
 text = "Teste"
 
 [node name="ButtonDinheiroPlus" type="Button" parent="." unique_id=1577604004]
@@ -141,15 +152,17 @@ offset_right = -537.0
 offset_bottom = 279.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(2, 2)
 text = "+"
 
 [node name="ButtonDinheiroMinus" type="Button" parent="." unique_id=87680337]
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 0
-offset_left = 44.0
-offset_top = 574.0
-offset_right = 72.0
-offset_bottom = 605.0
+offset_left = -498.0
+offset_top = 250.0
+offset_right = -470.0
+offset_bottom = 281.0
+scale = Vector2(2, 2)
 text = "-"
 
 [node name="ButtonFreecam" type="Button" parent="." unique_id=1220354645]
@@ -159,12 +172,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 541.0
-offset_top = -30.0
-offset_right = 571.0
-offset_bottom = 1.0
+offset_left = 648.0
+offset_top = -42.0
+offset_right = 678.0
+offset_bottom = -11.0
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(2, 2)
 text = "🎥"
 
 [node name="MapOverlay" type="Control" parent="." unique_id=978908937]
@@ -177,6 +191,7 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(2, 2)
 script = ExtResource("1_v1p6u")
 
 [node name="ColorRect" type="ColorRect" parent="MapOverlay" unique_id=1222339846]
@@ -209,10 +224,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -51.0
-offset_top = -141.0
-offset_right = 13.0
-offset_bottom = -29.0
+offset_left = -46.5
+offset_top = -138.5
+offset_right = 17.5
+offset_bottom = -26.5
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -237,15 +252,18 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 229.0
+offset_left = 218.0
 offset_top = -251.0
-offset_right = 247.0
+offset_right = 249.0
 offset_bottom = -220.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "X"
 
 [connection signal="pressed" from="ButtonMapa" to="." method="_on_button_mapa_pressed"]
+[connection signal="pressed" from="BotaoTeste" to="." method="_on_botao_teste_pressed"]
+[connection signal="pressed" from="ButtonDinheiroPlus" to="." method="_on_button_dinheiro_plus_pressed"]
+[connection signal="pressed" from="ButtonDinheiroMinus" to="." method="_on_button_dinheiro_minus_pressed"]
 [connection signal="pressed" from="ButtonFreecam" to="." method="_on_button_freecam_pressed"]
 [connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]

@@ -43,7 +43,7 @@ tile_map_data = PackedByteArray("AAAEAAgAIQAAAAEAAAAEAAcAIQAAAAAAAAAFAAYAIQAAAAE
 tile_set = ExtResource("2_gdpdu")
 
 [node name="TileLayerProps" type="TileMapLayer" parent="." unique_id=422607301]
-z_index = 1
+z_index = 4
 y_sort_enabled = true
 tile_map_data = PackedByteArray("AAAFAAcAJQAAAAAAAAAGAAcAJQABAAAAAAAHAAgAJQABAAAAAAAFAAwAJQACAAAAAAAEAAgAJQACAAAAAAABAAYAJQACAAAAAAABAAUAJQACAAAAAAA=")
 tile_set = ExtResource("2_gdpdu")
