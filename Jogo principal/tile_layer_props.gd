@@ -31,6 +31,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		print("Valor de 'clicavel': ", is_clicavel)  # Debug: mostra o valor
 		
 		if is_clicavel == true:
-			print("BARRIL CLICADO!") 
+			print("Tile clicado") 
 		else:
 			print("✗ Tile não é clicável")
