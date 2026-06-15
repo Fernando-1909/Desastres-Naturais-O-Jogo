@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/main_game.gd" id="1_bvlld"]
 [ext_resource type="TileSet" uid="uid://bpghut5i2dlyd" path="res://Jogo principal/TileSets/DungeonTiles.tres" id="2_gdpdu"]
 [ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="2_rgx6x"]
-[ext_resource type="PackedScene" uid="uid://wsbq46vhfxa7" path="res://tileset placeholder/scenes/entities/player/Player.tscn" id="3_w688r"]
 [ext_resource type="Script" uid="uid://b0volf8pgv8s0" path="res://Jogo principal/tile_layer_props.gd" id="4_k7th3"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/building_hud.tscn" id="7_botex"]
@@ -48,10 +47,6 @@ y_sort_enabled = true
 tile_map_data = PackedByteArray("AAAFAAcAJQAAAAAAAAAGAAcAJQABAAAAAAAHAAgAJQABAAAAAAAFAAwAJQACAAAAAAAEAAgAJQACAAAAAAABAAYAJQACAAAAAAABAAUAJQACAAAAAAA=")
 tile_set = ExtResource("2_gdpdu")
 script = ExtResource("4_k7th3")
-
-[node name="Player" parent="." unique_id=1369853595 instance=ExtResource("3_w688r")]
-z_index = 1
-position = Vector2(1144, 761)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2101390061]
 layer = 3
@@ -108,6 +103,7 @@ theme_override_font_sizes/font_size = 32
 text = "  X  "
 
 [node name="FreeCamera2D" parent="." unique_id=834210011 instance=ExtResource("9_botex")]
+visible = true
 
 [connection signal="pressed" from="PrefeituraButton" to="." method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="BombeirosButton" to="." method="_on_bombeiros_button_pressed"]

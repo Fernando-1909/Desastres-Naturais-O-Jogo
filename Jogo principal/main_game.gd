@@ -8,18 +8,8 @@ extends Node2D
 var freecam_enabled = false
 
 func _ready() -> void:
-	freecam_camera.enabled = false
-	hud.toggle_freecam.connect(_on_toggle_freecam)
+	freecam_camera.enabled = true
 
-func _on_toggle_freecam():
-	freecam_enabled = !freecam_enabled
-	if freecam_enabled:
-		freecam_camera.global_position = $Player.global_position
-		player_camera.enabled = false
-		freecam_camera.enabled = true
-	else:
-		freecam_camera.enabled = false
-		player_camera.enabled = true
 
 # MAPA
 func _on_button_mapa_pressed() -> void:

@@ -165,22 +165,6 @@ offset_bottom = 281.0
 scale = Vector2(2, 2)
 text = "-"
 
-[node name="ButtonFreecam" type="Button" parent="." unique_id=1220354645]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 648.0
-offset_top = -42.0
-offset_right = 678.0
-offset_bottom = -11.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2, 2)
-text = "🎥"
-
 [node name="MapOverlay" type="Control" parent="." unique_id=978908937]
 visible = false
 layout_mode = 1
@@ -264,7 +248,6 @@ text = "X"
 [connection signal="pressed" from="BotaoTeste" to="." method="_on_botao_teste_pressed"]
 [connection signal="pressed" from="ButtonDinheiroPlus" to="." method="_on_button_dinheiro_plus_pressed"]
 [connection signal="pressed" from="ButtonDinheiroMinus" to="." method="_on_button_dinheiro_minus_pressed"]
-[connection signal="pressed" from="ButtonFreecam" to="." method="_on_button_freecam_pressed"]
 [connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]
 [connection signal="pressed" from="MapOverlay/CloseButton" to="MapOverlay" method="_on_close_button_pressed"]
