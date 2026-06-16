@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dydlqm48ufeql"
-path="res://.godot/imported/Grama_Meni.png-8c6b6bc8a9f29bc61b6f24700f7bcd8e.ctex"
+uid="uid://skw0w28d2se7"
+path="res://.godot/imported/Tilesheet_Cons.png-a2a29fe7ba7d4cd7c4485e0491a92abc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Jogo principal/tilesheets/Grama_Meni.png"
-dest_files=["res://.godot/imported/Grama_Meni.png-8c6b6bc8a9f29bc61b6f24700f7bcd8e.ctex"]
+source_file="res://Jogo principal/tilesheets/Tilesheet_Cons.png"
+dest_files=["res://.godot/imported/Tilesheet_Cons.png-a2a29fe7ba7d4cd7c4485e0491a92abc.ctex"]
 
 [params]
 
