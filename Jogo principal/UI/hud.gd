@@ -1,5 +1,8 @@
 extends Control
 
+@onready var global = get_node("/root/Global")
+@onready var main_game = get_tree().current_scene 
+
 signal toggle_freecam  # ← adiciona essa linha
 
 var freecam: Camera2D
@@ -24,11 +27,36 @@ func _on_botao_teste_pressed() -> void:
 	FolderBlocker.liberarPraia()
 
 
-func _on_button_dinheiro_plus_pressed() -> void:
-	Global.dinheiro += 100
-	Global.popularidade += 50
+func _on_button_turno_pressed() -> void:
+	Global.turno += 1
+	main_game.escolher_missao_aleatoria()
 
 
-func _on_button_dinheiro_minus_pressed() -> void:
-	Global.dinheiro -= 100
-	Global.popularidade -= 25
+func _on_button_missao_teste_pressed() -> void:
+	# Verifica se existe uma missão escolhida atualmente
+	if Global.missao_escolhida == null:
+		print("Nenhuma missão ativa para concluir!")
+		return
+	
+	# Verifica se a missão já foi concluída
+	if Global.missao_escolhida["chave"] in Global.missoes_concluidas:
+		print("Esta missão já foi concluída!")
+		return
+	
+	# Conclui a missão
+	var missao = Global.missao_escolhida
+	
+	# Adiciona a chave da missão à lista de concluídas
+	Global.missoes_concluidas.append(missao["chave"])
+	
+	# Adiciona as recompensas
+	Global.dinheiro += missao["recompensa"]
+	Global.popularidade += missao["popularidade"]
+	
+	print("Missão concluída: ", missao["nome"])
+	print("Recompensa: ", missao["recompensa"], " dinheiro")
+	print("Popularidade: +", missao["popularidade"])
+	print("Missões concluídas: ", Global.missoes_concluidas)
+	
+	# Limpa a missão atual
+	Global.missao_escolhida = null
