@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ce6u2dn111f4d"
-path="res://.godot/imported/Tiles_Meni.png-b509b6f325f6c26f6b5a4741cb9d1621.ctex"
+uid="uid://ccbwjdyijokgd"
+path="res://.godot/imported/Tiles_Meni_new.png-208f27900f06358c7396518764cdf6e5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Jogo principal/tilesheets/Tiles_Meni.png"
-dest_files=["res://.godot/imported/Tiles_Meni.png-b509b6f325f6c26f6b5a4741cb9d1621.ctex"]
+source_file="res://Jogo principal/tilesheets/Tiles_Meni_new.png"
+dest_files=["res://.godot/imported/Tiles_Meni_new.png-208f27900f06358c7396518764cdf6e5.ctex"]
 
 [params]
 
@@ -37,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
