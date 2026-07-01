@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://7onjtpho0lvw"]
+
+[ext_resource type="Script" uid="uid://dqscsxm5celbr" path="res://Jogo principal/teste_de_cena.gd" id="1_uclty"]
+
+[sub_resource type="Curve2D" id="Curve2D_g4v7s"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 300, 150, 0, 0, 0, 0, 300, 300, 0, 0, 0, 0, 300, 450, 0, 0, 0, 0, 300, 600, 0, 0, 0, 0, 300, 750, 0, 0, 0, 0, 828, 669)
+}
+point_count = 6
+
+[node name="Teste_de_cena" type="Node2D" unique_id=241359656]
+script = ExtResource("1_uclty")
+
+[node name="Background" type="StaticBody2D" parent="." unique_id=1961773004]
+
+[node name="ColorRect" type="ColorRect" parent="Background" unique_id=2064652345]
+offset_right = 700.0
+offset_bottom = 300.0
+color = Color(0.55192995, 0.68300056, 0.6229208, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="Background" unique_id=948916560]
+offset_top = 200.0
+offset_right = 700.0
+offset_bottom = 500.0
+color = Color(0.46092123, 0.5892373, 0.5315204, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="Background" unique_id=1507033209]
+offset_top = 400.0
+offset_right = 700.0
+offset_bottom = 700.0
+color = Color(0.7431402, 0.839912, 0.79467267, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="Background" unique_id=1391361434]
+offset_top = 534.0
+offset_right = 700.0
+offset_bottom = 763.0
+color = Color(0.8543585, 0.90689695, 0.88084257, 1)
+
+[node name="Path2D" type="Path2D" parent="." unique_id=798583258]
+curve = SubResource("Curve2D_g4v7s")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D" unique_id=642617316]
+position = Vector2(300, 301.8985)
+rotation = 1.5707964
+progress = 151.98001
+loop = false
+
+[node name="Camera2D" type="Camera2D" parent="Path2D/PathFollow2D" unique_id=963439543]
+position = Vector2(-301.8985, 0)
+rotation = -1.5707964
+offset = Vector2(30, 0)
+zoom = Vector2(2, 2)
+limit_right = 1000000000
+limit_bottom = 1000000000
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true

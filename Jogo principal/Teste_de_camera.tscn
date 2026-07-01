@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://d2rskhsblyxpt"]
+
+[ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="1_ut618"]
+[ext_resource type="Script" uid="uid://cnt60vlqh6thj" path="res://Jogo principal/icon.gd" id="2_ssgdc"]
+
+[node name="Teste_de_camera" type="Node2D" unique_id=1175671921]
+
+[node name="Icon" type="Sprite2D" parent="." unique_id=1896701469]
+position = Vector2(5, -1)
+texture = ExtResource("1_ut618")
+script = ExtResource("2_ssgdc")
+
+[node name="Camera2D" type="Camera2D" parent="Icon" unique_id=844025068]
+position = Vector2(1, 2)
+zoom = Vector2(2, 2)
+limit_left = -100000000
+position_smoothing_enabled = true
+drag_left_margin = 0.0
+drag_right_margin = 1.0
+
+[node name="Icon2" type="Sprite2D" parent="." unique_id=771223668]
+position = Vector2(190, -196)
+texture = ExtResource("1_ut618")
+
+[node name="Icon3" type="Sprite2D" parent="." unique_id=806130271]
+position = Vector2(-323, 38)
+texture = ExtResource("1_ut618")
+
+[node name="Icon4" type="Sprite2D" parent="." unique_id=1241386283]
+position = Vector2(-207, 206)
+texture = ExtResource("1_ut618")
