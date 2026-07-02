@@ -5,6 +5,7 @@ var dinheiro: int
 var popularidade: int
 var turno: int
 var aquecimento: int
+var renda: int
 
 
 #Dicionario para identificar qual construção foi clicada:

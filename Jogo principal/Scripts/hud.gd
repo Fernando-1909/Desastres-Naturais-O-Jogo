@@ -14,12 +14,13 @@ func _ready() -> void:
 	await get_tree().create_timer(0.5).timeout
 	_setup()
 	
+	Global.renda = 3 #valor temporario pra debug
+	
 	# Guarda referência dos botões que devem ser bloqueados
 	botoes_bloqueaveis = [
 		$ButtonTurno,
 		$ButtonMapa,
 		$BotaoTeste,
-		$ButtonMissaoTeste,
 		$ButtonPausa
 	]
 
@@ -52,6 +53,42 @@ func _on_button_turno_pressed() -> void:
 	Global.turno += 1
 	print("Turno: ", Global.turno)
 	
+	# Sistema de renda
+	if Global.renda > 0:
+		var range_min = 0
+		var range_max = 0
+		
+		# Define o range baseado na popularidade
+		if Global.popularidade < 0:
+			range_min = 80
+			range_max = 99
+		elif Global.popularidade >= 0 and Global.popularidade <= 24:
+			range_min = 100
+			range_max = 120
+		elif Global.popularidade >= 25 and Global.popularidade <= 49:
+			range_min = 121
+			range_max = 140
+		elif Global.popularidade >= 50 and Global.popularidade <= 74:
+			range_min = 141
+			range_max = 160
+		elif Global.popularidade >= 75 and Global.popularidade <= 99:
+			range_min = 161
+			range_max = 180
+		elif Global.popularidade >= 100:
+			range_min = 181
+			range_max = 200
+		
+		# Calcula a renda total
+		var renda_total = 0
+		for i in range(Global.renda):
+			var valor_aleatorio = randi() % (range_max - range_min + 1) + range_min
+			renda_total += valor_aleatorio
+		
+		Global.dinheiro += renda_total
+		print("Renda coletada: ", renda_total, " dinheiro (", Global.renda, " construções de renda)")
+		print("Range usado: ", range_min, "-", range_max, " (Popularidade: ", Global.popularidade, ")")
+	
+	# SESSÃO DE MISSÕES
 	# Se tem missão ativa, conta os turnos
 	if Global.missao_escolhida != null:
 		Global.missao_atual_turnos += 1
