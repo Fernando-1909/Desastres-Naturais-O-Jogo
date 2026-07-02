@@ -14,7 +14,7 @@ func _ready() -> void:
 	await get_tree().create_timer(0.5).timeout
 	_setup()
 	
-	Global.renda = 3 #valor temporario pra debug
+	Global.renda = 1 #valor temporario pra debug
 	
 	# Guarda referência dos botões que devem ser bloqueados
 	botoes_bloqueaveis = [
