@@ -10,6 +10,24 @@ var freecam_enabled = false
 func _ready() -> void:
 	freecam_camera.enabled = true
 
+var tempo_ultimo_print: float = 0.0
+var intervalo_print: float = 4.0
+
+func _process(delta: float) -> void:
+	tempo_ultimo_print += delta
+	
+	if Global.construcoes["prefeitura"] == true:
+		if tempo_ultimo_print >= intervalo_print:
+			print("prefeitura clicada")
+			tempo_ultimo_print = 0.0
+		$CanvasLayer/BuildingHUD.visible = true
+		
+	elif Global.construcoes["casa1"] == true:
+		if tempo_ultimo_print >= intervalo_print:
+			print("casa1 clicado")
+			tempo_ultimo_print = 0.0
+		$CanvasLayer/BuildingHUD.visible = true
+
 
 # MAPA
 func _on_button_mapa_pressed() -> void:
@@ -37,17 +55,6 @@ func _on_button_close_menu_pressed() -> void:
 	$CanvasLayer/BuildingHUD.visible = false
 	for construcao in Global.construcoes:
 		Global.construcoes[construcao] = false
-
-func _on_prefeitura_button_pressed() -> void:
-	print("prefeitura clicada")
-	Global.construcoes["prefeitura"] = true
-	$CanvasLayer/BuildingHUD.visible = true
-
-
-func _on_bombeiros_button_pressed() -> void:
-	print("bombeiros clicado")
-	Global.construcoes["bombeiros"] = true
-	$CanvasLayer/BuildingHUD.visible = true
 
 func escolher_missao_aleatoria():
 	# Turno 0: não faz nada

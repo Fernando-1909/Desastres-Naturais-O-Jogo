@@ -13,7 +13,7 @@ var construcoes := {
 	"bombeiros": false,
 	"estacao_de_tratamento": false,
 	"secretaria": false,
-	"vizinhanca": false, #area residencial
+	"casa1": false
 }
 
 #vao ser 4 areas residenciais no inicio
