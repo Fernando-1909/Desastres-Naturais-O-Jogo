@@ -1,13 +1,13 @@
 [gd_scene format=4 uid="uid://5lfugjx2eqnp"]
 
-[ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/main_game.gd" id="1_bvlld"]
+[ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/Scripts/main_game.gd" id="1_bvlld"]
 [ext_resource type="Texture2D" uid="uid://ccbwjdyijokgd" path="res://Jogo principal/tilesheets/Tiles_Meni_new.png" id="3_1woaa"]
 [ext_resource type="Texture2D" uid="uid://skw0w28d2se7" path="res://Jogo principal/tilesheets/Tilesheet_Cons.png" id="4_botex"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
-[ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/building_hud.tscn" id="7_botex"]
+[ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
-[ext_resource type="Script" uid="uid://cfuddjs3ujr0" path="res://Jogo principal/building_name.gd" id="11_i63ni"]
-[ext_resource type="Script" uid="uid://c0q4xb2idmdb6" path="res://Jogo principal/building_info.gd" id="12_61lwm"]
+[ext_resource type="Script" uid="uid://cfuddjs3ujr0" path="res://Jogo principal/Scripts/building_name.gd" id="11_i63ni"]
+[ext_resource type="Script" uid="uid://c0q4xb2idmdb6" path="res://Jogo principal/Scripts/building_info.gd" id="12_61lwm"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_botex"]
 texture = ExtResource("3_1woaa")

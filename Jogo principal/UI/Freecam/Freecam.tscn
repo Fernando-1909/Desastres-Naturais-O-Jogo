@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bono1ma1agif0"]
 
-[ext_resource type="Script" uid="uid://boj8cpi1bsyb0" path="res://Jogo principal/UI/Freecam/freecam.gd" id="1_i8lpo"]
+[ext_resource type="Script" uid="uid://boj8cpi1bsyb0" path="res://Jogo principal/Scripts/freecam.gd" id="1_i8lpo"]
 
 [node name="FreeCamera2D" type="Camera2D" unique_id=834210011]
 visible = false

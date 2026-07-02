@@ -1,11 +1,13 @@
 [gd_scene format=3 uid="uid://cb7r1e8nan7ka"]
 
-[ext_resource type="Script" uid="uid://by83q66ch6uwn" path="res://Jogo principal/UI/hud.gd" id="1_fc0pe"]
-[ext_resource type="Script" uid="uid://dql7n27qw22bg" path="res://Jogo principal/UI/map_overlay.gd" id="1_v1p6u"]
-[ext_resource type="Script" uid="uid://byvqcfalf520q" path="res://Jogo principal/dinheiro_label.gd" id="2_h5rg0"]
+[ext_resource type="Script" uid="uid://by83q66ch6uwn" path="res://Jogo principal/Scripts/hud.gd" id="1_fc0pe"]
+[ext_resource type="Script" uid="uid://dql7n27qw22bg" path="res://Jogo principal/Scripts/map_overlay.gd" id="1_v1p6u"]
+[ext_resource type="Script" uid="uid://byvqcfalf520q" path="res://Jogo principal/Scripts/dinheiro_label.gd" id="2_h5rg0"]
 [ext_resource type="Texture2D" uid="uid://q3tnl4cyqfgo" path="res://Jogo principal/UI/MapaImagem/conceptmapa.png" id="3_fc0pe"]
-[ext_resource type="Script" uid="uid://cymqnkh3o5fgk" path="res://Jogo principal/popularidade_label.gd" id="3_k6nrk"]
-[ext_resource type="Script" uid="uid://bj2py3j4geby" path="res://Jogo principal/UI/turno_label.gd" id="4_k6nrk"]
+[ext_resource type="Script" uid="uid://cymqnkh3o5fgk" path="res://Jogo principal/Scripts/popularidade_label.gd" id="3_k6nrk"]
+[ext_resource type="Script" uid="uid://bj2py3j4geby" path="res://Jogo principal/Scripts/turno_label.gd" id="4_k6nrk"]
+[ext_resource type="Script" uid="uid://dagocdn14gaaf" path="res://Jogo principal/Scripts/missao_info.gd" id="7_lpvmo"]
+[ext_resource type="Script" uid="uid://ddhxs53tj5vlj" path="res://Jogo principal/Scripts/missao_recompensa.gd" id="8_4hm8h"]
 
 [node name="Hud" type="Control" unique_id=364686226]
 layout_mode = 3
@@ -157,15 +159,6 @@ grow_vertical = 2
 scale = Vector2(2, 2)
 text = "Passar turno"
 
-[node name="ButtonMissaoTeste" type="Button" parent="." unique_id=1748726504]
-layout_mode = 0
-offset_left = -344.0
-offset_top = 252.0
-offset_right = -193.0
-offset_bottom = 305.0
-theme_override_font_sizes/font_size = 25
-text = "Concluir missao"
-
 [node name="MapOverlay" type="Control" parent="." unique_id=978908937]
 visible = false
 layout_mode = 1
@@ -245,10 +238,70 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "X"
 
+[node name="MissaoContainer" type="PanelContainer" parent="." unique_id=1133557364]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -153.0
+offset_top = -115.5
+offset_right = 153.0
+offset_bottom = 115.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MissaoContainer" unique_id=910119734]
+layout_mode = 2
+theme_override_constants/separation = 35
+
+[node name="MissiaoNome" type="Label" parent="MissaoContainer/VBoxContainer" unique_id=1664522000]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Missão!"
+horizontal_alignment = 1
+
+[node name="MissaoInfo" type="Label" parent="MissaoContainer/VBoxContainer" unique_id=1671785791]
+layout_mode = 2
+text = "infomissao"
+script = ExtResource("7_lpvmo")
+
+[node name="MissaoRecompensa" type="Label" parent="MissaoContainer/VBoxContainer" unique_id=1279959723]
+layout_mode = 2
+text = "awawawa"
+script = ExtResource("8_4hm8h")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MissaoContainer/VBoxContainer" unique_id=248169653]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 95
+
+[node name="AceitarMissao" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer" unique_id=1972002715]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.8745098, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.16470589, 0.6666667, 0.18039216, 1)
+theme_override_colors/font_hover_color = Color(0.105882354, 0.9882353, 0.05882353, 1)
+theme_override_colors/icon_normal_color = Color(0, 0.9882353, 0.2509804, 1)
+theme_override_font_sizes/font_size = 23
+text = "Aceitar"
+
+[node name="RecusarMissao" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer" unique_id=546419605]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8745098, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.68573314, 8.4228816e-07, 3.85046e-07, 1)
+theme_override_colors/font_pressed_color = Color(0.62557507, 1.4318898e-06, 5.7756904e-07, 1)
+theme_override_colors/font_hover_color = Color(0.7330022, 1.6484782e-06, 3.85046e-07, 1)
+theme_override_font_sizes/font_size = 23
+text = "Recusar"
+
 [connection signal="pressed" from="ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="BotaoTeste" to="." method="_on_botao_teste_pressed"]
 [connection signal="pressed" from="ButtonTurno" to="." method="_on_button_turno_pressed"]
-[connection signal="pressed" from="ButtonMissaoTeste" to="." method="_on_button_missao_teste_pressed"]
 [connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]
 [connection signal="pressed" from="MapOverlay/CloseButton" to="MapOverlay" method="_on_close_button_pressed"]
+[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer/AceitarMissao" to="." method="_on_aceitar_missao_pressed"]
+[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer/RecusarMissao" to="." method="_on_recusar_missao_pressed"]

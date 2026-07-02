@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dmvjnql5i80qd"]
 
-[ext_resource type="Script" uid="uid://d3bkii5byml4q" path="res://Menu Principal/main_menu.gd" id="1_3sya1"]
+[ext_resource type="Script" uid="uid://d3bkii5byml4q" path="res://Jogo principal/Scripts/main_menu.gd" id="1_3sya1"]
 [ext_resource type="Texture2D" uid="uid://cijm3btff5nld" path="res://Menu Principal/Menu.png" id="2_3sya1"]
 [ext_resource type="FontFile" uid="uid://3wnomst056rh" path="res://Menu Principal/ARCADECLASSIC.TTF" id="3_aujqx"]
 

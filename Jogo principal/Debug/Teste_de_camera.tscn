@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://d2rskhsblyxpt"]
 
 [ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="1_ut618"]
-[ext_resource type="Script" uid="uid://cnt60vlqh6thj" path="res://Jogo principal/icon.gd" id="2_ssgdc"]
+[ext_resource type="Script" uid="uid://cnt60vlqh6thj" path="res://Jogo principal/Scripts/icon.gd" id="2_ssgdc"]
 
 [node name="Teste_de_camera" type="Node2D" unique_id=1175671921]
 

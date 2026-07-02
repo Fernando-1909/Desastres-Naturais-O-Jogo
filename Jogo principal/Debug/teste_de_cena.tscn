@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://7onjtpho0lvw"]
 
-[ext_resource type="Script" uid="uid://dqscsxm5celbr" path="res://Jogo principal/teste_de_cena.gd" id="1_uclty"]
+[ext_resource type="Script" uid="uid://dqscsxm5celbr" path="res://Jogo principal/Scripts/teste_de_cena.gd" id="1_uclty"]
 
 [sub_resource type="Curve2D" id="Curve2D_g4v7s"]
 _data = {
