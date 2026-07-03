@@ -14,7 +14,8 @@ func _ready() -> void:
 	await get_tree().create_timer(0.5).timeout
 	_setup()
 	
-	Global.renda = 1 #valor temporario pra debug
+	Global.renda = 1 # Valor temporario pra debug
+	#Global.popularidade = 0 # Altere aqui para testar os ranges
 	
 	# Guarda referência dos botões que devem ser bloqueados
 	botoes_bloqueaveis = [
