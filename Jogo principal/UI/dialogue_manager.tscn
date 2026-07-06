@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://l4ep5qwntoxq"]
+
+[ext_resource type="Script" uid="uid://chvjmq6eve2uc" path="res://Jogo principal/Scripts/dialogue_manager.gd" id="1_5rgap"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
+font_size = 32
+font_color = Color(0.933207, 0.933207, 0.9332069, 1)
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
+[node name="DialogueManager" type="CanvasLayer" unique_id=1420897856]
+process_mode = 3
+script = ExtResource("1_5rgap")
+
+[node name="DialogueBox" type="Control" parent="." unique_id=1721581002]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ColorRect" type="ColorRect" parent="DialogueBox" unique_id=471866520]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.21960784, 0.83137256, 0.67058825, 0.5019608)
+
+[node name="DialogueText" type="Label" parent="DialogueBox" unique_id=1945980828]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Testando."
+label_settings = SubResource("LabelSettings_g4v7s")
+autowrap_mode = 3
