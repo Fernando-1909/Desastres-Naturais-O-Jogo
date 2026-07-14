@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
+[ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/npc.gd" id="10_k7th3"]
+[ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="11_3axm1"]
 [ext_resource type="Script" uid="uid://cfuddjs3ujr0" path="res://Jogo principal/Scripts/building_name.gd" id="11_i63ni"]
 [ext_resource type="Script" uid="uid://c0q4xb2idmdb6" path="res://Jogo principal/Scripts/building_info.gd" id="12_61lwm"]
 
@@ -295,6 +297,14 @@ custom_data_layer_1/type = 4
 sources/8 = SubResource("TileSetAtlasSource_k7th3")
 tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [8, Vector2i(0, 0)], [7, Vector2i(0, 0)], [8, Vector2i(1, 0)]]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(6, 6)
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_botex"]
+vertices = PackedVector2Array(448.79688, 319.72656, 572.3281, 316.29688, 571.5781, 328.34375, 464, 332.3672, 445.21094, 493, 464, 479, 518, 493, 518, 479)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 0, 3, 5), PackedInt32Array(6, 4, 5, 7)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(528, 503, 435, 503, 439, 310, 583, 306, 581, 338, 474, 342, 474, 469, 528, 469)])
+
 [node name="MainGame" type="Node2D" unique_id=873718037]
 y_sort_enabled = true
 script = ExtResource("1_bvlld")
@@ -372,5 +382,23 @@ text = "  X  "
 
 [node name="FreeCamera2D" parent="." unique_id=834210011 instance=ExtResource("9_botex")]
 visible = true
+
+[node name="NPC" type="CharacterBody2D" parent="." unique_id=1465589073]
+position = Vector2(500, 488)
+script = ExtResource("10_k7th3")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="NPC" unique_id=1527197258]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NPC" unique_id=738524077]
+position = Vector2(1, 0)
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="Sprite2D" type="Sprite2D" parent="NPC" unique_id=220062411]
+position = Vector2(0.99999994, 0)
+scale = Vector2(0.04687512, 0.04687509)
+texture = ExtResource("11_3axm1")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=992927352]
+navigation_polygon = SubResource("NavigationPolygon_botex")
 
 [connection signal="pressed" from="CanvasLayer/BuildingHUD/PanelContainer2/VBoxContainer/Button" to="." method="_on_button_close_menu_pressed"]

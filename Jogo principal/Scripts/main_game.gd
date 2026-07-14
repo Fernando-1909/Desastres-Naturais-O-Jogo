@@ -9,6 +9,7 @@ var freecam_enabled = false
 
 func _ready() -> void:
 	freecam_camera.enabled = true
+	
 
 var tempo_ultimo_print: float = 0.0
 var intervalo_print: float = 4.0
