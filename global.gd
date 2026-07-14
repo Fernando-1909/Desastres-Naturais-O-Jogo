@@ -14,7 +14,10 @@ var construcoes := {
 	"bombeiros": false,
 	"estacao_de_tratamento": false,
 	"secretaria": false,
-	"casa1": false
+	"hospital": false,
+	"casa1": false,
+	"escola1": false,
+	"igreja": false,
 }
 
 #vao ser 4 areas residenciais no inicio
