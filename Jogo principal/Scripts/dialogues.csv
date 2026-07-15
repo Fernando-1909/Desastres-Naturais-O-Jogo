@@ -1,0 +1,8 @@
+keys,pt,en
+TXT_BBCODE_1,"Arroz, feijão e [wave amp=50 freq=2]rebeca[/wave].","Rice, beans and [wave amp=50 freq=2]rebeca[/wave]."
+TXT_BBCODE_2,"É [shake rate=20 level=10]RECEBA POHA!![/shake]","It's RECEBA DAMN IT!!"
+TXT_PERGUNTA_IDIOMA,"Qual idioma você prefere? / Which language do you prefer?","Which language do you prefer? / Qual idioma você prefere?"
+OPT_PT,"[color=green]Português[/color]","[color=green]Portuguese[/color]"
+OPT_EN,"[color=aqua]English[/color]","[color=aqua]English[/color]"
+TXT_RESPOSTA_PT,"Você escolheu [color=green]Português[/color]! O jogo despausou.","You chose [color=green]Portuguese[/color]! The game unpaused."
+TXT_RESPOSTA_EN,"You chose [color=aqua]English[/color]! The game unpaused.","You chose [color=aqua]English[/color]! The game unpaused."

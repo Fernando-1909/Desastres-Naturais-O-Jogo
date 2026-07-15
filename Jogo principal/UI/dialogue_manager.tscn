@@ -2,12 +2,6 @@
 
 [ext_resource type="Script" uid="uid://chvjmq6eve2uc" path="res://Jogo principal/Scripts/dialogue_manager.gd" id="1_5rgap"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_g4v7s"]
-font_size = 32
-font_color = Color(0.933207, 0.933207, 0.9332069, 1)
-outline_size = 5
-outline_color = Color(0, 0, 0, 1)
-
 [node name="DialogueManager" type="CanvasLayer" unique_id=1420897856]
 process_mode = 3
 script = ExtResource("1_5rgap")
@@ -33,7 +27,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.21960784, 0.83137256, 0.67058825, 0.5019608)
 
-[node name="DialogueText" type="Label" parent="DialogueBox" unique_id=1945980828]
+[node name="DialogueText" type="RichTextLabel" parent="DialogueBox" unique_id=218234370]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,9 +35,11 @@ anchor_bottom = 1.0
 offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
 text = "Testando."
-label_settings = SubResource("LabelSettings_g4v7s")
-autowrap_mode = 3
+scroll_active = false
+autowrap_mode = 2
 visible_characters_behavior = 1
 
 [node name="Timer" type="Timer" parent="DialogueBox" unique_id=522603663]
@@ -57,5 +53,14 @@ offset_top = -148.0
 offset_right = 667.0
 offset_bottom = -92.0
 text = "Aperte"
+
+[node name="ChoicesContainer" type="VBoxContainer" parent="DialogueBox" unique_id=564451377]
+visible = false
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 1
+offset_left = 253.0
+offset_top = -142.0
+offset_right = 553.0
+offset_bottom = -102.0
 
 [connection signal="pressed" from="DialogueBox/Button" to="." method="_on_button_pressed"]

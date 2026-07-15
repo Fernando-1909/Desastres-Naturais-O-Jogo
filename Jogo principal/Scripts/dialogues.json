@@ -1,0 +1,39 @@
+{
+  "dialogos": {
+	"bbcode_inicio": {
+	  "autor": "REBECA",
+	  "texto_chave": "TXT_BBCODE_1",
+	  "proximo": "bbcode_fim"
+	},
+	"bbcode_fim": {
+	  "autor": "REBECA",
+	  "texto_chave": "TXT_BBCODE_2",
+	  "proximo": "fim"
+	},
+	
+	"escolha_inicio": {
+	  "autor": "SISTEMA",
+	  "texto_chave": "TXT_PERGUNTA_IDIOMA",
+	  "escolhas": [
+		{
+		  "texto_chave": "OPT_PT",
+		  "proximo": "resposta_pt"
+		},
+		{
+		  "texto_chave": "OPT_EN",
+		  "proximo": "resposta_en"
+		}
+	  ]
+	},
+	"resposta_pt": {
+	  "autor": "REBECA",
+	  "texto_chave": "TXT_RESPOSTA_PT",
+	  "proximo": "fim"
+	},
+	"resposta_en": {
+	  "autor": "REBECA",
+	  "texto_chave": "TXT_RESPOSTA_EN",
+	  "proximo": "fim"
+	}
+  }
+}

@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://b25qendn0lhkt"
+
+[deps]
+
+files=["res://Jogo principal/Scripts/dialogues.pt.translation", "res://Jogo principal/Scripts/dialogues.en.translation"]
+
+source_file="res://Jogo principal/Scripts/dialogues.csv"
+dest_files=["res://Jogo principal/Scripts/dialogues.pt.translation", "res://Jogo principal/Scripts/dialogues.en.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

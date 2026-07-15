@@ -1,93 +1,169 @@
 extends CanvasLayer
 
-# --- REFERÊNCIAS AOS NÓS (NODES) ---
+# --- REFERÊNCIAS AOS NÓS (Sua cena precisa ter esses caminhos exatos!) ---
 @onready var dialogue_box: Control = $DialogueBox
-@onready var dialogue_text: Label = $DialogueBox/DialogueText
+@onready var dialogue_text: RichTextLabel = $DialogueBox/DialogueText
 @onready var timer: Timer = $DialogueBox/Timer
 @onready var button: Button = $DialogueBox/Button
+@onready var choices_container: VBoxContainer = $DialogueBox/ChoicesContainer
+
 
 # --- VARIÁVEIS DE CONTROLE ---
-var dialogue_lines: Array[String] = []  
-var current_line_index: int = 0         
+var dialogue_data: Dictionary = {}      
+var current_node_id: String = ""        
 var is_dialogue_active: bool = false    
-var last_advance_frame: int = -1        # Guarda o frame para evitar clique duplo fantasma
+var last_advance_frame: int = -1        
 
 func _ready() -> void:
 	dialogue_box.visible = false
+	choices_container.visible = false
 	dialogue_text.text = ""
 	
-	# Garante via código que o Timer vai rodar em loop até o fim da frase
 	timer.one_shot = false
-	timer.wait_time = 0.03 # Velocidade da escrita (sinta-se livre para mudar)
-	
+	timer.wait_time = 0.03 
 	timer.timeout.connect(_on_timer_timeout)
 	
-	# Desativa o foco do botão para o "Espaço" não ativar o botão e o _input juntos
 	button.focus_mode = Control.FOCUS_NONE
-	
 	if not button.pressed.is_connected(_on_button_pressed):
 		button.pressed.connect(_on_button_pressed)
 	
-	# TESTE:
-	start_dialogue(["Arroz, feijão e rebeca.",
-	"É RECEBA POHA!!", 
-	"É nadaaa... O jogo despausou!"])
+	# ==========================================
+	# 🧪 TESTES: Descomente apenas UM de cada vez para testar!
+	# ==========================================
+	
+	# TESTE 1: Diálogo linear com BBCode (descomente para testar este)
+	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", "bbcode_inicio")
+	
+	# TESTE 2: Diálogo com escolhas e troca de idioma (comente o Teste 1 e descomente este)
+	# carregar_e_iniciar_dialogo("res://dialogos.json", "escolha_inicio")
 
 
 func _input(event: InputEvent) -> void:
 	if not is_dialogue_active:
 		return
 		
-	if event.is_action_pressed("ui_accept"):
+	# Só avança com o "Espaço" se não houver escolhas ativas na tela
+	if event.is_action_pressed("ui_accept") and not choices_container.visible:
 		advance_dialogue()
 
 
-# --- FUNÇÕES PRINCIPAIS DO FLUXO ---
+# --- FUNÇÕES DE NAVEGAÇÃO E CARREGAMENTO ---
 
-func start_dialogue(lines: Array[String]) -> void:
-	if lines.is_empty():
+## Abre o JSON, lê o conteúdo e inicia a conversa no nó indicado
+func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String) -> void:
+	if not FileAccess.file_exists(caminho_arquivo):
+		printerr("Erro: Arquivo não encontrado: ", caminho_arquivo)
 		return
 		
-	dialogue_lines = lines
-	current_line_index = 0
+	var arquivo = FileAccess.open(caminho_arquivo, FileAccess.READ)
+	var conteudo = arquivo.get_as_text()
+	arquivo.close()
+	
+	var dados = JSON.parse_string(conteudo)
+	if dados == null:
+		printerr("Erro ao ler JSON. Verifique a sintaxe (chaves, vírgulas).")
+		return
+		
+	dialogue_data = dados
+	current_node_id = no_inicial
 	is_dialogue_active = true
 	dialogue_box.visible = true
+	choices_container.hide()
 	
 	get_tree().paused = true
 	show_current_line()
 
 
+## Busca o texto correspondente no JSON e aplica a tradução
 func show_current_line() -> void:
-	dialogue_text.text = dialogue_lines[current_line_index]
+	var blocos = dialogue_data.get("dialogos", {})
+	if not blocos.has(current_node_id):
+		end_dialogue()
+		return
+		
+	var dados_fala = blocos[current_node_id]
+	var texto_chave = dados_fala.get("texto_chave", "")
+	
+	# tr() traduz automaticamente baseado no idioma ativo do jogo!
+	dialogue_text.text = tr(texto_chave)
 	dialogue_text.visible_characters = 0
 	timer.start()
 
 
+## Avança o texto ou abre o menu de escolhas
 func advance_dialogue() -> void:
-	# Se a função for chamada duas vezes no mesmo frame, ignora a segunda
 	var current_frame = Engine.get_process_frames()
 	if current_frame == last_advance_frame:
 		return
 	last_advance_frame = current_frame
 
-	# SE O TIMER ESTIVER RODANDO: Mostra o texto completo instantaneamente
+	# Se o texto ainda está sendo digitado, pula para o final da frase
 	if not timer.is_stopped():
 		timer.stop()                            
 		dialogue_text.visible_characters = -1   
+		return
 	
-	# SE O TEXTO JÁ ESTIVER COMPLETO: Avança para a próxima frase
+	var blocos = dialogue_data.get("dialogos", {})
+	var dados_fala = blocos[current_node_id]
+	
+	# Se a fala atual tiver escolhas, gera o menu de opções
+	if dados_fala.has("escolhas") and not dados_fala["escolhas"].is_empty():
+		mostrar_menu_escolhas(dados_fala["escolhas"])
+		return
+
+	# Se for um diálogo linear comum, avança para o próximo ID
+	var proximo_id = dados_fala.get("proximo", "fim")
+	if proximo_id == "fim" or proximo_id == "":
+		end_dialogue()
 	else:
-		current_line_index += 1
+		current_node_id = proximo_id
+		show_current_line()
+
+
+## Limpa e cria os botões de escolha dinamicamente na tela
+func mostrar_menu_escolhas(opcoes: Array) -> void:
+	# Limpa botões criados em escolhas anteriores
+	for child in choices_container.get_children():
+		child.queue_free()
 		
-		if current_line_index < dialogue_lines.size():
-			show_current_line()
-		else:
-			end_dialogue()
+	button.hide() # Esconde o botão geral de avançar provisoriamente
+	choices_container.show()
+	
+	# Cria um botão físico na Godot para cada opção do JSON
+	for opcao in opcoes:
+		var btn = Button.new()
+		btn.text = tr(opcao.get("texto_chave", ""))
+		btn.focus_mode = Control.FOCUS_NONE
+		
+		# Conecta o clique desse botão para nos levar ao próximo ID do JSON
+		var proximo_alvo = opcao.get("proximo", "fim")
+		btn.pressed.connect(_on_opcao_selecionada.bind(proximo_alvo))
+		
+		choices_container.add_child(btn)
+
+
+## Executado quando o jogador clica em um dos botões de escolha
+func _on_opcao_selecionada(proximo_id: String) -> void:
+	choices_container.hide()
+	button.show() # Devolve o botão de avançar padrão
+	
+	# MÁGICA: Se a escolha foi um idioma, altera a localização global do jogo!
+	if proximo_id == "resposta_pt":
+		TranslationServer.set_locale("pt")
+	elif proximo_id == "resposta_en":
+		TranslationServer.set_locale("en")
+		
+	if proximo_id == "fim" or proximo_id == "":
+		end_dialogue()
+	else:
+		current_node_id = proximo_id
+		show_current_line()
 
 
 func end_dialogue() -> void:
 	is_dialogue_active = false
 	dialogue_box.visible = false
+	choices_container.hide()
 	dialogue_text.text = ""
 	get_tree().paused = false
 
@@ -96,10 +172,10 @@ func end_dialogue() -> void:
 
 func _on_timer_timeout() -> void:
 	dialogue_text.visible_characters += 1
-	
 	if dialogue_text.visible_ratio >= 1.0:
 		timer.stop()
 
 
 func _on_button_pressed() -> void:
-	advance_dialogue()
+	if not choices_container.visible:
+		advance_dialogue()

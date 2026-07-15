@@ -63,6 +63,10 @@ mouse_wheel_down={
 pointing/android/enable_pan_and_scale_gestures=true
 pointing/emulate_touch_from_mouse=true
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://Jogo principal/Scripts/dialogues.en.translation", "res://Jogo principal/Scripts/dialogues.pt.translation")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
