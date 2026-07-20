@@ -35,7 +35,7 @@ anchor_bottom = 1.0
 offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
 text = "Testando."
 scroll_active = false
@@ -55,12 +55,11 @@ offset_bottom = -92.0
 text = "Aperte"
 
 [node name="ChoicesContainer" type="VBoxContainer" parent="DialogueBox" unique_id=564451377]
-visible = false
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 1
-offset_left = 253.0
-offset_top = -142.0
-offset_right = 553.0
-offset_bottom = -102.0
+offset_left = 455.0
+offset_top = -145.0
+offset_right = 755.0
+offset_bottom = -94.0
 
 [connection signal="pressed" from="DialogueBox/Button" to="." method="_on_button_pressed"]

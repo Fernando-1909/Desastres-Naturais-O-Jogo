@@ -447,7 +447,7 @@ tile_set = SubResource("TileSet_l2221")
 [node name="TileMapConstructions" type="TileMapLayer" parent="." unique_id=639958366]
 texture_filter = 1
 scale = Vector2(3, 3)
-tile_map_data = PackedByteArray("AAAFAAQAAAAAAAAAAAAGAAQAAQAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAFAAQAAAAAAAAAAAAGAAQAAQAAAAAAAAAFAAcAAQAAAAAAAAA=")
 tile_set = SubResource("TileSet_3axm1")
 script = ExtResource("4_k7th3")
 

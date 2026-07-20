@@ -1,19 +1,8 @@
 {
   "dialogos": {
-	"bbcode_inicio": {
-	  "autor": "REBECA",
-	  "texto_chave": "TXT_BBCODE_1",
-	  "proximo": "bbcode_fim"
-	},
-	"bbcode_fim": {
-	  "autor": "REBECA",
-	  "texto_chave": "TXT_BBCODE_2",
-	  "proximo": "fim"
-	},
-	
 	"escolha_inicio": {
 	  "autor": "SISTEMA",
-	  "texto_chave": "TXT_PERGUNTA_IDIOMA",
+	  "texto_chave": "TXT_BR_BOAS_VINDAS",
 	  "escolhas": [
 		{
 		  "texto_chave": "OPT_PT",
@@ -26,13 +15,50 @@
 	  ]
 	},
 	"resposta_pt": {
-	  "autor": "REBECA",
-	  "texto_chave": "TXT_RESPOSTA_PT",
-	  "proximo": "fim"
+	  "autor": "SISTEMA",
+	  "texto_chave": "TXT_CONFIRM_PT",
+	  "proximo": "dialogo_comum_1"
 	},
 	"resposta_en": {
-	  "autor": "REBECA",
-	  "texto_chave": "TXT_RESPOSTA_EN",
+	  "autor": "SISTEMA",
+	  "texto_chave": "TXT_CONFIRM_EN",
+	  "proximo": "dialogo_comum_1"
+	},
+	
+	"dialogo_comum_1": {
+	  "autor": "DEFESA CIVIL",
+	  "texto_chave": "TXT_COMUM_1",
+	  "proximo": "dialogo_comum_2"
+	},
+	"dialogo_comum_2": {
+	  "autor": "DEFESA CIVIL",
+	  "texto_chave": "TXT_COMUM_2",
+	  "proximo": "escolha_desastre"
+	},
+	
+	"escolha_desastre": {
+	  "autor": "SISTEMA",
+	  "texto_chave": "TXT_PERGUNTA_ACAO",
+	  "escolhas": [
+		{
+		  "texto_chave": "OPT_DESASTRE_1",
+		  "proximo": "ramo_enchente"
+		},
+		{
+		  "texto_chave": "OPT_DESASTRE_2",
+		  "proximo": "ramo_terremoto"
+		}
+	  ]
+	},
+	
+	"ramo_enchente": {
+	  "autor": "ENGENHEIRO VIRTUAL",
+	  "texto_chave": "TXT_RAMO_ENCHENTE",
+	  "proximo": "fim"
+	},
+	"ramo_terremoto": {
+	  "autor": "ENGENHEIRO VIRTUAL",
+	  "texto_chave": "TXT_RAMO_TERREMOTO",
 	  "proximo": "fim"
 	}
   }

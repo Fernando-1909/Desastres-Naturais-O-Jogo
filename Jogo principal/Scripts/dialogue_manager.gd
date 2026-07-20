@@ -28,14 +28,11 @@ func _ready() -> void:
 		button.pressed.connect(_on_button_pressed)
 	
 	# ==========================================
-	# 🧪 TESTES: Descomente apenas UM de cada vez para testar!
+	# 🧪 NOVO FLUXO DE TESTE
 	# ==========================================
 	
-	# TESTE 1: Diálogo linear com BBCode (descomente para testar este)
-	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", "bbcode_inicio")
-	
-	# TESTE 2: Diálogo com escolhas e troca de idioma (comente o Teste 1 e descomente este)
-	# carregar_e_iniciar_dialogo("res://dialogos.json", "escolha_inicio")
+	# Agora o jogo começa direto na tela de escolha de idioma!
+	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", "escolha_inicio")
 
 
 func _input(event: InputEvent) -> void:
@@ -132,8 +129,29 @@ func mostrar_menu_escolhas(opcoes: Array) -> void:
 	# Cria um botão físico na Godot para cada opção do JSON
 	for opcao in opcoes:
 		var btn = Button.new()
-		btn.text = tr(opcao.get("texto_chave", ""))
+		btn.custom_minimum_size = Vector2(0, 45) # Dá uma altura boa para o texto caber confortavelmente
 		btn.focus_mode = Control.FOCUS_NONE
+		
+		# --- SOLUÇÃO DO BBCODE NOS BOTÕES ---
+		# Criamos um RichTextLabel dinâmico para renderizar os efeitos das escolhas
+		var rtl = RichTextLabel.new()
+		rtl.bbcode_enabled = true
+		
+		# Usamos a tag [center] para garantir que o texto fique centralizado no botão
+		rtl.text = "[center]" + tr(opcao.get("texto_chave", "")) + "[/center]"
+		
+		# Faz o RichTextLabel esticar e ocupar o tamanho inteiro do botão
+		rtl.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		
+		# MÁGICA: Ignora o mouse no texto. O clique "atravessa" o texto e aciona o botão!
+		rtl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		
+		# Ajuste fino: empurra o texto um pouquinho para baixo para centralizar verticalmente
+		rtl.offset_top = 8 
+		
+		# Adiciona o texto como filho do botão
+		btn.add_child(rtl)
+		# -------------------------------------
 		
 		# Conecta o clique desse botão para nos levar ao próximo ID do JSON
 		var proximo_alvo = opcao.get("proximo", "fim")
