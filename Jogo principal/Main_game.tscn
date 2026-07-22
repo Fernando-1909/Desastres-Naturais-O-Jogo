@@ -8,12 +8,15 @@
 [ext_resource type="Texture2D" uid="uid://b5vu8bipluqfw" path="res://Jogo principal/tilesheets/Prefeitura.png" id="4_i63ni"]
 [ext_resource type="Script" uid="uid://ckb77pq1nq7kp" path="res://Jogo principal/Scripts/tile_map_constructions.gd" id="4_k7th3"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
+[ext_resource type="Texture2D" uid="uid://cg5qkrc8cb38v" path="res://Jogo principal/tilesheets/aguaplaceholder.png" id="6_fo8d0"]
+[ext_resource type="Texture2D" uid="uid://cumrysl7bg33e" path="res://Jogo principal/tilesheets/TrocaPlaceholder.png" id="7_2cq4x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
 [ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/Scripts/npc.gd" id="10_k7th3"]
 [ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="11_3axm1"]
 [ext_resource type="Script" uid="uid://cfuddjs3ujr0" path="res://Jogo principal/Scripts/building_name.gd" id="11_i63ni"]
 [ext_resource type="Script" uid="uid://c0q4xb2idmdb6" path="res://Jogo principal/Scripts/building_info.gd" id="12_61lwm"]
+[ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_botex"]
 texture = ExtResource("3_1woaa")
@@ -399,6 +402,26 @@ texture_region_size = Vector2i(32, 32)
 0:0/0/custom_data_0 = true
 0:0/0/custom_data_1 = "prefeitura"
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a6fgx"]
+texture = ExtResource("6_fo8d0")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fj0mr"]
+texture = ExtResource("7_2cq4x")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/custom_data_0 = true
+0:0/0/custom_data_1 = "agua"
+1:0/0 = 0
+1:0/0/texture_origin = Vector2i(0, 3)
+1:0/0/custom_data_0 = true
+1:0/0/custom_data_1 = "prefeitura"
+2:0/0 = 0
+2:0/0/texture_origin = Vector2i(0, 3)
+2:0/0/custom_data_0 = true
+2:0/0/custom_data_1 = "casa1"
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k7th3"]
 texture = ExtResource("4_botex")
 texture_region_size = Vector2i(32, 32)
@@ -420,6 +443,8 @@ custom_data_layer_1/type = 4
 sources/8 = SubResource("TileSetAtlasSource_k7th3")
 sources/0 = SubResource("TileSetAtlasSource_61lwm")
 sources/1 = SubResource("TileSetAtlasSource_tkcjf")
+sources/3 = SubResource("TileSetAtlasSource_a6fgx")
+sources/4 = SubResource("TileSetAtlasSource_fj0mr")
 tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [8, Vector2i(0, 0)], [7, Vector2i(0, 0)], [8, Vector2i(1, 0)]]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
@@ -447,7 +472,7 @@ tile_set = SubResource("TileSet_l2221")
 [node name="TileMapConstructions" type="TileMapLayer" parent="." unique_id=639958366]
 texture_filter = 1
 scale = Vector2(3, 3)
-tile_map_data = PackedByteArray("AAAFAAQAAAAAAAAAAAAGAAQAAQAAAAAAAAAFAAcAAQAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAFAAcAAQAAAAAAAAAGAAQABAABAAAAAAAFAAQABAACAAAAAAA=")
 tile_set = SubResource("TileSet_3axm1")
 script = ExtResource("4_k7th3")
 
@@ -525,5 +550,24 @@ texture = ExtResource("11_3axm1")
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=992927352]
 navigation_polygon = SubResource("NavigationPolygon_botex")
+
+[node name="TelaCompras" parent="." unique_id=2141866857 instance=ExtResource("15_61lwm")]
+visible = false
+
+[node name="ButtonTesteCompra" type="Button" parent="." unique_id=1621438957]
+offset_left = 50.0
+offset_top = 175.0
+offset_right = 120.0
+offset_bottom = 206.0
+text = "Compra
+"
+
+[node name="ButtonTesteUpgrade" type="Button" parent="." unique_id=1858005919]
+offset_left = 53.0
+offset_top = 221.0
+offset_right = 128.0
+offset_bottom = 252.0
+text = "Upgrade
+"
 
 [connection signal="pressed" from="CanvasLayer/BuildingHUD/PanelContainer2/VBoxContainer/Button" to="." method="_on_button_close_menu_pressed"]

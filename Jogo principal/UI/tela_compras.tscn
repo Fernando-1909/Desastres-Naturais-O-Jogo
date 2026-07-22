@@ -1,0 +1,128 @@
+[gd_scene format=3 uid="uid://bpobe74w27jcc"]
+
+[ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/tela_compras.gd" id="1_6tqbi"]
+
+[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "label_nome", "icone", "container_compra", "label_categoria", "label_descricao", "label_bonus_pop", "label_bonus_infra", "button_comprar", "coluna_stats", "container_upgrade", "label_nivel", "label_ganhos", "barra_infra", "button_aprimorar", "button_detalhes")]
+script = ExtResource("1_6tqbi")
+painel_central = NodePath("PainelCentral")
+overlay_fundo = NodePath("OverlayFundo")
+label_nome = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNome")
+icone = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/Icone")
+container_compra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra")
+label_categoria = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelCategoria")
+label_descricao = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelDescricao")
+label_bonus_pop = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusPop")
+label_bonus_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusInfra")
+button_comprar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar")
+coluna_stats = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats")
+container_upgrade = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade")
+label_nivel = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNivel")
+label_ganhos = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/LabelGanhos")
+barra_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra")
+button_aprimorar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar")
+button_detalhes = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes")
+
+[node name="OverlayFundo" type="ColorRect" parent="." unique_id=777114932]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.50980395)
+
+[node name="PainelCentral" type="PanelContainer" parent="." unique_id=820898031]
+custom_minimum_size = Vector2(720, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -22.0
+offset_right = 20.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MargemInterna" type="MarginContainer" parent="PainelCentral" unique_id=1984089172]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ColunasGrid" type="HBoxContainer" parent="PainelCentral/MargemInterna" unique_id=2066357335]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="ColunaStats" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1206941533]
+layout_mode = 2
+
+[node name="LabelGanhos" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=776694036]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="LabelTitulo" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=1110510086]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="BarraInfra" type="ProgressBar" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=829637639]
+layout_mode = 2
+
+[node name="ColunaEsquerda" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1728191275]
+layout_mode = 2
+
+[node name="LabelNome" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=1627136454]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="Icone" type="TextureRect" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=333817760]
+custom_minimum_size = Vector2(180, 180)
+layout_mode = 2
+stretch_mode = 5
+
+[node name="LabelCategoria" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=190030663]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="LabelNivel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=976686083]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="ColunaDireita" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1599865528]
+layout_mode = 2
+
+[node name="ContainerCompra" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita" unique_id=2041211360]
+layout_mode = 2
+
+[node name="LabelDescricao" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1738052437]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="LabelBonusPop" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=804549037]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="LabelBonusInfra" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1364742382]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="ButtonComprar" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1258757112]
+layout_mode = 2
+
+[node name="ContainerUpgrade" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita" unique_id=1920465077]
+layout_mode = 2
+
+[node name="ButtonAprimorar" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=2001975818]
+layout_mode = 2
+
+[node name="ButtonDetalhes" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=678436348]
+layout_mode = 2

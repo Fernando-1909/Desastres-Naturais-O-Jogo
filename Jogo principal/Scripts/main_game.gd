@@ -4,15 +4,72 @@ extends Node2D
 @onready var player_camera = $Player/Camera2D
 @onready var freecam_camera = $FreeCamera2D
 @onready var hud = $CanvasLayer/Hud
+# Referência para a cena da tela de compras instanciada no mapa
+@onready var tela_compras: TelaCompras = $TelaCompras
+# Referência aos botões de teste
+@onready var button_teste_compra: Button = $ButtonTesteCompra
+@onready var button_teste_upgrade: Button = $ButtonTesteUpgrade
+
+# Imagem temporária para teste (ícone padrão da Godot)
+var icone_temp = preload("res://icon.svg")
 
 var freecam_enabled = false
 
 func _ready() -> void:
+	# Conecta os botões de teste para abrir a janela
+	button_teste_compra.pressed.connect(_on_testar_escola_pressed)
+	button_teste_upgrade.pressed.connect(_on_testar_hospital_pressed)
+	
+	# Conecta os sinais que a janela envia quando o jogador clica para comprar
+	tela_compras.compra_confirmada.connect(_on_compra_confirmada)
+	tela_compras.aprimoramento_confirmado.connect(_on_aprimoramento_confirmado)
+	
+	
 	freecam_camera.enabled = true
 	
 
 var tempo_ultimo_print: float = 0.0
 var intervalo_print: float = 4.0
+
+
+# ==============================================================================
+# 🧪 TESTE 1: MODO COMPRA (Layout de 2 Colunas)
+# ==============================================================================
+func _on_testar_escola_pressed() -> void:
+	tela_compras.abrir_modo_compra(
+		"Escola",                                                           # Nome
+		"Construção",                                                       # Categoria
+		"A construção essencial para o desenvolvimento humano de uma cidade.", # Descrição
+		15,                                                                 # Bônus Pop
+		15,                                                                 # Bônus Infra
+		290000.0,                                                           # Preço
+		icone_temp                                                          # Imagem
+	)
+
+
+# ==============================================================================
+# 🧪 TESTE 2: MODO UPGRADE (Layout de 3 Colunas)
+# ==============================================================================
+func _on_testar_hospital_pressed() -> void:
+	tela_compras.abrir_modo_upgrade(
+		"Hospital",                                                         # Nome
+		1,                                                                  # Nível Atual
+		1906135023.0,                                                       # Ganhos
+		100.0,                                                              # Porcentagem Infra
+		290000.0,                                                           # Preço Upgrade
+		icone_temp                                                          # Imagem
+	)
+
+
+# ==============================================================================
+# 📢 RESPOSTAS AOS SINAIS DA JANELA (Veja no painel Output/Saída da Godot)
+# ==============================================================================
+func _on_compra_confirmada(nome: String) -> void:
+	print("🟢 SINAL RECEBIDO: O jogador comprou o prédio -> ", nome)
+
+func _on_aprimoramento_confirmado(nome: String) -> void:
+	print("🔵 SINAL RECEBIDO: O jogador aprimorou o prédio -> ", nome)
+
 
 func _process(delta: float) -> void:
 	tempo_ultimo_print += delta
