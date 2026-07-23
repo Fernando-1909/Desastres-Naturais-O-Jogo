@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://by83q66ch6uwn" path="res://Jogo principal/Scripts/hud.gd" id="1_fc0pe"]
 [ext_resource type="Script" uid="uid://dql7n27qw22bg" path="res://Jogo principal/Scripts/map_overlay.gd" id="1_v1p6u"]
-[ext_resource type="Script" uid="uid://byvqcfalf520q" path="res://Jogo principal/Scripts/dinheiro_label.gd" id="2_h5rg0"]
 [ext_resource type="Texture2D" uid="uid://q3tnl4cyqfgo" path="res://Jogo principal/UI/MapaImagem/conceptmapa.png" id="3_fc0pe"]
 [ext_resource type="Script" uid="uid://cymqnkh3o5fgk" path="res://Jogo principal/Scripts/popularidade_label.gd" id="3_k6nrk"]
 [ext_resource type="Script" uid="uid://bj2py3j4geby" path="res://Jogo principal/Scripts/turno_label.gd" id="4_k6nrk"]
@@ -42,10 +41,9 @@ layout_mode = 2
 layout_mode = 2
 text = "💰"
 
-[node name="Text" type="Label" parent="DinheiroContainer/HBoxContainer" unique_id=593072602]
+[node name="DinheiroLabel" type="Label" parent="DinheiroContainer/HBoxContainer" unique_id=593072602]
 layout_mode = 2
 text = "f\"\""
-script = ExtResource("2_h5rg0")
 
 [node name="PopularidadeContainer" type="PanelContainer" parent="." unique_id=1535273656]
 layout_mode = 1
@@ -69,7 +67,7 @@ layout_mode = 2
 layout_mode = 2
 text = "⭐"
 
-[node name="Text" type="Label" parent="PopularidadeContainer/HBoxContainer" unique_id=430574769]
+[node name="PopularidadeLabel" type="Label" parent="PopularidadeContainer/HBoxContainer" unique_id=430574769]
 layout_mode = 2
 text = "Popularidade: 75%"
 script = ExtResource("3_k6nrk")
@@ -96,7 +94,7 @@ layout_mode = 2
 layout_mode = 2
 text = "🌪"
 
-[node name="Text" type="Label" parent="DesastreContainer/HBoxContainer" unique_id=584210493]
+[node name="TurnoLabel" type="Label" parent="DesastreContainer/HBoxContainer" unique_id=584210493]
 layout_mode = 2
 text = "Turno: 0"
 script = ExtResource("4_k6nrk")

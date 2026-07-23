@@ -14,8 +14,6 @@
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
 [ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/Scripts/npc.gd" id="10_k7th3"]
 [ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="11_3axm1"]
-[ext_resource type="Script" uid="uid://cfuddjs3ujr0" path="res://Jogo principal/Scripts/building_name.gd" id="11_i63ni"]
-[ext_resource type="Script" uid="uid://c0q4xb2idmdb6" path="res://Jogo principal/Scripts/building_info.gd" id="12_61lwm"]
 [ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_botex"]
@@ -506,13 +504,11 @@ theme_override_constants/separation = 309
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "awaawawawa"
-script = ExtResource("11_i63ni")
 
 [node name="Building_info" type="Label" parent="CanvasLayer/BuildingHUD/PanelContainer2/HBoxContainer" unique_id=1252744813]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Informações"
-script = ExtResource("12_61lwm")
 
 [node name="Button" type="Button" parent="CanvasLayer/BuildingHUD/PanelContainer2/HBoxContainer" unique_id=1103396758]
 layout_mode = 2
@@ -570,4 +566,12 @@ offset_bottom = 252.0
 text = "Upgrade
 "
 
+[node name="TesteTroca" type="Button" parent="." unique_id=561321752]
+offset_left = 24.0
+offset_top = 260.0
+offset_right = 193.0
+offset_bottom = 291.0
+text = "Trocar sprite de casa"
+
 [connection signal="pressed" from="CanvasLayer/BuildingHUD/PanelContainer2/VBoxContainer/Button" to="." method="_on_button_close_menu_pressed"]
+[connection signal="pressed" from="TesteTroca" to="TileMapConstructions" method="_on_teste_troca_pressed"]

@@ -14,6 +14,7 @@ func _ready() -> void:
 	await get_tree().create_timer(0.5).timeout
 	_setup()
 	
+	
 	Global.renda = 1 # Valor temporario pra debug
 	#Global.popularidade = 0 # Altere aqui para testar os ranges
 	
