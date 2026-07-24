@@ -4,39 +4,41 @@ class_name TelaCompras
 enum Modo { COMPRA, UPGRADE }
 
 # ==============================================================================
-# 📌 REFERÊNCIAS DO CARD CENTRAL (Sempre Visíveis)
+# 📌 REFERÊNCIAS DE CONTAINERS E ESTRUTURA
 # ==============================================================================
-@export_group("Geral & Animação")
+@export_group("Layout & Containers")
 @export var painel_central: PanelContainer
 @export var overlay_fundo: ColorRect
-@export var label_nome: RichTextLabel
-@export var icone: TextureRect
+@export var colunas_grid: HBoxContainer
+
+@export var coluna_stats: VBoxContainer      # Coluna de Ganhos/Infra (Esquerda no Upgrade)
+@export var coluna_card: VBoxContainer       # Coluna Central do Prédio
+@export var coluna_direita: VBoxContainer    # Coluna Direita (Ações/Infos)
+
+@export var container_compra: VBoxContainer  # Bloco da Compra (Descrição + Bônus + Botão Comprar)
+@export var container_upgrade: VBoxContainer # Bloco do Upgrade (Botões Aprimorar e Detalhes)
 
 # ==============================================================================
-# 📌 REFERÊNCIAS DO MODO COMPRA 
+# 📌 REFERÊNCIAS DOS ELEMENTOS INDIVIDUAIS
 # ==============================================================================
-@export_group("Modo Compra")
-@export var container_compra: VBoxContainer
-@export var label_categoria: RichTextLabel
+@export_group("Elementos do Card")
+@export var label_nome: RichTextLabel
+@export var icone: TextureRect
+@export var label_categoria: RichTextLabel   # "CONSTRUÇÃO"
+@export var label_nivel: RichTextLabel       # "NÍVEL: X"
+
+@export_group("Elementos de Dados")
 @export var label_descricao: RichTextLabel
 @export var label_bonus_pop: RichTextLabel
 @export var label_bonus_infra: RichTextLabel
-@export var button_comprar: Button
-
-# ==============================================================================
-# 📌 REFERÊNCIAS DO MODO UPGRADE
-# ==============================================================================
-@export_group("Modo Upgrade")
-@export var coluna_stats: VBoxContainer
-@export var container_upgrade: VBoxContainer
-@export var label_nivel: RichTextLabel
 @export var label_ganhos: RichTextLabel
 @export var barra_infra: ProgressBar
+@export var button_comprar: Button
 @export var button_aprimorar: Button
 @export var button_detalhes: Button
 
 # ==============================================================================
-# 📌 SINAIS DE EVENTO
+# 📌 SINAIS
 # ==============================================================================
 signal compra_confirmada(nome_edificio: String)
 signal aprimoramento_confirmado(nome_edificio: String)
@@ -44,18 +46,42 @@ signal detalhes_solicitados(nome_edificio: String)
 
 
 func _ready() -> void:
+	_resetar_tudo()
 	hide()
 	_conectar_botoes()
 
 
 func _input(event: InputEvent) -> void:
-	# Fecha a janela se o jogador pressionar ESC
 	if visible and event.is_action_pressed("ui_cancel"):
 		fechar_janela()
 
 
 # ==============================================================================
-# 🛠️ ABRIR NO MODO COMPRA (Ex: Escola)
+# 🧹 RESET TOTAL (Garante que nada do modo anterior fique visível)
+# ==============================================================================
+func _resetar_tudo() -> void:
+	# Esconde todos os containers principais
+	if coluna_stats: coluna_stats.visible = false
+	if container_compra: container_compra.visible = false
+	if container_upgrade: container_upgrade.visible = false
+	
+	# Esconde elementos do Card
+	if label_categoria: label_categoria.visible = false
+	if label_nivel: label_nivel.visible = false
+	
+	# Esconde sub-elementos e botões diretamente
+	if label_descricao: label_descricao.visible = false
+	if label_bonus_pop: label_bonus_pop.visible = false
+	if label_bonus_infra: label_bonus_infra.visible = false
+	if label_ganhos: label_ganhos.visible = false
+	if barra_infra: barra_infra.visible = false
+	if button_comprar: button_comprar.visible = false
+	if button_aprimorar: button_aprimorar.visible = false
+	if button_detalhes: button_detalhes.visible = false
+
+
+# ==============================================================================
+# 🛒 MODO COMPRA (Apenas 2 Colunas: Card na Esquerda | Informações na Direita)
 # ==============================================================================
 func abrir_modo_compra(
 	nome: String, 
@@ -67,21 +93,37 @@ func abrir_modo_compra(
 	textura_predio: Texture2D
 ) -> void:
 	
-	_alternar_modo(Modo.COMPRA)
+	# 1. Zera a tela antes de montar o layout
+	_resetar_tudo()
+	_verificar_referencias_nulas()
 	
+	# 2. Exibe APENAS os containers necessários para Compra
+	if container_compra: container_compra.visible = true
+	if label_categoria: label_categoria.visible = true
+	if label_descricao: label_descricao.visible = true
+	if label_bonus_pop: label_bonus_pop.visible = true
+	if label_bonus_infra: label_bonus_infra.visible = true
+	if button_comprar: button_comprar.visible = true
+	
+	# 3. Preenche os textos
 	if label_nome: label_nome.text = "[center][b][color=purple]" + nome.to_upper() + "[/color][/b][/center]"
-	if label_categoria: label_categoria.text = "[center][b][color=gray]" + categoria.to_upper() + "[/color][/b][/center]"
-	if label_descricao: label_descricao.text = descricao
-	if label_bonus_pop: label_bonus_pop.text = "[b][color=green]+ " + str(bonus_pop) + " Popularidade[/color][/b]"
-	if label_bonus_infra: label_bonus_infra.text = "[b][color=orange]+ " + str(bonus_infra) + " Infraestrutura[/color][/b]"
+	if label_categoria: label_categoria.text = "[center][b][color=lightblue]" + categoria.to_upper() + "[/color][/b][/center]"
+	if label_descricao: label_descricao.text = "[center]" + descricao + "[/center]"
+	if label_bonus_pop: label_bonus_pop.text = "[center][b][color=green]+ " + str(bonus_pop) + " Popularidade[/color][/b][/center]"
+	if label_bonus_infra: label_bonus_infra.text = "[center][b][color=orange]+ " + str(bonus_infra) + " Infraestrutura[/color][/b][/center]"
 	if button_comprar: button_comprar.text = "COMPRAR\nR$ " + _formatar_numero(preco)
 	if icone and textura_predio: icone.texture = textura_predio
+	
+	# 4. Reordena as colunas
+	if colunas_grid and coluna_card and coluna_direita:
+		colunas_grid.move_child(coluna_card, 0)
+		colunas_grid.move_child(coluna_direita, 1)
 	
 	_animar_popin()
 
 
 # ==============================================================================
-# 🛠️ ABRIR NO MODO UPGRADE (Ex: Hospital)
+# ⬆️ MODO UPGRADE (3 Colunas: Stats na Esquerda | Card no Centro | Botões na Direita)
 # ==============================================================================
 func abrir_modo_upgrade(
 	nome: String, 
@@ -92,37 +134,40 @@ func abrir_modo_upgrade(
 	textura_predio: Texture2D
 ) -> void:
 	
-	_alternar_modo(Modo.UPGRADE)
+	# 1. Zera a tela antes de montar o layout
+	_resetar_tudo()
+	_verificar_referencias_nulas()
 	
+	# 2. Exibe APENAS os containers necessários para Upgrade
+	if coluna_stats: coluna_stats.visible = true
+	if container_upgrade: container_upgrade.visible = true
+	if label_nivel: label_nivel.visible = true
+	if label_ganhos: label_ganhos.visible = true
+	if barra_infra: barra_infra.visible = true
+	if button_aprimorar: button_aprimorar.visible = true
+	if button_detalhes: button_detalhes.visible = true
+	
+	# 3. Preenche os textos
 	if label_nome: label_nome.text = "[center][b][color=red]" + nome.to_upper() + "[/color][/b][/center]"
-	if label_nivel: label_nivel.text = "[center][b][color=gray]NÍVEL: " + str(nivel) + "[/color][/b][/center]"
-	if label_ganhos: label_ganhos.text = "GANHOS\n[color=green]R$ " + _formatar_numero(ganhos) + "[/color]"
+	if label_nivel: label_nivel.text = "[center][b][color=lightblue]NÍVEL: " + str(nivel) + "[/color][/b][/center]"
+	if label_ganhos: label_ganhos.text = "[center]GANHOS\n[color=green]R$ " + _formatar_numero(ganhos) + "[/color][/center]"
 	if barra_infra: barra_infra.value = pct_infra
 	if button_aprimorar: button_aprimorar.text = "APRIMORAR\nR$ " + _formatar_numero(preco_upgrade)
+	if button_detalhes: button_detalhes.text = "DETALHES"
 	if icone and textura_predio: icone.texture = textura_predio
+	
+	# 4. Reordena as colunas
+	if colunas_grid and coluna_stats and coluna_card and coluna_direita:
+		colunas_grid.move_child(coluna_stats, 0)
+		colunas_grid.move_child(coluna_card, 1)
+		colunas_grid.move_child(coluna_direita, 2)
 	
 	_animar_popin()
 
 
 # ==============================================================================
-# 🎬 LÓGICA DE EXIBIÇÃO E ANIMAÇÃO
+# 🎬 ANIMAÇÕES E FECHAMENTO
 # ==============================================================================
-
-func _alternar_modo(modo: Modo) -> void:
-	if modo == Modo.COMPRA:
-		if coluna_stats: coluna_stats.hide()
-		if label_nivel: label_nivel.hide()
-		if label_categoria: label_categoria.show()
-		if container_compra: container_compra.show()
-		if container_upgrade: container_upgrade.hide()
-	else:
-		if coluna_stats: coluna_stats.show()
-		if label_nivel: label_nivel.show()
-		if label_categoria: label_categoria.hide()
-		if container_compra: container_compra.hide()
-		if container_upgrade: container_upgrade.show()
-
-
 func _animar_popin() -> void:
 	show()
 	if painel_central:
@@ -137,9 +182,22 @@ func fechar_janela() -> void:
 	if painel_central:
 		var tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 		tween.tween_property(painel_central, "scale", Vector2.ZERO, 0.15)
-		tween.tween_callback(hide)
+		tween.tween_callback(func():
+			hide()
+			_resetar_tudo()
+		)
 	else:
 		hide()
+		_resetar_tudo()
+
+
+# ==============================================================================
+# 🛠️ FUNÇÕES AUXILIARES DE DIAGNÓSTICO E EVENTOS
+# ==============================================================================
+func _verificar_referencias_nulas() -> void:
+	if not coluna_stats: push_warning("⚠️ TelaCompras: Variable 'coluna_stats' is null in Inspector!")
+	if not container_compra: push_warning("⚠️ TelaCompras: Variable 'container_compra' is null in Inspector!")
+	if not container_upgrade: push_warning("⚠️ TelaCompras: Variable 'container_upgrade' is null in Inspector!")
 
 
 func _conectar_botoes() -> void:
@@ -167,7 +225,6 @@ func _on_detalhes_pressed() -> void:
 	detalhes_solicitados.emit(label_nome.get_parsed_text())
 
 
-## Função utilitária para formatar números em estilo moeda (ex: 290000 -> "290.000")
 func _formatar_numero(valor: float) -> String:
 	var texto = str(int(valor))
 	var resultado = ""
