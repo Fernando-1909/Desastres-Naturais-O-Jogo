@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://wsb5vaomuml2"]
+
+[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/menu_pausa.gd" id="1_wp3wm"]
+
+[node name="MenuPausa" type="CanvasLayer" unique_id=643096711 node_paths=PackedStringArray("button_continuar", "button_opcoes", "button_menu")]
+process_mode = 3
+script = ExtResource("1_wp3wm")
+cena_menu_principal = "uid://dmvjnql5i80qd"
+button_continuar = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonContinuar")
+button_opcoes = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonOpcoes")
+button_menu = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonMenu")
+
+[node name="OverlayFundo" type="ColorRect" parent="." unique_id=197788807]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5019608)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1283272003]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PainelCentral" type="PanelContainer" parent="CenterContainer" unique_id=220368620]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+
+[node name="MargemExterna" type="MarginContainer" parent="CenterContainer/PainelCentral" unique_id=341492279]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="ColunaPrincipal" type="VBoxContainer" parent="CenterContainer/PainelCentral/MargemExterna" unique_id=1716248038]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="LabelTitulo" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal" unique_id=2131048304]
+custom_minimum_size = Vector2(0, 35)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "JOGO PAUSADO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CaixaBotoes" type="PanelContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal" unique_id=1186327533]
+layout_mode = 2
+
+[node name="MargemInterna" type="MarginContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes" unique_id=1518035191]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ColunaBotoes" type="VBoxContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna" unique_id=1383518910]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="ButtonContinuar" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=150545187]
+custom_minimum_size = Vector2(280, 55)
+layout_mode = 2
+text = "CONTINUAR"
+
+[node name="ButtonOpcoes" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=1928695859]
+custom_minimum_size = Vector2(280, 55)
+layout_mode = 2
+text = "OPÇÕES"
+
+[node name="ButtonMenu" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=711454347]
+custom_minimum_size = Vector2(280, 55)
+layout_mode = 2
+text = "MENU"

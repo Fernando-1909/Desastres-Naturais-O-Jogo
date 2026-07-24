@@ -2,23 +2,24 @@
 
 [ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/tela_compras.gd" id="1_6tqbi"]
 
-[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "label_nome", "icone", "container_compra", "label_categoria", "label_descricao", "label_bonus_pop", "label_bonus_infra", "button_comprar", "coluna_stats", "container_upgrade", "label_nivel", "label_ganhos", "barra_infra", "button_aprimorar", "button_detalhes")]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2cq4x"]
+
+[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "coluna_stats", "container_compra", "container_upgrade", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "label_ganhos", "barra_infra", "button_comprar", "button_aprimorar", "button_detalhes")]
 script = ExtResource("1_6tqbi")
 painel_central = NodePath("PainelCentral")
-overlay_fundo = NodePath("OverlayFundo")
+coluna_stats = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats")
+container_compra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra")
+container_upgrade = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade")
 label_nome = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNome")
 icone = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/Icone")
-container_compra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra")
 label_categoria = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelCategoria")
+label_nivel = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNivel")
 label_descricao = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelDescricao")
 label_bonus_pop = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusPop")
 label_bonus_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusInfra")
-button_comprar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar")
-coluna_stats = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats")
-container_upgrade = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade")
-label_nivel = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNivel")
 label_ganhos = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/LabelGanhos")
 barra_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra")
+button_comprar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar")
 button_aprimorar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar")
 button_detalhes = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes")
 
@@ -43,6 +44,7 @@ offset_right = 20.0
 offset_bottom = 22.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_2cq4x")
 
 [node name="MargemInterna" type="MarginContainer" parent="PainelCentral" unique_id=1984089172]
 layout_mode = 2
@@ -57,13 +59,10 @@ theme_override_constants/separation = 25
 
 [node name="ColunaStats" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1206941533]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 
 [node name="LabelGanhos" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=776694036]
-layout_mode = 2
-bbcode_enabled = true
-fit_content = true
-
-[node name="LabelTitulo" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=1110510086]
 layout_mode = 2
 bbcode_enabled = true
 fit_content = true
@@ -73,6 +72,8 @@ layout_mode = 2
 
 [node name="ColunaEsquerda" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1728191275]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 
 [node name="LabelNome" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=1627136454]
 layout_mode = 2
@@ -96,6 +97,8 @@ fit_content = true
 
 [node name="ColunaDireita" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1599865528]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 
 [node name="ContainerCompra" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita" unique_id=2041211360]
 layout_mode = 2

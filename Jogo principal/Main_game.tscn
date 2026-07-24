@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/Scripts/npc.gd" id="10_k7th3"]
 [ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="11_3axm1"]
 [ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
+[ext_resource type="PackedScene" uid="uid://wsb5vaomuml2" path="res://Jogo principal/UI/menu_pausa.tscn" id="16_tkcjf"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_botex"]
 texture = ExtResource("3_1woaa")
@@ -547,9 +548,6 @@ texture = ExtResource("11_3axm1")
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=992927352]
 navigation_polygon = SubResource("NavigationPolygon_botex")
 
-[node name="TelaCompras" parent="." unique_id=2141866857 instance=ExtResource("15_61lwm")]
-visible = false
-
 [node name="ButtonTesteCompra" type="Button" parent="." unique_id=1621438957]
 offset_left = 50.0
 offset_top = 175.0
@@ -572,6 +570,21 @@ offset_top = 260.0
 offset_right = 193.0
 offset_bottom = 291.0
 text = "Trocar sprite de casa"
+
+[node name="ButtonTestePausa" type="Button" parent="." unique_id=697155415]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -88.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "Pausa"
+
+[node name="MenuPausa" parent="." unique_id=643096711 instance=ExtResource("16_tkcjf")]
+visible = false
+
+[node name="TelaCompras" parent="." unique_id=2141866857 instance=ExtResource("15_61lwm")]
+visible = false
 
 [connection signal="pressed" from="CanvasLayer/BuildingHUD/PanelContainer2/VBoxContainer/Button" to="." method="_on_button_close_menu_pressed"]
 [connection signal="pressed" from="TesteTroca" to="TileMapConstructions" method="_on_teste_troca_pressed"]

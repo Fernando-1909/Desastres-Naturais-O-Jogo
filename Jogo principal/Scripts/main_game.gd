@@ -4,11 +4,15 @@ extends Node2D
 @onready var player_camera = $Player/Camera2D
 @onready var freecam_camera = $FreeCamera2D
 @onready var hud = $CanvasLayer/Hud
+@onready var menu_pausa: MenuPausa = $MenuPausa
 # Referência para a cena da tela de compras instanciada no mapa
 @onready var tela_compras: TelaCompras = $TelaCompras
+
 # Referência aos botões de teste
 @onready var button_teste_compra: Button = $ButtonTesteCompra
 @onready var button_teste_upgrade: Button = $ButtonTesteUpgrade
+@onready var button_teste_pausa: Button = $ButtonTestePausa # Ajuste o caminho se estiver dentro de um HUD
+
 
 # Imagem temporária para teste (ícone padrão da Godot)
 var icone_temp = preload("res://icon.svg")
@@ -16,6 +20,10 @@ var icone_temp = preload("res://icon.svg")
 var freecam_enabled = false
 
 func _ready() -> void:
+	# Conecta o clique do botão diretamente à função toggle_pause da janela
+	if button_teste_pausa and menu_pausa:
+		button_teste_pausa.pressed.connect(menu_pausa.toggle_pause)
+	
 	# Conecta os botões de teste para abrir a janela
 	button_teste_compra.pressed.connect(_on_testar_escola_pressed)
 	button_teste_upgrade.pressed.connect(_on_testar_hospital_pressed)
