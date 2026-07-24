@@ -36,6 +36,24 @@ func _ready() -> void:
 	freecam_camera.enabled = true
 	
 
+
+
+
+func _process(delta: float) -> void:
+	tempo_ultimo_print += delta
+	
+	if Global.construcoes["prefeitura"] == true:
+		if tempo_ultimo_print >= intervalo_print:
+			print("prefeitura clicada")
+			tempo_ultimo_print = 0.0
+		$CanvasLayer/BuildingHUD.visible = true
+		
+	elif Global.construcoes["casa1"] == true:
+		if tempo_ultimo_print >= intervalo_print:
+			print("casa1 clicado")
+			tempo_ultimo_print = 0.0
+		$CanvasLayer/BuildingHUD.visible = true
+
 var tempo_ultimo_print: float = 0.0
 var intervalo_print: float = 4.0
 
@@ -77,22 +95,6 @@ func _on_compra_confirmada(nome: String) -> void:
 
 func _on_aprimoramento_confirmado(nome: String) -> void:
 	print("🔵 SINAL RECEBIDO: O jogador aprimorou o prédio -> ", nome)
-
-
-func _process(delta: float) -> void:
-	tempo_ultimo_print += delta
-	
-	if Global.construcoes["prefeitura"] == true:
-		if tempo_ultimo_print >= intervalo_print:
-			print("prefeitura clicada")
-			tempo_ultimo_print = 0.0
-		$CanvasLayer/BuildingHUD.visible = true
-		
-	elif Global.construcoes["casa1"] == true:
-		if tempo_ultimo_print >= intervalo_print:
-			print("casa1 clicado")
-			tempo_ultimo_print = 0.0
-		$CanvasLayer/BuildingHUD.visible = true
 
 
 # MAPA
