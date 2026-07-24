@@ -167,13 +167,7 @@ func _on_recusar_missao_pressed() -> void:
 	Global.missao_atual_turnos = 0
 
 
-# ============================================================
-# LABELS DO HUD — bloco adicionado (Dinheiro e Turno)
-# NÃO mexi em nada acima desta linha.
-# Ajuste os caminhos "$..." abaixo se não baterem com a sua árvore
-# (veja a pergunta que fiz no final da resposta).
-# ============================================================
-
+# Labels
 @onready var dinheiro_label: Label = $DinheiroContainer/HBoxContainer/DinheiroLabel
 @onready var turno_label: Label = $DesastreContainer/HBoxContainer/TurnoLabel
 @onready var popularidade_label: Label = $PopularidadeContainer/HBoxContainer/PopularidadeLabel
