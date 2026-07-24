@@ -35,9 +35,8 @@ func _ready() -> void:
 	
 	freecam_camera.enabled = true
 	
-
-
-
+var tempo_ultimo_print: float = 0.0
+var intervalo_print: float = 4.0	
 
 func _process(delta: float) -> void:
 	tempo_ultimo_print += delta
@@ -54,8 +53,7 @@ func _process(delta: float) -> void:
 			tempo_ultimo_print = 0.0
 		$CanvasLayer/BuildingHUD.visible = true
 
-var tempo_ultimo_print: float = 0.0
-var intervalo_print: float = 4.0
+
 
 
 # ==============================================================================
@@ -105,14 +103,6 @@ func _on_button_mapa_pressed() -> void:
 func _on_botao_teste_pressed() -> void:
 	FolderBlocker.liberarPraia()
 	print("praia foi liberada!")
-
-func _on_button_dinheiro_plus_pressed() -> void:
-	Global.dinheiro += 100
-	Global.popularidade += 50
-
-func _on_button_dinheiro_minus_pressed() -> void:
-	Global.dinheiro -= 100
-	Global.popularidade -= 25
 
 
 #⁠abrir pop-up de melhorias
