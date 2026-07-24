@@ -164,3 +164,55 @@ func _on_recusar_missao_pressed() -> void:
 	# Limpa a missão atual
 	Global.missao_escolhida = null
 	Global.missao_atual_turnos = 0
+
+
+# ============================================================
+# LABELS DO HUD — bloco adicionado (Dinheiro e Turno)
+# NÃO mexi em nada acima desta linha.
+# Ajuste os caminhos "$..." abaixo se não baterem com a sua árvore
+# (veja a pergunta que fiz no final da resposta).
+# ============================================================
+
+@onready var dinheiro_label: Label = $DinheiroContainer/HBoxContainer/DinheiroLabel
+@onready var turno_label: Label = $DesastreContainer/HBoxContainer/TurnoLabel
+@onready var popularidade_label: Label = $PopularidadeContainer/HBoxContainer/PopularidadeLabel
+@onready var missao_info_label: Label = $MissaoContainer/VBoxContainer/MissaoInfo
+@onready var missao_recompensa_label: Label = $MissaoContainer/VBoxContainer/MissaoRecompensa
+
+func _process(_delta: float) -> void:
+	_update_dinheiro_label()
+	_update_turno_label()
+	_update_popularidade_label()
+	_update_missao_info_label()
+	_update_missao_recompensa_label()
+
+func _update_dinheiro_label() -> void:
+	if dinheiro_label == null:
+		return
+	dinheiro_label.text = "Dinheiro: %s" % str(Global.dinheiro)
+
+func _update_turno_label() -> void:
+	if turno_label == null:
+		return
+	turno_label.text = "Turno: %s" % str(Global.turno)
+
+func _update_popularidade_label() -> void:
+	if popularidade_label == null:
+		return
+	popularidade_label.text = str("Popularidade: ", str(Global.popularidade)) + "%"
+
+func _update_missao_info_label() -> void:
+	if missao_info_label == null:
+		return
+	if Global.missao_escolhida != null:
+		missao_info_label.text = str(Global.missao_escolhida["info"])
+	else:
+		missao_info_label.text = ""
+
+func _update_missao_recompensa_label() -> void:
+	if missao_recompensa_label == null:
+		return
+	if Global.missao_escolhida != null:
+		missao_recompensa_label.text = "Dinheiro: " + str(Global.missao_escolhida["recompensa"]) + "\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
+	else:
+		missao_recompensa_label.text = ""

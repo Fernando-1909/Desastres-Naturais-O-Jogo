@@ -3,6 +3,19 @@
 [ext_resource type="Script" uid="uid://by83q66ch6uwn" path="res://Jogo principal/Scripts/hud.gd" id="1_fc0pe"]
 [ext_resource type="Script" uid="uid://dql7n27qw22bg" path="res://Jogo principal/Scripts/map_overlay.gd" id="1_v1p6u"]
 [ext_resource type="Texture2D" uid="uid://q3tnl4cyqfgo" path="res://Jogo principal/UI/MapaImagem/conceptmapa.png" id="3_fc0pe"]
+[ext_resource type="Script" uid="uid://dagocdn14gaaf" path="res://Jogo principal/Scripts/missao_info.gd" id="7_lpvmo"]
+[ext_resource type="Script" uid="uid://ddhxs53tj5vlj" path="res://Jogo principal/Scripts/missao_recompensa.gd" id="8_4hm8h"]
+
+[sub_resource type="GDScript" id="GDScript_h5rg0"]
+script/source = "extends Label
+
+var textoPadrao = \"Turno: \"
+
+@warning_ignore(\"unused_parameter\")
+func _process(delta):
+	var text = str(textoPadrao, str(Global.turno))
+	self.text = (text)
+"
 
 [node name="Hud" type="Control" unique_id=364686226]
 layout_mode = 3
@@ -92,6 +105,7 @@ text = "🌪"
 [node name="TurnoLabel" type="Label" parent="DesastreContainer/HBoxContainer" unique_id=584210493]
 layout_mode = 2
 text = "Turno: 0"
+script = SubResource("GDScript_h5rg0")
 
 [node name="ButtonPausa" type="Button" parent="." unique_id=1989163776]
 layout_mode = 1
@@ -258,10 +272,12 @@ horizontal_alignment = 1
 [node name="MissaoInfo" type="Label" parent="MissaoContainer/VBoxContainer" unique_id=1671785791]
 layout_mode = 2
 text = "infomissao"
+script = ExtResource("7_lpvmo")
 
 [node name="MissaoRecompensa" type="Label" parent="MissaoContainer/VBoxContainer" unique_id=1279959723]
 layout_mode = 2
 text = "awawawa"
+script = ExtResource("8_4hm8h")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MissaoContainer/VBoxContainer" unique_id=248169653]
 layout_mode = 2
