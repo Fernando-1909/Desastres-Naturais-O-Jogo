@@ -1,53 +1,61 @@
 extends TileMapLayer
 
+# 1. Criamos um sinal personalizado que avisa a cena principal sobre o clique
+signal tile_clicado(tipo_construcao: String)
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
-	pass # Replace with function body.
+	pass
 
 
 func _input(event: InputEvent) -> void:
+	# Detecta o clique com o botão esquerdo do mouse
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		var mouse_pos = get_global_mouse_position()
 		
-		# Converte para coordenadas locais considerando a posicao do node
+		# Converte a posição do mouse para as coordenadas da grade (grid) do TileMap
 		var grid_pos = local_to_map(to_local(mouse_pos))
 		
+		# Pega os dados do tile clicado nessa posição da grade
 		var tile_data: TileData = get_cell_tile_data(grid_pos)
 		
+		# Se não clicou em nada ou se o tile não tem "clicavel" = true, ignora
 		if tile_data == null or not tile_data.get_custom_data("clicavel"):
 			return
 		
+		# Pega o texto da propriedade customizada "tipo" do Tile (ex: "prefeitura", "casa1", etc.)
 		var tipo: String = tile_data.get_custom_data("tipo")
 		
-		if tipo == "prefeitura":
-			print("prefeitura clicada")
-			Global.construcoes["prefeitura"] = true
-			
-		elif tipo == "casa1":
-			print("casa1 clicada")
-			Global.construcoes["casa1"] = true
+		# Limpa qualquer outra construção que estivesse true antes no dicionário
+		_resetar_dicionario_construcoes()
+		
+		# Se essa construção existir no dicionário do Global, marca ela como true
+		if Global.construcoes.has(tipo):
+			Global.construcoes[tipo] = true
+		
+		# 2. Emite o sinal avisando qual tipo de tile foi clicado
+		tile_clicado.emit(tipo)
 
 
+# Função auxiliar para garantir que só 1 construção fique true por vez
+func _resetar_dicionario_construcoes() -> void:
+	for chave in Global.construcoes:
+		Global.construcoes[chave] = false
+
+
+# Função original do seu amigo para teste de troca de tiles
 func _on_teste_troca_pressed() -> void:
-	# Obtém todas as células usadas
 	var cells = get_used_cells()
 	
 	for cell in cells:
-		# Pega os dados do tile na posição atual
 		var tile_data = get_cell_tile_data(cell)
 		
 		if tile_data == null:
 			continue
 		
-		# Verifica se o tile é do tipo "casa1"
 		var tipo = tile_data.get_custom_data("tipo")
 		if tipo == "casa1":
-			# Para trocar, precisamos manter o mesmo source_id e alterar as coordenadas do atlas
 			var source_id = get_cell_source_id(cell)
-			var atlas_coords = get_cell_atlas_coords(cell)
-
-			var coord_agua = Vector2i(0, 0)  # <-- AJUSTE ESTAS COORDENADAS PARA O TILE "agua"
+			var coord_agua = Vector2i(0, 0) # Ajuste a coordenada do atlas aqui se necessário
 			
-			# Troca o tile para "agua"
 			set_cell(cell, source_id, coord_agua)

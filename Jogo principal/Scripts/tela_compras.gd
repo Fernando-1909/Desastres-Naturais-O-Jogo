@@ -12,7 +12,7 @@ enum Modo { COMPRA, UPGRADE }
 @export var colunas_grid: HBoxContainer
 
 @export var coluna_stats: VBoxContainer      # Coluna de Ganhos/Infra (Esquerda no Upgrade)
-@export var coluna_card: VBoxContainer       # Coluna Central do Prédio
+@export var coluna_card: VBoxContainer       # Coluna Central do Prédio (ColunaEsquerda no seu Inspector)
 @export var coluna_direita: VBoxContainer    # Coluna Direita (Ações/Infos)
 
 @export var container_compra: VBoxContainer  # Bloco da Compra (Descrição + Bônus + Botão Comprar)
@@ -36,6 +36,7 @@ enum Modo { COMPRA, UPGRADE }
 @export var button_comprar: Button
 @export var button_aprimorar: Button
 @export var button_detalhes: Button
+@export var button_fechar: Button            # ❌ Botão "X" para fechar a tela
 
 # ==============================================================================
 # 📌 SINAIS
@@ -46,6 +47,8 @@ signal detalhes_solicitados(nome_edificio: String)
 
 
 func _ready() -> void:
+	# Garante que este nó continue funcionando com o jogo pausado
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_resetar_tudo()
 	hide()
 	_conectar_botoes()
@@ -60,16 +63,13 @@ func _input(event: InputEvent) -> void:
 # 🧹 RESET TOTAL (Garante que nada do modo anterior fique visível)
 # ==============================================================================
 func _resetar_tudo() -> void:
-	# Esconde todos os containers principais
 	if coluna_stats: coluna_stats.visible = false
 	if container_compra: container_compra.visible = false
 	if container_upgrade: container_upgrade.visible = false
 	
-	# Esconde elementos do Card
 	if label_categoria: label_categoria.visible = false
 	if label_nivel: label_nivel.visible = false
 	
-	# Esconde sub-elementos e botões diretamente
 	if label_descricao: label_descricao.visible = false
 	if label_bonus_pop: label_bonus_pop.visible = false
 	if label_bonus_infra: label_bonus_infra.visible = false
@@ -81,7 +81,7 @@ func _resetar_tudo() -> void:
 
 
 # ==============================================================================
-# 🛒 MODO COMPRA (Apenas 2 Colunas: Card na Esquerda | Informações na Direita)
+# 🛒 MODO COMPRA (2 Colunas)
 # ==============================================================================
 func abrir_modo_compra(
 	nome: String, 
@@ -93,11 +93,9 @@ func abrir_modo_compra(
 	textura_predio: Texture2D
 ) -> void:
 	
-	# 1. Zera a tela antes de montar o layout
 	_resetar_tudo()
 	_verificar_referencias_nulas()
 	
-	# 2. Exibe APENAS os containers necessários para Compra
 	if container_compra: container_compra.visible = true
 	if label_categoria: label_categoria.visible = true
 	if label_descricao: label_descricao.visible = true
@@ -105,7 +103,6 @@ func abrir_modo_compra(
 	if label_bonus_infra: label_bonus_infra.visible = true
 	if button_comprar: button_comprar.visible = true
 	
-	# 3. Preenche os textos
 	if label_nome: label_nome.text = "[center][b][color=purple]" + nome.to_upper() + "[/color][/b][/center]"
 	if label_categoria: label_categoria.text = "[center][b][color=lightblue]" + categoria.to_upper() + "[/color][/b][/center]"
 	if label_descricao: label_descricao.text = "[center]" + descricao + "[/center]"
@@ -114,7 +111,6 @@ func abrir_modo_compra(
 	if button_comprar: button_comprar.text = "COMPRAR\nR$ " + _formatar_numero(preco)
 	if icone and textura_predio: icone.texture = textura_predio
 	
-	# 4. Reordena as colunas
 	if colunas_grid and coluna_card and coluna_direita:
 		colunas_grid.move_child(coluna_card, 0)
 		colunas_grid.move_child(coluna_direita, 1)
@@ -123,7 +119,7 @@ func abrir_modo_compra(
 
 
 # ==============================================================================
-# ⬆️ MODO UPGRADE (3 Colunas: Stats na Esquerda | Card no Centro | Botões na Direita)
+# ⬆️ MODO UPGRADE (3 Colunas)
 # ==============================================================================
 func abrir_modo_upgrade(
 	nome: String, 
@@ -134,11 +130,9 @@ func abrir_modo_upgrade(
 	textura_predio: Texture2D
 ) -> void:
 	
-	# 1. Zera a tela antes de montar o layout
 	_resetar_tudo()
 	_verificar_referencias_nulas()
 	
-	# 2. Exibe APENAS os containers necessários para Upgrade
 	if coluna_stats: coluna_stats.visible = true
 	if container_upgrade: container_upgrade.visible = true
 	if label_nivel: label_nivel.visible = true
@@ -147,7 +141,6 @@ func abrir_modo_upgrade(
 	if button_aprimorar: button_aprimorar.visible = true
 	if button_detalhes: button_detalhes.visible = true
 	
-	# 3. Preenche os textos
 	if label_nome: label_nome.text = "[center][b][color=red]" + nome.to_upper() + "[/color][/b][/center]"
 	if label_nivel: label_nivel.text = "[center][b][color=lightblue]NÍVEL: " + str(nivel) + "[/color][/b][/center]"
 	if label_ganhos: label_ganhos.text = "[center]GANHOS\n[color=green]R$ " + _formatar_numero(ganhos) + "[/color][/center]"
@@ -156,7 +149,6 @@ func abrir_modo_upgrade(
 	if button_detalhes: button_detalhes.text = "DETALHES"
 	if icone and textura_predio: icone.texture = textura_predio
 	
-	# 4. Reordena as colunas
 	if colunas_grid and coluna_stats and coluna_card and coluna_direita:
 		colunas_grid.move_child(coluna_stats, 0)
 		colunas_grid.move_child(coluna_card, 1)
@@ -166,10 +158,13 @@ func abrir_modo_upgrade(
 
 
 # ==============================================================================
-# 🎬 ANIMAÇÕES E FECHAMENTO
+# 🎬 ANIMAÇÕES, PAUSA E FECHAMENTO
 # ==============================================================================
 func _animar_popin() -> void:
+	# ⏸️ Pausa o jogo (mundo/câmera congelam)
+	get_tree().paused = true
 	show()
+	
 	if painel_central:
 		painel_central.pivot_offset = painel_central.size / 2.0
 		painel_central.scale = Vector2.ZERO
@@ -179,20 +174,31 @@ func _animar_popin() -> void:
 
 
 func fechar_janela() -> void:
+	_resetar_global_construcoes()
+	
 	if painel_central:
 		var tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 		tween.tween_property(painel_central, "scale", Vector2.ZERO, 0.15)
 		tween.tween_callback(func():
 			hide()
 			_resetar_tudo()
+			# ▶️ Despausa o jogo ao terminar a animação
+			get_tree().paused = false
 		)
 	else:
 		hide()
 		_resetar_tudo()
+		get_tree().paused = false
+
+
+func _resetar_global_construcoes() -> void:
+	if typeof(Global) != TYPE_NIL and "construcoes" in Global:
+		for chave in Global.construcoes:
+			Global.construcoes[chave] = false
 
 
 # ==============================================================================
-# 🛠️ FUNÇÕES AUXILIARES DE DIAGNÓSTICO E EVENTOS
+# 🛠️ AUXILIARES
 # ==============================================================================
 func _verificar_referencias_nulas() -> void:
 	if not coluna_stats: push_warning("⚠️ TelaCompras: Variable 'coluna_stats' is null in Inspector!")
@@ -209,6 +215,9 @@ func _conectar_botoes() -> void:
 		
 	if button_detalhes and not button_detalhes.pressed.is_connected(_on_detalhes_pressed):
 		button_detalhes.pressed.connect(_on_detalhes_pressed)
+		
+	if button_fechar and not button_fechar.pressed.is_connected(fechar_janela):
+		button_fechar.pressed.connect(fechar_janela)
 
 
 func _on_comprar_pressed() -> void:

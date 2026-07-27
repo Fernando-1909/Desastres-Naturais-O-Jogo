@@ -3,9 +3,7 @@
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/Scripts/main_game.gd" id="1_bvlld"]
 [ext_resource type="Texture2D" uid="uid://ccbwjdyijokgd" path="res://Jogo principal/tilesheets/Tiles_Meni_new.png" id="3_1woaa"]
 [ext_resource type="Texture2D" uid="uid://ctnpjbv1qqndx" path="res://Jogo principal/tilesheets/Tile.png" id="3_i63ni"]
-[ext_resource type="Texture2D" uid="uid://cvqob8ot47l5x" path="res://Jogo principal/tilesheets/casa.png" id="3_rgx6x"]
 [ext_resource type="Texture2D" uid="uid://skw0w28d2se7" path="res://Jogo principal/tilesheets/Tilesheet_Cons.png" id="4_botex"]
-[ext_resource type="Texture2D" uid="uid://b5vu8bipluqfw" path="res://Jogo principal/tilesheets/Prefeitura.png" id="4_i63ni"]
 [ext_resource type="Script" uid="uid://ckb77pq1nq7kp" path="res://Jogo principal/Scripts/tile_map_constructions.gd" id="4_k7th3"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
 [ext_resource type="Texture2D" uid="uid://cg5qkrc8cb38v" path="res://Jogo principal/tilesheets/aguaplaceholder.png" id="6_fo8d0"]
@@ -387,20 +385,6 @@ terrain_set_0/terrain_1/name = "Grass2 3"
 terrain_set_0/terrain_1/color = Color(0.42064223, 0.3346045, 0.9219517, 1)
 sources/0 = SubResource("TileSetAtlasSource_3axm1")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_61lwm"]
-texture = ExtResource("3_rgx6x")
-texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-0:0/0/custom_data_0 = true
-0:0/0/custom_data_1 = "casa1"
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tkcjf"]
-texture = ExtResource("4_i63ni")
-texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-0:0/0/custom_data_0 = true
-0:0/0/custom_data_1 = "prefeitura"
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a6fgx"]
 texture = ExtResource("6_fo8d0")
 texture_region_size = Vector2i(32, 32)
@@ -431,7 +415,6 @@ texture_region_size = Vector2i(32, 32)
 1:0/0 = 0
 1:0/0/texture_origin = Vector2i(0, 3)
 1:0/0/custom_data_0 = true
-1:0/0/custom_data_1 = "casa1"
 
 [sub_resource type="TileSet" id="TileSet_3axm1"]
 tile_size = Vector2i(32, 32)
@@ -440,11 +423,9 @@ custom_data_layer_0/type = 1
 custom_data_layer_1/name = "tipo"
 custom_data_layer_1/type = 4
 sources/8 = SubResource("TileSetAtlasSource_k7th3")
-sources/0 = SubResource("TileSetAtlasSource_61lwm")
-sources/1 = SubResource("TileSetAtlasSource_tkcjf")
 sources/3 = SubResource("TileSetAtlasSource_a6fgx")
 sources/4 = SubResource("TileSetAtlasSource_fj0mr")
-tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [8, Vector2i(0, 0)], [7, Vector2i(0, 0)], [8, Vector2i(1, 0)]]
+tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [1, Vector2i(0, 0)], [2, Vector2i(1, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [8, Vector2i(0, 0)], [7, Vector2i(0, 0)], [8, Vector2i(1, 0)]]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
 size = Vector2(6, 6)
@@ -471,7 +452,7 @@ tile_set = SubResource("TileSet_l2221")
 [node name="TileMapConstructions" type="TileMapLayer" parent="." unique_id=639958366]
 texture_filter = 1
 scale = Vector2(3, 3)
-tile_map_data = PackedByteArray("AAAFAAcAAQAAAAAAAAAGAAQABAABAAAAAAAFAAQABAACAAAAAAA=")
+tile_map_data = PackedByteArray("AAAGAAQABAABAAAAAAAFAAQABAACAAAAAAA=")
 tile_set = SubResource("TileSet_3axm1")
 script = ExtResource("4_k7th3")
 

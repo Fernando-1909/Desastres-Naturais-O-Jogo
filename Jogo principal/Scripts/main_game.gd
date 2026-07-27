@@ -1,17 +1,20 @@
 extends Node2D
 
-# CÂMERA
+# CÂMERA E HUD
 @onready var player_camera = $Player/Camera2D
 @onready var freecam_camera = $FreeCamera2D
 @onready var hud = $CanvasLayer/Hud
 @onready var menu_pausa: MenuPausa = $MenuPausa
-# Referência para a cena da tela de compras instanciada no mapa
-@onready var tela_compras: TelaCompras = $TelaCompras
 
-# Referência aos botões de teste
+# REFERÊNCIA À TELA DE COMPRAS E AO TILEMAP
+@onready var tela_compras: TelaCompras = $TelaCompras
+# ⚠️ Ajuste o caminho abaixo caso o nó do seu TileMap tenha outro nome na árvore!
+@onready var tilemap_constructions: TileMapLayer = $TileMapConstructions 
+
+# REFERÊNCIA AOS BOTÕES DE TESTE (Podem ser mantidos ou removidos futuramente)
 @onready var button_teste_compra: Button = $ButtonTesteCompra
 @onready var button_teste_upgrade: Button = $ButtonTesteUpgrade
-@onready var button_teste_pausa: Button = $ButtonTestePausa # Ajuste o caminho se estiver dentro de um HUD
+@onready var button_teste_pausa: Button = $ButtonTestePausa
 
 
 # Imagem temporária para teste (ícone padrão da Godot)
@@ -24,102 +27,124 @@ func _ready() -> void:
 	if button_teste_pausa and menu_pausa:
 		button_teste_pausa.pressed.connect(menu_pausa.toggle_pause)
 	
-	# Conecta os botões de teste para abrir a janela
-	button_teste_compra.pressed.connect(_on_testar_escola_pressed)
-	button_teste_upgrade.pressed.connect(_on_testar_hospital_pressed)
+	# Conecta os botões de teste para abrir a janela (Opção manual)
+	if button_teste_compra:
+		button_teste_compra.pressed.connect(_on_testar_escola_pressed)
+	if button_teste_upgrade:
+		button_teste_upgrade.pressed.connect(_on_testar_hospital_pressed)
 	
-	# Conecta os sinais que a janela envia quando o jogador clica para comprar
-	tela_compras.compra_confirmada.connect(_on_compra_confirmada)
-	tela_compras.aprimoramento_confirmado.connect(_on_aprimoramento_confirmado)
+	# 📡 CONEXÃO DO SINAL DO TILEMAP (Abre as telas pelo clique no mapa)
+	if tilemap_constructions:
+		tilemap_constructions.tile_clicado.connect(_on_tile_clicado)
 	
+	# Conecta os sinais que a janela envia quando o jogador clica para comprar/aprimorar
+	if tela_compras:
+		tela_compras.compra_confirmada.connect(_on_compra_confirmada)
+		tela_compras.aprimoramento_confirmado.connect(_on_aprimoramento_confirmado)
 	
 	freecam_camera.enabled = true
-	
-var tempo_ultimo_print: float = 0.0
-var intervalo_print: float = 4.0	
-
-func _process(delta: float) -> void:
-	tempo_ultimo_print += delta
-	
-	if Global.construcoes["prefeitura"] == true:
-		if tempo_ultimo_print >= intervalo_print:
-			print("prefeitura clicada")
-			tempo_ultimo_print = 0.0
-		$CanvasLayer/BuildingHUD.visible = true
-		
-	elif Global.construcoes["casa1"] == true:
-		if tempo_ultimo_print >= intervalo_print:
-			print("casa1 clicado")
-			tempo_ultimo_print = 0.0
-		$CanvasLayer/BuildingHUD.visible = true
 
 
+func _process(_delta: float) -> void:
+	# O _process agora fica livre de checagens visuais contínuas de telas
+	pass
 
 
 # ==============================================================================
-# 🧪 TESTE 1: MODO COMPRA (Layout de 2 Colunas)
+# 🏙️ GERENCIADOR DE CLIQUE NOS TILES (Novo Passo 2)
+# ==============================================================================
+func _on_tile_clicado(tipo: String) -> void:
+	match tipo:
+		"prefeitura":
+			# UPGRADE: Exemplo para o prédio da Prefeitura
+			tela_compras.abrir_modo_upgrade(
+				"Prefeitura",                                                       # Nome
+				1,                                                                  # Nível Atual
+				1500.0,                                                             # Ganhos por turno
+				100.0,                                                              # Porcentagem Infra
+				500000.0,                                                           # Custo do Upgrade
+				icone_temp                                                          # Imagem
+			)
+			
+		"casa1":
+			# COMPRA: Exemplo para o terreno/área de construção
+			tela_compras.abrir_modo_compra(
+				"Casa Residencial",                                                 # Nome
+				"Residencial",                                                      # Categoria
+				"Aumenta a capacidade de moradores e a receita de impostos da cidade.", # Descrição
+				10,                                                                 # Bônus População
+				5,                                                                  # Bônus Infraestrutura
+				150000.0,                                                           # Preço de Compra
+				icone_temp                                                          # Imagem
+			)
+
+
+# ==============================================================================
+# 🧪 TESTES MANUAIS VIA BOTÃO (Seus testes antigos)
 # ==============================================================================
 func _on_testar_escola_pressed() -> void:
 	tela_compras.abrir_modo_compra(
-		"Escola",                                                           # Nome
-		"Construção",                                                       # Categoria
-		"A construção essencial para o desenvolvimento humano de uma cidade.", # Descrição
-		15,                                                                 # Bônus Pop
-		15,                                                                 # Bônus Infra
-		290000.0,                                                           # Preço
-		icone_temp                                                          # Imagem
+		"Escola",
+		"Construção",
+		"A construção essencial para o desenvolvimento humano de uma cidade.",
+		15,
+		15,
+		290000.0,
+		icone_temp
 	)
 
-
-# ==============================================================================
-# 🧪 TESTE 2: MODO UPGRADE (Layout de 3 Colunas)
-# ==============================================================================
 func _on_testar_hospital_pressed() -> void:
 	tela_compras.abrir_modo_upgrade(
-		"Hospital",                                                         # Nome
-		1,                                                                  # Nível Atual
-		1906135023.0,                                                       # Ganhos
-		100.0,                                                              # Porcentagem Infra
-		290000.0,                                                           # Preço Upgrade
-		icone_temp                                                          # Imagem
+		"Hospital",
+		1,
+		1906135023.0,
+		100.0,
+		290000.0,
+		icone_temp
 	)
 
 
 # ==============================================================================
-# 📢 RESPOSTAS AOS SINAIS DA JANELA (Veja no painel Output/Saída da Godot)
+# 📢 RESPOSTAS AOS SINAIS DA JANELA
 # ==============================================================================
 func _on_compra_confirmada(nome: String) -> void:
 	print("🟢 SINAL RECEBIDO: O jogador comprou o prédio -> ", nome)
+	_resetar_estado_construcoes()
 
 func _on_aprimoramento_confirmado(nome: String) -> void:
 	print("🔵 SINAL RECEBIDO: O jogador aprimorou o prédio -> ", nome)
+	_resetar_estado_construcoes()
+
+func _resetar_estado_construcoes() -> void:
+	for chave in Global.construcoes:
+		Global.construcoes[chave] = false
 
 
-# MAPA
+# ==============================================================================
+# 🗺️ MAPA E OUTROS EVENTOS
+# ==============================================================================
 func _on_button_mapa_pressed() -> void:
 	$CanvasLayer/MapOverlay.visible = true
 
-# TESTES
 func _on_botao_teste_pressed() -> void:
 	FolderBlocker.liberarPraia()
 	print("praia foi liberada!")
 
-
-#⁠abrir pop-up de melhorias
 @onready var pop_up_scene = load("res://Jogo principal/building_hud.tscn")
 
-
 func _on_button_close_menu_pressed() -> void:
-	$CanvasLayer/BuildingHUD.visible = false
-	for construcao in Global.construcoes:
-		Global.construcoes[construcao] = false
+	if $CanvasLayer.has_node("BuildingHUD"):
+		$CanvasLayer/BuildingHUD.visible = false
+	_resetar_estado_construcoes()
 
+
+# ==============================================================================
+# 📜 SISTEMA DE MISSÕES
+# ==============================================================================
 func escolher_missao_aleatoria():
-	# Turno 0: não faz nada
 	if Global.turno <= 0:
 		return null
 	
-	# Turno 2: obrigatório ser missao1
 	if Global.turno == 2:
 		if "missao1" not in Global.missoes_concluidas:
 			Global.missao_escolhida = Global.missoes["missao1"]
@@ -127,32 +152,20 @@ func escolher_missao_aleatoria():
 			Global.missao_atual_turnos = 0
 			print("Turno 2: Missão obrigatória - ", Global.missao_escolhida["nome"])
 			
-			# Mostrar container
 			if hud and hud.has_node("MissaoContainer"):
 				var missao_container = hud.get_node("MissaoContainer")
-				
-				# Atualiza as labels através do VBoxContainer PRIMEIRO
 				var vbox = missao_container.get_node("VBoxContainer")
+				
 				if vbox.has_node("missao_info"):
 					vbox.get_node("missao_info").text = Global.missao_escolhida["info"]
-					print("Info atualizada: ", Global.missao_escolhida["info"])
 				
 				if vbox.has_node("missao_recompensa"):
 					vbox.get_node("missao_recompensa").text = "Dinheiro: " + str(Global.missao_escolhida["recompensa"]) + "\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
-					print("Recompensa atualizada")
 				
-				# Torna visível
 				missao_container.visible = true
-				
-				# Pausa o jogo (bloqueia botões)
 				Global.jogo_pausado = true
-				print("Jogo pausado - Missão ativa")
-			else:
-				print("ERRO: MissaoContainer não encontrado!")
-			
 			return Global.missao_escolhida
 	
-	# Turno 4+: sistema de chances aleatórias
 	if Global.turno >= 4:
 		var missoes_disponiveis = {}
 		for chave in Global.missoes.keys():
@@ -160,7 +173,6 @@ func escolher_missao_aleatoria():
 				missoes_disponiveis[chave] = Global.missoes[chave]
 		
 		if missoes_disponiveis.is_empty():
-			print("Todas as missões foram concluídas!")
 			Global.missao_escolhida = null
 			return null
 		
@@ -170,9 +182,6 @@ func escolher_missao_aleatoria():
 		
 		var chance_atual = Global.chance_missao
 		var sorteio_aparecer = randi() % 100
-		
-		print("Chance de missão neste turno: ", chance_atual, "%")
-		print("Sorteio: ", sorteio_aparecer)
 		
 		if sorteio_aparecer < chance_atual:
 			var chances = {}
@@ -208,39 +217,24 @@ func escolher_missao_aleatoria():
 				if chave != chave_escolhida:
 					Global.turnos_sem_missao[chave] += 1
 			
-			print("Missão escolhida: ", Global.missao_escolhida["nome"])
-			
-			# Mostrar container
 			if hud and hud.has_node("MissaoContainer"):
 				var missao_container = hud.get_node("MissaoContainer")
-				
-				# Atualiza as labels através do VBoxContainer PRIMEIRO
 				var vbox = missao_container.get_node("VBoxContainer")
+				
 				if vbox.has_node("missao_info"):
 					vbox.get_node("missao_info").text = Global.missao_escolhida["info"]
-					print("Info atualizada: ", Global.missao_escolhida["info"])
 				
 				if vbox.has_node("missao_recompensa"):
 					vbox.get_node("missao_recompensa").text = "Dinheiro: " + str(Global.missao_escolhida["recompensa"]) + "\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
-					print("Recompensa atualizada")
 				
-				# Torna visível
 				missao_container.visible = true
-				
-				# Pausa o jogo (bloqueia botões)
 				Global.jogo_pausado = true
-				print("Jogo pausado - Missão ativa")
-			else:
-				print("ERRO: MissaoContainer não encontrado!")
 			
 			return Global.missao_escolhida
 		else:
 			Global.chance_missao = min(Global.chance_missao + 15, 100)
-			
 			for chave in missoes_disponiveis.keys():
 				Global.turnos_sem_missao[chave] += 1
-			
-			print("Nenhuma missão neste turno. Chance para próximo turno: ", Global.chance_missao, "%")
 			Global.missao_escolhida = null
 			return null
 	

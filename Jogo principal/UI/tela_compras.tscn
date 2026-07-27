@@ -2,12 +2,25 @@
 
 [ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/tela_compras.gd" id="1_6tqbi"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2cq4x"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tkcjf"]
+bg_color = Color(0.11612659, 0.116126604, 0.116126515, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "coluna_stats", "container_compra", "container_upgrade", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "label_ganhos", "barra_infra", "button_comprar", "button_aprimorar", "button_detalhes")]
+[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "colunas_grid", "coluna_stats", "coluna_direita", "container_compra", "container_upgrade", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "label_ganhos", "barra_infra", "button_comprar", "button_aprimorar", "button_detalhes", "button_fechar")]
+process_mode = 3
 script = ExtResource("1_6tqbi")
 painel_central = NodePath("PainelCentral")
+overlay_fundo = NodePath("OverlayFundo")
+colunas_grid = NodePath("PainelCentral/MargemInterna/ColunasGrid")
 coluna_stats = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats")
+coluna_direita = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita")
 container_compra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra")
 container_upgrade = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade")
 label_nome = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNome")
@@ -22,6 +35,7 @@ barra_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/Barr
 button_comprar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar")
 button_aprimorar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar")
 button_detalhes = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes")
+button_fechar = NodePath("PainelCentral/ButtonFechar")
 
 [node name="OverlayFundo" type="ColorRect" parent="." unique_id=777114932]
 anchors_preset = 15
@@ -44,7 +58,7 @@ offset_right = 20.0
 offset_bottom = 22.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_2cq4x")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tkcjf")
 
 [node name="MargemInterna" type="MarginContainer" parent="PainelCentral" unique_id=1984089172]
 layout_mode = 2
@@ -129,3 +143,11 @@ layout_mode = 2
 
 [node name="ButtonDetalhes" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=678436348]
 layout_mode = 2
+
+[node name="ButtonFechar" type="Button" parent="PainelCentral" unique_id=342840005]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "❌"
