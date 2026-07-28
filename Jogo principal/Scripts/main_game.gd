@@ -23,6 +23,11 @@ var icone_temp = preload("res://icon.svg")
 var freecam_enabled = false
 
 func _ready() -> void:
+	
+	# TESTANDO SISTEMA DE RECURSOS!!!
+	Global.pedra = 150
+	Global.madeira = 200
+	
 	# Conecta o clique do botão diretamente à função toggle_pause da janela
 	if button_teste_pausa and menu_pausa:
 		button_teste_pausa.pressed.connect(menu_pausa.toggle_pause)
@@ -150,6 +155,7 @@ func escolher_missao_aleatoria():
 			Global.missao_escolhida = Global.missoes["missao1"]
 			Global.missao_escolhida["chave"] = "missao1"
 			Global.missao_atual_turnos = 0
+			Global.missao_aceita = false
 			print("Turno 2: Missão obrigatória - ", Global.missao_escolhida["nome"])
 			
 			if hud and hud.has_node("MissaoContainer"):
@@ -160,7 +166,10 @@ func escolher_missao_aleatoria():
 					vbox.get_node("missao_info").text = Global.missao_escolhida["info"]
 				
 				if vbox.has_node("missao_recompensa"):
-					vbox.get_node("missao_recompensa").text = "Dinheiro: " + str(Global.missao_escolhida["recompensa"]) + "\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
+					vbox.get_node("missao_recompensa").text = "Custo: " + str(Global.missao_escolhida["custo"]) + " dinheiro" + \
+						"\nPedra: " + str(Global.missao_escolhida["pedra"]) + \
+						"\nMadeira: " + str(Global.missao_escolhida["madeira"]) + \
+						"\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
 				
 				missao_container.visible = true
 				Global.jogo_pausado = true
@@ -209,6 +218,7 @@ func escolher_missao_aleatoria():
 			Global.missao_escolhida = Global.missoes[chave_escolhida]
 			Global.missao_escolhida["chave"] = chave_escolhida
 			Global.missao_atual_turnos = 0
+			Global.missao_aceita = false
 			
 			Global.chance_missao = 30
 			Global.turnos_sem_missao[chave_escolhida] = 0
@@ -225,7 +235,10 @@ func escolher_missao_aleatoria():
 					vbox.get_node("missao_info").text = Global.missao_escolhida["info"]
 				
 				if vbox.has_node("missao_recompensa"):
-					vbox.get_node("missao_recompensa").text = "Dinheiro: " + str(Global.missao_escolhida["recompensa"]) + "\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
+					vbox.get_node("missao_recompensa").text = "Custo: " + str(Global.missao_escolhida["custo"]) + " dinheiro" + \
+						"\nPedra: " + str(Global.missao_escolhida["pedra"]) + \
+						"\nMadeira: " + str(Global.missao_escolhida["madeira"]) + \
+						"\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
 				
 				missao_container.visible = true
 				Global.jogo_pausado = true
