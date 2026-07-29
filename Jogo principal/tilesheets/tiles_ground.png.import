@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctnpjbv1qqndx"
-path="res://.godot/imported/Tile.png-fb36eeace1932bf06ba326ad779bfdad.ctex"
+uid="uid://bvg7287u2272h"
+path="res://.godot/imported/tiles_ground.png-7e6c480a39d374e773c811f3588705d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Jogo principal/tilesheets/Tile.png"
-dest_files=["res://.godot/imported/Tile.png-fb36eeace1932bf06ba326ad779bfdad.ctex"]
+source_file="res://Jogo principal/tilesheets/tiles_ground.png"
+dest_files=["res://.godot/imported/tiles_ground.png-7e6c480a39d374e773c811f3588705d9.ctex"]
 
 [params]
 
