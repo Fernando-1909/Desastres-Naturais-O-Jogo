@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://ywprn46r2bch"]
+
+[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/building_data.gd" id="1_dyh4l"]
+[ext_resource type="Texture2D" uid="uid://cvqob8ot47l5x" path="res://Jogo principal/tilesheets/casa.png" id="1_vsb02"]
+
+[resource]
+script = ExtResource("1_dyh4l")
+id = "casa_simples"
+nome = "Casa simples"
+icone = ExtResource("1_vsb02")
+pode_aprimorar = false
+custo_base = 50.0
+descricao_curta = "Casinha mixuruca"
+texto_detalhes = " Num tem"
+ganhos_base = 50.0
+bonus_populacao = 10
+bonus_infraestrutura = 3
+tiles_atlas_coords = Array[Vector2i]([Vector2i(2, 0)])
+metadata/_custom_type_script = "uid://bh8jua7ha1i6r"

@@ -13,7 +13,19 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "colunas_grid", "coluna_stats", "coluna_direita", "container_compra", "container_upgrade", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "label_ganhos", "barra_infra", "button_comprar", "button_aprimorar", "button_detalhes", "button_fechar")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6tqbi"]
+bg_color = Color(0.078431375, 0.078431375, 0.09803922, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.23137255, 0.24313726, 0.2901961, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "colunas_grid", "coluna_stats", "coluna_direita", "container_compra", "container_upgrade", "painel_detalhes", "label_titulo_detalhes", "label_texto_detalhes", "button_fechar_detalhes", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "button_comprar", "label_disc", "button_aprimorar", "button_detalhes", "label_ganhos", "barra_infra", "button_fechar")]
 process_mode = 3
 script = ExtResource("1_6tqbi")
 painel_central = NodePath("PainelCentral")
@@ -23,6 +35,10 @@ coluna_stats = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats")
 coluna_direita = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita")
 container_compra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra")
 container_upgrade = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade")
+painel_detalhes = NodePath("PainelDetalhes")
+label_titulo_detalhes = NodePath("PainelDetalhes/MargemDetalhes/VBoxDetalhes/LabelTituloDetalhes")
+label_texto_detalhes = NodePath("PainelDetalhes/MargemDetalhes/VBoxDetalhes/LabelTextoDetalhes")
+button_fechar_detalhes = NodePath("PainelDetalhes/ButtonFecharDetalhes")
 label_nome = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNome")
 icone = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/Icone")
 label_categoria = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelCategoria")
@@ -30,11 +46,12 @@ label_nivel = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/L
 label_descricao = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelDescricao")
 label_bonus_pop = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusPop")
 label_bonus_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusInfra")
-label_ganhos = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/LabelGanhos")
-barra_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra")
 button_comprar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar")
+label_disc = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/LabelDisc")
 button_aprimorar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar")
 button_detalhes = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes")
+label_ganhos = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/LabelGanhos")
+barra_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra")
 button_fechar = NodePath("PainelCentral/ButtonFechar")
 
 [node name="OverlayFundo" type="ColorRect" parent="." unique_id=777114932]
@@ -137,6 +154,13 @@ layout_mode = 2
 
 [node name="ContainerUpgrade" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita" unique_id=1920465077]
 layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LabelDisc" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=497312614]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+autowrap_mode = 2
 
 [node name="ButtonAprimorar" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=2001975818]
 layout_mode = 2
@@ -150,4 +174,51 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 32
+text = "❌"
+
+[node name="PainelDetalhes" type="PanelContainer" parent="." unique_id=1988168018]
+custom_minimum_size = Vector2(380, 200)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_6tqbi")
+
+[node name="MargemDetalhes" type="MarginContainer" parent="PainelDetalhes" unique_id=1861115596]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxDetalhes" type="VBoxContainer" parent="PainelDetalhes/MargemDetalhes" unique_id=1812093306]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="LabelTituloDetalhes" type="RichTextLabel" parent="PainelDetalhes/MargemDetalhes/VBoxDetalhes" unique_id=688666758]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+autowrap_mode = 2
+
+[node name="LabelTextoDetalhes" type="RichTextLabel" parent="PainelDetalhes/MargemDetalhes/VBoxDetalhes" unique_id=462471512]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+autowrap_mode = 2
+
+[node name="ButtonFecharDetalhes" type="Button" parent="PainelDetalhes" unique_id=856569840]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 24
 text = "❌"

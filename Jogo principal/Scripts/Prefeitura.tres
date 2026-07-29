@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://d8wt5ewj5bjo"]
+
+[ext_resource type="Texture2D" uid="uid://b5vu8bipluqfw" path="res://Jogo principal/tilesheets/Prefeitura.png" id="1_3joaf"]
+[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/building_data.gd" id="1_or3bn"]
+
+[resource]
+script = ExtResource("1_or3bn")
+id = "prefeitura"
+nome = "Prefeitura "
+icone = ExtResource("1_3joaf")
+eh_unica = true
+nivel_maximo = 2
+custo_base = 1000.0
+descricao_curta = "teste da prefeitura"
+texto_detalhes = "arroz teste"
+durabilidade_maxima = 500.0
+metadata/_custom_type_script = "uid://bh8jua7ha1i6r"

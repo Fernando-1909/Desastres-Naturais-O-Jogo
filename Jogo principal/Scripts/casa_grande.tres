@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://djdwcoyiq0hg3"]
+
+[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/building_data.gd" id="1_32ewd"]
+
+[resource]
+script = ExtResource("1_32ewd")
+id = "casa_grande"
+nome = "Casa grande"
+pode_aprimorar = false
+custo_base = 500.0
+durabilidade_maxima = 250.0
+tiles_atlas_coords = Array[Vector2i]([Vector2i(0, 0)])
+metadata/_custom_type_script = "uid://bh8jua7ha1i6r"

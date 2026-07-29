@@ -1,6 +1,8 @@
 extends Node2D
 
-# CÂMERA E HUD
+# ==============================================================================
+# 📌 CÂMERA, HUD E NÓS DA INTERFACE
+# ==============================================================================
 @onready var player_camera = $Player/Camera2D
 @onready var freecam_camera = $FreeCamera2D
 @onready var hud = $CanvasLayer/Hud
@@ -11,17 +13,31 @@ extends Node2D
 # ⚠️ Ajuste o caminho abaixo caso o nó do seu TileMap tenha outro nome na árvore!
 @onready var tilemap_constructions: TileMapLayer = $TileMapConstructions 
 
-# REFERÊNCIA AOS BOTÕES DE TESTE (Podem ser mantidos ou removidos futuramente)
+# REFERÊNCIA AOS BOTÕES DE TESTE
 @onready var button_teste_compra: Button = $ButtonTesteCompra
 @onready var button_teste_upgrade: Button = $ButtonTesteUpgrade
 @onready var button_teste_pausa: Button = $ButtonTestePausa
 
+# ==============================================================================
+# 🏢 BANCO DE DADOS E INSTÂNCIAS DE EDIFÍCIOS
+# ==============================================================================
+## Arraste seus arquivos .tres aqui pelo Inspector (ex: casa_simples.tres, prefeitura.tres)
+@export var banco_edificios: Array[BuildingData] = [] 
+@export var tile_map: TileMap
+
+# Guarda todas as construções vivas no mapa!
+# Chave = Vector2i(x, y) ou String ID | Valor = objeto BuildingInstance
+var construcoes_no_mapa: Dictionary = {}
 
 # Imagem temporária para teste (ícone padrão da Godot)
 var icone_temp = preload("res://icon.svg")
-
 var freecam_enabled = false
+@onready var pop_up_scene = load("res://Jogo principal/building_hud.tscn")
 
+
+# ==============================================================================
+# 🎬 CICLO DE VIDA (READY & INPUT)
+# ==============================================================================
 func _ready() -> void:
 	
 	# TESTANDO SISTEMA DE RECURSOS!!!
@@ -39,7 +55,7 @@ func _ready() -> void:
 		button_teste_upgrade.pressed.connect(_on_testar_hospital_pressed)
 	
 	# 📡 CONEXÃO DO SINAL DO TILEMAP (Abre as telas pelo clique no mapa)
-	if tilemap_constructions:
+	if tilemap_constructions and tilemap_constructions.has_signal("tile_clicado"):
 		tilemap_constructions.tile_clicado.connect(_on_tile_clicado)
 	
 	# Conecta os sinais que a janela envia quando o jogador clica para comprar/aprimorar
@@ -47,95 +63,23 @@ func _ready() -> void:
 		tela_compras.compra_confirmada.connect(_on_compra_confirmada)
 		tela_compras.aprimoramento_confirmado.connect(_on_aprimoramento_confirmado)
 	
-	freecam_camera.enabled = true
+	if freecam_camera:
+		freecam_camera.enabled = true
 
 
-func _process(_delta: float) -> void:
-	# O _process agora fica livre de checagens visuais contínuas de telas
-	pass
-
-
-# ==============================================================================
-# 🏙️ GERENCIADOR DE CLIQUE NOS TILES (Novo Passo 2)
-# ==============================================================================
-func _on_tile_clicado(tipo: String) -> void:
-	match tipo:
-		"prefeitura":
-			# UPGRADE: Exemplo para o prédio da Prefeitura
-			tela_compras.abrir_modo_upgrade(
-				"Prefeitura",                                                       # Nome
-				1,                                                                  # Nível Atual
-				1500.0,                                                             # Ganhos por turno
-				100.0,                                                              # Porcentagem Infra
-				500000.0,                                                           # Custo do Upgrade
-				icone_temp                                                          # Imagem
-			)
-			
-		"casa1":
-			# COMPRA: Exemplo para o terreno/área de construção
-			tela_compras.abrir_modo_compra(
-				"Casa Residencial",                                                 # Nome
-				"Residencial",                                                      # Categoria
-				"Aumenta a capacidade de moradores e a receita de impostos da cidade.", # Descrição
-				10,                                                                 # Bônus População
-				5,                                                                  # Bônus Infraestrutura
-				150000.0,                                                           # Preço de Compra
-				icone_temp                                                          # Imagem
-			)
-
-
-# ==============================================================================
-# 🧪 TESTES MANUAIS VIA BOTÃO (Seus testes antigos)
-# ==============================================================================
-func _on_testar_escola_pressed() -> void:
-	tela_compras.abrir_modo_compra(
-		"Escola",
-		"Construção",
-		"A construção essencial para o desenvolvimento humano de uma cidade.",
-		15,
-		15,
-		290000.0,
-		icone_temp
-	)
-
-func _on_testar_hospital_pressed() -> void:
-	tela_compras.abrir_modo_upgrade(
-		"Hospital",
-		1,
-		1906135023.0,
-		100.0,
-		290000.0,
-		icone_temp
-	)
-
-
-# ==============================================================================
-# 📢 RESPOSTAS AOS SINAIS DA JANELA
-# ==============================================================================
-func _on_compra_confirmada(nome: String) -> void:
-	print("🟢 SINAL RECEBIDO: O jogador comprou o prédio -> ", nome)
-	_resetar_estado_construcoes()
-
-func _on_aprimoramento_confirmado(nome: String) -> void:
-	print("🔵 SINAL RECEBIDO: O jogador aprimorou o prédio -> ", nome)
-	_resetar_estado_construcoes()
-
-func _resetar_estado_construcoes() -> void:
-	for chave in Global.construcoes:
-		Global.construcoes[chave] = false
 
 
 # ==============================================================================
 # 🗺️ MAPA E OUTROS EVENTOS
 # ==============================================================================
 func _on_button_mapa_pressed() -> void:
-	$CanvasLayer/MapOverlay.visible = true
+	if has_node("CanvasLayer/MapOverlay"):
+		$CanvasLayer/MapOverlay.visible = true
 
 func _on_botao_teste_pressed() -> void:
-	FolderBlocker.liberarPraia()
-	print("praia foi liberada!")
-
-@onready var pop_up_scene = load("res://Jogo principal/building_hud.tscn")
+	if typeof(FolderBlocker) != TYPE_NIL:
+		FolderBlocker.liberarPraia()
+		print("praia foi liberada!")
 
 func _on_button_close_menu_pressed() -> void:
 	if $CanvasLayer.has_node("BuildingHUD"):
@@ -252,3 +196,199 @@ func escolher_missao_aleatoria():
 			return null
 	
 	return null
+	
+
+func _unhandled_input(event: InputEvent) -> void:
+	# Permite clicar nos tiles do mapa com o botão esquerdo
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if not get_tree().paused:
+			var target_map = tilemap_constructions if tilemap_constructions else tile_map
+			if target_map:
+				var pos_global = target_map.get_global_mouse_position()
+				var pos_tile: Vector2i = target_map.local_to_map(pos_global)
+				_on_tile_clicado(pos_tile)
+
+
+
+# ==============================================================================
+# 🏙️ GERENCIADOR DE CLIQUE NOS TILES (INTEGRADO AO BUILDINGDATA)
+# ==============================================================================
+func _on_tile_clicado(argument) -> void:
+	if not tela_compras: return
+
+	# --------------------------------------------------------------------------
+	# CASO A: O argumento é um NOME / ID (String), ex: "prefeitura", "casa1"
+	# --------------------------------------------------------------------------
+	if typeof(argument) == TYPE_STRING:
+		var id_string: String = argument
+		
+		# Trata o alias "casa1" para buscar "casa_simples" se necessário
+		if id_string == "casa1":
+			id_string = "casa_simples"
+			
+		var b_data: BuildingData = _buscar_data_por_id(id_string)
+		
+		if b_data:
+			_abrir_tela_por_building_data(b_data)
+		else:
+			# Fallback para caso o arquivo .tres ainda não esteja configurado no Inspector
+			_executar_fallback_por_string(argument)
+
+	# --------------------------------------------------------------------------
+	# CASO B: O argumento é uma COORDENADA (Vector2i) do TileMap
+	# --------------------------------------------------------------------------
+	elif typeof(argument) == TYPE_VECTOR2I:
+		var pos_tile: Vector2i = argument
+		
+		# 1. Se já existe um prédio construído/instanciado nesta coordenada
+		if construcoes_no_mapa.has(pos_tile):
+			var predio_existente: BuildingInstance = construcoes_no_mapa[pos_tile]
+			_abrir_modo_upgrade_instancia(predio_existente)
+			return
+			
+		# 2. Busca os dados do tile dependendo do tipo do mapa (TileMapLayer ou TileMap)
+		var tile_data: TileData = null
+		if tilemap_constructions:
+			tile_data = tilemap_constructions.get_cell_tile_data(pos_tile)
+		elif tile_map:
+			tile_data = tile_map.get_cell_tile_data(0, pos_tile)
+			
+		if tile_data:
+			var building_id: String = tile_data.get_custom_data("building_id")
+			if building_id != "":
+				var b_data = _buscar_data_por_id(building_id)
+				if b_data:
+					var nova_instancia = BuildingInstance.new(b_data, pos_tile)
+					construcoes_no_mapa[pos_tile] = nova_instancia
+					_abrir_modo_upgrade_instancia(nova_instancia)
+					return
+
+
+# ==============================================================================
+# 🛠️ HELPER FUNCTIONS (ABERTURA DE TELAS E BUSCA)
+# ==============================================================================
+func _abrir_tela_por_building_data(b_data: BuildingData) -> void:
+	# Se o prédio é único (ex: Prefeitura) ou pode evoluir
+	if b_data.eh_unica or b_data.pode_aprimorar:
+		var pos_chave = Vector2i.ZERO
+		var instancia: BuildingInstance
+		
+		if construcoes_no_mapa.has(pos_chave):
+			instancia = construcoes_no_mapa[pos_chave]
+		else:
+			instancia = BuildingInstance.new(b_data, pos_chave)
+			construcoes_no_mapa[pos_chave] = instancia
+			
+		_abrir_modo_upgrade_instancia(instancia)
+	else:
+		# Modo Compra (Para novas construções como Casas)
+		var tex = b_data.icone if b_data.icone else icone_temp
+		tela_compras.abrir_modo_compra(
+			b_data.nome,
+			b_data.categoria,
+			b_data.descricao_curta,
+			b_data.bonus_populacao,
+			b_data.bonus_infraestrutura,
+			b_data.custo_base,
+			tex
+		)
+
+
+func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
+	var b_data = predio.data
+	var tex = b_data.icone if b_data.icone else icone_temp
+	
+	tela_compras.abrir_modo_upgrade(
+		b_data.nome,
+		predio.nivel_atual,
+		predio.get_ganhos_atuais(),
+		predio.get_durabilidade_pct(),
+		predio.get_custo_upgrade(),
+		tex,
+		b_data.descricao_curta,
+		b_data.texto_detalhes,
+		b_data.pode_aprimorar and (predio.nivel_atual < b_data.nivel_maximo)
+	)
+
+
+func _buscar_data_por_id(p_id: String) -> BuildingData:
+	for b_data in banco_edificios:
+		if b_data and b_data.id.to_lower() == p_id.to_lower():
+			return b_data
+	return null
+
+
+func _executar_fallback_por_string(tipo: String) -> void:
+	match tipo:
+		"prefeitura":
+			tela_compras.abrir_modo_upgrade(
+				"Prefeitura",
+				1,
+				1500.0,
+				100.0,
+				500000.0,
+				icone_temp,
+				"Sede administrativa da cidade.",
+				"Melhorar a prefeitura libera novas áreas de expansão no mapa."
+			)
+		"casa1", "casa_simples":
+			tela_compras.abrir_modo_compra(
+				"Casa Residencial",
+				"Residencial",
+				"Aumenta a capacidade de moradores e a receita de impostos da cidade.",
+				10,
+				5,
+				150000.0,
+				icone_temp
+			)
+
+
+# ==============================================================================
+# 🧪 TESTES MANUAIS VIA BOTÃO
+# ==============================================================================
+func _on_testar_escola_pressed() -> void:
+	tela_compras.abrir_modo_compra(
+		"Escola",
+		"Construção",
+		"A construção essencial para o desenvolvimento humano de uma cidade.",
+		15,
+		15,
+		290000.0,
+		icone_temp
+	)
+
+func _on_testar_hospital_pressed() -> void:
+	tela_compras.abrir_modo_upgrade(
+		"Hospital",
+		1,
+		1906135023.0,
+		100.0,
+		290000.0,
+		icone_temp
+	)
+
+
+# ==============================================================================
+# 📢 RESPOSTAS AOS SINAIS DA JANELA
+# ==============================================================================
+func _on_compra_confirmada(nome: String) -> void:
+	print("🟢 SINAL RECEBIDO: O jogador comprou o prédio -> ", nome)
+	_resetar_estado_construcoes()
+
+func _on_aprimoramento_confirmado(nome: String) -> void:
+	print("🔵 SINAL RECEBIDO: O jogador aprimorou o prédio -> ", nome)
+	
+	# Procura a instância correspondente e incrementa o nível
+	for pos in construcoes_no_mapa:
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio.data and predio.data.nome.to_upper() == nome.to_upper():
+			predio.nivel_atual += 1
+			print("⬆️ Nível atualizado para: ", predio.nivel_atual)
+			break
+			
+	_resetar_estado_construcoes()
+
+func _resetar_estado_construcoes() -> void:
+	if typeof(Global) != TYPE_NIL and "construcoes" in Global:
+		for chave in Global.construcoes:
+			Global.construcoes[chave] = false
