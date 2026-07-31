@@ -149,37 +149,29 @@ func abrir_modo_compra(
 	categoria: String, 
 	descricao: String, 
 	bonus_pop: int, 
-	bonus_infra: int, 
 	preco: float, 
 	textura_predio: Texture2D
 ) -> void:
 	
 	_resetar_tudo()
 	
-	# Habilita apenas os containers pertencentes ao fluxo de compra
 	if container_compra: container_compra.visible = true
 	if label_categoria: label_categoria.visible = true
 	if label_bonus_pop: label_bonus_pop.visible = true
-	if label_bonus_infra: label_bonus_infra.visible = true
 	if button_comprar: button_comprar.visible = true
 	
-	# Exibe a descrição apenas se houver texto configurado
 	if label_descricao:
 		var tem_desc = descricao.strip_edges() != ""
 		label_descricao.visible = tem_desc
 		if tem_desc:
 			label_descricao.text = "[center]" + descricao + "[/center]"
 
-	# Aplicação de BBCode para formatação de cores e estilo no texto
 	if label_nome: label_nome.text = "[center][b][color=purple]" + nome.to_upper() + "[/color][/b][/center]"
 	if label_categoria: label_categoria.text = "[center][b][color=lightblue]" + categoria.to_upper() + "[/color][/b][/center]"
 	if label_bonus_pop: label_bonus_pop.text = "[center][b][color=green]+ " + str(bonus_pop) + " Popularidade[/color][/b][/center]"
-	if label_bonus_infra: label_bonus_infra.text = "[center][b][color=orange]+ " + str(bonus_infra) + " Infraestrutura[/color][/b][/center]"
 	if button_comprar: button_comprar.text = "COMPRAR\nR$ " + _formatar_numero(preco)
 	if icone and textura_predio: icone.texture = textura_predio
 	
-	# REORGANIZAÇÃO DE COLUNAS:
-	# Alinha o layout para 2 colunas no modo compra: [Esquerda (Card) | Direita (Ações)]
 	if colunas_grid and coluna_esquerda and coluna_direita:
 		colunas_grid.move_child(coluna_esquerda, 0)
 		colunas_grid.move_child(coluna_direita, 1)

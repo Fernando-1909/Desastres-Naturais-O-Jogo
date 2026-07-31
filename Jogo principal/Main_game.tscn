@@ -1,7 +1,7 @@
 [gd_scene format=4 uid="uid://5lfugjx2eqnp"]
 
-[ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/Scripts/main_game.gd" id="1_bvlld"]
-[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/building_data.gd" id="2_tkcjf"]
+[ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/Scripts/Scripts cenas/main_game.gd" id="1_bvlld"]
+[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="2_tkcjf"]
 [ext_resource type="Texture2D" uid="uid://ccbwjdyijokgd" path="res://Jogo principal/tilesheets/Tiles_Meni_new.png" id="3_1woaa"]
 [ext_resource type="Resource" uid="uid://d8wt5ewj5bjo" path="res://Jogo principal/Scripts/Prefeitura.tres" id="3_fo8d0"]
 [ext_resource type="Texture2D" uid="uid://skw0w28d2se7" path="res://Jogo principal/tilesheets/Tilesheet_Cons.png" id="4_botex"]
@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://cumrysl7bg33e" path="res://Jogo principal/tilesheets/TrocaPlaceholder.png" id="7_2cq4x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
-[ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/Scripts/npc.gd" id="10_k7th3"]
+[ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/Scripts/Scripts gerais/npc.gd" id="10_k7th3"]
 [ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="11_3axm1"]
 [ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
 [ext_resource type="PackedScene" uid="uid://wsb5vaomuml2" path="res://Jogo principal/UI/menu_pausa.tscn" id="16_tkcjf"]

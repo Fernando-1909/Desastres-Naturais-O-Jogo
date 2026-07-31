@@ -329,7 +329,6 @@ func _abrir_modo_compra_para_dados(b_data: BuildingData) -> void:
 		b_data.categoria,
 		b_data.descricao_curta,
 		b_data.bonus_populacao,
-		b_data.bonus_infraestrutura,
 		b_data.custo_base,
 		tex
 	)
@@ -390,7 +389,6 @@ func _executar_fallback_por_string(tipo: String) -> void:
 				"Residencial",
 				"Aumenta a capacidade de moradores e a receita de impostos da cidade.",
 				10,
-				5,
 				150000.0,
 				icone_temp
 			)
@@ -404,7 +402,6 @@ func _on_testar_escola_pressed() -> void:
 		"Escola",
 		"Construcao",
 		"A construcao essencial para o desenvolvimento humano de uma cidade.",
-		15,
 		15,
 		290000.0,
 		icone_temp
