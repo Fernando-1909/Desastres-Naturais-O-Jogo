@@ -25,13 +25,14 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "colunas_grid", "coluna_stats", "coluna_direita", "container_compra", "container_upgrade", "painel_detalhes", "label_titulo_detalhes", "label_texto_detalhes", "button_fechar_detalhes", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "button_comprar", "label_disc", "button_aprimorar", "button_detalhes", "label_ganhos", "barra_infra", "button_fechar")]
+[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "colunas_grid", "coluna_stats", "coluna_esquerda", "coluna_direita", "container_compra", "container_upgrade", "painel_detalhes", "label_titulo_detalhes", "label_texto_detalhes", "button_fechar_detalhes", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "button_comprar", "label_disc", "button_aprimorar", "button_detalhes", "label_ganhos", "barra_infra", "button_fechar")]
 process_mode = 3
 script = ExtResource("1_6tqbi")
 painel_central = NodePath("PainelCentral")
 overlay_fundo = NodePath("OverlayFundo")
 colunas_grid = NodePath("PainelCentral/MargemInterna/ColunasGrid")
 coluna_stats = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats")
+coluna_esquerda = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda")
 coluna_direita = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita")
 container_compra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra")
 container_upgrade = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade")

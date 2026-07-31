@@ -14,4 +14,6 @@ custo_base = 1000.0
 descricao_curta = "teste da prefeitura"
 texto_detalhes = "arroz teste"
 durabilidade_maxima = 500.0
+tiles_atlas_coords = Array[Vector2i]([Vector2i(1, 0)])
+source_id = 4
 metadata/_custom_type_script = "uid://bh8jua7ha1i6r"
