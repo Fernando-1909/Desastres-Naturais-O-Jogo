@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://wsb5vaomuml2"]
 
-[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/Scripts cenas/menu_pausa.gd" id="1_wp3wm"]
+[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/menu_pausa.gd" id="1_wp3wm"]
+[ext_resource type="Theme" uid="uid://cx782b1sg8nsm" path="res://Jogo principal/UI/Temas/base.tres" id="2_fhcsi"]
 
 [node name="MenuPausa" type="CanvasLayer" unique_id=643096711 node_paths=PackedStringArray("button_continuar", "button_opcoes", "button_menu")]
 process_mode = 3
@@ -44,6 +45,7 @@ theme_override_constants/separation = 15
 custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 size_flags_vertical = 4
+theme = ExtResource("2_fhcsi")
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
 text = "JOGO PAUSADO"

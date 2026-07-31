@@ -20,6 +20,10 @@ config/icon="res://icon.svg"
 Global="*uid://dgljd7fy4pqnl"
 FolderBlocker="*uid://5ggox4ncsy4w"
 
+[gui]
+
+theme/custom="uid://cx782b1sg8nsm"
+
 [input]
 
 Right={
