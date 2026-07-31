@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://ywprn46r2bch"]
 
-[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/building_data.gd" id="1_dyh4l"]
+[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="1_dyh4l"]
 [ext_resource type="Texture2D" uid="uid://cvqob8ot47l5x" path="res://Jogo principal/tilesheets/casa.png" id="1_vsb02"]
 
 [resource]

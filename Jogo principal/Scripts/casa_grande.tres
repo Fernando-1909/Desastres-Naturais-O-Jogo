@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://djdwcoyiq0hg3"]
 
-[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/building_data.gd" id="1_32ewd"]
+[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="1_32ewd"]
 
 [resource]
 script = ExtResource("1_32ewd")

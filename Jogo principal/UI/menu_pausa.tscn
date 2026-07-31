@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://wsb5vaomuml2"]
 
-[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/menu_pausa.gd" id="1_wp3wm"]
+[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/Scripts cenas/menu_pausa.gd" id="1_wp3wm"]
 
 [node name="MenuPausa" type="CanvasLayer" unique_id=643096711 node_paths=PackedStringArray("button_continuar", "button_opcoes", "button_menu")]
 process_mode = 3

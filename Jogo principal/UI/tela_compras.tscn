@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bpobe74w27jcc"]
 
-[ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/tela_compras.gd" id="1_6tqbi"]
+[ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/Scripts cenas/tela_compras.gd" id="1_6tqbi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tkcjf"]
 bg_color = Color(0.11612659, 0.116126604, 0.116126515, 1)
