@@ -11,7 +11,9 @@ extends Resource
 @export var eh_unica: bool = false                    # Se true, só permite 1 no mapa
 @export var pode_aprimorar: bool = true               # Se false, desativa botão de upgrade
 @export var nivel_maximo: int = 1                     # Nível máximo
-@export var custo_base: float = 100.0                 # Preço de compra
+@export var custo_base: float = 100.0                 # Preço de compra (dinheiro)
+@export var custo_pedra: float = 0.0                  # Preço de compra (pedra)
+@export var custo_madeira: float = 0.0                # Preço de compra (madeira)
 
 @export_group("Descrições")
 @export_multiline var descricao_curta: String = ""    
@@ -21,12 +23,21 @@ extends Resource
 @export var durabilidade_maxima: float = 100.0        
 @export var ganhos_base: float = 0.0                  
 @export var bonus_populacao: int = 0
+@export var bonus_infraestrutura: float = 0.0
 @export var multiplicador_custo_upgrade: float = 1.5
 
 @export_group("Tiles no TileSet")
-## Coloque aqui TODAS as coordenadas atlas que representam este prédio/variações
+## Coloque aqui TODAS as coordenadas atlas que representam este prédio JÁ CONSTRUÍDO (variações)
 @export var tiles_atlas_coords: Array[Vector2i] = [] 
 @export var source_id: int = 4                       # I D da fonte no TileSet
+## Coordenada atlas do "lote vazio" que representa este prédio ANTES de ser construído
+## (substitui o Custom Data "building_id" do TileSet — deixe (-1,-1) se este prédio
+## não tiver um lote vazio próprio no mapa).
+@export var tile_vazio_atlas_coords: Vector2i = Vector2i(-1, -1)
+
+## Retorna true se este prédio tem um tile de "lote vazio" configurado
+func tem_tile_vazio() -> bool:
+	return tile_vazio_atlas_coords != Vector2i(-1, -1)
 
 ## Retorna uma coordenada específica pelo índice, ou sorteia se o índice for -1
 func get_atlas_coord_para_construir(indice: int = -1) -> Vector2i:

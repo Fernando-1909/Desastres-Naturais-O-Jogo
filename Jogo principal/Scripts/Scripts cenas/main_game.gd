@@ -125,17 +125,19 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	if tile_data == null:
 		return
 
-	# 3. Descobre o building_id configurado no Custom Data do TileSet
-	var building_id: String = tile_data.get_custom_data("building_id")
-	if building_id == "":
-		building_id = "casa_simples" # Fallback padrão
-
-	var b_data = _buscar_data_por_id(building_id)
-	if not b_data: return
+	# 3. Descobre a qual BuildingData esse tile pertence, com base nas
+	#    coordenadas do atlas (construído ou lote vazio) — sem custom data.
+	var b_data = _buscar_data_por_atlas_coords(atlas_coords_atuais)
+	
+	if b_data == null:
+		# Nenhum prédio conhecido usa esse sprite: mantém o fallback padrão de antes.
+		b_data = _buscar_data_por_id("casa_simples")
+		if not b_data:
+			return
 	
 	_building_data_selecionado = b_data
 
-	# 4. DECISÃO ESCALÁVEL: O tile clicado é uma variação gráfica deste prédio?
+	# 4. DECISÃO ESCALÁVEL: O tile clicado é uma variação gráfica já construída deste prédio?
 	if b_data.tiles_atlas_coords.has(atlas_coords_atuais):
 		# Já é um prédio construído! Registra na memória e abre a Tela de Upgrade/Detalhes
 		var nova_instancia = BuildingInstance.new(b_data, pos_tile)
@@ -181,13 +183,13 @@ func _escanear_mapa_inicial() -> void:
 
 
 func _registrar_predio_se_existir(pos: Vector2i, tile_data: TileData, atlas_coords: Vector2i) -> void:
-	if tile_data:
-		var b_id = tile_data.get_custom_data("building_id")
-		if b_id != "":
-			var b_data = _buscar_data_por_id(b_id)
-			if b_data and b_data.tiles_atlas_coords.has(atlas_coords):
-				# Registra na memória a casa que já veio desenhada no mapa
-				construcoes_no_mapa[pos] = BuildingInstance.new(b_data, pos)
+	if not tile_data:
+		return
+	
+	var b_data = _buscar_data_por_atlas_coords(atlas_coords)
+	if b_data and b_data.tiles_atlas_coords.has(atlas_coords):
+		# Registra na memória a casa que já veio desenhada no mapa
+		construcoes_no_mapa[pos] = BuildingInstance.new(b_data, pos)
 
 
 # ==============================================================================
@@ -370,6 +372,19 @@ func _buscar_data_por_id(p_id: String) -> BuildingData:
 			return b_data
 	return null
 
+# Substitui o antigo Custom Data "building_id": descobre a qual BuildingData
+# uma coordenada do atlas pertence, seja ela um prédio já construído
+# (tiles_atlas_coords) ou o lote vazio dele (tile_vazio_atlas_coords).
+func _buscar_data_por_atlas_coords(coords: Vector2i) -> BuildingData:
+	for b_data in banco_edificios:
+		if not b_data:
+			continue
+		if b_data.tiles_atlas_coords.has(coords):
+			return b_data
+		if b_data.tem_tile_vazio() and b_data.tile_vazio_atlas_coords == coords:
+			return b_data
+	return null
+
 func _executar_fallback_por_string(tipo: String) -> void:
 	match tipo:
 		"prefeitura":
@@ -429,6 +444,16 @@ func _on_compra_confirmada(nome: String) -> void:
 		b_data = _buscar_data_por_id("casa_simples")
 		
 	if b_data and _celula_selecionada != Vector2i(-1, -1):
+		# Só efetua a compra se houver dinheiro suficiente
+		if Global.dinheiro < b_data.custo_base:
+			print("Dinheiro insuficiente para comprar '", b_data.nome, "'! Necessário: ", b_data.custo_base, " | Você tem: ", Global.dinheiro)
+			_resetar_estado_construcoes()
+			return
+		
+		# Consome o dinheiro
+		Global.dinheiro -= b_data.custo_base
+		print("Dinheiro gasto: ", b_data.custo_base, " | Restante: ", Global.dinheiro)
+		
 		# 1. Cria a instancia na memoria e salva na coordenada do dicionario
 		var nova_instancia = BuildingInstance.new(b_data, _celula_selecionada)
 		construcoes_no_mapa[_celula_selecionada] = nova_instancia
@@ -452,15 +477,29 @@ func _on_aprimoramento_confirmado(nome: String) -> void:
 	# Incrementa o nivel do predio na posicao selecionada
 	if _celula_selecionada in construcoes_no_mapa and construcoes_no_mapa[_celula_selecionada] != null:
 		var predio: BuildingInstance = construcoes_no_mapa[_celula_selecionada]
-		predio.nivel_atual += 1
-		print("Nivel atualizado para: ", predio.nivel_atual)
+		var custo_upgrade = predio.get_custo_upgrade()
+		
+		if Global.dinheiro < custo_upgrade:
+			print("Dinheiro insuficiente para aprimorar '", nome, "'! Necessário: ", custo_upgrade, " | Você tem: ", Global.dinheiro)
+		else:
+			Global.dinheiro -= custo_upgrade
+			predio.nivel_atual += 1
+			print("Dinheiro gasto no upgrade: ", custo_upgrade, " | Restante: ", Global.dinheiro)
+			print("Nivel atualizado para: ", predio.nivel_atual)
 	else:
 		# Fallback: Procura por correspondencia de nome
 		for pos in construcoes_no_mapa:
 			var predio: BuildingInstance = construcoes_no_mapa[pos]
 			if predio and predio.data and predio.data.nome.to_upper() == nome.to_upper():
-				predio.nivel_atual += 1
-				print("Nivel atualizado para: ", predio.nivel_atual)
+				var custo_upgrade = predio.get_custo_upgrade()
+				
+				if Global.dinheiro < custo_upgrade:
+					print("Dinheiro insuficiente para aprimorar '", nome, "'! Necessário: ", custo_upgrade, " | Você tem: ", Global.dinheiro)
+				else:
+					Global.dinheiro -= custo_upgrade
+					predio.nivel_atual += 1
+					print("Dinheiro gasto no upgrade: ", custo_upgrade, " | Restante: ", Global.dinheiro)
+					print("Nivel atualizado para: ", predio.nivel_atual)
 				break
 			
 	_resetar_estado_construcoes()

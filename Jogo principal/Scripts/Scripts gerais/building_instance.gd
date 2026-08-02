@@ -18,9 +18,17 @@ func get_durabilidade_pct() -> float:
 	if data.durabilidade_maxima <= 0: return 100.0
 	return (durabilidade_atual / data.durabilidade_maxima) * 100.0
 
-# Calcula o custo do próximo upgrade
+# Calcula o custo do próximo upgrade (dinheiro)
 func get_custo_upgrade() -> float:
 	return data.custo_base * (data.multiplicador_custo_upgrade ** nivel_atual)
+
+# Calcula o custo do próximo upgrade (pedra)
+func get_custo_upgrade_pedra() -> float:
+	return data.custo_pedra * (data.multiplicador_custo_upgrade ** nivel_atual)
+
+# Calcula o custo do próximo upgrade (madeira)
+func get_custo_upgrade_madeira() -> float:
+	return data.custo_madeira * (data.multiplicador_custo_upgrade ** nivel_atual)
 
 # Calcula os ganhos atuais baseados no nível
 func get_ganhos_atuais() -> float:
