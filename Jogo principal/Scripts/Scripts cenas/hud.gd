@@ -10,6 +10,7 @@ var freecam: Camera2D
 var scene_camera: Camera2D
 var freecam_active := false
 var botoes_bloqueaveis = []
+var missao_check_aberta := false  # true quando a tela de missão está aberta só pra consulta (via ButtonMissaoCheck)
 
 func _ready() -> void:
 	await get_tree().create_timer(0.5).timeout
@@ -163,6 +164,7 @@ func _process(_delta: float) -> void:
 	_update_popularidade_label()
 	_update_missao_info_label()
 	_update_missao_recompensa_label()
+	_update_button_missao_check()
 
 func _update_dinheiro_label() -> void:
 	if dinheiro_label == null:
@@ -197,6 +199,12 @@ func _update_missao_recompensa_label() -> void:
 			"\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
 	else:
 		missao_recompensa_label.text = ""
+
+func _update_button_missao_check() -> void:
+	if not has_node("ButtonMissaoCheck"):
+		return
+	# O botão só aparece se existe uma missão ativa E ela já foi aceita
+	$ButtonMissaoCheck.visible = (Global.missao_escolhida != null and Global.missao_aceita)
 
 
 func _on_button_missao_concluir_pressed() -> void:
@@ -236,3 +244,35 @@ func _on_button_missao_concluir_pressed() -> void:
 	Global.missao_aceita = false
 	Global.missao_atual_turnos = 0
 	Global.chance_missao = 30
+
+
+func _on_button_missao_check_pressed() -> void:
+	# Só abre a tela de checagem se existe missão ativa e aceita
+	if Global.missao_escolhida == null or not Global.missao_aceita:
+		return
+	
+	missao_check_aberta = true
+	
+	# Esconde os botões de Aceitar/Recusar (não fazem sentido nesse modo)
+	$MissaoContainer/VBoxContainer/HBoxContainer.visible = false
+	
+	$MissaoContainer.visible = true
+
+
+func _fechar_missao_check() -> void:
+	missao_check_aberta = false
+	$MissaoContainer.visible = false
+	
+	# Restaura os botões de Aceitar/Recusar pra próxima vez que uma missão for oferecida
+	$MissaoContainer/VBoxContainer/HBoxContainer.visible = true
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	# Fecha a tela de checagem se o jogador clicar fora dela
+	if not missao_check_aberta:
+		return
+	
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var rect: Rect2 = $MissaoContainer.get_global_rect()
+		if not rect.has_point(event.position):
+			_fechar_missao_check()
