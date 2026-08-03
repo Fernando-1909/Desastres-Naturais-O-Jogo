@@ -10,7 +10,7 @@ extends Node2D
 
 # REFERÊNCIA À TELA DE COMPRAS E AO TILEMAP
 @onready var tela_compras: TelaCompras = $TelaCompras
-@onready var tilemap_constructions: TileMapLayer = $TileMapConstructions 
+@onready var tilemap_constructions: TileMapLayer = $TileMapConstructions
 
 # REFERÊNCIA AOS BOTÕES DE TESTE
 @onready var button_teste_compra: Button = $ButtonTesteCompra
@@ -20,9 +20,16 @@ extends Node2D
 # ==============================================================================
 # BANCO DE DADOS E INSTÂNCIAS DE EDIFÍCIOS
 # ==============================================================================
-## Arraste seus arquivos .tres aqui pelo Inspector (ex: casa_simples.tres, prefeitura.tres)
-@export var banco_edificios: Array[BuildingData] = [] 
+@export_group("Banco de Edifícios")
+## Pasta onde ficam armazenados todos os seus arquivos .tres de construções
+@export var pasta_edificios: String = "res://recursos/predios/"
+## Fallback manual: se preferir arrastar arquivos .tres pelo Inspector
+@export var banco_edificios_manual: Array[BuildingData] = []
 @export var tile_map: TileMap
+
+# Dicionário dinâmico carregado automaticamente
+# Chave = String ("casa_simples", "prefeitura") | Valor = BuildingData
+var banco_edificios: Dictionary = {}
 
 # Guarda todas as construções vivas no mapa!
 # Chave = Vector2i(x, y) | Valor = objeto BuildingInstance
@@ -42,6 +49,9 @@ var freecam_enabled = false
 # CICLO DE VIDA (READY & INPUT)
 # ==============================================================================
 func _ready() -> void:
+	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
+	_carregar_todos_os_edificios()
+
 	# Sistema de recursos inicial
 	Global.pedra = 150
 	Global.madeira = 200
@@ -66,6 +76,41 @@ func _ready() -> void:
 
 	# Escaneia o mapa para registrar prédios que já vieram desenhados no editor
 	_escanear_mapa_inicial()
+
+
+# ==============================================================================
+# CARREGADOR AUTOMÁTICO DE RECURSOS (.TRES)
+# ==============================================================================
+func _carregar_todos_os_edificios() -> void:
+	banco_edificios.clear()
+	
+	# 1. Carrega arquivos passados manualmente no Inspector (se houver)
+	for b_data in banco_edificios_manual:
+		if b_data and b_data.id != "":
+			banco_edificios[b_data.id.to_lower()] = b_data
+			print("🏢 Edifício (manual) registrado: ", b_data.id)
+
+	# 2. Escaneia a pasta no projeto em busca de arquivos .tres
+	if DirAccess.dir_exists_absolute(pasta_edificios):
+		var dir = DirAccess.open(pasta_edificios)
+		if dir:
+			dir.list_dir_begin()
+			var nome_arquivo = dir.get_next()
+			
+			while nome_arquivo != "":
+				if not dir.current_is_dir():
+					# Trata extensão no editor e em jogos exportados (.remap)
+					var nome_limpo = nome_arquivo.replace(".remap", "")
+					if nome_limpo.ends_with(".tres"):
+						var caminho_completo = pasta_edificios.path_join(nome_limpo)
+						var recurso = load(caminho_completo) as BuildingData
+						if recurso and recurso.id != "":
+							banco_edificios[recurso.id.to_lower()] = recurso
+							print("🏢 Edifício (automático) carregado: ", recurso.id)
+				nome_arquivo = dir.get_next()
+			dir.list_dir_end()
+	else:
+		print("⚠️ Pasta de edifícios '", pasta_edificios, "' não encontrada no projeto! Crie a pasta ou configure no Inspetor.")
 
 
 # ==============================================================================
@@ -125,26 +170,32 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	if tile_data == null:
 		return
 
-	# 3. Descobre a qual BuildingData esse tile pertence, com base nas
-	#    coordenadas do atlas (construído ou lote vazio) — sem custom data.
-	var b_data = _buscar_data_por_atlas_coords(atlas_coords_atuais)
-	
+	# 3. BUSCA INTELIGENTE:
+	var b_data: BuildingData = null
+
+	# PRIORIDADE 1: Lê o Custom Data "building_id" configurado no TileSet
+	var building_id_custom = tile_data.get_custom_data("building_id")
+	if building_id_custom and str(building_id_custom).strip_edges() != "":
+		b_data = _buscar_data_por_id(str(building_id_custom))
+
+	# PRIORIDADE 2: Se não houver Custom Data no tile, busca pelas coordenadas configuradas no .tres
 	if b_data == null:
-		# Nenhum prédio conhecido usa esse sprite: mantém o fallback padrão de antes.
+		b_data = _buscar_data_por_atlas_coords(atlas_coords_atuais)
+	
+	# PRIORIDADE 3: Fallback de segurança
+	if b_data == null:
 		b_data = _buscar_data_por_id("casa_simples")
 		if not b_data:
 			return
 	
 	_building_data_selecionado = b_data
 
-	# 4. DECISÃO ESCALÁVEL: O tile clicado é uma variação gráfica já construída deste prédio?
+	# 4. DECISÃO: O tile clicado é um prédio pronto ou um terreno/água de compra?
 	if b_data.tiles_atlas_coords.has(atlas_coords_atuais):
-		# Já é um prédio construído! Registra na memória e abre a Tela de Upgrade/Detalhes
 		var nova_instancia = BuildingInstance.new(b_data, pos_tile)
 		construcoes_no_mapa[pos_tile] = nova_instancia
 		_abrir_modo_upgrade_instancia(nova_instancia)
 	else:
-		# É um terreno vago/água de compra! Abre a Tela de Compra
 		_abrir_modo_compra_para_dados(b_data)
 
 
@@ -168,14 +219,12 @@ func _on_tile_clicado(argument) -> void:
 # ==============================================================================
 func _escanear_mapa_inicial() -> void:
 	if tilemap_constructions:
-		# TileMapLayer: get_used_cells() não exige argumentos
 		for pos in tilemap_constructions.get_used_cells():
 			var tile_data = tilemap_constructions.get_cell_tile_data(pos)
 			var atlas_coords = tilemap_constructions.get_cell_atlas_coords(pos)
 			_registrar_predio_se_existir(pos, tile_data, atlas_coords)
 			
 	elif tile_map:
-		# TileMap tradicional: exige a camada 0 como argumento
 		for pos in tile_map.get_used_cells(0):
 			var tile_data = tile_map.get_cell_tile_data(0, pos)
 			var atlas_coords = tile_map.get_cell_atlas_coords(0, pos)
@@ -366,17 +415,18 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 		b_data.pode_aprimorar and (predio.nivel_atual < b_data.nivel_maximo)
 	)
 
+# Busca O(1) diretamente no Dicionário
 func _buscar_data_por_id(p_id: String) -> BuildingData:
-	for b_data in banco_edificios:
-		if b_data and b_data.id.to_lower() == p_id.to_lower():
-			return b_data
+	var chave = p_id.to_lower()
+	if banco_edificios.has(chave):
+		return banco_edificios[chave]
 	return null
 
 # Substitui o antigo Custom Data "building_id": descobre a qual BuildingData
 # uma coordenada do atlas pertence, seja ela um prédio já construído
 # (tiles_atlas_coords) ou o lote vazio dele (tile_vazio_atlas_coords).
 func _buscar_data_por_atlas_coords(coords: Vector2i) -> BuildingData:
-	for b_data in banco_edificios:
+	for b_data in banco_edificios.values():
 		if not b_data:
 			continue
 		if b_data.tiles_atlas_coords.has(coords):

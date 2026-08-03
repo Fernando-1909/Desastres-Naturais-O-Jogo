@@ -7,7 +7,10 @@ var turno: int
 var renda: int
 var madeira: int
 var pedra: int
+var idioma_atual: String = "pt"
 
+# Sinal emitido sempre que o idioma do jogo e alterado
+signal idioma_alterado(novo_idioma: String)
 
 # Variáveis de desastre
 var aquecimento: int
@@ -70,3 +73,18 @@ var missoes = {
 		"popularidade": 20
 	}
 }
+
+func _ready() -> void:
+	# Detecta o idioma do sistema operacional ou carrega o padrao
+	var idioma_sistema = TranslationServer.get_locale().left(2)
+	if idioma_sistema in ["pt", "en"]:
+		alterar_idioma(idioma_sistema)
+	else:
+		alterar_idioma("pt")
+
+## Função global para alterar o idioma em tempo de execução
+func alterar_idioma(codigo_lang: String) -> void:
+	idioma_atual = codigo_lang
+	TranslationServer.set_locale(codigo_lang)
+	idioma_alterado.emit(codigo_lang)
+	print("Idioma do jogo alterado para: ", codigo_lang)

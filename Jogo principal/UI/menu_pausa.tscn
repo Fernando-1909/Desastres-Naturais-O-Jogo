@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://wsb5vaomuml2"]
 
-[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/menu_pausa.gd" id="1_wp3wm"]
+[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/Scripts cenas/menu_pausa.gd" id="1_wp3wm"]
 [ext_resource type="Theme" uid="uid://cx782b1sg8nsm" path="res://Jogo principal/UI/Temas/base.tres" id="2_fhcsi"]
 
 [node name="MenuPausa" type="CanvasLayer" unique_id=643096711 node_paths=PackedStringArray("button_continuar", "button_opcoes", "button_menu")]
@@ -48,7 +48,7 @@ size_flags_vertical = 4
 theme = ExtResource("2_fhcsi")
 theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
-text = "JOGO PAUSADO"
+text = "MENU_PAUSA"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -69,14 +69,106 @@ theme_override_constants/separation = 15
 [node name="ButtonContinuar" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=150545187]
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
-text = "CONTINUAR"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonContinuar" unique_id=1487881233]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
 
 [node name="ButtonOpcoes" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=1928695859]
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
-text = "OPÇÕES"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonOpcoes" unique_id=281790529]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
 
 [node name="ButtonMenu" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=711454347]
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
-text = "MENU"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonMenu" unique_id=1233872568]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="PainelOpcoes" type="VBoxContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna" unique_id=2063119442]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="ContainerIdiomas" type="HBoxContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes" unique_id=521858629]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="ButtonIdiomaPT" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ContainerIdiomas" unique_id=1828867797]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ContainerIdiomas/ButtonIdiomaPT" unique_id=898243484]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="ButtonIdiomaEN" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ContainerIdiomas" unique_id=943481233]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ContainerIdiomas/ButtonIdiomaEN" unique_id=972825992]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="ButtonVoltar" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes" unique_id=1659402904]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ButtonVoltar" unique_id=544102508]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1

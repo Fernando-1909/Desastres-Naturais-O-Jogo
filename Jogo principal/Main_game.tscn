@@ -1,11 +1,8 @@
 [gd_scene format=4 uid="uid://5lfugjx2eqnp"]
 
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/Scripts/Scripts cenas/main_game.gd" id="1_bvlld"]
-[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="2_tkcjf"]
 [ext_resource type="Texture2D" uid="uid://ccbwjdyijokgd" path="res://Jogo principal/tilesheets/Tiles_Meni_new.png" id="3_1woaa"]
-[ext_resource type="Resource" uid="uid://d8wt5ewj5bjo" path="res://Jogo principal/Scripts/Prefeitura.tres" id="3_fo8d0"]
 [ext_resource type="Texture2D" uid="uid://skw0w28d2se7" path="res://Jogo principal/tilesheets/Tilesheet_Cons.png" id="4_botex"]
-[ext_resource type="Resource" uid="uid://ywprn46r2bch" path="res://Jogo principal/Scripts/casa_simples.tres" id="4_fo8d0"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
 [ext_resource type="Texture2D" uid="uid://bvg7287u2272h" path="res://Jogo principal/tilesheets/tiles_ground.png" id="6_2cq4x"]
 [ext_resource type="Texture2D" uid="uid://cg5qkrc8cb38v" path="res://Jogo principal/tilesheets/aguaplaceholder.png" id="6_fo8d0"]
@@ -471,15 +468,15 @@ sources/0 = SubResource("TileSetAtlasSource_3axm1")
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a6fgx"]
 texture = ExtResource("6_fo8d0")
 texture_region_size = Vector2i(32, 32)
+0:0/next_alternative_id = 2
 0:0/0 = 0
+0:0/0/custom_data_2 = "casa_simples"
+0:0/1 = 1
+0:0/1/custom_data_2 = "prefeitura"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fj0mr"]
 texture = ExtResource("7_2cq4x")
 texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-0:0/0/custom_data_0 = true
-0:0/0/custom_data_1 = "agua"
-0:0/0/custom_data_2 = "casa_simples"
 1:0/0 = 0
 1:0/0/texture_origin = Vector2i(0, 3)
 1:0/0/custom_data_0 = true
@@ -590,7 +587,7 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(528, 503, 435, 503, 439
 [node name="MainGame" type="Node2D" unique_id=873718037]
 y_sort_enabled = true
 script = ExtResource("1_bvlld")
-banco_edificios = Array[ExtResource("2_tkcjf")]([ExtResource("4_fo8d0"), ExtResource("3_fo8d0")])
+pasta_edificios = "res://Jogo principal/Scripts/Scripts cons/"
 
 [node name="TileMapGround" type="TileMapLayer" parent="." unique_id=1540127578]
 texture_filter = 1
@@ -605,7 +602,7 @@ tile_set = SubResource("TileSet_l2221")
 [node name="TileMapConstructions" type="TileMapLayer" parent="." unique_id=639958366]
 texture_filter = 1
 scale = Vector2(3, 3)
-tile_map_data = PackedByteArray("AAAGAAQABAABAAAAAAAFAAQABAAAAAAAAAAEAAIABAACAAAAAAAHAAQABAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAGAAQABAABAAAAAAAEAAIABAACAAAAAAAFAAQAAwAAAAAAAAAHAAQAAwAAAAAAAAAGAAIAAwAAAAAAAQA=")
 tile_set = SubResource("TileSet_3axm1")
 script = SubResource("GDScript_tkcjf")
 

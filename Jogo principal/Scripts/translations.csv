@@ -1,0 +1,37 @@
+keys,pt,en
+# --- UI & MENUS ---
+MENU_JOGAR,"Jogar","Play"
+MENU_PAUSA,"Jogo Pausado","Game Paused"
+MENU_CONTINUAR,"Continuar","Resume"
+MENU_OPCOES,"Opções","Options"
+MENU_IDIOMA,"Idioma","Language"
+MENU_VOLTAR,"Voltar","Back"
+MENU_SAIR,"Sair do Jogo","Quit Game"
+BTN_PT,"Português","Portuguese"
+BTN_EN,"English","English"
+
+# --- RECURSOS E HUD ---
+HUD_DINHEIRO,"Dinheiro","Money"
+HUD_MADEIRA,"Madeira","Wood"
+HUD_PEDRA,"Pedra","Stone"
+HUD_POPULARIDADE,"Popularidade","Popularity"
+
+# --- EDIFÍCIOS & LOJA ---
+PREDIO_CASA_SIMPLES_NOME,"Casa Residencial","Residential House"
+PREDIO_CASA_SIMPLES_DESC,"Aumenta a capacidade de moradores e a receita de impostos.","Increases resident capacity and tax revenue."
+PREDIO_PREFEITURA_NOME,"Prefeitura","City Hall"
+PREDIO_PREFEITURA_DESC,"Sede administrativa da cidade. Libera novas áreas.","City administrative headquarters. Unlocks new areas."
+
+# --- DIÁLOGOS ---
+TXT_BR_BOAS_VINDAS,"[wave amp=30 freq=3]Selecione seu idioma / Select your language[/wave]","[wave amp=30 freq=3]Select your language / Selecione seu idioma[/wave]"
+OPT_PT,"[b][color=green]✔ Português[/color][/b]","[b][color=green]✔ Portuguese[/color][/b]"
+OPT_EN,"[b][color=aqua]✔ English[/color][/b]","[b][color=aqua]✔ English[/color][/b]"
+TXT_CONFIRM_PT,"Você escolheu [color=green]Português[/color]! Vamos proteger nossa cidade.","You chose [color=green]Portuguese[/color]! Let's protect our city."
+TXT_CONFIRM_EN,"You chose [color=aqua]English[/color]! Let's protect our city.","You chose [color=aqua]English[/color]! Let's protect our city."
+TXT_COMUM_1,"Prefeito! Recebemos um [pulse color=red freq=2.0][b]ALERTA URGENTE[/b][/pulse]. Um desastre meteorológico está se aproximando!","Mayor! We received an [pulse color=red freq=2.0][b]URGENT ALERT[/b][/pulse]. A disaster is approaching!"
+TXT_COMUM_2,"Precisamos gerenciar nossos recursos [shake rate=20 level=10][b]RÁPIDO[/b][/shake].","We need to manage our resources [shake rate=20 level=10][b]QUICKLY[/b][/shake]."
+TXT_PERGUNTA_ACAO,"[wave amp=20 freq=2]Qual será a sua estratégia de prevenção imediata?[/wave]","[wave amp=20 freq=2]What will be your immediate prevention strategy?[/wave]"
+OPT_DESASTRE_1,"[color=lightblue]🌊 Drenagem de Enchentes[/color]","[color=lightblue]🌊 Flood Drainage[/color]"
+OPT_DESASTRE_2,"[color=orange]🌋 Reforço de Terremotos[/color]","[color=orange]🌋 Earthquake Reinforcement[/color]"
+TXT_RAMO_ENCHENTE,"Excelente. Investiremos em [rainbow freq=0.5 sat=100 val=100]bueiros inteligentes[/rainbow].","Excellent. We will invest in [rainbow freq=0.5 sat=100 val=100]smart drains[/rainbow]."
+TXT_RAMO_TERREMOTO,"Ótimo. Vamos aplicar [b]amortecedores nas fundações[/b].","Great. Let's apply [b]dampers to foundations[/b]."

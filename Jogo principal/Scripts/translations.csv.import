@@ -8,7 +8,7 @@ uid="uid://b25qendn0lhkt"
 
 files=["res://Jogo principal/Scripts/dialogues.pt.translation", "res://Jogo principal/Scripts/dialogues.en.translation"]
 
-source_file="res://Jogo principal/Scripts/dialogues.csv"
+source_file="res://Jogo principal/Scripts/translations.csv"
 dest_files=["res://Jogo principal/Scripts/dialogues.pt.translation", "res://Jogo principal/Scripts/dialogues.en.translation"]
 
 [params]

@@ -23,7 +23,6 @@ extends Resource
 @export var durabilidade_maxima: float = 100.0        
 @export var ganhos_base: float = 0.0                  
 @export var bonus_populacao: int = 0
-@export var bonus_infraestrutura: float = 0.0
 @export var multiplicador_custo_upgrade: float = 1.5
 
 @export_group("Tiles no TileSet")
