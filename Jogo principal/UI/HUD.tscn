@@ -37,9 +37,10 @@ layout_mode = 2
 layout_mode = 2
 text = "💰"
 
-[node name="DinheiroLabel" type="Label" parent="DinheiroContainer/HBoxContainer" unique_id=593072602]
+[node name="DinheiroLabel" type="RichTextLabel" parent="DinheiroContainer/HBoxContainer" unique_id=1804133993]
+custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
-text = "f\"\""
+text = "Dinheiro:"
 
 [node name="PopularidadeContainer" type="PanelContainer" parent="." unique_id=1535273656]
 layout_mode = 1
@@ -63,11 +64,12 @@ layout_mode = 2
 layout_mode = 2
 text = "⭐"
 
-[node name="PopularidadeLabel" type="Label" parent="PopularidadeContainer/HBoxContainer" unique_id=430574769]
+[node name="PopularidadeLabel" type="RichTextLabel" parent="PopularidadeContainer/HBoxContainer" unique_id=33174454]
+custom_minimum_size = Vector2(145, 0)
 layout_mode = 2
-text = "Popularidade: 75%"
+text = "Popularidade:"
 
-[node name="DesastreContainer" type="PanelContainer" parent="." unique_id=1763884610]
+[node name="TurnoContainer" type="PanelContainer" parent="." unique_id=1763884610]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -76,38 +78,26 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -76.0
 offset_top = -310.0
-offset_right = 112.0
-offset_bottom = -270.0
+offset_right = 34.0
+offset_bottom = -285.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DesastreContainer" unique_id=1374103958]
+[node name="HBoxContainer" type="HBoxContainer" parent="TurnoContainer" unique_id=1374103958]
 layout_mode = 2
+theme_override_constants/separation = 4
 
-[node name="Icon" type="Label" parent="DesastreContainer/HBoxContainer" unique_id=1740435829]
+[node name="Icon" type="Label" parent="TurnoContainer/HBoxContainer" unique_id=1740435829]
 layout_mode = 2
 text = "🌪"
 
-[node name="TurnoLabel" type="Label" parent="DesastreContainer/HBoxContainer" unique_id=584210493]
+[node name="TurnoLabel" type="RichTextLabel" parent="TurnoContainer/HBoxContainer" unique_id=122377103]
+custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
-text = "Turno: 0"
-
-[node name="ButtonPausa" type="Button" parent="." unique_id=1989163776]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 580.0
-offset_top = -298.0
-offset_right = 656.0
-offset_bottom = -267.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2, 2)
-text = "⏸ Pausar"
+theme_override_font_sizes/normal_font_size = 16
+text = "turno:
+"
 
 [node name="ButtonMapa" type="Button" parent="." unique_id=2137597441]
 layout_mode = 1
@@ -124,15 +114,6 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
 text = "🗺 Abrir mapa"
-
-[node name="BotaoTeste" type="Button" parent="." unique_id=2035211888]
-layout_mode = 0
-offset_left = -956.0
-offset_top = -268.0
-offset_right = -891.0
-offset_bottom = -237.0
-scale = Vector2(2, 2)
-text = "Teste"
 
 [node name="ButtonTurno" type="Button" parent="." unique_id=1577604004]
 custom_minimum_size = Vector2(28, 28)
@@ -306,8 +287,18 @@ theme_override_colors/font_hover_color = Color(0.7330022, 1.6484782e-06, 3.85046
 theme_override_font_sizes/font_size = 23
 text = "Recusar"
 
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1928433690]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" unique_id=1839849179]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer" unique_id=863028835]
+layout_mode = 2
+
 [connection signal="pressed" from="ButtonMapa" to="." method="_on_button_mapa_pressed"]
-[connection signal="pressed" from="BotaoTeste" to="." method="_on_botao_teste_pressed"]
 [connection signal="pressed" from="ButtonTurno" to="." method="_on_button_turno_pressed"]
 [connection signal="pressed" from="ButtonMissaoConcluir" to="." method="_on_button_missao_concluir_pressed"]
 [connection signal="pressed" from="ButtonMissaoCheck" to="." method="_on_button_missao_check_pressed"]

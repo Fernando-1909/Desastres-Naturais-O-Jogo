@@ -44,10 +44,6 @@ func _on_button_mapa_pressed() -> void:
 	$MapOverlay.visible = !$MapOverlay.visible
 
 
-func _on_botao_teste_pressed() -> void:
-	FolderBlocker.liberarPraia()
-
-
 func _on_button_turno_pressed() -> void:
 	# Verifica se o jogo está pausado
 	if Global.jogo_pausado:
@@ -152,9 +148,9 @@ func _on_recusar_missao_pressed() -> void:
 
 
 # Labels
-@onready var dinheiro_label: Label = $DinheiroContainer/HBoxContainer/DinheiroLabel
-@onready var turno_label: Label = $DesastreContainer/HBoxContainer/TurnoLabel
-@onready var popularidade_label: Label = $PopularidadeContainer/HBoxContainer/PopularidadeLabel
+@onready var dinheiro_label: RichTextLabel = $DinheiroContainer/HBoxContainer/DinheiroLabel
+@onready var turno_label: RichTextLabel = $TurnoContainer/HBoxContainer/TurnoLabel
+@onready var popularidade_label: RichTextLabel = $PopularidadeContainer/HBoxContainer/RichTextLabel
 @onready var missao_info_label: Label = $MissaoContainer/VBoxContainer/MissaoInfo
 @onready var missao_recompensa_label: Label = $MissaoContainer/VBoxContainer/MissaoRecompensa
 
