@@ -231,7 +231,6 @@ grow_vertical = 2
 text = "X"
 
 [node name="MissaoContainer" type="PanelContainer" parent="." unique_id=1133557364]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -249,19 +248,32 @@ grow_vertical = 2
 layout_mode = 2
 theme_override_constants/separation = 35
 
-[node name="MissiaoNome" type="Label" parent="MissaoContainer/VBoxContainer" unique_id=1664522000]
+[node name="Missaolabel" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=1556286470]
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+size_flags_vertical = 3
 text = "Missão!"
-horizontal_alignment = 1
 
-[node name="MissaoInfo" type="Label" parent="MissaoContainer/VBoxContainer" unique_id=1671785791]
+[node name="MissaoInfo" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=1201003855]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "infomissao"
+size_flags_vertical = 3
+mouse_filter = 2
+bbcode_enabled = true
+text = "Informação"
+fit_content = true
+scroll_active = false
 
-[node name="MissaoRecompensa" type="Label" parent="MissaoContainer/VBoxContainer" unique_id=1279959723]
+[node name="MissaoRecompensa" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=798303370]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "awawawa"
+size_flags_vertical = 3
+mouse_filter = 2
+bbcode_enabled = true
+text = "awawaaa
+"
+fit_content = true
+scroll_active = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MissaoContainer/VBoxContainer" unique_id=248169653]
 layout_mode = 2
