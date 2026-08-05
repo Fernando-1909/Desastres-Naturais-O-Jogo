@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://do6xv08q8w271"
-path="res://.godot/imported/Alkhemikal.ttf-290c84f7aa675facf1ea413aed0625a5.fontdata"
+uid="uid://cdoptvf8o6kgs"
+path="res://.godot/imported/ari-w9500-condensed-bold.ttf-9dbc0e51363c11feb6ca1220f1c35a16.fontdata"
 
 [deps]
 
-source_file="res://Jogo principal/UI/Temas/Alkhemikal.ttf"
-dest_files=["res://.godot/imported/Alkhemikal.ttf-290c84f7aa675facf1ea413aed0625a5.fontdata"]
+source_file="res://Jogo principal/UI/Temas/fontes/ari-w9500-condensed-bold.ttf"
+dest_files=["res://.godot/imported/ari-w9500-condensed-bold.ttf-9dbc0e51363c11feb6ca1220f1c35a16.fontdata"]
 
 [params]
 
