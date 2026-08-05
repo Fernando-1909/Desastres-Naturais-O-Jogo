@@ -1,7 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://cx782b1sg8nsm"]
 
-[ext_resource type="FontFile" uid="uid://do6xv08q8w271" path="res://Jogo principal/UI/Temas/Alkhemikal.ttf" id="1_v4j2l"]
-[ext_resource type="FontFile" uid="uid://3wnomst056rh" path="res://Menu Principal/ARCADECLASSIC.TTF" id="2_tyheb"]
+[ext_resource type="FontFile" uid="uid://6tq6fxretjq6" path="res://Jogo principal/UI/Temas/fontes/ari-w9500-bold.ttf" id="1_v4j2l"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cln5s"]
 content_margin_left = 4.0
@@ -74,13 +73,16 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ixw8s"]
+bg_color = Color(0.29371503, 0.2379, 0.61, 0.76862746)
+
 [resource]
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
 Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
 Button/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
 Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_outline_color = Color(0.3499144, 0.3499144, 1.3280845, 1)
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
 Button/colors/icon_focus_color = Color(1, 1, 1, 1)
@@ -92,8 +94,7 @@ Button/constants/align_to_largest_stylebox = 0
 Button/constants/h_separation = 4
 Button/constants/icon_max_width = 0
 Button/constants/line_spacing = 0
-Button/constants/outline_size = 6
-Button/constants/outline_size1 = 8
+Button/constants/outline_size = 12
 Button/font_sizes/font_size = 26
 Button/fonts/font = ExtResource("1_v4j2l")
 Button/styles/disabled = SubResource("StyleBoxFlat_cln5s")
@@ -101,9 +102,17 @@ Button/styles/focus = SubResource("StyleBoxFlat_7elu7")
 Button/styles/hover = SubResource("StyleBoxFlat_2hkha")
 Button/styles/normal = SubResource("StyleBoxFlat_a53gv")
 Button/styles/pressed = SubResource("StyleBoxFlat_60nf1")
-Label/fonts/font = ExtResource("2_tyheb")
+Label/fonts/font = ExtResource("1_v4j2l")
 MarginContainer/constants/margin_bottom = 10
 MarginContainer/constants/margin_left = 10
 MarginContainer/constants/margin_right = 10
 MarginContainer/constants/margin_top = 10
-RichTextLabel/colors/default_color = Color(1, 0.05490196, 1, 1)
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_ixw8s")
+RichTextLabel/colors/default_color = Color(0.050980393, 0.22352941, 1, 1)
+RichTextLabel/colors/font_outline_color = Color(0.17925504, 0.09012722, 0.6684252, 1)
+RichTextLabel/colors/font_shadow_color = Color(0.021264262, 0.00033782976, 0.56464213, 1)
+RichTextLabel/constants/outline_size = 7
+RichTextLabel/constants/shadow_offset_x = 0
+RichTextLabel/constants/shadow_offset_y = 4
+RichTextLabel/constants/shadow_outline_size = 6
+RichTextLabel/fonts/normal_font = ExtResource("1_v4j2l")
