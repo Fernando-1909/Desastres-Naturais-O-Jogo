@@ -151,8 +151,8 @@ func _on_recusar_missao_pressed() -> void:
 @onready var dinheiro_label: RichTextLabel = $DinheiroContainer/HBoxContainer/DinheiroLabel
 @onready var turno_label: RichTextLabel = $TurnoContainer/HBoxContainer/TurnoLabel
 @onready var popularidade_label: RichTextLabel = $PopularidadeContainer/HBoxContainer/RichTextLabel
-@onready var missao_info_label: Label = $MissaoContainer/VBoxContainer/MissaoInfo
-@onready var missao_recompensa_label: Label = $MissaoContainer/VBoxContainer/MissaoRecompensa
+@onready var missao_info_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoInfo
+@onready var missao_recompensa_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoRecompensa
 
 func _process(_delta: float) -> void:
 	_update_dinheiro_label()
