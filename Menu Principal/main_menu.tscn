@@ -3,40 +3,12 @@
 [ext_resource type="Script" uid="uid://d3bkii5byml4q" path="res://Jogo principal/Scripts/Scripts cenas/main_menu.gd" id="1_3sya1"]
 [ext_resource type="Texture2D" uid="uid://cijm3btff5nld" path="res://Menu Principal/Menu.png" id="2_3sya1"]
 [ext_resource type="FontFile" uid="uid://3wnomst056rh" path="res://Menu Principal/ARCADECLASSIC.TTF" id="3_aujqx"]
+[ext_resource type="PackedScene" uid="uid://d3uu1eucewefv" path="res://Jogo principal/UI/menu_opcoes.tscn" id="4_1soyw"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1soyw"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aujqx"]
 texture = ExtResource("2_3sya1")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_glbon"]
-bg_color = Color(0.8784314, 0.92156863, 0.8980392, 1)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-shadow_size = 5
-shadow_offset = Vector2(0, 3.41)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fu7sn"]
-bg_color = Color(0.6165773, 0.73505294, 0.65221393, 1)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-shadow_size = 5
-shadow_offset = Vector2(0, 3.41)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7vrkn"]
-bg_color = Color(0.6666667, 0.8901961, 0.7058824, 1)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-shadow_size = 5
-shadow_offset = Vector2(0, 3.41)
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7vrkn"]
 
 [node name="MainMenu" type="Control" unique_id=1732916900]
 layout_mode = 3
@@ -57,73 +29,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_aujqx")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1295298932]
+[node name="LabelTítulo" type="Label" parent="." unique_id=1332066791]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -179.625
-offset_top = -152.25
-offset_right = 179.625
-offset_bottom = 152.25
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 25
-
-[node name="Button" type="Button" parent="VBoxContainer" unique_id=530335397]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.6509804, 0.34117648, 0.10980392, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 27
-theme_override_styles/normal = SubResource("StyleBoxFlat_glbon")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_fu7sn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_7vrkn")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_7vrkn")
-text = "Iniciar Jogo"
-
-[node name="Button2" type="Button" parent="VBoxContainer" unique_id=1953251558]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.6509804, 0.34117648, 0.10980392, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 27
-theme_override_styles/normal = SubResource("StyleBoxFlat_glbon")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_fu7sn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_7vrkn")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_7vrkn")
-text = "Créditos"
-
-[node name="Button3" type="Button" parent="VBoxContainer" unique_id=1725766212]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_colors/font_color = Color(0.6509804, 0.34117648, 0.10980392, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 27
-theme_override_styles/normal = SubResource("StyleBoxFlat_glbon")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_fu7sn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_7vrkn")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_7vrkn")
-text = "Sair do jogo"
-
-[node name="Label" type="Label" parent="." unique_id=1332066791]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -115.5
+offset_left = -298.5
 offset_top = -268.0
-offset_right = 115.5
+offset_right = 298.5
 offset_bottom = -169.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -140,6 +55,96 @@ text = "Desastres naturais"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_creditos_pressed"]
-[connection signal="pressed" from="VBoxContainer/Button3" to="." method="_on_exit_pressed"]
+[node name="MenuPrincipal" type="VBoxContainer" parent="." unique_id=1295298932]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -179.625
+offset_top = -152.25
+offset_right = 179.625
+offset_bottom = 152.25
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="ButtonIniciar" type="Button" parent="MenuPrincipal" unique_id=530335397]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 27
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonIniciar" unique_id=1669360644]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="ButtonOpcoes" type="Button" parent="MenuPrincipal" unique_id=1953251558]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 27
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonOpcoes" unique_id=1615231279]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="ButtonCreditos" type="Button" parent="MenuPrincipal" unique_id=1725766212]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6509804, 0.34117648, 0.10980392, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 27
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonCreditos" unique_id=1651313582]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="ButtonSair" type="Button" parent="MenuPrincipal" unique_id=464936296]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonSair" unique_id=1784253004]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="MenuOpcoes" parent="." unique_id=1098279602 instance=ExtResource("4_1soyw")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="MenuPrincipal/ButtonIniciar" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="MenuPrincipal/ButtonOpcoes" to="." method="_on_creditos_pressed"]
+[connection signal="pressed" from="MenuPrincipal/ButtonCreditos" to="." method="_on_exit_pressed"]

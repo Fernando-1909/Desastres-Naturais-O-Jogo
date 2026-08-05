@@ -2,14 +2,12 @@
 
 [ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/Scripts cenas/menu_pausa.gd" id="1_wp3wm"]
 [ext_resource type="Theme" uid="uid://cx782b1sg8nsm" path="res://Jogo principal/UI/Temas/base.tres" id="2_fhcsi"]
+[ext_resource type="PackedScene" uid="uid://d3uu1eucewefv" path="res://Jogo principal/UI/menu_opcoes.tscn" id="3_lu62e"]
 
-[node name="MenuPausa" type="CanvasLayer" unique_id=643096711 node_paths=PackedStringArray("button_continuar", "button_opcoes", "button_menu")]
+[node name="MenuPausa" type="CanvasLayer" unique_id=643096711]
 process_mode = 3
 script = ExtResource("1_wp3wm")
 cena_menu_principal = "uid://dmvjnql5i80qd"
-button_continuar = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonContinuar")
-button_opcoes = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonOpcoes")
-button_menu = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonMenu")
 
 [node name="OverlayFundo" type="ColorRect" parent="." unique_id=197788807]
 anchors_preset = 15
@@ -114,61 +112,5 @@ bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
 
-[node name="PainelOpcoes" type="VBoxContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna" unique_id=2063119442]
-visible = false
-layout_mode = 2
-theme_override_constants/separation = 15
-
-[node name="ContainerIdiomas" type="HBoxContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes" unique_id=521858629]
-custom_minimum_size = Vector2(0, 45)
-layout_mode = 2
-
-[node name="ButtonIdiomaPT" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ContainerIdiomas" unique_id=1828867797]
-custom_minimum_size = Vector2(0, 45)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ContainerIdiomas/ButtonIdiomaPT" unique_id=898243484]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-bbcode_enabled = true
-scroll_active = false
-vertical_alignment = 1
-
-[node name="ButtonIdiomaEN" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ContainerIdiomas" unique_id=943481233]
-custom_minimum_size = Vector2(0, 45)
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ContainerIdiomas/ButtonIdiomaEN" unique_id=972825992]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-bbcode_enabled = true
-scroll_active = false
-vertical_alignment = 1
-
-[node name="ButtonVoltar" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes" unique_id=1659402904]
-custom_minimum_size = Vector2(0, 45)
-layout_mode = 2
-
-[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/PainelOpcoes/ButtonVoltar" unique_id=544102508]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-bbcode_enabled = true
-scroll_active = false
-vertical_alignment = 1
+[node name="MenuOpcoes" parent="." unique_id=1098279602 instance=ExtResource("3_lu62e")]
+process_mode = 3

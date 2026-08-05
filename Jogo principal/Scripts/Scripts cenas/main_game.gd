@@ -51,7 +51,8 @@ var freecam_enabled = false
 func _ready() -> void:
 	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
 	_carregar_todos_os_edificios()
-
+	Global.dinheiro = 1000
+	
 	# Sistema de recursos inicial
 	Global.pedra = 150
 	Global.madeira = 200

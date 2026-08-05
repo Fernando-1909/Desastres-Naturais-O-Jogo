@@ -151,7 +151,20 @@ bbcode_enabled = true
 fit_content = true
 
 [node name="ButtonComprar" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1258757112]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar" unique_id=373670690]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
 
 [node name="ContainerUpgrade" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita" unique_id=1920465077]
 layout_mode = 2
@@ -164,10 +177,36 @@ fit_content = true
 autowrap_mode = 2
 
 [node name="ButtonAprimorar" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=2001975818]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
+[node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar" unique_id=713711944]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
 [node name="ButtonDetalhes" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=678436348]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes" unique_id=2071852493]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
 
 [node name="ButtonFechar" type="Button" parent="PainelCentral" unique_id=342840005]
 custom_minimum_size = Vector2(32, 32)

@@ -6,13 +6,14 @@
 [resource]
 script = ExtResource("1_dyh4l")
 id = "casa_simples"
-nome = "Casa simples"
+nome = "PREDIO_CASA_SIMPLES_NOME"
 icone = ExtResource("1_vsb02")
 pode_aprimorar = false
 custo_base = 50.0
-descricao_curta = "Casinha mixuruca"
+descricao_curta = "PREDIO_CASA_SIMPLES_DESC"
+texto_detalhes = "PREDIO_CASA_SIMPLES_DETALHES"
 ganhos_base = 50.0
 bonus_populacao = 10
-tiles_atlas_coords = Array[Vector2i]([Vector2i(2, 0), Vector2i(0, 0)])
+tiles_atlas_coords = Array[Vector2i]([Vector2i(2, 0)])
 tile_vazio_atlas_coords = Vector2i(0, 0)
 metadata/_custom_type_script = "uid://bh8jua7ha1i6r"

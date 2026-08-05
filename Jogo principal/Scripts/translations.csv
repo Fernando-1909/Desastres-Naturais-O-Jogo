@@ -1,9 +1,10 @@
 keys,pt,en
 # --- UI & MENUS ---
-MENU_JOGAR,"Jogar","Play"
+MENU_JOGAR,"Iniciar Jogo","Start Game"
+MENU_OPCOES,"Opções","Options"
+MENU_CREDITOS,"Créditos","Credits"
 MENU_PAUSA,"Jogo Pausado","Game Paused"
 MENU_CONTINUAR,"Continuar","Resume"
-MENU_OPCOES,"Opções","Options"
 MENU_IDIOMA,"Idioma","Language"
 MENU_VOLTAR,"Voltar","Back"
 MENU_SAIR,"Sair do Jogo","Quit Game"
@@ -16,15 +17,41 @@ HUD_MADEIRA,"Madeira","Wood"
 HUD_PEDRA,"Pedra","Stone"
 HUD_POPULARIDADE,"Popularidade","Popularity"
 
-# --- EDIFÍCIOS & LOJA ---
+# --- INTERFACE DE COMPRAS E UPGRADES ---
+UI_COMPRAR,"COMPRAR","BUY"
+UI_APRIMORAR,"APRIMORAR","UPGRADE"
+UI_NIVEL_MAXIMO,"NÍVEL MÁXIMO","MAX LEVEL"
+UI_DETALHES,"DETALHES","DETAILS"
+UI_NIVEL,"NÍVEL","LEVEL"
+UI_GANHOS,"GANHOS","EARNINGS"
+
+# --- CATEGORIAS DE EDIFÍCIOS (building_data) ---
+CAT_RESIDENCIAL,"Residencial","Residential"
+CAT_COMERCIAL,"Comercial","Commercial"
+CAT_INDUSTRIAL,"Industrial","Industrial"
+CAT_SERVICOS,"Serviços Públicos","Public Services"
+CAT_INFRAESTRUTURA,"Infraestrutura","Infrastructure"
+CAT_LAZER,"Lazer e Cultura","Leisure & Culture"
+CAT_SEGURANCA,"Segurança","Security"
+CAT_SAUDE,"Saúde","Health"
+CAT_EDUCACAO,"Educação","Education"
+CAT_ENERGIA,"Energia","Energy"
+
+# --- EDIFÍCIOS & LOJA (building_data) ---
+# Casa Residencial Simples
 PREDIO_CASA_SIMPLES_NOME,"Casa Residencial","Residential House"
 PREDIO_CASA_SIMPLES_DESC,"Aumenta a capacidade de moradores e a receita de impostos.","Increases resident capacity and tax revenue."
+PREDIO_CASA_SIMPLES_DETALHES,"Casas residenciais geram renda constante de impostos por morador. Mantenha a durabilidade alta para evitar queda na arrecadação.","Residential houses generate steady tax income per resident. Keep durability high to avoid drops in revenue."
+
+# Prefeitura
 PREDIO_PREFEITURA_NOME,"Prefeitura","City Hall"
-PREDIO_PREFEITURA_DESC,"Sede administrativa da cidade. Libera novas áreas.","City administrative headquarters. Unlocks new areas."
+PREDIO_PREFEITURA_DESC,"Sede administrativa da cidade. Libera novas áreas e projetos.","City administrative headquarters. Unlocks new areas and projects."
+PREDIO_PREFEITURA_DETALHES,"O centro de comando da sua cidade. Aumentar o nível da prefeitura permite construir edifícios mais avançados e expandir os limites do mapa.","Your city's command center. Upgrading the city hall allows you to build more advanced structures and expand map borders."
+
 
 # --- DIÁLOGOS ---
 TXT_BR_BOAS_VINDAS,"[wave amp=30 freq=3]Selecione seu idioma / Select your language[/wave]","[wave amp=30 freq=3]Select your language / Selecione seu idioma[/wave]"
-OPT_PT,"[b][color=green]✔ Português[/color][/b]","[b][color=green]✔ Portuguese[/color][/b]"
+OPT_PT,"[b][color=green]✔ Português[/color constituency]","[b][color=green]✔ Portuguese[/color][/b]"
 OPT_EN,"[b][color=aqua]✔ English[/color][/b]","[b][color=aqua]✔ English[/color][/b]"
 TXT_CONFIRM_PT,"Você escolheu [color=green]Português[/color]! Vamos proteger nossa cidade.","You chose [color=green]Portuguese[/color]! Let's protect our city."
 TXT_CONFIRM_EN,"You chose [color=aqua]English[/color]! Let's protect our city.","You chose [color=aqua]English[/color]! Let's protect our city."
