@@ -4,7 +4,9 @@ extends Node
 var dinheiro: int
 var popularidade: int
 var turno: int
-var renda: int
+var renda: int             # Quantidade de construções que geram renda (dinheiro) por turno
+var renda_pedra: int       # Quantidade de construções que geram pedra por turno (esboço, sem uso ainda)
+var renda_madeira: int     # Quantidade de construções que geram madeira por turno (esboço, sem uso ainda)
 var madeira: int
 var pedra: int
 var idioma_atual: String = "pt"

@@ -436,6 +436,22 @@ func _buscar_data_por_atlas_coords(coords: Vector2i) -> BuildingData:
 			return b_data
 	return null
 
+# ==============================================================================
+# CONTAGEM DE CONSTRUÇÕES ATIVAS (usado pelo sistema de renda/recursos por turno)
+# ==============================================================================
+## Conta quantas construções ativas no mapa têm um id que começa com "prefixo_id"
+## (ex: "casa" conta "casa_simples" e "casa_grande")
+func contar_construcoes_por_categoria(prefixo_id: String) -> int:
+	var total := 0
+	for predio in construcoes_no_mapa.values():
+		if predio and predio.data and predio.data.id.to_lower().begins_with(prefixo_id.to_lower()):
+			total += 1
+	return total
+
+## Quantidade de casas ativas no mapa agora (usado pra Global.renda)
+func contar_casas_ativas() -> int:
+	return contar_construcoes_por_categoria("casa")
+
 func _executar_fallback_por_string(tipo: String) -> void:
 	match tipo:
 		"prefeitura":

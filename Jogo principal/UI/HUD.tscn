@@ -22,10 +22,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -717.0
-offset_top = -307.0
-offset_right = -575.0
-offset_bottom = -284.0
+offset_left = 293.0
+offset_top = 168.0
+offset_right = 441.0
+offset_bottom = 191.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
@@ -40,7 +40,61 @@ text = "💰"
 [node name="DinheiroLabel" type="RichTextLabel" parent="DinheiroContainer/HBoxContainer" unique_id=1804133993]
 custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
-text = "Dinheiro:"
+text = "Dinheiro"
+
+[node name="MadeiraContainer" type="PanelContainer" parent="." unique_id=246099080]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 292.0
+offset_top = 217.0
+offset_right = 440.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MadeiraContainer" unique_id=1026383992]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="MadeiraContainer/HBoxContainer" unique_id=480736248]
+layout_mode = 2
+text = "🌲"
+
+[node name="MadeiraLabel" type="RichTextLabel" parent="MadeiraContainer/HBoxContainer" unique_id=470481495]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "Madeira"
+
+[node name="PedraContainer" type="PanelContainer" parent="." unique_id=1805050115]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 294.0
+offset_top = 270.0
+offset_right = 442.0
+offset_bottom = 293.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PedraContainer" unique_id=1304498814]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="PedraContainer/HBoxContainer" unique_id=86336154]
+layout_mode = 2
+text = "⛰️"
+
+[node name="PedraLabel" type="RichTextLabel" parent="PedraContainer/HBoxContainer" unique_id=1547733029]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+text = "Pedra"
 
 [node name="PopularidadeContainer" type="PanelContainer" parent="." unique_id=1535273656]
 layout_mode = 1
@@ -49,10 +103,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -416.0
-offset_top = -309.0
-offset_right = -252.0
-offset_bottom = -286.0
+offset_left = -597.0
+offset_top = -329.0
+offset_right = -426.0
+offset_bottom = -306.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
@@ -67,7 +121,7 @@ text = "⭐"
 [node name="PopularidadeLabel" type="RichTextLabel" parent="PopularidadeContainer/HBoxContainer" unique_id=33174454]
 custom_minimum_size = Vector2(145, 0)
 layout_mode = 2
-text = "Popularidade:"
+text = "Popularidade"
 
 [node name="TurnoContainer" type="PanelContainer" parent="." unique_id=1763884610]
 layout_mode = 1
@@ -76,10 +130,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -76.0
-offset_top = -310.0
-offset_right = 34.0
-offset_bottom = -285.0
+offset_left = -248.0
+offset_top = -331.0
+offset_right = -138.0
+offset_bottom = -306.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
@@ -106,10 +160,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 323.0
-offset_top = -308.0
-offset_right = 444.0
-offset_bottom = -271.0
+offset_left = 1046.0
+offset_top = -145.0
+offset_right = 1244.0
+offset_bottom = -108.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
@@ -134,10 +188,10 @@ text = "Passar turno"
 
 [node name="ButtonMissaoConcluir" type="Button" parent="." unique_id=798708446]
 layout_mode = 0
-offset_left = 308.0
-offset_top = 235.0
-offset_right = 560.0
-offset_bottom = 288.0
+offset_left = 747.0
+offset_top = 296.0
+offset_right = 1014.0
+offset_bottom = 349.0
 theme_override_font_sizes/font_size = 32
 text = "Concluir Missao"
 
@@ -231,6 +285,7 @@ grow_vertical = 2
 text = "X"
 
 [node name="MissaoContainer" type="PanelContainer" parent="." unique_id=1133557364]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -247,6 +302,15 @@ grow_vertical = 2
 [node name="VBoxContainer" type="VBoxContainer" parent="MissaoContainer" unique_id=910119734]
 layout_mode = 2
 theme_override_constants/separation = 35
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MissaoContainer/VBoxContainer" unique_id=391237533]
+visible = false
+layout_mode = 2
+layout_direction = 3
+
+[node name="MissaoClose" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer2" unique_id=1428960303]
+layout_mode = 2
+text = "❌"
 
 [node name="Missaolabel" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=1556286470]
 custom_minimum_size = Vector2(0, 25)
@@ -299,17 +363,6 @@ theme_override_colors/font_hover_color = Color(0.7330022, 1.6484782e-06, 3.85046
 theme_override_font_sizes/font_size = 23
 text = "Recusar"
 
-[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1928433690]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" unique_id=1839849179]
-layout_mode = 2
-
-[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer" unique_id=863028835]
-layout_mode = 2
-
 [connection signal="pressed" from="ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="ButtonTurno" to="." method="_on_button_turno_pressed"]
 [connection signal="pressed" from="ButtonMissaoConcluir" to="." method="_on_button_missao_concluir_pressed"]
@@ -317,5 +370,6 @@ layout_mode = 2
 [connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]
 [connection signal="pressed" from="MapOverlay/CloseButton" to="MapOverlay" method="_on_close_button_pressed"]
+[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]
 [connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer/AceitarMissao" to="." method="_on_aceitar_missao_pressed"]
 [connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer/RecusarMissao" to="." method="_on_recusar_missao_pressed"]
