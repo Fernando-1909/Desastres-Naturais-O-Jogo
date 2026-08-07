@@ -2,12 +2,14 @@
 
 [ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="1_dyh4l"]
 [ext_resource type="Texture2D" uid="uid://cvqob8ot47l5x" path="res://Jogo principal/tilesheets/casa.png" id="1_vsb02"]
+[ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="2_anxnh"]
 
 [resource]
 script = ExtResource("1_dyh4l")
 id = "casa_simples"
 nome = "PREDIO_CASA_SIMPLES_NOME"
 icone = ExtResource("1_vsb02")
+icones = Array[Texture2D]([ExtResource("1_vsb02"), ExtResource("2_anxnh")])
 pode_aprimorar = false
 custo_base = 50.0
 descricao_curta = "PREDIO_CASA_SIMPLES_DESC"

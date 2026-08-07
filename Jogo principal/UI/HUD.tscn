@@ -89,7 +89,7 @@ layout_mode = 2
 
 [node name="Icon" type="Label" parent="PedraContainer/HBoxContainer" unique_id=86336154]
 layout_mode = 2
-text = "⛰️"
+text = "🪨"
 
 [node name="PedraLabel" type="RichTextLabel" parent="PedraContainer/HBoxContainer" unique_id=1547733029]
 custom_minimum_size = Vector2(125, 0)

@@ -6,6 +6,7 @@
 script = ExtResource("1_32ewd")
 id = "casa_grande"
 nome = "Casa grande"
+eh_unica = true
 pode_aprimorar = false
 custo_base = 500.0
 durabilidade_maxima = 250.0

@@ -1,37 +1,37 @@
 extends Node2D
 
 # ==============================================================================
-# CÂMERA, HUD E NÓS DA INTERFACE
+# CAMERA, HUD E NOS DA INTERFACE
 # ==============================================================================
 @onready var player_camera = $Player/Camera2D
 @onready var freecam_camera = $FreeCamera2D
 @onready var hud = $CanvasLayer/Hud
 @onready var menu_pausa: MenuPausa = $MenuPausa
 
-# REFERÊNCIA À TELA DE COMPRAS E AO TILEMAP
+# REFERENCIA A TELA DE COMPRAS E AO TILEMAP (Suporta TileMapLayer e TileMap)
 @onready var tela_compras: TelaCompras = $TelaCompras
 @onready var tilemap_constructions: TileMapLayer = $TileMapConstructions
 
-# REFERÊNCIA AOS BOTÕES DE TESTE
+# REFERENCIA AOS BOTOES DE TESTE
 @onready var button_teste_compra: Button = $ButtonTesteCompra
 @onready var button_teste_upgrade: Button = $ButtonTesteUpgrade
 @onready var button_teste_pausa: Button = $ButtonTestePausa
 
 # ==============================================================================
-# BANCO DE DADOS E INSTÂNCIAS DE EDIFÍCIOS
+# BANCO DE DADOS E INSTANCIAS DE EDIFICIOS
 # ==============================================================================
-@export_group("Banco de Edifícios")
-## Pasta onde ficam armazenados todos os seus arquivos .tres de construções
+@export_group("Banco de Edificios")
+## Pasta onde ficam armazenados todos os seus arquivos .tres de construcoes
 @export var pasta_edificios: String = "res://recursos/predios/"
 ## Fallback manual: se preferir arrastar arquivos .tres pelo Inspector
 @export var banco_edificios_manual: Array[BuildingData] = []
 @export var tile_map: TileMap
 
-# Dicionário dinâmico carregado automaticamente
+# Dicionario dinamico carregado automaticamente
 # Chave = String ("casa_simples", "prefeitura") | Valor = BuildingData
 var banco_edificios: Dictionary = {}
 
-# Guarda todas as construções vivas no mapa!
+# Guarda todas as construcoes vivas no mapa
 # Chave = Vector2i(x, y) | Valor = objeto BuildingInstance
 var construcoes_no_mapa: Dictionary = {}
 
@@ -39,7 +39,7 @@ var construcoes_no_mapa: Dictionary = {}
 var _celula_selecionada: Vector2i = Vector2i(-1, -1)
 var _building_data_selecionado: BuildingData = null
 
-# Variáveis auxiliares
+# Variaveis auxiliares
 var icone_temp = preload("res://icon.svg")
 var freecam_enabled = false
 @onready var pop_up_scene = load("res://Jogo principal/building_hud.tscn")
@@ -57,11 +57,11 @@ func _ready() -> void:
 	Global.pedra = 150
 	Global.madeira = 200
 	
-	# Conecta o clique do botão diretamente à função toggle_pause
+	# Conecta o clique do botao diretamente a funcao toggle_pause
 	if button_teste_pausa and menu_pausa:
 		button_teste_pausa.pressed.connect(menu_pausa.toggle_pause)
 	
-	# Conecta os botões de teste para abrir a janela (Opção manual)
+	# Conecta os botoes de teste para abrir a janela (Opcao manual)
 	if button_teste_compra:
 		button_teste_compra.pressed.connect(_on_testar_escola_pressed)
 	if button_teste_upgrade:
@@ -75,12 +75,56 @@ func _ready() -> void:
 	if freecam_camera:
 		freecam_camera.enabled = true
 
-	# Escaneia o mapa para registrar prédios que já vieram desenhados no editor
+	# Escaneia o mapa para registrar predios que ja vieram desenhados no editor
 	_escanear_mapa_inicial()
 
 
 # ==============================================================================
-# CARREGADOR AUTOMÁTICO DE RECURSOS (.TRES)
+# FUNCOES DE CONTAGEM SOLICITADAS PELO GERENCIADOR DE TURNOS / HUD
+# ==============================================================================
+func contar_casas_ativas() -> int:
+	var total: int = 0
+	for pos in construcoes_no_mapa.keys():
+		var predio = construcoes_no_mapa[pos]
+		if predio != null:
+			if "durabilidade_atual" in predio:
+				if predio.durabilidade_atual > 0:
+					total += 1
+			else:
+				total += 1
+	return total
+
+
+func contar_construcoes_por_categoria(categoria: String = "") -> int:
+	var total: int = 0
+	var cat_alvo = categoria.to_lower().strip_edges()
+
+	for pos in construcoes_no_mapa.keys():
+		var predio = construcoes_no_mapa[pos]
+		if predio != null and predio.data != null:
+			if cat_alvo == "":
+				total += 1
+			else:
+				var cat_predio = ""
+				if "categoria" in predio.data and predio.data.categoria != null:
+					cat_predio = str(predio.data.categoria).to_lower().strip_edges()
+				
+				var id_predio = ""
+				if "id" in predio.data and predio.data.id != null:
+					id_predio = str(predio.data.id).to_lower().strip_edges()
+
+				if cat_predio == cat_alvo or id_predio == cat_alvo:
+					total += 1
+
+	return total
+
+
+func contar_construcoes(categoria: String = "") -> int:
+	return contar_construcoes_por_categoria(categoria)
+
+
+# ==============================================================================
+# CARREGADOR AUTOMATICO DE RECURSOS (.TRES)
 # ==============================================================================
 func _carregar_todos_os_edificios() -> void:
 	banco_edificios.clear()
@@ -89,7 +133,7 @@ func _carregar_todos_os_edificios() -> void:
 	for b_data in banco_edificios_manual:
 		if b_data and b_data.id != "":
 			banco_edificios[b_data.id.to_lower()] = b_data
-			print("🏢 Edifício (manual) registrado: ", b_data.id)
+			print("[INFO] Edificio (manual) registrado: ", b_data.id)
 
 	# 2. Escaneia a pasta no projeto em busca de arquivos .tres
 	if DirAccess.dir_exists_absolute(pasta_edificios):
@@ -100,18 +144,17 @@ func _carregar_todos_os_edificios() -> void:
 			
 			while nome_arquivo != "":
 				if not dir.current_is_dir():
-					# Trata extensão no editor e em jogos exportados (.remap)
 					var nome_limpo = nome_arquivo.replace(".remap", "")
 					if nome_limpo.ends_with(".tres"):
 						var caminho_completo = pasta_edificios.path_join(nome_limpo)
 						var recurso = load(caminho_completo) as BuildingData
 						if recurso and recurso.id != "":
 							banco_edificios[recurso.id.to_lower()] = recurso
-							print("🏢 Edifício (automático) carregado: ", recurso.id)
+							print("[INFO] Edificio (automatico) carregado: ", recurso.id)
 				nome_arquivo = dir.get_next()
 			dir.list_dir_end()
 	else:
-		print("⚠️ Pasta de edifícios '", pasta_edificios, "' não encontrada no projeto! Crie a pasta ou configure no Inspetor.")
+		print("[AVISO] Pasta de edificios '", pasta_edificios, "' nao encontrada no projeto!")
 
 
 # ==============================================================================
@@ -124,9 +167,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			var predio: BuildingInstance = construcoes_no_mapa[_celula_selecionada]
 			if predio:
 				predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - 25.0)
-				print("💥 Dano aplicado na casa ", _celula_selecionada, "! Nova vida: ", predio.durabilidade_atual, "/", predio.data.durabilidade_maxima)
+				print("[DEBUG] Dano aplicado na casa ", _celula_selecionada, "! Nova vida: ", predio.durabilidade_atual, "/", predio.data.durabilidade_maxima)
 				
-				# Se a janela de detalhes estiver aberta no momento, atualiza a barra imediatamente
 				if tela_compras and tela_compras.visible:
 					_abrir_modo_upgrade_instancia(predio)
 			return
@@ -134,10 +176,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	# --- CLIQUE DO MOUSE NA GRADE DO MAPA ---
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if not get_tree().paused:
-			var target_map = tilemap_constructions if tilemap_constructions else tile_map
-			if target_map:
-				var pos_local = target_map.get_local_mouse_position()
-				var pos_tile: Vector2i = target_map.local_to_map(pos_local)
+			if tilemap_constructions:
+				var pos_local = tilemap_constructions.get_local_mouse_position()
+				var pos_tile: Vector2i = tilemap_constructions.local_to_map(pos_local)
+				_processar_clique_no_tile(pos_tile)
+			elif tile_map:
+				var pos_local = tile_map.get_local_mouse_position()
+				var pos_tile: Vector2i = tile_map.local_to_map(pos_local)
 				_processar_clique_no_tile(pos_tile)
 
 
@@ -148,59 +193,145 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	if not tela_compras: return
 	_celula_selecionada = pos_tile
 
-	# 1. Se já existe uma construção salva na memória -> Modo Upgrade / Detalhes
+	# 1. Se já existe uma construção viva salva na memória -> Modo Upgrade / Detalhes
 	if construcoes_no_mapa.has(pos_tile) and construcoes_no_mapa[pos_tile] != null:
 		var predio_existente: BuildingInstance = construcoes_no_mapa[pos_tile]
 		_abrir_modo_upgrade_instancia(predio_existente)
 		return
 
-	# 2. Busca o TileData do mapa na coordenada clicada
+	# 2. Busca o TileData
 	var tile_data: TileData = null
-	var atlas_coords_atuais: Vector2i = Vector2i(-1, -1)
-	
 	if tilemap_constructions:
 		tile_data = tilemap_constructions.get_cell_tile_data(pos_tile)
-		if tile_data:
-			atlas_coords_atuais = tilemap_constructions.get_cell_atlas_coords(pos_tile)
 	elif tile_map:
 		tile_data = tile_map.get_cell_tile_data(0, pos_tile)
-		if tile_data:
-			atlas_coords_atuais = tile_map.get_cell_atlas_coords(0, pos_tile)
 
-	# Se não há nenhum tile desenhado no local, ignora
-	if tile_data == null:
+	if tile_data == null: return
+
+	# 3. Lê a propriedade Custom Data 'building_id' se existir
+	var building_id_custom = ""
+	var raw_custom = tile_data.get_custom_data("building_id")
+	if raw_custom != null:
+		building_id_custom = str(raw_custom).strip_edges().to_lower()
+
+	# --------------------------------------------------------------------------
+	# CASO TERRENO VAZIO -> ABRE O CATÁLOGO DE SELEÇÃO DE EDIFÍCIOS
+	# --------------------------------------------------------------------------
+	if building_id_custom == "terreno_vazio" or building_id_custom == "":
+		var lista_opcoes = _obter_edificios_genericos()
+		if lista_opcoes.size() > 0:
+			tela_compras.abrir_modo_selecao(lista_opcoes)
+		else:
+			print("[AVISO] Nenhuma construção disponível encontrada no banco de dados!")
 		return
 
-	# 3. BUSCA INTELIGENTE:
-	var b_data: BuildingData = null
-
-	# PRIORIDADE 1: Lê o Custom Data "building_id" configurado no TileSet
-	var building_id_custom = tile_data.get_custom_data("building_id")
-	if building_id_custom and str(building_id_custom).strip_edges() != "":
-		b_data = _buscar_data_por_id(str(building_id_custom))
-
-	# PRIORIDADE 2: Se não houver Custom Data no tile, busca pelas coordenadas configuradas no .tres
-	if b_data == null:
-		b_data = _buscar_data_por_atlas_coords(atlas_coords_atuais)
-	
-	# PRIORIDADE 3: Fallback de segurança
-	if b_data == null:
-		b_data = _buscar_data_por_id("casa_simples")
-		if not b_data:
-			return
-	
-	_building_data_selecionado = b_data
-
-	# 4. DECISÃO: O tile clicado é um prédio pronto ou um terreno/água de compra?
-	if b_data.tiles_atlas_coords.has(atlas_coords_atuais):
-		var nova_instancia = BuildingInstance.new(b_data, pos_tile)
-		construcoes_no_mapa[pos_tile] = nova_instancia
-		_abrir_modo_upgrade_instancia(nova_instancia)
-	else:
+	# --------------------------------------------------------------------------
+	# CASO OUTRO PRÉDIO PRÉ-DEFINIDO (Ex: Prefeitura)
+	# --------------------------------------------------------------------------
+	var b_data: BuildingData = _buscar_data_por_id(building_id_custom)
+	if b_data != null:
+		_building_data_selecionado = b_data
 		_abrir_modo_compra_para_dados(b_data)
+	else:
+		# Fallback: se for desconhecido, abre o catálogo
+		var lista_opcoes = _obter_edificios_genericos()
+		if lista_opcoes.size() > 0:
+			tela_compras.abrir_modo_selecao(lista_opcoes)
 
 
-# Suporte legado/manual para recebimento por String se necessário
+func _obter_edificios_genericos() -> Array[BuildingData]:
+	var lista: Array[BuildingData] = []
+	for b_data in banco_edificios.values():
+		if b_data and not b_data.eh_unica:
+			lista.append(b_data)
+	return lista
+
+
+# ==============================================================================
+# CONFIRMACAO DE ACOES DA TELA DE COMPRAS
+# ==============================================================================
+func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0) -> void:
+	if _celula_selecionada == Vector2i(-1, -1):
+		print("[ERRO] Nenhuma celula selecionada para compra.")
+		return
+
+	# Busca de forma flexivel por ID ou por Nome
+	var b_data = _buscar_data_por_id(nome_ou_id_edificio)
+	if not b_data:
+		print("[ERRO] Edificio nao encontrado no banco de dados para: ", nome_ou_id_edificio)
+		return
+
+	# 1. Validacao de Recursos
+	if Global.dinheiro < b_data.custo_base:
+		print("[ERRO] Dinheiro insuficiente para comprar ", b_data.nome)
+		return
+
+	# 2. Transacao
+	Global.dinheiro -= b_data.custo_base
+
+	# 3. Registra a nova instancia na memoria do mapa
+	var nova_instancia = BuildingInstance.new(b_data, _celula_selecionada)
+	if "variacao_index" in nova_instancia:
+		nova_instancia.variacao_index = variacao_index
+	construcoes_no_mapa[_celula_selecionada] = nova_instancia
+
+	# 4. Obtem a coordenada atlas exata da variação escolhida
+	var novas_coords_atlas: Vector2i = Vector2i(-1, -1)
+	if b_data.has_method("get_atlas_coord_para_construir"):
+		novas_coords_atlas = b_data.get_atlas_coord_para_construir(variacao_index)
+	elif "tiles_atlas_coords" in b_data and b_data.tiles_atlas_coords is Array and b_data.tiles_atlas_coords.size() > 0:
+		var idx = min(variacao_index, b_data.tiles_atlas_coords.size() - 1)
+		novas_coords_atlas = b_data.tiles_atlas_coords[idx]
+
+	# 5. Descobre o source_id de forma segura
+	var source_id: int = -1
+	if "source_id" in b_data and b_data.source_id >= 0:
+		source_id = b_data.source_id
+	else:
+		if tilemap_constructions:
+			source_id = tilemap_constructions.get_cell_source_id(_celula_selecionada)
+		elif tile_map:
+			source_id = tile_map.get_cell_source_id(0, _celula_selecionada)
+
+		if source_id == -1:
+			var ts: TileSet = null
+			if tilemap_constructions and tilemap_constructions.tile_set:
+				ts = tilemap_constructions.tile_set
+			elif tile_map and tile_map.tile_set:
+				ts = tile_map.tile_set
+
+			if ts and ts.get_source_count() > 0:
+				source_id = ts.get_source_id(0)
+			else:
+				source_id = 0
+
+	# 6. Troca o tile no mapa
+	if novas_coords_atlas != Vector2i(-1, -1):
+		if tilemap_constructions:
+			tilemap_constructions.set_cell(_celula_selecionada, source_id, novas_coords_atlas)
+		elif tile_map:
+			tile_map.set_cell(0, _celula_selecionada, source_id, novas_coords_atlas)
+		print("[INFO] ", b_data.nome, " (Variação ", variacao_index, ") construido com sucesso em ", _celula_selecionada)
+	else:
+		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
+
+
+func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
+	if _celula_selecionada == Vector2i(-1, -1): return
+	if not construcoes_no_mapa.has(_celula_selecionada): return
+	
+	var predio: BuildingInstance = construcoes_no_mapa[_celula_selecionada]
+	var custo = predio.get_custo_upgrade()
+	
+	if Global.dinheiro >= custo:
+		Global.dinheiro -= custo
+		predio.nivel_atual += 1
+		print("[INFO] ", predio.data.nome, " aprimorado para o nivel ", predio.nivel_atual)
+	else:
+		print("[ERRO] Dinheiro insuficiente para upgrade!")
+
+
+# Suporte legado/manual para recebimento por String se necessario
 func _on_tile_clicado(argument) -> void:
 	if typeof(argument) == TYPE_STRING:
 		var id_string: String = argument
@@ -216,7 +347,7 @@ func _on_tile_clicado(argument) -> void:
 
 
 # ==============================================================================
-# ESCANEAR PRÉDIOS COLOCADOS NO EDITOR DE CENAS
+# ESCANEAR PREDIOS COLOCADOS NO EDITOR DE CENAS
 # ==============================================================================
 func _escanear_mapa_inicial() -> void:
 	if tilemap_constructions:
@@ -236,10 +367,26 @@ func _registrar_predio_se_existir(pos: Vector2i, tile_data: TileData, atlas_coor
 	if not tile_data:
 		return
 	
+	var building_id_custom = str(tile_data.get_custom_data("building_id")).strip_edges().to_lower()
+	
+	if building_id_custom == "terreno_vazio" or building_id_custom == "":
+		return
+
 	var b_data = _buscar_data_por_atlas_coords(atlas_coords)
-	if b_data and b_data.tiles_atlas_coords.has(atlas_coords):
-		# Registra na memória a casa que já veio desenhada no mapa
-		construcoes_no_mapa[pos] = BuildingInstance.new(b_data, pos)
+	if b_data:
+		if b_data.has_method("tem_tile_vazio") and b_data.tem_tile_vazio() and b_data.tile_vazio_atlas_coords == atlas_coords:
+			return
+
+		var eh_tile_construido = false
+		if "tiles_atlas_coords" in b_data and b_data.tiles_atlas_coords is Array and b_data.tiles_atlas_coords.has(atlas_coords):
+			eh_tile_construido = true
+		elif "atlas_coords" in b_data and b_data.atlas_coords == atlas_coords:
+			eh_tile_construido = true
+		elif "tile_atlas_coords" in b_data and b_data.tile_atlas_coords == atlas_coords:
+			eh_tile_construido = true
+
+		if eh_tile_construido:
+			construcoes_no_mapa[pos] = BuildingInstance.new(b_data, pos)
 
 
 # ==============================================================================
@@ -252,7 +399,7 @@ func _on_button_mapa_pressed() -> void:
 func _on_botao_teste_pressed() -> void:
 	if typeof(FolderBlocker) != TYPE_NIL:
 		FolderBlocker.liberarPraia()
-		print("praia foi liberada!")
+		print("[INFO] Praia foi liberada!")
 
 func _on_button_close_menu_pressed() -> void:
 	if $CanvasLayer.has_node("BuildingHUD"):
@@ -260,8 +407,22 @@ func _on_button_close_menu_pressed() -> void:
 	_resetar_estado_construcoes()
 
 
+func _on_testar_escola_pressed() -> void:
+	var b_data = _buscar_data_por_id("escola")
+	if b_data: _abrir_modo_compra_para_dados(b_data)
+
+func _on_testar_hospital_pressed() -> void:
+	var b_data = _buscar_data_por_id("hospital")
+	if b_data: _abrir_modo_compra_para_dados(b_data)
+
+func _resetar_estado_construcoes() -> void:
+	if typeof(Global) != TYPE_NIL and "construcoes" in Global:
+		for chave in Global.construcoes:
+			Global.construcoes[chave] = false
+
+
 # ==============================================================================
-# SISTEMA DE MISSÕES
+# SISTEMA DE MISSOES
 # ==============================================================================
 func escolher_missao_aleatoria():
 	if Global.turno <= 0:
@@ -273,7 +434,7 @@ func escolher_missao_aleatoria():
 			Global.missao_escolhida["chave"] = "missao1"
 			Global.missao_atual_turnos = 0
 			Global.missao_aceita = false
-			print("Turno 2: Missao obrigatoria - ", Global.missao_escolhida["nome"])
+			print("[INFO] Turno 2: Missao obrigatoria - ", Global.missao_escolhida["nome"])
 			
 			if hud and hud.has_node("MissaoContainer"):
 				var missao_container = hud.get_node("MissaoContainer")
@@ -372,12 +533,12 @@ func escolher_missao_aleatoria():
 
 
 # ==============================================================================
-# FUNÇÕES AUXILIARES DE ABERTURA E BUSCA
+# FUNCOES AUXILIARES DE ABERTURA E BUSCA
 # ==============================================================================
-func _abrir_modo_compra_para_dados(b_data: BuildingData) -> void:
-	var tex = b_data.icone if b_data.icone else icone_temp
+func _abrir_modo_compra_para_dados(b_data: BuildingData, variacao_index: int = 0) -> void:
+	var tex = b_data.get_icone_variacao(variacao_index) if b_data.has_method("get_icone_variacao") else (b_data.icone if b_data.icone else icone_temp)
 	tela_compras.abrir_modo_compra(
-		b_data.nome,
+		b_data.id if b_data.id != "" else b_data.nome,
 		b_data.categoria,
 		b_data.descricao_curta,
 		b_data.bonus_populacao,
@@ -402,7 +563,8 @@ func _abrir_tela_por_building_data(b_data: BuildingData) -> void:
 
 func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 	var b_data = predio.data
-	var tex = b_data.icone if b_data.icone else icone_temp
+	var idx = predio.variacao_index if "variacao_index" in predio else 0
+	var tex = b_data.get_icone_variacao(idx) if b_data.has_method("get_icone_variacao") else (b_data.icone if b_data.icone else icone_temp)
 	
 	tela_compras.abrir_modo_upgrade(
 		b_data.nome,
@@ -416,162 +578,37 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 		b_data.pode_aprimorar and (predio.nivel_atual < b_data.nivel_maximo)
 	)
 
-# Busca O(1) diretamente no Dicionário
 func _buscar_data_por_id(p_id: String) -> BuildingData:
-	var chave = p_id.to_lower()
+	if p_id == "":
+		return null
+	var chave = p_id.to_lower().strip_edges()
+	
 	if banco_edificios.has(chave):
 		return banco_edificios[chave]
+		
+	for b_data in banco_edificios.values():
+		if not b_data:
+			continue
+		if "id" in b_data and b_data.id != null and str(b_data.id).to_lower().strip_edges() == chave:
+			return b_data
+		if "nome" in b_data and b_data.nome != null and str(b_data.nome).to_lower().strip_edges() == chave:
+			return b_data
+			
 	return null
 
-# Substitui o antigo Custom Data "building_id": descobre a qual BuildingData
-# uma coordenada do atlas pertence, seja ela um prédio já construído
-# (tiles_atlas_coords) ou o lote vazio dele (tile_vazio_atlas_coords).
 func _buscar_data_por_atlas_coords(coords: Vector2i) -> BuildingData:
 	for b_data in banco_edificios.values():
 		if not b_data:
 			continue
-		if b_data.tiles_atlas_coords.has(coords):
+		if "tiles_atlas_coords" in b_data and b_data.tiles_atlas_coords is Array and b_data.tiles_atlas_coords.has(coords):
 			return b_data
-		if b_data.tem_tile_vazio() and b_data.tile_vazio_atlas_coords == coords:
+		if "atlas_coords" in b_data and b_data.atlas_coords == coords:
+			return b_data
+		if "tile_atlas_coords" in b_data and b_data.tile_atlas_coords == coords:
+			return b_data
+		if b_data.has_method("tem_tile_vazio") and b_data.tem_tile_vazio() and b_data.tile_vazio_atlas_coords == coords:
 			return b_data
 	return null
 
-# ==============================================================================
-# CONTAGEM DE CONSTRUÇÕES ATIVAS (usado pelo sistema de renda/recursos por turno)
-# ==============================================================================
-## Conta quantas construções ativas no mapa têm um id que começa com "prefixo_id"
-## (ex: "casa" conta "casa_simples" e "casa_grande")
-func contar_construcoes_por_categoria(prefixo_id: String) -> int:
-	var total := 0
-	for predio in construcoes_no_mapa.values():
-		if predio and predio.data and predio.data.id.to_lower().begins_with(prefixo_id.to_lower()):
-			total += 1
-	return total
-
-## Quantidade de casas ativas no mapa agora (usado pra Global.renda)
-func contar_casas_ativas() -> int:
-	return contar_construcoes_por_categoria("casa")
-
-func _executar_fallback_por_string(tipo: String) -> void:
-	match tipo:
-		"prefeitura":
-			tela_compras.abrir_modo_upgrade(
-				"Prefeitura",
-				1,
-				1500.0,
-				100.0,
-				500000.0,
-				icone_temp,
-				"Sede administrativa da cidade.",
-				"Melhorar a prefeitura libera novas areas de expansao no mapa."
-			)
-		"casa1", "casa_simples":
-			tela_compras.abrir_modo_compra(
-				"Casa Residencial",
-				"Residencial",
-				"Aumenta a capacidade de moradores e a receita de impostos da cidade.",
-				10,
-				150000.0,
-				icone_temp
-			)
-
-
-# ==============================================================================
-# TESTES MANUAIS VIA BOTÃO
-# ==============================================================================
-func _on_testar_escola_pressed() -> void:
-	tela_compras.abrir_modo_compra(
-		"Escola",
-		"Construcao",
-		"A construcao essencial para o desenvolvimento humano de uma cidade.",
-		15,
-		290000.0,
-		icone_temp
-	)
-
-func _on_testar_hospital_pressed() -> void:
-	tela_compras.abrir_modo_upgrade(
-		"Hospital",
-		1,
-		1906135023.0,
-		100.0,
-		290000.0,
-		icone_temp
-	)
-
-
-# ==============================================================================
-# RESPOSTAS AOS SINAIS DA JANELA (COMPRA E UPGRADE)
-# ==============================================================================
-func _on_compra_confirmada(nome: String) -> void:
-	print("SINAL RECEBIDO: O jogador comprou o predio -> ", nome)
-	
-	var b_data = _building_data_selecionado
-	if not b_data:
-		b_data = _buscar_data_por_id("casa_simples")
-		
-	if b_data and _celula_selecionada != Vector2i(-1, -1):
-		# Só efetua a compra se houver dinheiro suficiente
-		if Global.dinheiro < b_data.custo_base:
-			print("Dinheiro insuficiente para comprar '", b_data.nome, "'! Necessário: ", b_data.custo_base, " | Você tem: ", Global.dinheiro)
-			_resetar_estado_construcoes()
-			return
-		
-		# Consome o dinheiro
-		Global.dinheiro -= b_data.custo_base
-		print("Dinheiro gasto: ", b_data.custo_base, " | Restante: ", Global.dinheiro)
-		
-		# 1. Cria a instancia na memoria e salva na coordenada do dicionario
-		var nova_instancia = BuildingInstance.new(b_data, _celula_selecionada)
-		construcoes_no_mapa[_celula_selecionada] = nova_instancia
-		
-		# 2. Pega a coordenada atlas configurada no .tres (suporta variações)
-		var atlas_coords = b_data.get_atlas_coord_para_construir()
-		
-		# 3. Troca o tile visualmente respeitando o tipo exato do nó
-		if tilemap_constructions:
-			tilemap_constructions.set_cell(_celula_selecionada, b_data.source_id, atlas_coords)
-		elif tile_map:
-			tile_map.set_cell(0, _celula_selecionada, b_data.source_id, atlas_coords)
-				
-		print("Construcao efetuada no tile: ", _celula_selecionada)
-		
-	_resetar_estado_construcoes()
-
-func _on_aprimoramento_confirmado(nome: String) -> void:
-	print("SINAL RECEBIDO: O jogador aprimorou o predio -> ", nome)
-	
-	# Incrementa o nivel do predio na posicao selecionada
-	if _celula_selecionada in construcoes_no_mapa and construcoes_no_mapa[_celula_selecionada] != null:
-		var predio: BuildingInstance = construcoes_no_mapa[_celula_selecionada]
-		var custo_upgrade = predio.get_custo_upgrade()
-		
-		if Global.dinheiro < custo_upgrade:
-			print("Dinheiro insuficiente para aprimorar '", nome, "'! Necessário: ", custo_upgrade, " | Você tem: ", Global.dinheiro)
-		else:
-			Global.dinheiro -= custo_upgrade
-			predio.nivel_atual += 1
-			print("Dinheiro gasto no upgrade: ", custo_upgrade, " | Restante: ", Global.dinheiro)
-			print("Nivel atualizado para: ", predio.nivel_atual)
-	else:
-		# Fallback: Procura por correspondencia de nome
-		for pos in construcoes_no_mapa:
-			var predio: BuildingInstance = construcoes_no_mapa[pos]
-			if predio and predio.data and predio.data.nome.to_upper() == nome.to_upper():
-				var custo_upgrade = predio.get_custo_upgrade()
-				
-				if Global.dinheiro < custo_upgrade:
-					print("Dinheiro insuficiente para aprimorar '", nome, "'! Necessário: ", custo_upgrade, " | Você tem: ", Global.dinheiro)
-				else:
-					Global.dinheiro -= custo_upgrade
-					predio.nivel_atual += 1
-					print("Dinheiro gasto no upgrade: ", custo_upgrade, " | Restante: ", Global.dinheiro)
-					print("Nivel atualizado para: ", predio.nivel_atual)
-				break
-			
-	_resetar_estado_construcoes()
-
-func _resetar_estado_construcoes() -> void:
-	if typeof(Global) != TYPE_NIL and "construcoes" in Global:
-		for chave in Global.construcoes:
-			Global.construcoes[chave] = false
+func _executar_fallback_por_string(id_str: String) -> void:
+	print("[AVISO] Fallback acionado para ID: ", id_str)

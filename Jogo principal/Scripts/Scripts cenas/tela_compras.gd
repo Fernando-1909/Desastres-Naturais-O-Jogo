@@ -1,428 +1,288 @@
 extends CanvasLayer
 class_name TelaCompras
 
-enum Modo { COMPRA, UPGRADE }
+signal compra_confirmada(id_edificio: String, variacao_index: int)
+signal aprimoramento_confirmado(id_edificio: String)
 
-# ==============================================================================
-# REFERÊNCIAS DE CONTAINERS E ESTRUTURA DO LAYOUT
-# ==============================================================================
-@export_group("Layout & Containers")
-@export var painel_central: PanelContainer
-@export var overlay_fundo: ColorRect
-@export var colunas_grid: HBoxContainer
+@export_group("Cenas e Preloads")
+@export var item_construcao_scene: PackedScene = preload("res://Jogo principal/UI/item_construcao.tscn")
 
-@export var coluna_stats: VBoxContainer
-@export var coluna_esquerda: VBoxContainer
-@export var coluna_direita: VBoxContainer
+@export_group("Painéis Principais")
+@onready var overlay_fundo: Control = $OverlayFundo
+@onready var painel_selecao: Control = $PainelSelecao
+@onready var painel_central: Control = $PainelCentral
+@onready var painel_detalhes: Control = $PainelDetalhes
 
-@export var container_compra: VBoxContainer
-@export var container_upgrade: VBoxContainer
+@export_group("Nós de Seleção (Catálogo)")
+@onready var container_categorias: VBoxContainer = $PainelSelecao/MargemSelecao/VBoxSelecao/ScrollContainer/ContainerCategorias
+@onready var button_fechar_selecao: Button = $PainelSelecao/ButtonFecharSelecao
 
-@export_group("Painel Pop-in de Detalhes")
-@export var painel_detalhes: PanelContainer
-@export var label_titulo_detalhes: RichTextLabel
-@export var label_texto_detalhes: RichTextLabel
-@export var button_fechar_detalhes: Button
+@export_group("Nós do Painel Central - Coluna Stats")
+@onready var coluna_stats: Control = $PainelCentral/MargemInterna/ColunasGrid/ColunaStats
+@onready var label_ganhos: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaStats/LabelGanhos
+@onready var barra_infra: ProgressBar = $PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra
 
-# ==============================================================================
-# REFERÊNCIAS DOS ELEMENTOS INDIVIDUAIS DE INTERFACE
-# ==============================================================================
-@export_group("Elementos do Card (ColunaEsquerda)")
-@export var label_nome: RichTextLabel
-@export var icone: TextureRect
-@export var label_categoria: RichTextLabel
-@export var label_nivel: RichTextLabel
+@export_group("Nós do Painel Central - Coluna Esquerda")
+@onready var label_nome: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNome
+@onready var icone: TextureRect = $PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/Icone
+@onready var label_categoria: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelCategoria
+@onready var label_nivel: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNivel
 
-@export_group("Elementos do Modo Compra (ContainerCompra)")
-@export var label_descricao: RichTextLabel
-@export var label_bonus_pop: RichTextLabel
-@export var label_bonus_infra: RichTextLabel
-@export var button_comprar: Button
+@export_group("Nós do Painel Central - Coluna Direita (Compra)")
+@onready var container_compra: Control = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra
+@onready var label_descricao: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelDescricao
+@onready var label_bonus_pop: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusPop
+@onready var label_bonus_infra: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusInfra
+@onready var button_comprar: Button = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar
 
-@export_group("Elementos do Modo Upgrade (ContainerUpgrade)")
-@export var label_disc: RichTextLabel
-@export var button_aprimorar: Button
-@export var button_detalhes: Button
+@export_group("Nós do Painel Central - Coluna Direita (Upgrade)")
+@onready var container_upgrade: Control = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade
+@onready var label_disc: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/LabelDisc
+@onready var button_aprimorar: Button = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar
+@onready var button_detalhes: Button = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes
 
-@export_group("Elementos de Stats e Gerais")
-@export var label_ganhos: RichTextLabel
-@export var barra_infra: ProgressBar
-@export var button_fechar: Button
+@export_group("Nós do Painel Central - Geral")
+@onready var button_fechar_central: Button = $PainelCentral/ButtonFechar
 
-# ==============================================================================
-# SINAIS E VARIÁVEIS INTERNAS
-# ==============================================================================
-signal compra_confirmada(nome_edificio: String)
-signal aprimoramento_confirmado(nome_edificio: String)
-signal detalhes_solicitados(nome_edificio: String)
+@export_group("Nós do Painel Detalhes")
+@onready var label_titulo_detalhes: RichTextLabel = $PainelDetalhes/MargemDetalhes/VBoxDetalhes/LabelTituloDetalhes
+@onready var label_texto_detalhes: RichTextLabel = $PainelDetalhes/MargemDetalhes/VBoxDetalhes/LabelTextoDetalhes
+@onready var button_fechar_detalhes: Button = $PainelDetalhes/MargemDetalhes/VBoxDetalhes/ButtonFecharDetalhes
 
-# Estado atual para permitir atualização dinâmica ao trocar o idioma
-var _modo_atual: int = -1 # -1: Fechado, 0: COMPRA, 1: UPGRADE
-var _dados_compra: Dictionary = {}
-var _dados_upgrade: Dictionary = {}
+# Controle interno de navegação
+var _edificio_atual_id: String = ""
+var _variacao_atual_index: int = 0
+var _veio_da_selecao: bool = false
+var _texto_detalhes_atual: String = ""
 
 
 func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_ALWAYS
-	
-	_configurar_propriedades_texto()
-	_resetar_tudo()
-	hide()
-	_conectar_botoes()
-	_conectar_sinal_idioma()
+	fechar_tudo()
 
-
-func _conectar_sinal_idioma() -> void:
-	# Conecta ao sinal global de alteração de idioma
-	if typeof(Global) != TYPE_NIL and Global.has_signal("idioma_alterado"):
-		if not Global.idioma_alterado.is_connected(_on_idioma_alterado):
-			Global.idioma_alterado.connect(_on_idioma_alterado)
-
-
-func _on_idioma_alterado(_novo_codigo: String) -> void:
-	# Recarrega a interface com o novo idioma se ela estiver visível
-	if visible:
-		if _modo_atual == Modo.COMPRA:
-			_atualizar_interface_compra()
-		elif _modo_atual == Modo.UPGRADE:
-			_atualizar_interface_upgrade()
-			if painel_detalhes and painel_detalhes.visible:
-				_atualizar_conteudo_detalhes()
-
-
-func _input(event: InputEvent) -> void:
-	if visible and event.is_action_pressed("ui_cancel"):
-		if painel_detalhes and painel_detalhes.visible:
-			fechar_detalhes()
-		else:
-			fechar_janela()
-
-
-func _configurar_propriedades_texto() -> void:
-	var labels = [
-		label_nome, label_categoria, label_nivel, label_descricao, 
-		label_disc, label_ganhos, label_titulo_detalhes, label_texto_detalhes
-	]
-	for l in labels:
-		if l:
-			l.fit_content = true
-			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-
-	if painel_detalhes and painel_detalhes.custom_minimum_size == Vector2.ZERO:
-		painel_detalhes.custom_minimum_size = Vector2(380, 200)
-
-
-# ==============================================================================
-# LIMPEZA E RESET DE ESTADO
-# ==============================================================================
-func _resetar_tudo() -> void:
-	_modo_atual = -1
-	
-	if coluna_stats: coluna_stats.visible = false
-	if container_compra: container_compra.visible = false
-	if container_upgrade: container_upgrade.visible = false
-	if painel_detalhes: painel_detalhes.visible = false
-	
-	if label_categoria: label_categoria.visible = false
-	if label_nivel: label_nivel.visible = false
-	
-	if label_descricao: label_descricao.visible = false
-	if label_disc: label_disc.visible = false
-	if label_bonus_pop: label_bonus_pop.visible = false
-	if label_bonus_infra: label_bonus_infra.visible = false
-	if label_ganhos: label_ganhos.visible = false
-	if barra_infra: barra_infra.visible = false
-	if button_comprar: button_comprar.visible = false
-	
-	if button_aprimorar: 
-		button_aprimorar.visible = false
-		button_aprimorar.disabled = false
-		
-	if button_detalhes: button_detalhes.visible = false
-
-
-# ==============================================================================
-# MODO COMPRA
-# ==============================================================================
-func abrir_modo_compra(
-	nome: String, 
-	categoria: String, 
-	descricao: String, 
-	bonus_pop: int, 
-	preco: float, 
-	textura_predio: Texture2D
-) -> void:
-	
-	_resetar_tudo()
-	_modo_atual = Modo.COMPRA
-	
-	# Armazena os dados para o caso de o idioma mudar
-	_dados_compra = {
-		"nome": nome,
-		"categoria": categoria,
-		"descricao": descricao,
-		"bonus_pop": bonus_pop,
-		"preco": preco,
-		"textura": textura_predio
-	}
-	
-	_atualizar_interface_compra()
-	
-	if colunas_grid and coluna_esquerda and coluna_direita:
-		colunas_grid.move_child(coluna_esquerda, 0)
-		colunas_grid.move_child(coluna_direita, 1)
-	
-	_animar_popin()
-
-
-func _atualizar_interface_compra() -> void:
-	if container_compra: container_compra.visible = true
-	if label_categoria: label_categoria.visible = true
-	if label_bonus_pop: label_bonus_pop.visible = true
-	if button_comprar: button_comprar.visible = true
-	
-	var desc_traduzida = tr(_dados_compra["descricao"])
-	if label_descricao:
-		var tem_desc = desc_traduzida.strip_edges() != ""
-		label_descricao.visible = tem_desc
-		if tem_desc:
-			label_descricao.text = "[center]" + desc_traduzida + "[/center]"
-
-	# A função tr() busca a chave no CSV. Se não encontrar, exibe o próprio texto.
-	var nome_traduzido = tr(_dados_compra["nome"]).to_upper()
-	var cat_traduzida = tr(_dados_compra["categoria"]).to_upper()
-	var texto_pop_traduzido = tr("HUD_POPULARIDADE")
-	var texto_comprar_traduzido = tr("UI_COMPRAR")
-	
-	if label_nome: label_nome.text = "[center][b][color=purple]" + nome_traduzido + "[/color][/b][/center]"
-	if label_categoria: label_categoria.text = "[center][b][color=lightblue]" + cat_traduzida + "[/color][/b][/center]"
-	if label_bonus_pop: label_bonus_pop.text = "[center][b][color=green]+ " + str(_dados_compra["bonus_pop"]) + " " + texto_pop_traduzido + "[/color][/b][/center]"
-	
-	_definir_texto_botao(button_comprar, texto_comprar_traduzido + "\nR$ " + _formatar_numero(_dados_compra["preco"]))
-	
-	if icone and _dados_compra["textura"]: 
-		icone.texture = _dados_compra["textura"]
-
-
-# ==============================================================================
-# MODO UPGRADE
-# ==============================================================================
-func abrir_modo_upgrade(
-	nome: String, 
-	nivel: int, 
-	ganhos: float, 
-	durabilidade_pct: float, 
-	preco_upgrade: float, 
-	textura_predio: Texture2D,
-	descricao: String = "",
-	texto_detalhes: String = "",
-	pode_aprimorar: bool = true
-) -> void:
-	
-	_resetar_tudo()
-	_modo_atual = Modo.UPGRADE
-	
-	# Armazena os dados para o caso de o idioma mudar
-	_dados_upgrade = {
-		"nome": nome,
-		"nivel": nivel,
-		"ganhos": ganhos,
-		"durabilidade_pct": durabilidade_pct,
-		"preco_upgrade": preco_upgrade,
-		"textura": textura_predio,
-		"descricao": descricao,
-		"texto_detalhes": texto_detalhes,
-		"pode_aprimorar": pode_aprimorar
-	}
-	
-	_atualizar_interface_upgrade()
-	
-	if colunas_grid and coluna_stats and coluna_esquerda and coluna_direita:
-		colunas_grid.move_child(coluna_stats, 0)
-		colunas_grid.move_child(coluna_esquerda, 1)
-		colunas_grid.move_child(coluna_direita, 2)
-	
-	_animar_popin()
-
-
-func _atualizar_interface_upgrade() -> void:
-	if coluna_stats: coluna_stats.visible = true
-	if container_upgrade: container_upgrade.visible = true
-	if label_nivel: label_nivel.visible = true
-	if label_ganhos: label_ganhos.visible = true
-	if barra_infra: barra_infra.visible = true
-	
-	var desc_traduzida = tr(_dados_upgrade["descricao"])
-	if label_disc:
-		var tem_desc = desc_traduzida.strip_edges() != ""
-		label_disc.visible = tem_desc
-		if tem_desc:
-			label_disc.text = "[center]" + desc_traduzida + "[/center]"
-
-	var detalhes_traduzido = tr(_dados_upgrade["texto_detalhes"])
+	if button_fechar_selecao:
+		button_fechar_selecao.pressed.connect(fechar_tudo)
+	if button_fechar_central:
+		button_fechar_central.pressed.connect(_on_fechar_central_pressed)
+	if button_fechar_detalhes:
+		button_fechar_detalhes.pressed.connect(_on_fechar_detalhes_pressed)
+	if button_comprar:
+		button_comprar.pressed.connect(_on_comprar_pressed)
+	if button_aprimorar:
+		button_aprimorar.pressed.connect(_on_aprimorar_pressed)
 	if button_detalhes:
-		var tem_detalhes = detalhes_traduzido.strip_edges() != ""
-		button_detalhes.visible = tem_detalhes
-		if tem_detalhes:
-			_definir_texto_botao(button_detalhes, tr("UI_DETALHES"))
-
-	if button_aprimorar: 
-		button_aprimorar.visible = true
-		if _dados_upgrade["pode_aprimorar"]:
-			button_aprimorar.disabled = false
-			_definir_texto_botao(button_aprimorar, tr("UI_APRIMORAR") + "\nR$ " + _formatar_numero(_dados_upgrade["preco_upgrade"]))
-		else:
-			button_aprimorar.disabled = true
-			_definir_texto_botao(button_aprimorar, tr("UI_NIVEL_MAXIMO"))
-	
-	var nome_traduzido = tr(_dados_upgrade["nome"]).to_upper()
-	if label_nome: label_nome.text = "[center][b][color=red]" + nome_traduzido + "[/color][/b][/center]"
-	if label_nivel: label_nivel.text = "[center][b][color=lightblue]" + tr("UI_NIVEL") + ": " + str(_dados_upgrade["nivel"]) + "[/color][/b][/center]"
-	if label_ganhos: label_ganhos.text = "[center]" + tr("UI_GANHOS") + "\n[color=green]R$ " + _formatar_numero(_dados_upgrade["ganhos"]) + "[/color][/center]"
-	
-	if barra_infra: 
-		barra_infra.value = _dados_upgrade["durabilidade_pct"]
-		barra_infra.tooltip_text = "Integridade: " + str(int(_dados_upgrade["durabilidade_pct"])) + "%"
-		
-	if icone and _dados_upgrade["textura"]: 
-		icone.texture = _dados_upgrade["textura"]
+		button_detalhes.pressed.connect(_on_detalhes_pressed)
 
 
 # ==============================================================================
-# PAINEL SECUNDÁRIO (POP-IN DE DETALHES)
+# MODO 1: CATÁLOGO DE SELEÇÃO DE EDIFÍCIOS (COM CABEÇALHO E FILTRO DE PNG)
 # ==============================================================================
-func _abrir_detalhes() -> void:
-	if not painel_detalhes: return
+func abrir_modo_selecao(lista_edificios: Array[BuildingData]) -> void:
+	get_tree().paused = true
+	_veio_da_selecao = false
 	
-	_atualizar_conteudo_detalhes()
-		
-	painel_detalhes.show()
-	painel_detalhes.pivot_offset = painel_detalhes.size / 2.0
-	painel_detalhes.scale = Vector2.ZERO
-	
-	var tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(painel_detalhes, "scale", Vector2.ONE, 0.2)
+	visible = true
+	if overlay_fundo: overlay_fundo.visible = true
+	if painel_selecao: painel_selecao.visible = true
+	if painel_central: painel_central.visible = false
+	if painel_detalhes: painel_detalhes.visible = false
+
+	# Limpa conteúdos anteriores
+	if container_categorias:
+		for child in container_categorias.get_children():
+			child.queue_free()
+
+		# 1. Agrupa os edifícios por categoria
+		var categorias_map: Dictionary = {}
+
+		for b_data in lista_edificios:
+			if b_data == null: continue
+			
+			# FILTRO: Se não tiver nenhum PNG associado no .tres, descarta!
+			if not b_data.tem_icones_validos():
+				continue
+
+			var cat_nome = b_data.categoria if b_data.categoria != "" else "Geral"
+			if not categorias_map.has(cat_nome):
+				categorias_map[cat_nome] = []
+			
+			categorias_map[cat_nome].append(b_data)
+
+		# 2. Cria as seções visuais para cada categoria
+		for cat_chave in categorias_map.keys():
+			var lista_cat: Array = categorias_map[cat_chave]
+			if lista_cat.size() == 0: continue
+
+			# Título / Divisor da Categoria
+			var banner_categoria = _criar_divisor_categoria(cat_chave)
+			container_categorias.add_child(banner_categoria)
+
+			# Grid container para os cards desta categoria
+			var grid = GridContainer.new()
+			grid.columns = 3 # Número de colunas de cards por linha
+			grid.add_theme_constant_override("h_separation", 12)
+			grid.add_theme_constant_override("v_separation", 12)
+			container_categorias.add_child(grid)
+
+			# Instancia cards para cada variação de cada prédio da categoria
+			for b_data in lista_cat:
+				var qtd_variacoes = b_data.get_quantidade_variacoes()
+				
+				for v_idx in range(qtd_variacoes):
+					var card_instance = item_construcao_scene.instantiate()
+					grid.add_child(card_instance)
+					
+					if card_instance.has_method("configurar_card"):
+						card_instance.configurar_card(b_data, v_idx)
+					
+					if card_instance.has_signal("card_selecionado"):
+						card_instance.card_selecionado.connect(_on_card_construcao_selecionado)
 
 
-func _atualizar_conteudo_detalhes() -> void:
-	if not _dados_upgrade.has("nome"): return
+func _criar_divisor_categoria(nome_categoria: String) -> Control:
+	var label = RichTextLabel.new()
+	label.bbcode_enabled = true
+	label.fit_content = true
+	label.scroll_active = false
 	
-	var nome_traduzido = tr(_dados_upgrade["nome"]).to_upper()
-	var texto_detalhes_traduzido = tr(_dados_upgrade["texto_detalhes"])
-	var titulo_detalhes_traduzido = tr("UI_DETALHES")
-	
-	if label_titulo_detalhes:
-		label_titulo_detalhes.text = "[center][b][color=gold]" + nome_traduzido + " - " + titulo_detalhes_traduzido + "[/color][/b][/center]"
-		
-	if label_texto_detalhes:
-		label_texto_detalhes.text = "[center][color=#ffffff]" + texto_detalhes_traduzido + "[/color][/center]"
+	var texto_cat = tr(nome_categoria).to_upper()
+	label.text = "[center][b]=== " + texto_cat + " ===[/b][/center]"
+	return label
 
 
-func fechar_detalhes() -> void:
-	if not painel_detalhes: return
+func _on_card_construcao_selecionado(b_data: BuildingData, variacao_index: int) -> void:
+	_veio_da_selecao = true
+	_variacao_atual_index = variacao_index
+	abrir_modo_compra_por_dados(b_data, variacao_index)
+
+
+# ==============================================================================
+# MODO 2: JANELA DE CONFIRMAÇÃO DE COMPRA
+# ==============================================================================
+func abrir_modo_compra_por_dados(b_data: BuildingData, variacao_index: int = 0) -> void:
+	_variacao_atual_index = variacao_index
+	var tex = b_data.get_icone_variacao(variacao_index)
+	var id_ou_nome = b_data.id if b_data.id != "" else b_data.nome
 	
-	var tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(painel_detalhes, "scale", Vector2.ZERO, 0.12)
-	tween.tween_callback(func():
-		painel_detalhes.hide()
+	abrir_modo_compra(
+		id_ou_nome,
+		b_data.categoria,
+		b_data.descricao_curta,
+		b_data.bonus_populacao,
+		b_data.custo_base,
+		tex,
+		b_data.texto_detalhes
 	)
 
 
-# ==============================================================================
-# GERENCIAMENTO DE PAUSA E ANIMAÇÕES
-# ==============================================================================
-func _animar_popin() -> void:
+func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String, bonus_pop: int, custo: int, tex: Texture2D, texto_detalhes: String = "") -> void:
 	get_tree().paused = true
-	show()
+	_edificio_atual_id = id_or_nome
+	_texto_detalhes_atual = texto_detalhes
 	
-	if painel_central:
-		painel_central.pivot_offset = painel_central.size / 2.0
-		painel_central.scale = Vector2.ZERO
-		
-		var tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-		tween.tween_property(painel_central, "scale", Vector2.ONE, 0.25)
+	visible = true
+	if overlay_fundo: overlay_fundo.visible = true
+	if painel_selecao: painel_selecao.visible = false
+	if painel_central: painel_central.visible = true
+	if painel_detalhes: painel_detalhes.visible = false
 
+	if container_compra: container_compra.visible = true
+	if container_upgrade: container_upgrade.visible = false
+	if coluna_stats: coluna_stats.visible = false
 
-func fechar_janela() -> void:
-	_resetar_global_construcoes()
-	
-	if painel_central:
-		var tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		tween.tween_property(painel_central, "scale", Vector2.ZERO, 0.15)
-		tween.tween_callback(func():
-			hide()
-			_resetar_tudo()
-			get_tree().paused = false
-		)
-	else:
-		hide()
-		_resetar_tudo()
-		get_tree().paused = false
+	if label_nome: label_nome.text = "[center]" + tr(id_or_nome) + "[/center]"
+	if label_categoria: label_categoria.text = tr(categoria)
+	if label_nivel: label_nivel.text = ""
+	if icone and tex: icone.texture = tex
 
+	if label_descricao: label_descricao.text = tr(descricao)
+	if label_bonus_pop: label_bonus_pop.text = tr("HUD_POPULARIDADE") + ": +" + str(bonus_pop)
+	if label_bonus_infra: label_bonus_infra.text = ""
 
-func _resetar_global_construcoes() -> void:
-	if typeof(Global) != TYPE_NIL and "construcoes" in Global:
-		for chave in Global.construcoes:
-			Global.construcoes[chave] = false
+	_definir_texto_botao(button_comprar, tr("UI_COMPRAR") + " ($" + str(custo) + ")")
 
 
 # ==============================================================================
-# CONEXÃO DE SINAIS E AÇÕES DOS BOTÕES
+# MODO 3: UPGRADE
 # ==============================================================================
-func _conectar_botoes() -> void:
-	if button_comprar and not button_comprar.pressed.is_connected(_on_comprar_pressed):
-		button_comprar.pressed.connect(_on_comprar_pressed)
-		
-	if button_aprimorar and not button_aprimorar.pressed.is_connected(_on_aprimoramento_pressed):
-		button_aprimorar.pressed.connect(_on_aprimoramento_pressed)
-		
-	if button_detalhes and not button_detalhes.pressed.is_connected(_on_detalhes_pressed):
-		button_detalhes.pressed.connect(_on_detalhes_pressed)
-		
-	if button_fechar and not button_fechar.pressed.is_connected(fechar_janela):
-		button_fechar.pressed.connect(fechar_janela)
-		
-	if button_fechar_detalhes and not button_fechar_detalhes.pressed.is_connected(fechar_detalhes):
-		button_fechar_detalhes.pressed.connect(fechar_detalhes)
+func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabilidade_pct: float, custo_upgrade: int, tex: Texture2D, descricao: String, texto_detalhes: String, pode_aprimorar: bool) -> void:
+	get_tree().paused = true
+	_veio_da_selecao = false
+	_edificio_atual_id = nome_edificio
+	_texto_detalhes_atual = texto_detalhes
+	
+	visible = true
+	if overlay_fundo: overlay_fundo.visible = true
+	if painel_selecao: painel_selecao.visible = false
+	if painel_central: painel_central.visible = true
+	if painel_detalhes: painel_detalhes.visible = false
+
+	if container_compra: container_compra.visible = false
+	if container_upgrade: container_upgrade.visible = true
+	if coluna_stats: coluna_stats.visible = true
+
+	if label_ganhos: label_ganhos.text = tr("UI_GANHOS") + ": $" + str(ganhos)
+	if barra_infra: barra_infra.value = durabilidade_pct
+
+	if label_nome: label_nome.text = "[center]" + tr(nome_edificio) + "[/center]"
+	if label_categoria: label_categoria.text = ""
+	if label_nivel: label_nivel.text = tr("UI_NIVEL") + ": " + str(nivel)
+	if icone and tex: icone.texture = tex
+
+	if label_disc: label_disc.text = tr(descricao)
+
+	if button_aprimorar:
+		button_aprimorar.disabled = not pode_aprimorar
+		if pode_aprimorar:
+			_definir_texto_botao(button_aprimorar, tr("UI_APRIMORAR") + " ($" + str(custo_upgrade) + ")")
+		else:
+			_definir_texto_botao(button_aprimorar, tr("UI_NIVEL_MAXIMO"))
+
+	_definir_texto_botao(button_detalhes, tr("UI_DETALHES"))
 
 
+# ==============================================================================
+# AÇÕES E NAVEGAÇÃO
+# ==============================================================================
 func _on_comprar_pressed() -> void:
-	compra_confirmada.emit(_dados_compra.get("nome", ""))
-	fechar_janela()
+	compra_confirmada.emit(_edificio_atual_id, _variacao_atual_index)
+	fechar_tudo()
 
-
-func _on_aprimoramento_pressed() -> void:
-	aprimoramento_confirmado.emit(_dados_upgrade.get("nome", ""))
-	fechar_janela()
-
+func _on_aprimorar_pressed() -> void:
+	aprimoramento_confirmado.emit(_edificio_atual_id)
+	fechar_tudo()
 
 func _on_detalhes_pressed() -> void:
-	detalhes_solicitados.emit(_dados_upgrade.get("nome", ""))
-	_abrir_detalhes()
+	if painel_detalhes:
+		if label_titulo_detalhes:
+			label_titulo_detalhes.text = "[center]" + tr(_edificio_atual_id) + "[/center]"
+		if label_texto_detalhes:
+			label_texto_detalhes.text = tr(_texto_detalhes_atual)
+		painel_detalhes.visible = true
 
+func _on_fechar_detalhes_pressed() -> void:
+	if painel_detalhes:
+		painel_detalhes.visible = false
 
-# ==============================================================================
-# FUNÇÕES AUXILIARES
-# ==============================================================================
-func _definir_texto_botao(btn: Button, texto_bbcode: String) -> void:
-	if not btn: return
-	
-	var rtl = btn.get_node_or_null("RichTextLabel") as RichTextLabel
-	if rtl:
-		rtl.text = "[center]" + texto_bbcode + "[/center]"
+func _on_fechar_central_pressed() -> void:
+	if _veio_da_selecao:
+		if painel_central: painel_central.visible = false
+		if painel_selecao: painel_selecao.visible = true
 	else:
-		btn.text = texto_bbcode
+		fechar_tudo()
+
+func fechar_tudo() -> void:
+	get_tree().paused = false
+	visible = false
+	if overlay_fundo: overlay_fundo.visible = false
+	if painel_selecao: painel_selecao.visible = false
+	if painel_central: painel_central.visible = false
+	if painel_detalhes: painel_detalhes.visible = false
 
 
-func _formatar_numero(valor: float) -> String:
-	var texto = str(int(valor))
-	var resultado = ""
-	var contador = 0
-	
-	for i in range(texto.length() - 1, -1, -1):
-		if contador > 0 and contador % 3 == 0:
-			resultado = "." + resultado
-		resultado = texto[i] + resultado
-		contador += 1
-		
-	return resultado
+func _definir_texto_botao(botao: Button, texto: String) -> void:
+	if botao == null: return
+	var rtl = botao.get_node_or_null("RichTextLabel") as RichTextLabel
+	if rtl:
+		rtl.text = "[center]" + texto + "[/center]"
+	else:
+		botao.text = texto

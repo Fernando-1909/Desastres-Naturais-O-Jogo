@@ -2,6 +2,18 @@
 
 [ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/Scripts cenas/tela_compras.gd" id="1_6tqbi"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4v7s"]
+bg_color = Color(0.15686275, 0.27450982, 0.53333336, 0.6784314)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tkcjf"]
 bg_color = Color(0.11612659, 0.116126604, 0.116126515, 1)
 border_width_left = 2
@@ -25,35 +37,9 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "colunas_grid", "coluna_stats", "coluna_esquerda", "coluna_direita", "container_compra", "container_upgrade", "painel_detalhes", "label_titulo_detalhes", "label_texto_detalhes", "button_fechar_detalhes", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "button_comprar", "label_disc", "button_aprimorar", "button_detalhes", "label_ganhos", "barra_infra", "button_fechar")]
+[node name="TelaCompras" type="CanvasLayer" unique_id=2141866857]
 process_mode = 3
 script = ExtResource("1_6tqbi")
-painel_central = NodePath("PainelCentral")
-overlay_fundo = NodePath("OverlayFundo")
-colunas_grid = NodePath("PainelCentral/MargemInterna/ColunasGrid")
-coluna_stats = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats")
-coluna_esquerda = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda")
-coluna_direita = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita")
-container_compra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra")
-container_upgrade = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade")
-painel_detalhes = NodePath("PainelDetalhes")
-label_titulo_detalhes = NodePath("PainelDetalhes/MargemDetalhes/VBoxDetalhes/LabelTituloDetalhes")
-label_texto_detalhes = NodePath("PainelDetalhes/MargemDetalhes/VBoxDetalhes/LabelTextoDetalhes")
-button_fechar_detalhes = NodePath("PainelDetalhes/ButtonFecharDetalhes")
-label_nome = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNome")
-icone = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/Icone")
-label_categoria = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelCategoria")
-label_nivel = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNivel")
-label_descricao = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelDescricao")
-label_bonus_pop = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusPop")
-label_bonus_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusInfra")
-button_comprar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar")
-label_disc = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/LabelDisc")
-button_aprimorar = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar")
-button_detalhes = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes")
-label_ganhos = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/LabelGanhos")
-barra_infra = NodePath("PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra")
-button_fechar = NodePath("PainelCentral/ButtonFechar")
 
 [node name="OverlayFundo" type="ColorRect" parent="." unique_id=777114932]
 anchors_preset = 15
@@ -62,6 +48,63 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.50980395)
+
+[node name="PainelSelecao" type="PanelContainer" parent="." unique_id=2111196731]
+custom_minimum_size = Vector2(600, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_g4v7s")
+
+[node name="MargemSelecao" type="MarginContainer" parent="PainelSelecao" unique_id=1697367248]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBoxSelecao" type="VBoxContainer" parent="PainelSelecao/MargemSelecao" unique_id=1986505827]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderSelecao" type="HBoxContainer" parent="PainelSelecao/MargemSelecao/VBoxSelecao" unique_id=567220649]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="LabelTituloSelecao" type="RichTextLabel" parent="PainelSelecao/MargemSelecao/VBoxSelecao/HeaderSelecao" unique_id=1653727217]
+layout_mode = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "Teste"
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PainelSelecao/MargemSelecao/VBoxSelecao" unique_id=1990456251]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ContainerCategorias" type="VBoxContainer" parent="PainelSelecao/MargemSelecao/VBoxSelecao/ScrollContainer" unique_id=170779135]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ButtonFecharSelecao" type="Button" parent="PainelSelecao" unique_id=465476074]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "❌"
 
 [node name="PainelCentral" type="PanelContainer" parent="." unique_id=820898031]
 custom_minimum_size = Vector2(720, 400)

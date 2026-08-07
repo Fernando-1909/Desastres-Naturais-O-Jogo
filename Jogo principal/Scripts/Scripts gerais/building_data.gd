@@ -5,7 +5,9 @@ extends Resource
 @export var id: String = ""                           # ex: "casa_simples", "prefeitura"
 @export var nome: String = ""                         # ex: "Casa Simples", "Prefeitura"
 @export var categoria: String = "Residencial"         # ex: "Residencial", "Governamental"
-@export var icone: Texture2D                          # Ícone exibido na loja/menu
+@export var icone: Texture2D                          # Ícone único (fallback)
+## Coloque aqui a lista de PNGs que correspondem às variações deste prédio
+@export var icones: Array[Texture2D] = []             
 
 @export_group("Regras de Construção")
 @export var eh_unica: bool = false                    # Se true, só permite 1 no mapa
@@ -28,24 +30,49 @@ extends Resource
 @export_group("Tiles no TileSet")
 ## Coloque aqui TODAS as coordenadas atlas que representam este prédio JÁ CONSTRUÍDO (variações)
 @export var tiles_atlas_coords: Array[Vector2i] = [] 
-@export var source_id: int = 4                       # I D da fonte no TileSet
-## Coordenada atlas do "lote vazio" que representa este prédio ANTES de ser construído
-## (substitui o Custom Data "building_id" do TileSet — deixe (-1,-1) se este prédio
-## não tiver um lote vazio próprio no mapa).
+@export var source_id: int = 4                       # ID da fonte no TileSet
 @export var tile_vazio_atlas_coords: Vector2i = Vector2i(-1, -1)
 
-## Retorna true se este prédio tem um tile de "lote vazio" configurado
+
+## Retorna true se o .tres tem pelo menos 1 imagem válida associada
+func tem_icones_validos() -> bool:
+	if icones.size() > 0:
+		for tex in icones:
+			if tex != null:
+				return true
+	return icone != null
+
+
+## Retorna a quantidade de variações registradas no array icones (ou 1 se usar 'icone')
+func get_quantidade_variacoes() -> int:
+	var contagem_validos = 0
+	if icones.size() > 0:
+		for tex in icones:
+			if tex != null:
+				contagem_validos += 1
+		return contagem_validos
+	elif icone != null:
+		return 1
+	return 0
+
+
+## Retorna a textura de um índice específico de variação
+func get_icone_variacao(indice: int = 0) -> Texture2D:
+	if icones.size() > 0 and indice >= 0 and indice < icones.size():
+		if icones[indice] != null:
+			return icones[indice]
+	return icone
+
+
 func tem_tile_vazio() -> bool:
 	return tile_vazio_atlas_coords != Vector2i(-1, -1)
 
-## Retorna uma coordenada específica pelo índice, ou sorteia se o índice for -1
+
 func get_atlas_coord_para_construir(indice: int = -1) -> Vector2i:
 	if tiles_atlas_coords.is_empty():
 		return Vector2i.ZERO
 	
-	# Se um índice válido for passado (ex: 0, 1 ou 2), usa o sprite exato
 	if indice >= 0 and indice < tiles_atlas_coords.size():
 		return tiles_atlas_coords[indice]
 		
-	# Caso contrário (-1), mantém o comportamento aleatório
 	return tiles_atlas_coords.pick_random()

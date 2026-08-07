@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://cd6wl7b581qxc"]
+
+[ext_resource type="Script" uid="uid://bvkgpi3l1eh30" path="res://Jogo principal/Scripts/Scripts cenas/item_construcao.gd" id="1_0dnkj"]
+
+[node name="ItemConstrucao" type="Button" unique_id=1622996812]
+custom_minimum_size = Vector2(120, 140)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0dnkj")
+
+[node name="Margem" type="MarginContainer" parent="." unique_id=1867738074]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Vbox" type="VBoxContainer" parent="Margem" unique_id=1476446168]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Icone" type="TextureRect" parent="Margem/Vbox" unique_id=448569271]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
