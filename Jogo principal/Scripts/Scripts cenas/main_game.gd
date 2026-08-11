@@ -27,6 +27,10 @@ extends Node2D
 @export var banco_edificios_manual: Array[BuildingData] = []
 @export var tile_map: TileMap
 
+@export_group("Desastres")
+## Arraste aqui o .tscn da cena de Enchente que criamos
+@export var cena_enchente: PackedScene
+
 # Dicionario dinamico carregado automaticamente
 # Chave = String ("casa_simples", "prefeitura") | Valor = BuildingData
 var banco_edificios: Dictionary = {}
@@ -612,3 +616,43 @@ func _buscar_data_por_atlas_coords(coords: Vector2i) -> BuildingData:
 
 func _executar_fallback_por_string(id_str: String) -> void:
 	print("[AVISO] Fallback acionado para ID: ", id_str)
+
+
+func _on_desastre_button_pressed() -> void:
+	_iniciar_enchente()
+
+
+# ==============================================================================
+# INTEGRAÇÃO COM A CENA DE DESASTRE: ENCHENTE
+# ==============================================================================
+func _iniciar_enchente() -> void:
+	if not cena_enchente:
+		print("[AVISO] Nenhuma cena de Enchente configurada em 'cena_enchente' (Inspector do main_game)!")
+		return
+	
+	var enchente = cena_enchente.instantiate()
+	add_child(enchente)
+	enchente.enchente_iniciada.connect(_on_enchente_iniciada)
+	
+	# Contadores globais de desastre (já existiam no Global, só incrementamos)
+	Global.enchente += 1
+	if "desastres" in Global and Global.desastres.has("enchente"):
+		Global.desastres["enchente"] += 1
+
+
+func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:
+	var atingidos := 0
+	for x in range(area.position.x, area.position.x + area.size.x):
+		for y in range(area.position.y, area.position.y + area.size.y):
+			var pos := Vector2i(x, y)
+			if construcoes_no_mapa.has(pos) and construcoes_no_mapa[pos] != null:
+				var predio: BuildingInstance = construcoes_no_mapa[pos]
+				predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - dano)
+				atingidos += 1
+				print("[ENCHENTE] Dano aplicado em ", pos, "! Nova durabilidade: ", predio.durabilidade_atual, "/", predio.data.durabilidade_maxima)
+				
+				# Se a tela de compras/upgrade estiver aberta pro predio atingido, atualiza a exibição
+				if tela_compras and tela_compras.visible and pos == _celula_selecionada:
+					_abrir_modo_upgrade_instancia(predio)
+	
+	print("[ENCHENTE] Total de construções atingidas: ", atingidos, " / Dano aplicado: ", dano)

@@ -122,6 +122,8 @@ text = "⭐"
 custom_minimum_size = Vector2(145, 0)
 layout_mode = 2
 text = "Popularidade"
+fit_content = true
+scroll_active = false
 
 [node name="TurnoContainer" type="PanelContainer" parent="." unique_id=1763884610]
 layout_mode = 1

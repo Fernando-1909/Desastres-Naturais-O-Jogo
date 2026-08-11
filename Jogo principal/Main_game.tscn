@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cg5qkrc8cb38v" path="res://Jogo principal/tilesheets/aguaplaceholder.png" id="6_fo8d0"]
 [ext_resource type="Texture2D" uid="uid://cumrysl7bg33e" path="res://Jogo principal/tilesheets/TrocaPlaceholder.png" id="7_2cq4x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
+[ext_resource type="PackedScene" uid="uid://bkti7orp2yjfg" path="res://Jogo principal/Desastres/enchente.tscn" id="7_i63ni"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
 [ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/Scripts/Scripts gerais/npc.gd" id="10_k7th3"]
 [ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="11_3axm1"]
@@ -588,6 +589,7 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(528, 503, 435, 503, 439
 y_sort_enabled = true
 script = ExtResource("1_bvlld")
 pasta_edificios = "res://Jogo principal/Scripts/Scripts cons/"
+cena_enchente = ExtResource("7_i63ni")
 
 [node name="TileMapGround" type="TileMapLayer" parent="." unique_id=1540127578]
 texture_filter = 1
@@ -711,6 +713,13 @@ offset_bottom = 31.0
 grow_horizontal = 0
 text = "Pausa"
 
+[node name="DesastreButton" type="Button" parent="." unique_id=1984064466]
+offset_left = 1047.0
+offset_top = 386.0
+offset_right = 1176.0
+offset_bottom = 421.0
+text = "Desastre"
+
 [node name="MenuPausa" parent="." unique_id=643096711 instance=ExtResource("16_tkcjf")]
 visible = false
 
@@ -719,3 +728,4 @@ visible = false
 
 [connection signal="pressed" from="CanvasLayer/BuildingHUD/PanelContainer2/VBoxContainer/Button" to="." method="_on_button_close_menu_pressed"]
 [connection signal="pressed" from="TesteTroca" to="TileMapConstructions" method="_on_teste_troca_pressed"]
+[connection signal="pressed" from="DesastreButton" to="." method="_on_desastre_button_pressed"]
