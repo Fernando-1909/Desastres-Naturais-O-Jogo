@@ -4,7 +4,6 @@ extends Resource
 @export_group("Identificação Base")
 @export var id: String = ""                           # ex: "casa_simples", "prefeitura"
 @export var nome: String = ""                         # ex: "Casa Simples", "Prefeitura"
-@export var categoria: String = "Residencial"         # ex: "Residencial", "Governamental"
 @export var icone: Texture2D                          # Ícone único (fallback)
 ## Coloque aqui a lista de PNGs que correspondem às variações deste prédio
 @export var icones: Array[Texture2D] = []             

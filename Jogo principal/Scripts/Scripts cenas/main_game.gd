@@ -1,7 +1,7 @@
 extends Node2D
 
 # ==============================================================================
-# CAMERA, HUD E NOS DA INTERFACE
+# CAMERA, HUD E NÓS DA INTERFACE
 # ==============================================================================
 @onready var player_camera = $Player/Camera2D
 @onready var freecam_camera = $FreeCamera2D
@@ -32,7 +32,7 @@ extends Node2D
 @export var cena_enchente: PackedScene
 
 # Dicionario dinamico carregado automaticamente
-# Chave = String ("casa_simples", "prefeitura") | Valor = BuildingData
+# Chave = String ("casa_simples", "cons_lazer", etc) | Valor = BuildingData
 var banco_edificios: Dictionary = {}
 
 # Guarda todas as construcoes vivas no mapa
@@ -112,7 +112,7 @@ func contar_construcoes_por_categoria(categoria: String = "") -> int:
 				var cat_predio = ""
 				if "categoria" in predio.data and predio.data.categoria != null:
 					cat_predio = str(predio.data.categoria).to_lower().strip_edges()
-				
+
 				var id_predio = ""
 				if "id" in predio.data and predio.data.id != null:
 					id_predio = str(predio.data.id).to_lower().strip_edges()
@@ -128,18 +128,18 @@ func contar_construcoes(categoria: String = "") -> int:
 
 
 # ==============================================================================
-# CARREGADOR AUTOMATICO DE RECURSOS (.TRES)
+# CARREGADOR AUTOMATICO DE RECURSOS (.TRES) DA PASTA INTEIRA
 # ==============================================================================
 func _carregar_todos_os_edificios() -> void:
 	banco_edificios.clear()
 	
 	# 1. Carrega arquivos passados manualmente no Inspector (se houver)
 	for b_data in banco_edificios_manual:
-		if b_data and b_data.id != "":
+		if b_data and "id" in b_data and b_data.id != "":
 			banco_edificios[b_data.id.to_lower()] = b_data
 			print("[INFO] Edificio (manual) registrado: ", b_data.id)
 
-	# 2. Escaneia a pasta no projeto em busca de arquivos .tres
+	# 2. Escaneia a pasta inteira no projeto em busca de arquivos .tres
 	if DirAccess.dir_exists_absolute(pasta_edificios):
 		var dir = DirAccess.open(pasta_edificios)
 		if dir:
@@ -152,7 +152,7 @@ func _carregar_todos_os_edificios() -> void:
 					if nome_limpo.ends_with(".tres"):
 						var caminho_completo = pasta_edificios.path_join(nome_limpo)
 						var recurso = load(caminho_completo) as BuildingData
-						if recurso and recurso.id != "":
+						if recurso and "id" in recurso and recurso.id != "":
 							banco_edificios[recurso.id.to_lower()] = recurso
 							print("[INFO] Edificio (automatico) carregado: ", recurso.id)
 				nome_arquivo = dir.get_next()
@@ -212,42 +212,86 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 
 	if tile_data == null: return
 
-	# 3. Lê a propriedade Custom Data 'building_id' se existir
+	# 3. Lê as Custom Data Layers 'building_id' e 'Categoria'
 	var building_id_custom = ""
-	var raw_custom = tile_data.get_custom_data("building_id")
-	if raw_custom != null:
-		building_id_custom = str(raw_custom).strip_edges().to_lower()
+	var raw_custom_id = tile_data.get_custom_data("building_id")
+	if raw_custom_id != null:
+		building_id_custom = str(raw_custom_id).strip_edges().to_lower()
 
 	# --------------------------------------------------------------------------
-	# CASO TERRENO VAZIO -> ABRE O CATÁLOGO DE SELEÇÃO DE EDIFÍCIOS
+	# CASO TERRENO VAZIO -> ABRE O CATÁLOGO FILTRADO (IGNORANDO PREFEITURA)
 	# --------------------------------------------------------------------------
 	if building_id_custom == "terreno_vazio" or building_id_custom == "":
-		var lista_opcoes = _obter_edificios_genericos()
+		var lista_opcoes = _obter_todos_edificios_disponiveis()
 		if lista_opcoes.size() > 0:
 			tela_compras.abrir_modo_selecao(lista_opcoes)
 		else:
-			print("[AVISO] Nenhuma construção disponível encontrada no banco de dados!")
+			print("[AVISO] Nenhuma construção válida encontrada na pasta de recursos!")
 		return
 
 	# --------------------------------------------------------------------------
-	# CASO OUTRO PRÉDIO PRÉ-DEFINIDO (Ex: Prefeitura)
+	# CASO OUTRO PRÉDIO PRÉ-DEFINIDO (Ex: Prefeitura colocada previamente)
 	# --------------------------------------------------------------------------
 	var b_data: BuildingData = _buscar_data_por_id(building_id_custom)
 	if b_data != null:
 		_building_data_selecionado = b_data
-		_abrir_modo_compra_para_dados(b_data)
+		_abrir_modo_compra_para_dados(b_data, 0)
 	else:
-		# Fallback: se for desconhecido, abre o catálogo
-		var lista_opcoes = _obter_edificios_genericos()
+		# Fallback: envia os edifícios permitidos da pasta para a TelaCompras
+		var lista_opcoes = _obter_todos_edificios_disponiveis()
 		if lista_opcoes.size() > 0:
 			tela_compras.abrir_modo_selecao(lista_opcoes)
 
 
-func _obter_edificios_genericos() -> Array[BuildingData]:
+# ==============================================================================
+# CARREGAMENTO DINÂMICO DE EDIFÍCIOS PARA A LOJA
+# ==============================================================================
+
+## Filtro que ignora a Prefeitura e outros prédios não compráveis no catálogo
+func _eh_edificio_permitido_na_loja(b_data: BuildingData) -> bool:
+	if b_data == null:
+		return false
+	
+	var id_limpo = str(b_data.id).to_lower().strip_edges() if "id" in b_data and b_data.id != null else ""
+	var nome_arquivo = b_data.resource_path.get_file().to_lower().strip_edges()
+	
+	# Ignora a prefeitura
+	if id_limpo == "prefeitura" or nome_arquivo == "prefeitura.tres":
+		return false
+		
+	return true
+
+
+## Retorna edifícios válidos carregados da pasta para exibição no catálogo
+func _obter_todos_edificios_disponiveis() -> Array[BuildingData]:
 	var lista: Array[BuildingData] = []
 	for b_data in banco_edificios.values():
-		if b_data and not b_data.eh_unica:
+		if _eh_edificio_permitido_na_loja(b_data):
 			lista.append(b_data)
+	return lista
+
+
+func _obter_edificios_por_categoria(categoria_alvo: String = "") -> Array[BuildingData]:
+	var lista: Array[BuildingData] = []
+	var cat_limpa = categoria_alvo.to_lower().strip_edges()
+
+	for b_data in banco_edificios.values():
+		if not _eh_edificio_permitido_na_loja(b_data):
+			continue
+
+		var cat_bdata = ""
+		if "categoria" in b_data and b_data.categoria != null:
+			cat_bdata = str(b_data.categoria).to_lower().strip_edges()
+
+		if cat_limpa != "" and cat_limpa != "terreno_vazio":
+			if cat_bdata == cat_limpa:
+				lista.append(b_data)
+		else:
+			lista.append(b_data)
+
+	if lista.size() == 0:
+		return _obter_todos_edificios_disponiveis()
+
 	return lista
 
 
@@ -539,11 +583,21 @@ func escolher_missao_aleatoria():
 # ==============================================================================
 # FUNCOES AUXILIARES DE ABERTURA E BUSCA
 # ==============================================================================
-func _abrir_modo_compra_para_dados(b_data: BuildingData, variacao_index: int = 0) -> void:
+func _abrir_modo_compra_para_dados(b_data: BuildingData, variacao_index: int = 0, cat_override: String = "") -> void:
 	var tex = b_data.get_icone_variacao(variacao_index) if b_data.has_method("get_icone_variacao") else (b_data.icone if b_data.icone else icone_temp)
+	
+	var cat_nome = ""
+	if cat_override != "" and cat_override != "terreno_vazio":
+		cat_nome = cat_override
+	elif "categoria" in b_data and b_data.categoria != null and str(b_data.categoria).strip_edges() != "":
+		cat_nome = str(b_data.categoria).strip_edges()
+
+	# Prioriza b_data.nome para permitir tradução / formatação adequada
+	var nome_exibicao = b_data.nome if ("nome" in b_data and b_data.nome != "") else b_data.id
+
 	tela_compras.abrir_modo_compra(
-		b_data.id if b_data.id != "" else b_data.nome,
-		b_data.categoria,
+		nome_exibicao,
+		cat_nome,
 		b_data.descricao_curta,
 		b_data.bonus_populacao,
 		b_data.custo_base,
@@ -634,7 +688,6 @@ func _iniciar_enchente() -> void:
 	add_child(enchente)
 	enchente.enchente_iniciada.connect(_on_enchente_iniciada)
 	
-	# Contadores globais de desastre (já existiam no Global, só incrementamos)
 	Global.enchente += 1
 	if "desastres" in Global and Global.desastres.has("enchente"):
 		Global.desastres["enchente"] += 1
@@ -651,7 +704,6 @@ func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:
 				atingidos += 1
 				print("[ENCHENTE] Dano aplicado em ", pos, "! Nova durabilidade: ", predio.durabilidade_atual, "/", predio.data.durabilidade_maxima)
 				
-				# Se a tela de compras/upgrade estiver aberta pro predio atingido, atualiza a exibição
 				if tela_compras and tela_compras.visible and pos == _celula_selecionada:
 					_abrir_modo_upgrade_instancia(predio)
 	

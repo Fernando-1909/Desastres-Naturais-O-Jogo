@@ -130,33 +130,40 @@ theme_override_constants/margin_bottom = 20
 
 [node name="ColunasGrid" type="HBoxContainer" parent="PainelCentral/MargemInterna" unique_id=2066357335]
 layout_mode = 2
-theme_override_constants/separation = 25
+theme_override_constants/separation = 30
+alignment = 1
 
 [node name="ColunaStats" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1206941533]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+alignment = 1
 
 [node name="LabelGanhos" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=776694036]
 layout_mode = 2
 bbcode_enabled = true
 fit_content = true
+horizontal_alignment = 1
 
 [node name="BarraInfra" type="ProgressBar" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=829637639]
+custom_minimum_size = Vector2(130, 24)
 layout_mode = 2
 
 [node name="ColunaEsquerda" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1728191275]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+theme_override_constants/separation = 12
+alignment = 1
 
 [node name="LabelNome" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=1627136454]
 layout_mode = 2
 bbcode_enabled = true
 fit_content = true
+horizontal_alignment = 1
 
 [node name="Icone" type="TextureRect" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=333817760]
-custom_minimum_size = Vector2(180, 180)
+custom_minimum_size = Vector2(140, 140)
 layout_mode = 2
 stretch_mode = 5
 
@@ -164,16 +171,19 @@ stretch_mode = 5
 layout_mode = 2
 bbcode_enabled = true
 fit_content = true
+horizontal_alignment = 1
 
 [node name="LabelNivel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=976686083]
 layout_mode = 2
 bbcode_enabled = true
 fit_content = true
+horizontal_alignment = 1
 
 [node name="ColunaDireita" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1599865528]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+alignment = 1
 
 [node name="ContainerCompra" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita" unique_id=2041211360]
 layout_mode = 2
@@ -182,6 +192,7 @@ layout_mode = 2
 layout_mode = 2
 bbcode_enabled = true
 fit_content = true
+horizontal_alignment = 1
 
 [node name="LabelBonusPop" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=804549037]
 layout_mode = 2

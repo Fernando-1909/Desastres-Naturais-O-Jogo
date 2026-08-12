@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cm3dv6y6up4ov"
-path="res://.godot/imported/teste.png-10ad5c6a2d7bdfd4510a1e1af7c11754.ctex"
+uid="uid://bgweoto4q5se4"
+path="res://.godot/imported/Testebolsonaro.png-62178f206582d22482454764687ea69f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Jogo principal/tilesheets/teste.png"
-dest_files=["res://.godot/imported/teste.png-10ad5c6a2d7bdfd4510a1e1af7c11754.ctex"]
+source_file="res://Jogo principal/tilesheets/Testebolsonaro.png"
+dest_files=["res://.godot/imported/Testebolsonaro.png-62178f206582d22482454764687ea69f.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ccbwjdyijokgd"
-path="res://.godot/imported/Tiles_Meni_new.png-208f27900f06358c7396518764cdf6e5.ctex"
+uid="uid://ds87osgiqay5b"
+path="res://.godot/imported/Prefeitura_level_1.png-7d2d9338523d94575238745372e0463b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Jogo principal/tilesheets/Tiles_Meni_new.png"
-dest_files=["res://.godot/imported/Tiles_Meni_new.png-208f27900f06358c7396518764cdf6e5.ctex"]
+source_file="res://Jogo principal/tilesheets/Prefeitura_level_1.png"
+dest_files=["res://.godot/imported/Prefeitura_level_1.png-7d2d9338523d94575238745372e0463b.ctex"]
 
 [params]
 
