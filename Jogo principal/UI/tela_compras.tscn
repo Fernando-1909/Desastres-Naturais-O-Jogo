@@ -1,17 +1,12 @@
 [gd_scene format=3 uid="uid://bpobe74w27jcc"]
 
 [ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/tela_compras.gd" id="1_6tqbi"]
+[ext_resource type="Texture2D" uid="uid://dgfyev4w2v82" path="res://Jogo principal/UI/Texturas/Blueprint.png" id="2_82b8b"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tkcjf"]
-bg_color = Color(0.11612659, 0.116126604, 0.116126515, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_82tgc"]
+texture = ExtResource("2_82b8b")
+axis_stretch_horizontal = 2
+region_rect = Rect2(59.16687, 2.0010376, 962.8341, 601.6912)
 
 [node name="TelaCompras" type="CanvasLayer" unique_id=2141866857 node_paths=PackedStringArray("painel_central", "overlay_fundo", "colunas_grid", "coluna_stats", "coluna_direita", "container_compra", "container_upgrade", "label_nome", "icone", "label_categoria", "label_nivel", "label_descricao", "label_bonus_pop", "label_bonus_infra", "label_ganhos", "barra_infra", "button_comprar", "button_aprimorar", "button_detalhes", "button_fechar")]
 process_mode = 3
@@ -52,13 +47,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -22.0
-offset_right = 20.0
-offset_bottom = 22.0
+offset_left = -360.0
+offset_top = -250.0
+offset_right = 360.0
+offset_bottom = 250.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tkcjf")
+theme_override_styles/panel = SubResource("StyleBoxTexture_82tgc")
 
 [node name="MargemInterna" type="MarginContainer" parent="PainelCentral" unique_id=1984089172]
 layout_mode = 2
