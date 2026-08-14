@@ -68,9 +68,6 @@ func _ready() -> void:
 	_carregar_todas_as_missoes()
 	Global.dinheiro = 1000
 	
-	# Sistema de recursos inicial
-	Global.pedra = 150
-	Global.madeira = 200
 	
 	# Conecta o clique do botao diretamente a funcao toggle_pause
 	if button_teste_pausa and menu_pausa:

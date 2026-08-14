@@ -69,10 +69,6 @@ func _on_button_turno_pressed() -> void:
 		print("Renda coletada: ", renda_total, " dinheiro (", Global.renda, " casas ativas)")
 		print("Range usado: ", faixa.x, "-", faixa.y, " (Popularidade: ", Global.popularidade, ")")
 	
-	# --- ESBOÇO: renda de pedra e madeira por turno ---
-	# Mesma lógica do dinheiro, mas ainda não gera nada porque nenhuma
-	# construção do tipo produtor existe no jogo (contagem = 0 por enquanto).
-	_gerar_renda_pedra_e_madeira()
 	
 	# Avança qualquer desastre em curso (ex: enchente sobe de nível, reaplica dano)
 	main_game.avancar_turno_desastres()
@@ -94,7 +90,7 @@ func _on_button_turno_pressed() -> void:
 
 
 # Faixa (min, max) de renda por unidade, de acordo com a popularidade atual.
-# Usada tanto pelo dinheiro quanto pelo esboço de pedra/madeira.
+# Usada para dinheiro
 func _obter_range_por_popularidade() -> Vector2i:
 	if Global.popularidade < 0:
 		return Vector2i(80, 99)
@@ -109,33 +105,6 @@ func _obter_range_por_popularidade() -> Vector2i:
 	else:
 		return Vector2i(181, 200)
 
-
-# ESBOÇO — sistema de renda de pedra e madeira por turno.
-# Mesma lógica do dinheiro (faixa por popularidade x quantidade de construções
-# produtoras), mas por enquanto sempre gera 0, pois ainda não existem prédios
-# do tipo "pedreira"/"serraria" no banco de edifícios.
-#
-# Pra ativar no futuro: crie os .tres dos prédios produtores com id começando
-# em "pedreira"/"serraria" (ou troque os prefixos abaixo pelos que você usar).
-func _gerar_renda_pedra_e_madeira() -> void:
-	Global.renda_pedra = main_game.contar_construcoes_por_categoria("pedreira")
-	Global.renda_madeira = main_game.contar_construcoes_por_categoria("serraria")
-	
-	if Global.renda_pedra > 0:
-		var faixa_pedra := _obter_range_por_popularidade()
-		var pedra_total = 0
-		for i in range(Global.renda_pedra):
-			pedra_total += randi() % (faixa_pedra.y - faixa_pedra.x + 1) + faixa_pedra.x
-		Global.pedra += pedra_total
-		print("Pedra coletada: ", pedra_total, " (", Global.renda_pedra, " pedreiras)")
-	
-	if Global.renda_madeira > 0:
-		var faixa_madeira := _obter_range_por_popularidade()
-		var madeira_total = 0
-		for i in range(Global.renda_madeira):
-			madeira_total += randi() % (faixa_madeira.y - faixa_madeira.x + 1) + faixa_madeira.x
-		Global.madeira += madeira_total
-		print("Madeira coletada: ", madeira_total, " (", Global.renda_madeira, " serrarias)")
 
 
 func _on_aceitar_missao_pressed() -> void:
@@ -183,8 +152,6 @@ func _on_recusar_missao_pressed() -> void:
 
 # Labels
 @onready var dinheiro_label: RichTextLabel = $DinheiroContainer/HBoxContainer/DinheiroLabel
-@onready var madeira_label: RichTextLabel = $MadeiraContainer/HBoxContainer/MadeiraLabel
-@onready var pedra_label: RichTextLabel = $PedraContainer/HBoxContainer/PedraLabel
 @onready var turno_label: RichTextLabel = $TurnoContainer/HBoxContainer/TurnoLabel
 @onready var popularidade_label: RichTextLabel = $PopularidadeContainer/HBoxContainer/PopularidadeLabel
 @onready var missao_info_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoInfo
@@ -192,8 +159,6 @@ func _on_recusar_missao_pressed() -> void:
 
 func _process(_delta: float) -> void:
 	_update_dinheiro_label()
-	_update_pedra_label()
-	_update_madeira_label()
 	_update_turno_label()
 	_update_popularidade_label()
 	_update_missao_info_label()
@@ -205,15 +170,6 @@ func _update_dinheiro_label() -> void:
 		return
 	dinheiro_label.text = "%s" % str(Global.dinheiro)
 	
-func _update_pedra_label() -> void:
-	if pedra_label == null:
-		return
-	pedra_label.text = "%s" % str(Global.pedra)
-	
-func _update_madeira_label() -> void:
-	if madeira_label == null:
-		return
-	madeira_label.text = "%s" % str(Global.madeira)
 
 func _update_turno_label() -> void:
 	if turno_label == null:
@@ -239,8 +195,6 @@ func _update_missao_recompensa_label() -> void:
 	if Global.missao_escolhida != null:
 		var m = Global.missao_escolhida
 		missao_recompensa_label.text = "Custo: " + str(m.custo) + " dinheiro" + \
-			"\nPedra: " + str(m.pedra) + \
-			"\nMadeira: " + str(m.madeira) + \
 			"\nPopularidade: +" + str(m.popularidade)
 	else:
 		missao_recompensa_label.text = ""
@@ -259,17 +213,15 @@ func _on_button_missao_concluir_pressed() -> void:
 	
 	var missao = Global.missao_escolhida
 	
-	# Só pode concluir se tiver dinheiro, pedra e madeira suficientes
-	if Global.dinheiro < missao.custo or Global.pedra < missao.pedra or Global.madeira < missao.madeira:
+	# Só pode concluir se tiver dinheiro suficiente
+	if Global.dinheiro < missao.custo:
 		print("Recursos insuficientes para concluir a missão!")
-		print("Necessário -> Dinheiro: ", missao.custo, " | Pedra: ", missao.pedra, " | Madeira: ", missao.madeira)
-		print("Você tem -> Dinheiro: ", Global.dinheiro, " | Pedra: ", Global.pedra, " | Madeira: ", Global.madeira)
+		print("Necessário -> Dinheiro: ", missao.custo)
+		print("Você tem -> Dinheiro: ", Global.dinheiro)
 		return
 	
-	# Paga o custo (dinheiro, pedra e madeira) e recebe a recompensa de popularidade
+	# Paga o custo (dinheiro) e recebe a recompensa de popularidade
 	Global.dinheiro -= missao.custo
-	Global.pedra -= missao.pedra
-	Global.madeira -= missao.madeira
 	Global.popularidade += missao.popularidade
 	
 	# Adiciona o id da missão à lista de concluídas
@@ -280,9 +232,9 @@ func _on_button_missao_concluir_pressed() -> void:
 		Global.turnos_sem_missao.erase(missao.id)
 	
 	print("Missão concluída: ", missao.nome)
-	print("Gasto -> Dinheiro: ", missao.custo, " | Pedra: ", missao.pedra, " | Madeira: ", missao.madeira)
+	print("Gasto -> Dinheiro: ", missao.custo)
 	print("Popularidade: +", missao.popularidade)
-	print("Restante -> Dinheiro: ", Global.dinheiro, " | Pedra: ", Global.pedra, " | Madeira: ", Global.madeira)
+	print("Restante -> Dinheiro: ", Global.dinheiro)
 	
 	# Limpa a missão atual e reseta contadores
 	Global.missao_escolhida = null

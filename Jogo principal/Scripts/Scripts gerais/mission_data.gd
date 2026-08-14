@@ -10,8 +10,6 @@ extends Resource
 
 @export_group("Custo para Concluir")
 @export var custo: float = 0.0                        # Custo em dinheiro
-@export var pedra: float = 0.0                        # Custo em pedra
-@export var madeira: float = 0.0                      # Custo em madeira
 
 @export_group("Recompensa")
 @export var popularidade: int = 0                     # Popularidade ganha ao concluir

@@ -8,6 +8,4 @@ id = "missao3"
 nome = "Expandir cidade"
 info = "Com o aumento da população, precisamos expandir os limites da cidade para acomodar novos moradores."
 custo = 300.0
-pedra = 120.0
-madeira = 100.0
 popularidade = 20
