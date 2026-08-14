@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MissionData" format=3]
+
+[ext_resource type="Script" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "missao2"
+nome = "Construir praça"
+info = "A cidade está sem áreas de lazer e os moradores reclamam da falta de um espaço para descanso e convivência."
+custo = 200.0
+pedra = 80.0
+madeira = 60.0
+popularidade = 15

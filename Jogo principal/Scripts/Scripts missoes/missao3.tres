@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MissionData" format=3]
+
+[ext_resource type="Script" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "missao3"
+nome = "Expandir cidade"
+info = "Com o aumento da população, precisamos expandir os limites da cidade para acomodar novos moradores."
+custo = 300.0
+pedra = 120.0
+madeira = 100.0
+popularidade = 20

@@ -31,6 +31,16 @@ extends Node2D
 ## Arraste aqui o .tscn da cena de Enchente que criamos
 @export var cena_enchente: PackedScene
 
+@export_group("Banco de Missões")
+## Pasta onde ficam armazenados todos os seus arquivos .tres de missões
+@export var pasta_missoes: String = "res://Jogo principal/Scripts/Scripts missoes/"
+## Fallback manual: se preferir arrastar arquivos .tres pelo Inspector
+@export var banco_missoes_manual: Array[MissionData] = []
+
+# Dicionario dinamico carregado automaticamente
+# Chave = String (id da missao, ex: "missao1") | Valor = MissionData
+var banco_missoes: Dictionary = {}
+
 # Dicionario dinamico carregado automaticamente
 # Chave = String ("casa_simples", "cons_lazer", etc) | Valor = BuildingData
 var banco_edificios: Dictionary = {}
@@ -55,6 +65,7 @@ var freecam_enabled = false
 func _ready() -> void:
 	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
 	_carregar_todos_os_edificios()
+	_carregar_todas_as_missoes()
 	Global.dinheiro = 1000
 	
 	# Sistema de recursos inicial
@@ -159,6 +170,40 @@ func _carregar_todos_os_edificios() -> void:
 			dir.list_dir_end()
 	else:
 		print("[AVISO] Pasta de edificios '", pasta_edificios, "' nao encontrada no projeto!")
+
+
+# ==============================================================================
+# CARREGADOR AUTOMATICO DE MISSOES (.TRES) DA PASTA INTEIRA
+# ==============================================================================
+func _carregar_todas_as_missoes() -> void:
+	banco_missoes.clear()
+	
+	# 1. Carrega arquivos passados manualmente no Inspector (se houver)
+	for m_data in banco_missoes_manual:
+		if m_data and m_data.id != "":
+			banco_missoes[m_data.id.to_lower()] = m_data
+			print("[INFO] Missao (manual) registrada: ", m_data.id)
+	
+	# 2. Escaneia a pasta inteira no projeto em busca de arquivos .tres
+	if DirAccess.dir_exists_absolute(pasta_missoes):
+		var dir = DirAccess.open(pasta_missoes)
+		if dir:
+			dir.list_dir_begin()
+			var nome_arquivo = dir.get_next()
+			
+			while nome_arquivo != "":
+				if not dir.current_is_dir():
+					var nome_limpo = nome_arquivo.replace(".remap", "")
+					if nome_limpo.ends_with(".tres"):
+						var caminho_completo = pasta_missoes.path_join(nome_limpo)
+						var recurso = load(caminho_completo) as MissionData
+						if recurso and recurso.id != "":
+							banco_missoes[recurso.id.to_lower()] = recurso
+							print("[INFO] Missao (automatica) carregada: ", recurso.id)
+				nome_arquivo = dir.get_next()
+			dir.list_dir_end()
+	else:
+		print("[AVISO] Pasta de missoes '", pasta_missoes, "' nao encontrada no projeto!")
 
 
 # ==============================================================================
@@ -478,34 +523,38 @@ func escolher_missao_aleatoria():
 	
 	if Global.turno == 2:
 		if "missao1" not in Global.missoes_concluidas:
-			Global.missao_escolhida = Global.missoes["missao1"]
-			Global.missao_escolhida["chave"] = "missao1"
+			var m_data: MissionData = banco_missoes.get("missao1")
+			if m_data == null:
+				print("[AVISO] Missao 'missao1' nao encontrada no banco_missoes!")
+				return null
+			
+			Global.missao_escolhida = m_data
 			Global.missao_atual_turnos = 0
 			Global.missao_aceita = false
-			print("[INFO] Turno 2: Missao obrigatoria - ", Global.missao_escolhida["nome"])
+			print("[INFO] Turno 2: Missao obrigatoria - ", m_data.nome)
 			
 			if hud and hud.has_node("MissaoContainer"):
 				var missao_container = hud.get_node("MissaoContainer")
 				var vbox = missao_container.get_node("VBoxContainer")
 				
 				if vbox.has_node("missao_info"):
-					vbox.get_node("missao_info").text = Global.missao_escolhida["info"]
+					vbox.get_node("missao_info").text = m_data.info
 				
 				if vbox.has_node("missao_recompensa"):
-					vbox.get_node("missao_recompensa").text = "Custo: " + str(Global.missao_escolhida["custo"]) + " dinheiro" + \
-						"\nPedra: " + str(Global.missao_escolhida["pedra"]) + \
-						"\nMadeira: " + str(Global.missao_escolhida["madeira"]) + \
-						"\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
+					vbox.get_node("missao_recompensa").text = "Custo: " + str(m_data.custo) + " dinheiro" + \
+						"\nPedra: " + str(m_data.pedra) + \
+						"\nMadeira: " + str(m_data.madeira) + \
+						"\nPopularidade: +" + str(m_data.popularidade)
 				
 				missao_container.visible = true
 				Global.jogo_pausado = true
 			return Global.missao_escolhida
 	
 	if Global.turno >= 4:
-		var missoes_disponiveis = {}
-		for chave in Global.missoes.keys():
+		var missoes_disponiveis: Dictionary = {}
+		for chave in banco_missoes.keys():
 			if chave not in Global.missoes_concluidas:
-				missoes_disponiveis[chave] = Global.missoes[chave]
+				missoes_disponiveis[chave] = banco_missoes[chave]
 		
 		if missoes_disponiveis.is_empty():
 			Global.missao_escolhida = null
@@ -541,8 +590,8 @@ func escolher_missao_aleatoria():
 			if chave_escolhida == "":
 				chave_escolhida = missoes_disponiveis.keys()[0]
 			
-			Global.missao_escolhida = Global.missoes[chave_escolhida]
-			Global.missao_escolhida["chave"] = chave_escolhida
+			var m_data: MissionData = missoes_disponiveis[chave_escolhida]
+			Global.missao_escolhida = m_data
 			Global.missao_atual_turnos = 0
 			Global.missao_aceita = false
 			
@@ -558,13 +607,13 @@ func escolher_missao_aleatoria():
 				var vbox = missao_container.get_node("VBoxContainer")
 				
 				if vbox.has_node("missao_info"):
-					vbox.get_node("missao_info").text = Global.missao_escolhida["info"]
+					vbox.get_node("missao_info").text = m_data.info
 				
 				if vbox.has_node("missao_recompensa"):
-					vbox.get_node("missao_recompensa").text = "Custo: " + str(Global.missao_escolhida["custo"]) + " dinheiro" + \
-						"\nPedra: " + str(Global.missao_escolhida["pedra"]) + \
-						"\nMadeira: " + str(Global.missao_escolhida["madeira"]) + \
-						"\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
+					vbox.get_node("missao_recompensa").text = "Custo: " + str(m_data.custo) + " dinheiro" + \
+						"\nPedra: " + str(m_data.pedra) + \
+						"\nMadeira: " + str(m_data.madeira) + \
+						"\nPopularidade: +" + str(m_data.popularidade)
 				
 				missao_container.visible = true
 				Global.jogo_pausado = true
@@ -679,18 +728,36 @@ func _on_desastre_button_pressed() -> void:
 # ==============================================================================
 # INTEGRAÇÃO COM A CENA DE DESASTRE: ENCHENTE
 # ==============================================================================
+var _enchente_ativa: Enchente = null
+
 func _iniciar_enchente() -> void:
 	if not cena_enchente:
 		print("[AVISO] Nenhuma cena de Enchente configurada em 'cena_enchente' (Inspector do main_game)!")
 		return
 	
-	var enchente = cena_enchente.instantiate()
+	if _enchente_ativa:
+		print("[AVISO] Já existe uma enchente ativa! Aguarde ela terminar antes de iniciar outra.")
+		return
+	
+	var enchente: Enchente = cena_enchente.instantiate()
 	add_child(enchente)
 	enchente.enchente_iniciada.connect(_on_enchente_iniciada)
+	enchente.enchente_terminada.connect(_on_enchente_terminada)
+	_enchente_ativa = enchente
 	
 	Global.enchente += 1
 	if "desastres" in Global and Global.desastres.has("enchente"):
 		Global.desastres["enchente"] += 1
+
+
+func _on_enchente_terminada() -> void:
+	_enchente_ativa = null
+
+
+## Chamado pelo hud.gd a cada turno que passa, pra avançar qualquer desastre em curso
+func avancar_turno_desastres() -> void:
+	if _enchente_ativa:
+		_enchente_ativa.turno_passou()
 
 
 func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:

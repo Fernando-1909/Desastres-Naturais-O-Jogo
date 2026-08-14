@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MissionData" format=3]
+
+[ext_resource type="Script" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "missao1"
+nome = "Construir hospital"
+info = "Os cidadãos estão se machucando bastante ultimamente, e alguns até ficando doentes, precisamos de uma forma para tratá-los!"
+custo = 100.0
+pedra = 50.0
+madeira = 70.0
+popularidade = 10

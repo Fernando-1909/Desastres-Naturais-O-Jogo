@@ -74,14 +74,17 @@ func _on_button_turno_pressed() -> void:
 	# construção do tipo produtor existe no jogo (contagem = 0 por enquanto).
 	_gerar_renda_pedra_e_madeira()
 	
+	# Avança qualquer desastre em curso (ex: enchente sobe de nível, reaplica dano)
+	main_game.avancar_turno_desastres()
+	
 	# SESSÃO DE MISSÕES
 	# Se a missão foi ACEITA mas não foi concluída antes de passar o turno,
 	# ela falha imediatamente e o jogador perde 50% a mais de popularidade
 	# (a "promessa falsa" custa mais caro do que simplesmente recusar).
 	if Global.missao_escolhida != null and Global.missao_aceita:
-		var popularidade_perdida = Global.missao_escolhida["popularidade"] * 1.5
+		var popularidade_perdida = Global.missao_escolhida.popularidade * 1.5
 		Global.popularidade -= popularidade_perdida
-		print("Missão '", Global.missao_escolhida["nome"], "' falhou por não ter sido concluída a tempo! Popularidade perdida: -", popularidade_perdida)
+		print("Missão '", Global.missao_escolhida.nome, "' falhou por não ter sido concluída a tempo! Popularidade perdida: -", popularidade_perdida)
 		
 		Global.missao_escolhida = null
 		Global.missao_aceita = false
@@ -161,10 +164,10 @@ func _on_recusar_missao_pressed() -> void:
 	var missao = Global.missao_escolhida
 	
 	# Perde a popularidade que ganharia
-	Global.popularidade -= missao["popularidade"]
+	Global.popularidade -= missao.popularidade
 	
-	print("Missão recusada: ", missao["nome"])
-	print("Popularidade perdida: -", missao["popularidade"])
+	print("Missão recusada: ", missao.nome)
+	print("Popularidade perdida: -", missao.popularidade)
 	print("Popularidade atual: ", Global.popularidade)
 	
 	# Esconde o container de missão
@@ -226,7 +229,7 @@ func _update_missao_info_label() -> void:
 	if missao_info_label == null:
 		return
 	if Global.missao_escolhida != null:
-		missao_info_label.text = str(Global.missao_escolhida["info"])
+		missao_info_label.text = str(Global.missao_escolhida.info)
 	else:
 		missao_info_label.text = ""
 
@@ -234,10 +237,11 @@ func _update_missao_recompensa_label() -> void:
 	if missao_recompensa_label == null:
 		return
 	if Global.missao_escolhida != null:
-		missao_recompensa_label.text = "Custo: " + str(Global.missao_escolhida["custo"]) + " dinheiro" + \
-			"\nPedra: " + str(Global.missao_escolhida["pedra"]) + \
-			"\nMadeira: " + str(Global.missao_escolhida["madeira"]) + \
-			"\nPopularidade: +" + str(Global.missao_escolhida["popularidade"])
+		var m = Global.missao_escolhida
+		missao_recompensa_label.text = "Custo: " + str(m.custo) + " dinheiro" + \
+			"\nPedra: " + str(m.pedra) + \
+			"\nMadeira: " + str(m.madeira) + \
+			"\nPopularidade: +" + str(m.popularidade)
 	else:
 		missao_recompensa_label.text = ""
 
@@ -256,28 +260,28 @@ func _on_button_missao_concluir_pressed() -> void:
 	var missao = Global.missao_escolhida
 	
 	# Só pode concluir se tiver dinheiro, pedra e madeira suficientes
-	if Global.dinheiro < missao["custo"] or Global.pedra < missao["pedra"] or Global.madeira < missao["madeira"]:
+	if Global.dinheiro < missao.custo or Global.pedra < missao.pedra or Global.madeira < missao.madeira:
 		print("Recursos insuficientes para concluir a missão!")
-		print("Necessário -> Dinheiro: ", missao["custo"], " | Pedra: ", missao["pedra"], " | Madeira: ", missao["madeira"])
+		print("Necessário -> Dinheiro: ", missao.custo, " | Pedra: ", missao.pedra, " | Madeira: ", missao.madeira)
 		print("Você tem -> Dinheiro: ", Global.dinheiro, " | Pedra: ", Global.pedra, " | Madeira: ", Global.madeira)
 		return
 	
 	# Paga o custo (dinheiro, pedra e madeira) e recebe a recompensa de popularidade
-	Global.dinheiro -= missao["custo"]
-	Global.pedra -= missao["pedra"]
-	Global.madeira -= missao["madeira"]
-	Global.popularidade += missao["popularidade"]
+	Global.dinheiro -= missao.custo
+	Global.pedra -= missao.pedra
+	Global.madeira -= missao.madeira
+	Global.popularidade += missao.popularidade
 	
-	# Adiciona a chave da missão à lista de concluídas
-	Global.missoes_concluidas.append(missao["chave"])
+	# Adiciona o id da missão à lista de concluídas
+	Global.missoes_concluidas.append(missao.id)
 	
 	# Remove do contador de turnos sem missão
-	if missao["chave"] in Global.turnos_sem_missao:
-		Global.turnos_sem_missao.erase(missao["chave"])
+	if missao.id in Global.turnos_sem_missao:
+		Global.turnos_sem_missao.erase(missao.id)
 	
-	print("Missão concluída: ", missao["nome"])
-	print("Gasto -> Dinheiro: ", missao["custo"], " | Pedra: ", missao["pedra"], " | Madeira: ", missao["madeira"])
-	print("Popularidade: +", missao["popularidade"])
+	print("Missão concluída: ", missao.nome)
+	print("Gasto -> Dinheiro: ", missao.custo, " | Pedra: ", missao.pedra, " | Madeira: ", missao.madeira)
+	print("Popularidade: +", missao.popularidade)
 	print("Restante -> Dinheiro: ", Global.dinheiro, " | Pedra: ", Global.pedra, " | Madeira: ", Global.madeira)
 	
 	# Limpa a missão atual e reseta contadores

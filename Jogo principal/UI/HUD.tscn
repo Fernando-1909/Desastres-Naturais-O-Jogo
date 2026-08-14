@@ -22,10 +22,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 293.0
-offset_top = 168.0
-offset_right = 441.0
-offset_bottom = 191.0
+offset_left = 289.0
+offset_top = 268.0
+offset_right = 437.0
+offset_bottom = 291.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(2, 2)
@@ -41,60 +41,6 @@ text = "💰"
 custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 text = "Dinheiro"
-
-[node name="MadeiraContainer" type="PanelContainer" parent="." unique_id=246099080]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 292.0
-offset_top = 217.0
-offset_right = 440.0
-offset_bottom = 240.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2, 2)
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MadeiraContainer" unique_id=1026383992]
-layout_mode = 2
-
-[node name="Icon" type="Label" parent="MadeiraContainer/HBoxContainer" unique_id=480736248]
-layout_mode = 2
-text = "🌲"
-
-[node name="MadeiraLabel" type="RichTextLabel" parent="MadeiraContainer/HBoxContainer" unique_id=470481495]
-custom_minimum_size = Vector2(125, 0)
-layout_mode = 2
-text = "Madeira"
-
-[node name="PedraContainer" type="PanelContainer" parent="." unique_id=1805050115]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 294.0
-offset_top = 270.0
-offset_right = 442.0
-offset_bottom = 293.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(2, 2)
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PedraContainer" unique_id=1304498814]
-layout_mode = 2
-
-[node name="Icon" type="Label" parent="PedraContainer/HBoxContainer" unique_id=86336154]
-layout_mode = 2
-text = "🪨"
-
-[node name="PedraLabel" type="RichTextLabel" parent="PedraContainer/HBoxContainer" unique_id=1547733029]
-custom_minimum_size = Vector2(125, 0)
-layout_mode = 2
-text = "Pedra"
 
 [node name="PopularidadeContainer" type="PanelContainer" parent="." unique_id=1535273656]
 layout_mode = 1
