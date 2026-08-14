@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="MissionData" format=3]
+[gd_resource type="Resource" script_class="MissionData" format=3 uid="uid://bx2g8iojck5a3"]
 
-[ext_resource type="Script" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1"]
+[ext_resource type="Script" uid="uid://cjpjipeery1b5" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
