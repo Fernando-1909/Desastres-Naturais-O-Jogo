@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bkti7orp2yjfg"]
+
+[ext_resource type="Script" uid="uid://brhrlq6y1gjkh" path="res://Jogo principal/Scripts/Scripts cenas/enchente.gd" id="1_7osat"]
+
+[node name="Enchente" type="Node2D" unique_id=358678331]
+script = ExtResource("1_7osat")
+
+[node name="AreaVisual" type="ColorRect" parent="." unique_id=152624416]
+offset_right = 1152.0
+offset_bottom = 649.0
+color = Color(0.1, 0.4, 0.9, 0.35)
+
+[node name="TimerDuracao" type="Timer" parent="." unique_id=1708742290]
+
+[node name="AreaDano" type="ColorRect" parent="." unique_id=358159695]
+offset_top = 248.0
+offset_right = 1153.0
+offset_bottom = 394.0
+color = Color(0.9, 0.2, 0.1, 0.45)
