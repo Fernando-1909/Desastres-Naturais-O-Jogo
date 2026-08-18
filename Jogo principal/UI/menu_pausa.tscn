@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://wsb5vaomuml2"]
 
-[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/Scripts cenas/menu_pausa.gd" id="1_wp3wm"]
+[ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/menu_pausa.gd" id="1_wp3wm"]
 [ext_resource type="Theme" uid="uid://cx782b1sg8nsm" path="res://Jogo principal/UI/Temas/base.tres" id="2_fhcsi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1esiv"]
@@ -10,10 +10,13 @@ corner_radius_top_right = 25
 corner_radius_bottom_right = 25
 corner_radius_bottom_left = 25
 
-[node name="MenuPausa" type="CanvasLayer" unique_id=643096711]
+[node name="MenuPausa" type="CanvasLayer" unique_id=643096711 node_paths=PackedStringArray("button_continuar", "button_opcoes", "button_menu")]
 process_mode = 3
 script = ExtResource("1_wp3wm")
 cena_menu_principal = "uid://dmvjnql5i80qd"
+button_continuar = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonContinuar")
+button_opcoes = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonOpcoes")
+button_menu = NodePath("CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonMenu")
 
 [node name="OverlayFundo" type="ColorRect" parent="." unique_id=197788807]
 anchors_preset = 15
@@ -54,7 +57,7 @@ offset_transform_position = Vector2(0, -5.445)
 theme = ExtResource("2_fhcsi")
 theme_override_font_sizes/normal_font_size = 37
 bbcode_enabled = true
-text = "MENU_PAUSA"
+text = "JOGO PAUSADO"
 horizontal_alignment = 1
 vertical_alignment = 1
 
