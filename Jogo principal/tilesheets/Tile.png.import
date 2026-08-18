@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ds87osgiqay5b"
-path="res://.godot/imported/Prefeitura_level_1.png-7d2d9338523d94575238745372e0463b.ctex"
+uid="uid://ctnpjbv1qqndx"
+path="res://.godot/imported/Tile.png-fb36eeace1932bf06ba326ad779bfdad.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Jogo principal/tilesheets/Prefeitura_level_1.png"
-dest_files=["res://.godot/imported/Prefeitura_level_1.png-7d2d9338523d94575238745372e0463b.ctex"]
+source_file="res://Jogo principal/tilesheets/Tile.png"
+dest_files=["res://.godot/imported/Tile.png-fb36eeace1932bf06ba326ad779bfdad.ctex"]
 
 [params]
 
@@ -37,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1

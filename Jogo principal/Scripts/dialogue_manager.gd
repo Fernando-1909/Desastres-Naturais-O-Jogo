@@ -165,11 +165,11 @@ func _on_opcao_selecionada(proximo_id: String) -> void:
 	choices_container.hide()
 	button.show() # Devolve o botão de avançar padrão
 	
-	# Altera o idioma globalmente usando o autoload
+	# MÁGICA: Se a escolha foi um idioma, altera a localização global do jogo!
 	if proximo_id == "resposta_pt":
-		Global.alterar_idioma("pt")
+		TranslationServer.set_locale("pt")
 	elif proximo_id == "resposta_en":
-		Global.alterar_idioma("en")
+		TranslationServer.set_locale("en")
 		
 	if proximo_id == "fim" or proximo_id == "":
 		end_dialogue()
