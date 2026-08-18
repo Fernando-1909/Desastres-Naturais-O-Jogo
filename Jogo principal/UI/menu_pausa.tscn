@@ -3,6 +3,13 @@
 [ext_resource type="Script" uid="uid://fs44nro4x44m" path="res://Jogo principal/Scripts/menu_pausa.gd" id="1_wp3wm"]
 [ext_resource type="Theme" uid="uid://cx782b1sg8nsm" path="res://Jogo principal/UI/Temas/base.tres" id="2_fhcsi"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1esiv"]
+bg_color = Color(0.29983, 0.3512003, 0.4319386, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
 [node name="MenuPausa" type="CanvasLayer" unique_id=643096711 node_paths=PackedStringArray("button_continuar", "button_opcoes", "button_menu")]
 process_mode = 3
 script = ExtResource("1_wp3wm")
@@ -45,8 +52,10 @@ theme_override_constants/separation = 15
 custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 size_flags_vertical = 4
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -5.445)
 theme = ExtResource("2_fhcsi")
-theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/normal_font_size = 37
 bbcode_enabled = true
 text = "JOGO PAUSADO"
 horizontal_alignment = 1
@@ -54,6 +63,11 @@ vertical_alignment = 1
 
 [node name="CaixaBotoes" type="PanelContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal" unique_id=1186327533]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -15)
+theme_override_styles/panel = SubResource("StyleBoxFlat_1esiv")
 
 [node name="MargemInterna" type="MarginContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes" unique_id=1518035191]
 layout_mode = 2
@@ -64,19 +78,28 @@ theme_override_constants/margin_bottom = 20
 
 [node name="ColunaBotoes" type="VBoxContainer" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna" unique_id=1383518910]
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -4.31)
 theme_override_constants/separation = 15
 
 [node name="ButtonContinuar" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=150545187]
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
+size_flags_stretch_ratio = 0.0
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 3)
 text = "CONTINUAR"
 
 [node name="ButtonOpcoes" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=1928695859]
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 3)
 text = "OPÇÕES"
 
 [node name="ButtonMenu" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=711454347]
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 3)
 text = "MENU"
