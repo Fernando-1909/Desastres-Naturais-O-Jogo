@@ -92,6 +92,12 @@ Durante o jogo, o jogador deverá:
 
 ---
 
+# Orientador
+
+- Raul Benites Paradeda
+
+---
+
 # Autores
 
 - Anya Ramos
