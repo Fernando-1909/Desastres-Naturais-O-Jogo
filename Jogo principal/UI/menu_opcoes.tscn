@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://d3uu1eucewefv"]
+
+[ext_resource type="Script" uid="uid://dndvqury53otd" path="res://Jogo principal/Scripts/Scripts cenas/menu_opcoes.gd" id="1_xce60"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1soyw"]
+bg_color = Color(0.1428582, 0.14285827, 0.14285818, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="MenuOpcoes" type="Control" unique_id=1098279602]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xce60")
+
+[node name="Overlay" type="ColorRect" parent="." unique_id=315964391]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.627451)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=2073242245]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PainelCentral" type="PanelContainer" parent="CenterContainer" unique_id=1383040391]
+custom_minimum_size = Vector2(380, 220)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1soyw")
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PainelCentral" unique_id=1776290477]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/PainelCentral/MarginContainer" unique_id=1266795239]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="LabelTitulo" type="RichTextLabel" parent="CenterContainer/PainelCentral/MarginContainer/VBoxContainer" unique_id=19888417]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+
+[node name="ContainerIdiomas" type="HBoxContainer" parent="CenterContainer/PainelCentral/MarginContainer/VBoxContainer" unique_id=1418457436]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="ButtonPT" type="Button" parent="CenterContainer/PainelCentral/MarginContainer/VBoxContainer/ContainerIdiomas" unique_id=358309765]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MarginContainer/VBoxContainer/ContainerIdiomas/ButtonPT" unique_id=780262455]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="ButtonEN" type="Button" parent="CenterContainer/PainelCentral/MarginContainer/VBoxContainer/ContainerIdiomas" unique_id=852897595]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MarginContainer/VBoxContainer/ContainerIdiomas/ButtonEN" unique_id=902656809]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1
+
+[node name="ButtonVoltar" type="Button" parent="CenterContainer/PainelCentral/MarginContainer/VBoxContainer" unique_id=1491078799]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MarginContainer/VBoxContainer/ButtonVoltar" unique_id=1879232132]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+bbcode_enabled = true
+scroll_active = false
+vertical_alignment = 1

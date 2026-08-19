@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://l4ep5qwntoxq"]
 
-[ext_resource type="Script" uid="uid://chvjmq6eve2uc" path="res://Jogo principal/Scripts/dialogue_manager.gd" id="1_5rgap"]
+[ext_resource type="Script" uid="uid://chvjmq6eve2uc" path="res://Jogo principal/Scripts/Scripts gerais/dialogue_manager.gd" id="1_5rgap"]
 
 [node name="DialogueManager" type="CanvasLayer" unique_id=1420897856]
 process_mode = 3
