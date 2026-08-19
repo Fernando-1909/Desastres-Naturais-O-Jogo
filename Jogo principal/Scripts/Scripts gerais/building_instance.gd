@@ -5,6 +5,7 @@ var data: BuildingData         # Referência ao molde (Resource)
 var posicao_tile: Vector2i     # Coordenada no TileMap (ex: Vector2i(10, 5))
 var nivel_atual: int = 1       # Nível atual desta instância
 var durabilidade_atual: float  # Vida atual desta construção específica
+var moradores_desabrigados: bool = false  # true depois que os moradores desta casa já foram contados como desabrigados
 
 # Construtor da instância
 func _init(p_data: BuildingData, p_posicao: Vector2i) -> void:
@@ -21,14 +22,6 @@ func get_durabilidade_pct() -> float:
 # Calcula o custo do próximo upgrade (dinheiro)
 func get_custo_upgrade() -> float:
 	return data.custo_base * (data.multiplicador_custo_upgrade ** nivel_atual)
-
-# Calcula o custo do próximo upgrade (pedra)
-func get_custo_upgrade_pedra() -> float:
-	return data.custo_pedra * (data.multiplicador_custo_upgrade ** nivel_atual)
-
-# Calcula o custo do próximo upgrade (madeira)
-func get_custo_upgrade_madeira() -> float:
-	return data.custo_madeira * (data.multiplicador_custo_upgrade ** nivel_atual)
 
 # Calcula os ganhos atuais baseados no nível
 func get_ganhos_atuais() -> float:

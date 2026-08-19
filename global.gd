@@ -3,8 +3,10 @@ extends Node
 # Variáveis gerais
 var dinheiro: int
 var popularidade: int
+var populacao: int
+var pessoas_desabrigadas: int = 0   # NPCs que perderam a casa em um desastre (infraestrutura chegou a 0)
 var turno: int
-var renda: int             # Quantidade de construções que geram renda (dinheiro) por turno
+var renda: int             # Quantidade de "unidades" de renda geradas por turno (baseado na população)
 var idioma_atual: String = "pt"
 
 # Sinal emitido sempre que o idioma do jogo e alterado

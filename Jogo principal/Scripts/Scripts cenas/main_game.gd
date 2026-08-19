@@ -31,6 +31,19 @@ extends Node2D
 ## Arraste aqui o .tscn da cena de Enchente que criamos
 @export var cena_enchente: PackedScene
 
+@export_group("População / NPCs")
+## Arraste aqui o .tscn do NPC (npc.gd)
+@export var cena_npc: PackedScene
+## Node onde os NPCs devem ser instanciados. IMPORTANTE: precisa ter um
+## "NavigationRegion2D" como filho, porque o npc.gd usa
+## get_parent().get_node("NavigationRegion2D") pra sortear destino.
+@export var npc_container: Node
+## Quantos pontos de população equivalem a 1 NPC visível andando pelo mapa
+@export var populacao_por_npc: int = 30
+
+# NPCs atualmente instanciados no mapa (housed + desabrigados, controlados juntos)
+var _npcs_ativos: Array[Node] = []
+
 @export_group("Banco de Missões")
 ## Pasta onde ficam armazenados todos os seus arquivos .tres de missões
 @export var pasta_missoes: String = "res://Jogo principal/Scripts/Scripts missoes/"
@@ -66,8 +79,9 @@ func _ready() -> void:
 	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
 	_carregar_todos_os_edificios()
 	_carregar_todas_as_missoes()
+	#variaveis de teste para testar no inicio
 	Global.dinheiro = 1000
-	
+	Global.populacao = 10
 	
 	# Conecta o clique do botao diretamente a funcao toggle_pause
 	if button_teste_pausa and menu_pausa:
@@ -89,6 +103,9 @@ func _ready() -> void:
 
 	# Escaneia o mapa para registrar predios que ja vieram desenhados no editor
 	_escanear_mapa_inicial()
+	
+	# Sorteia os NPCs iniciais de acordo com a população inicial
+	_atualizar_npcs_por_populacao()
 
 
 # ==============================================================================
@@ -133,6 +150,54 @@ func contar_construcoes_por_categoria(categoria: String = "") -> int:
 
 func contar_construcoes(categoria: String = "") -> int:
 	return contar_construcoes_por_categoria(categoria)
+
+
+# ==============================================================================
+# SISTEMA DE POPULAÇÃO E NPCS
+# ==============================================================================
+## Mantém a quantidade de NPCs visíveis no mapa em sintonia com a população.
+## Cada 'populacao_por_npc' pessoas contam como 1 NPC "abstrato" (morador com casa),
+## enquanto cada pessoa desabrigada vira 1 NPC visível diretamente (1 pra 1),
+## já que ela não tem casa pra "abstrair" — por isso um desastre que desabriga
+## gente aumenta visivelmente o número de NPCs andando pelo mapa.
+func _atualizar_npcs_por_populacao() -> void:
+	if not cena_npc or not npc_container:
+		return
+	
+	var quantidade_alvo = int(Global.populacao / populacao_por_npc) + Global.pessoas_desabrigadas
+	quantidade_alvo = max(quantidade_alvo, 0)
+	
+	# Adiciona NPCs que estão faltando
+	while _npcs_ativos.size() < quantidade_alvo:
+		var novo_npc = cena_npc.instantiate()
+		npc_container.add_child(novo_npc)
+		_npcs_ativos.append(novo_npc)
+	
+	# Remove NPCs em excesso (ex: população/desabrigados diminuiu)
+	while _npcs_ativos.size() > quantidade_alvo:
+		var npc_removido = _npcs_ativos.pop_back()
+		if is_instance_valid(npc_removido):
+			npc_removido.queue_free()
+
+
+## Chamado sempre que a durabilidade de uma construção é reduzida (desastre, debug, etc).
+## Se ela chegou a 0 e ainda não tinha sido processada, os moradores dela viram desabrigados.
+func _verificar_casa_destruida(predio: BuildingInstance) -> void:
+	if predio == null or predio.data == null:
+		return
+	if predio.durabilidade_atual > 0:
+		return
+	if predio.moradores_desabrigados:
+		return  # já processado, evita contar duas vezes
+	
+	predio.moradores_desabrigados = true
+	
+	var moradores = predio.data.bonus_populacao
+	if moradores > 0:
+		Global.populacao = max(0, Global.populacao - moradores)
+		Global.pessoas_desabrigadas += moradores
+		print("[DESASTRE] '", predio.data.nome, "' foi destruída! ", moradores, " pessoas ficaram desabrigadas.")
+		_atualizar_npcs_por_populacao()
 
 
 # ==============================================================================
@@ -214,6 +279,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if predio:
 				predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - 25.0)
 				print("[DEBUG] Dano aplicado na casa ", _celula_selecionada, "! Nova vida: ", predio.durabilidade_atual, "/", predio.data.durabilidade_maxima)
+				_verificar_casa_destruida(predio)
 				
 				if tela_compras and tela_compras.visible:
 					_abrir_modo_upgrade_instancia(predio)
@@ -358,6 +424,11 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 
 	# 2. Transacao
 	Global.dinheiro -= b_data.custo_base
+	
+	# 2.1 Nova construção aumenta a população da cidade (se ela tiver bonus_populacao)
+	if b_data.bonus_populacao > 0:
+		Global.populacao += b_data.bonus_populacao
+		_atualizar_npcs_por_populacao()
 
 	# 3. Registra a nova instancia na memoria do mapa
 	var nova_instancia = BuildingInstance.new(b_data, _celula_selecionada)
@@ -539,8 +610,6 @@ func escolher_missao_aleatoria():
 				
 				if vbox.has_node("missao_recompensa"):
 					vbox.get_node("missao_recompensa").text = "Custo: " + str(m_data.custo) + " dinheiro" + \
-						"\nPedra: " + str(m_data.pedra) + \
-						"\nMadeira: " + str(m_data.madeira) + \
 						"\nPopularidade: +" + str(m_data.popularidade)
 				
 				missao_container.visible = true
@@ -608,8 +677,6 @@ func escolher_missao_aleatoria():
 				
 				if vbox.has_node("missao_recompensa"):
 					vbox.get_node("missao_recompensa").text = "Custo: " + str(m_data.custo) + " dinheiro" + \
-						"\nPedra: " + str(m_data.pedra) + \
-						"\nMadeira: " + str(m_data.madeira) + \
 						"\nPopularidade: +" + str(m_data.popularidade)
 				
 				missao_container.visible = true
@@ -767,6 +834,7 @@ func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:
 				predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - dano)
 				atingidos += 1
 				print("[ENCHENTE] Dano aplicado em ", pos, "! Nova durabilidade: ", predio.durabilidade_atual, "/", predio.data.durabilidade_maxima)
+				_verificar_casa_destruida(predio)
 				
 				if tela_compras and tela_compras.visible and pos == _celula_selecionada:
 					_abrir_modo_upgrade_instancia(predio)

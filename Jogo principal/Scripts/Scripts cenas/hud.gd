@@ -12,6 +12,10 @@ var freecam_active := false
 var botoes_bloqueaveis = []
 var missao_check_aberta := false  # true quando a tela de missão está aberta só pra consulta (via ButtonMissaoCheck)
 
+# Quantas pessoas de população equivalem a 1 "unidade" de renda por turno.
+# Ajuste esse número pra calibrar o quanto a população influencia o dinheiro ganho.
+const POPULACAO_POR_UNIDADE_RENDA := 10
+
 func _ready() -> void:
 	await get_tree().create_timer(0.5).timeout
 	_setup()
@@ -54,8 +58,10 @@ func _on_button_turno_pressed() -> void:
 	Global.turno += 1
 	print("Turno: ", Global.turno)
 	
-	# Sistema de renda (dinheiro) — baseado na quantidade de casas ativas no mapa
-	Global.renda = main_game.contar_casas_ativas()
+	# Sistema de renda (dinheiro) — baseado na população da cidade.
+	# Cada POPULACAO_POR_UNIDADE_RENDA pessoas contam como 1 unidade de renda,
+	# e cada unidade sorteia um valor dentro da faixa definida pela popularidade.
+	Global.renda = int(Global.populacao / POPULACAO_POR_UNIDADE_RENDA)
 	if Global.renda > 0:
 		var faixa := _obter_range_por_popularidade()
 		
@@ -66,7 +72,7 @@ func _on_button_turno_pressed() -> void:
 			renda_total += valor_aleatorio
 		
 		Global.dinheiro += renda_total
-		print("Renda coletada: ", renda_total, " dinheiro (", Global.renda, " casas ativas)")
+		print("Renda coletada: ", renda_total, " dinheiro (população: ", Global.populacao, " | ", Global.renda, " unidades de renda)")
 		print("Range usado: ", faixa.x, "-", faixa.y, " (Popularidade: ", Global.popularidade, ")")
 	
 	
@@ -156,6 +162,8 @@ func _on_recusar_missao_pressed() -> void:
 @onready var popularidade_label: RichTextLabel = $PopularidadeContainer/HBoxContainer/PopularidadeLabel
 @onready var missao_info_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoInfo
 @onready var missao_recompensa_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoRecompensa
+@onready var populacao_label: RichTextLabel = $PopulacaoContainer/HBoxContainer/PopulacaoLabel
+
 
 func _process(_delta: float) -> void:
 	_update_dinheiro_label()
@@ -164,12 +172,17 @@ func _process(_delta: float) -> void:
 	_update_missao_info_label()
 	_update_missao_recompensa_label()
 	_update_button_missao_check()
+	_update_populacao_label()
 
 func _update_dinheiro_label() -> void:
 	if dinheiro_label == null:
 		return
 	dinheiro_label.text = "%s" % str(Global.dinheiro)
 	
+func _update_populacao_label() -> void:
+	if populacao_label == null:
+		return
+	populacao_label.text = "População: %s" % str(Global.populacao)
 
 func _update_turno_label() -> void:
 	if turno_label == null:

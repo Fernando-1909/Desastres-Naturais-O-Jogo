@@ -13,8 +13,6 @@ extends Resource
 @export var pode_aprimorar: bool = true               # Se false, desativa botão de upgrade
 @export var nivel_maximo: int = 1                     # Nível máximo
 @export var custo_base: float = 100.0                 # Preço de compra (dinheiro)
-@export var custo_pedra: float = 0.0                  # Preço de compra (pedra)
-@export var custo_madeira: float = 0.0                # Preço de compra (madeira)
 
 @export_group("Descrições")
 @export_multiline var descricao_curta: String = ""    

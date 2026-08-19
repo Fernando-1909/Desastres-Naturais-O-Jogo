@@ -101,6 +101,38 @@ theme_override_font_sizes/normal_font_size = 16
 text = "turno:
 "
 
+[node name="PopulacaoContainer" type="PanelContainer" parent="." unique_id=1576975718]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 2.0
+offset_top = -330.5
+offset_right = 147.5
+offset_bottom = -296.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PopulacaoContainer" unique_id=2120213346]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="Label" parent="PopulacaoContainer/HBoxContainer" unique_id=1250718228]
+layout_mode = 2
+text = "👤"
+
+[node name="PopulacaoLabel" type="RichTextLabel" parent="PopulacaoContainer/HBoxContainer" unique_id=805186201]
+custom_minimum_size = Vector2(135, 0)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 16
+text = "População:
+"
+fit_content = true
+scroll_active = false
+
 [node name="ButtonMapa" type="Button" parent="." unique_id=2137597441]
 layout_mode = 1
 anchors_preset = 8
