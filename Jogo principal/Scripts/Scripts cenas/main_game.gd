@@ -62,6 +62,12 @@ var banco_edificios: Dictionary = {}
 # Chave = Vector2i(x, y) | Valor = objeto BuildingInstance
 var construcoes_no_mapa: Dictionary = {}
 
+# Controle de Zonas por Tile
+# Chave = Vector2i(pos_tile) | Valor = BuildingZone
+var zona_por_tile: Dictionary = {}
+# Chave = BuildingZone | Valor = Array[Vector2i]
+var construcoes_por_zona: Dictionary = {}
+
 # Controle do lote/tile atualmente selecionado pelo clique do jogador
 var _celula_selecionada: Vector2i = Vector2i(-1, -1)
 var _building_data_selecionado: BuildingData = null
@@ -79,7 +85,7 @@ func _ready() -> void:
 	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
 	_carregar_todos_os_edificios()
 	_carregar_todas_as_missoes()
-	#variaveis de teste para testar no inicio
+	# variaveis de teste para testar no inicio
 	Global.dinheiro = 1000
 	Global.populacao = 10
 	
@@ -106,6 +112,29 @@ func _ready() -> void:
 	
 	# Sorteia os NPCs iniciais de acordo com a população inicial
 	_atualizar_npcs_por_populacao()
+
+
+# ==============================================================================
+# GERENCIAMENTO DE ZONAS DE CONSTRUÇÃO
+# ==============================================================================
+func _obter_zona_no_tile(pos_tile: Vector2i) -> BuildingZone:
+	var pos_global = Vector2.ZERO
+	if tilemap_constructions:
+		pos_global = tilemap_constructions.to_global(tilemap_constructions.map_to_local(pos_tile))
+	elif tile_map:
+		pos_global = tile_map.to_global(tile_map.map_to_local(pos_tile))
+
+	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	for no in zonas:
+		if no is BuildingZone and no.contem_posicao_global(pos_global):
+			return no
+	return null
+
+
+func _contar_construcoes_na_zona(zona: BuildingZone) -> int:
+	if zona == null or not construcoes_por_zona.has(zona):
+		return 0
+	return (construcoes_por_zona[zona] as Array).size()
 
 
 # ==============================================================================
@@ -155,11 +184,6 @@ func contar_construcoes(categoria: String = "") -> int:
 # ==============================================================================
 # SISTEMA DE POPULAÇÃO E NPCS
 # ==============================================================================
-## Mantém a quantidade de NPCs visíveis no mapa em sintonia com a população.
-## Cada 'populacao_por_npc' pessoas contam como 1 NPC "abstrato" (morador com casa),
-## enquanto cada pessoa desabrigada vira 1 NPC visível diretamente (1 pra 1),
-## já que ela não tem casa pra "abstrair" — por isso um desastre que desabriga
-## gente aumenta visivelmente o número de NPCs andando pelo mapa.
 func _atualizar_npcs_por_populacao() -> void:
 	if not cena_npc or not npc_container:
 		return
@@ -167,28 +191,24 @@ func _atualizar_npcs_por_populacao() -> void:
 	var quantidade_alvo = int(Global.populacao / populacao_por_npc) + Global.pessoas_desabrigadas
 	quantidade_alvo = max(quantidade_alvo, 0)
 	
-	# Adiciona NPCs que estão faltando
 	while _npcs_ativos.size() < quantidade_alvo:
 		var novo_npc = cena_npc.instantiate()
 		npc_container.add_child(novo_npc)
 		_npcs_ativos.append(novo_npc)
 	
-	# Remove NPCs em excesso (ex: população/desabrigados diminuiu)
 	while _npcs_ativos.size() > quantidade_alvo:
 		var npc_removido = _npcs_ativos.pop_back()
 		if is_instance_valid(npc_removido):
 			npc_removido.queue_free()
 
 
-## Chamado sempre que a durabilidade de uma construção é reduzida (desastre, debug, etc).
-## Se ela chegou a 0 e ainda não tinha sido processada, os moradores dela viram desabrigados.
 func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 	if predio == null or predio.data == null:
 		return
 	if predio.durabilidade_atual > 0:
 		return
 	if predio.moradores_desabrigados:
-		return  # já processado, evita contar duas vezes
+		return
 	
 	predio.moradores_desabrigados = true
 	
@@ -206,13 +226,11 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 func _carregar_todos_os_edificios() -> void:
 	banco_edificios.clear()
 	
-	# 1. Carrega arquivos passados manualmente no Inspector (se houver)
 	for b_data in banco_edificios_manual:
 		if b_data and "id" in b_data and b_data.id != "":
 			banco_edificios[b_data.id.to_lower()] = b_data
 			print("[INFO] Edificio (manual) registrado: ", b_data.id)
 
-	# 2. Escaneia a pasta inteira no projeto em busca de arquivos .tres
 	if DirAccess.dir_exists_absolute(pasta_edificios):
 		var dir = DirAccess.open(pasta_edificios)
 		if dir:
@@ -240,13 +258,11 @@ func _carregar_todos_os_edificios() -> void:
 func _carregar_todas_as_missoes() -> void:
 	banco_missoes.clear()
 	
-	# 1. Carrega arquivos passados manualmente no Inspector (se houver)
 	for m_data in banco_missoes_manual:
 		if m_data and m_data.id != "":
 			banco_missoes[m_data.id.to_lower()] = m_data
 			print("[INFO] Missao (manual) registrada: ", m_data.id)
 	
-	# 2. Escaneia a pasta inteira no projeto em busca de arquivos .tres
 	if DirAccess.dir_exists_absolute(pasta_missoes):
 		var dir = DirAccess.open(pasta_missoes)
 		if dir:
@@ -272,7 +288,6 @@ func _carregar_todas_as_missoes() -> void:
 # LEITURA DE CLIQUES NO MAPA
 # ==============================================================================
 func _unhandled_input(event: InputEvent) -> void:
-	# --- TECLA DEBUG: Aperte 'D' no teclado para causar 25 de dano na casa selecionada ---
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_D and _celula_selecionada in construcoes_no_mapa:
 			var predio: BuildingInstance = construcoes_no_mapa[_celula_selecionada]
@@ -285,7 +300,6 @@ func _unhandled_input(event: InputEvent) -> void:
 					_abrir_modo_upgrade_instancia(predio)
 			return
 
-	# --- CLIQUE DO MOUSE NA GRADE DO MAPA ---
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if not get_tree().paused:
 			if tilemap_constructions:
@@ -320,21 +334,24 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 
 	if tile_data == null: return
 
-	# 3. Lê as Custom Data Layers 'building_id' e 'Categoria'
+	# 3. Lê as Custom Data Layers 'building_id'
 	var building_id_custom = ""
 	var raw_custom_id = tile_data.get_custom_data("building_id")
 	if raw_custom_id != null:
 		building_id_custom = str(raw_custom_id).strip_edges().to_lower()
 
 	# --------------------------------------------------------------------------
-	# CASO TERRENO VAZIO -> ABRE O CATÁLOGO FILTRADO (IGNORANDO PREFEITURA)
+	# CASO TERRENO VAZIO -> ABRE O CATÁLOGO FILTRADO POR ZONA
 	# --------------------------------------------------------------------------
 	if building_id_custom == "terreno_vazio" or building_id_custom == "":
+		var zona_atual = _obter_zona_no_tile(pos_tile)
 		var lista_opcoes = _obter_todos_edificios_disponiveis()
-		if lista_opcoes.size() > 0:
-			tela_compras.abrir_modo_selecao(lista_opcoes)
+		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
+
+		if zona_atual != null:
+			tela_compras.abrir_loja_com_zona(zona_atual, lista_opcoes, total_na_zona)
 		else:
-			print("[AVISO] Nenhuma construção válida encontrada na pasta de recursos!")
+			tela_compras.abrir_modo_selecao(lista_opcoes)
 		return
 
 	# --------------------------------------------------------------------------
@@ -345,17 +362,19 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 		_building_data_selecionado = b_data
 		_abrir_modo_compra_para_dados(b_data, 0)
 	else:
-		# Fallback: envia os edifícios permitidos da pasta para a TelaCompras
+		var zona_atual = _obter_zona_no_tile(pos_tile)
 		var lista_opcoes = _obter_todos_edificios_disponiveis()
-		if lista_opcoes.size() > 0:
+		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
+
+		if zona_atual != null:
+			tela_compras.abrir_loja_com_zona(zona_atual, lista_opcoes, total_na_zona)
+		else:
 			tela_compras.abrir_modo_selecao(lista_opcoes)
 
 
 # ==============================================================================
 # CARREGAMENTO DINÂMICO DE EDIFÍCIOS PARA A LOJA
 # ==============================================================================
-
-## Filtro que ignora a Prefeitura e outros prédios não compráveis no catálogo
 func _eh_edificio_permitido_na_loja(b_data: BuildingData) -> bool:
 	if b_data == null:
 		return false
@@ -363,14 +382,12 @@ func _eh_edificio_permitido_na_loja(b_data: BuildingData) -> bool:
 	var id_limpo = str(b_data.id).to_lower().strip_edges() if "id" in b_data and b_data.id != null else ""
 	var nome_arquivo = b_data.resource_path.get_file().to_lower().strip_edges()
 	
-	# Ignora a prefeitura
 	if id_limpo == "prefeitura" or nome_arquivo == "prefeitura.tres":
 		return false
 		
 	return true
 
 
-## Retorna edifícios válidos carregados da pasta para exibição no catálogo
 func _obter_todos_edificios_disponiveis() -> Array[BuildingData]:
 	var lista: Array[BuildingData] = []
 	for b_data in banco_edificios.values():
@@ -411,7 +428,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		print("[ERRO] Nenhuma celula selecionada para compra.")
 		return
 
-	# Busca de forma flexivel por ID ou por Nome
 	var b_data = _buscar_data_por_id(nome_ou_id_edificio)
 	if not b_data:
 		print("[ERRO] Edificio nao encontrado no banco de dados para: ", nome_ou_id_edificio)
@@ -425,7 +441,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	# 2. Transacao
 	Global.dinheiro -= b_data.custo_base
 	
-	# 2.1 Nova construção aumenta a população da cidade (se ela tiver bonus_populacao)
 	if b_data.bonus_populacao > 0:
 		Global.populacao += b_data.bonus_populacao
 		_atualizar_npcs_por_populacao()
@@ -435,6 +450,15 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	if "variacao_index" in nova_instancia:
 		nova_instancia.variacao_index = variacao_index
 	construcoes_no_mapa[_celula_selecionada] = nova_instancia
+
+	# --- REGISTRO NA ZONA ---
+	var zona_atual = _obter_zona_no_tile(_celula_selecionada)
+	if zona_atual:
+		zona_por_tile[_celula_selecionada] = zona_atual
+		if not construcoes_por_zona.has(zona_atual):
+			construcoes_por_zona[zona_atual] = []
+		if not (construcoes_por_zona[zona_atual] as Array).has(_celula_selecionada):
+			(construcoes_por_zona[zona_atual] as Array).append(_celula_selecionada)
 
 	# 4. Obtem a coordenada atlas exata da variação escolhida
 	var novas_coords_atlas: Vector2i = Vector2i(-1, -1)
@@ -492,7 +516,6 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 		print("[ERRO] Dinheiro insuficiente para upgrade!")
 
 
-# Suporte legado/manual para recebimento por String se necessario
 func _on_tile_clicado(argument) -> void:
 	if typeof(argument) == TYPE_STRING:
 		var id_string: String = argument
@@ -548,6 +571,12 @@ func _registrar_predio_se_existir(pos: Vector2i, tile_data: TileData, atlas_coor
 
 		if eh_tile_construido:
 			construcoes_no_mapa[pos] = BuildingInstance.new(b_data, pos)
+			var zona = _obter_zona_no_tile(pos)
+			if zona:
+				zona_por_tile[pos] = zona
+				if not construcoes_por_zona.has(zona):
+					construcoes_por_zona[zona] = []
+				(construcoes_por_zona[zona] as Array).append(pos)
 
 
 # ==============================================================================
@@ -705,7 +734,6 @@ func _abrir_modo_compra_para_dados(b_data: BuildingData, variacao_index: int = 0
 	elif "categoria" in b_data and b_data.categoria != null and str(b_data.categoria).strip_edges() != "":
 		cat_nome = str(b_data.categoria).strip_edges()
 
-	# Prioriza b_data.nome para permitir tradução / formatação adequada
 	var nome_exibicao = b_data.nome if ("nome" in b_data and b_data.nome != "") else b_data.id
 
 	tela_compras.abrir_modo_compra(
@@ -790,7 +818,7 @@ func _on_desastre_button_pressed() -> void:
 
 
 # ==============================================================================
-# INTEGRAÇÃO COM A CENA DE DESASTRE: ENCHENTE
+# INTEGRAÇÃO COM A CENA DE DESASTRE: ENCHENTE E ZONAS
 # ==============================================================================
 var _enchente_ativa: Enchente = null
 
@@ -818,7 +846,6 @@ func _on_enchente_terminada() -> void:
 	_enchente_ativa = null
 
 
-## Chamado pelo hud.gd a cada turno que passa, pra avançar qualquer desastre em curso
 func avancar_turno_desastres() -> void:
 	if _enchente_ativa:
 		_enchente_ativa.turno_passou()
@@ -831,12 +858,24 @@ func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:
 			var pos := Vector2i(x, y)
 			if construcoes_no_mapa.has(pos) and construcoes_no_mapa[pos] != null:
 				var predio: BuildingInstance = construcoes_no_mapa[pos]
-				predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - dano)
+				
+				# Aplicação do multiplicador de dano da zona
+				var mult_dano: float = 1.0
+				if zona_por_tile.has(pos):
+					var zona: BuildingZone = zona_por_tile[pos]
+					mult_dano = zona.obter_multiplicador_dano()
+				else:
+					var zona = _obter_zona_no_tile(pos)
+					if zona:
+						mult_dano = zona.obter_multiplicador_dano()
+
+				var dano_final = dano * mult_dano
+				predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - dano_final)
 				atingidos += 1
-				print("[ENCHENTE] Dano aplicado em ", pos, "! Nova durabilidade: ", predio.durabilidade_atual, "/", predio.data.durabilidade_maxima)
+				print("[ENCHENTE] Dano em ", pos, ": ", dano_final, " (Mult. Zona: x", mult_dano, ") | Vida: ", predio.durabilidade_atual)
 				_verificar_casa_destruida(predio)
 				
 				if tela_compras and tela_compras.visible and pos == _celula_selecionada:
 					_abrir_modo_upgrade_instancia(predio)
 	
-	print("[ENCHENTE] Total de construções atingidas: ", atingidos, " / Dano aplicado: ", dano)
+	print("[ENCHENTE] Total de construções atingidas: ", atingidos, " / Dano base: ", dano)

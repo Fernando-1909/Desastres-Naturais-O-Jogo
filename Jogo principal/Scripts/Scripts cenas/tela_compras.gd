@@ -17,7 +17,6 @@ const CATEGORIAS_ACEITAS: Array[String] = [
 ]
 
 @export_group("Configurações do TileSet")
-## Opcional: Arraste seu TileSet aqui se preferir, senão o script busca sozinho na cena.
 @export var tile_set_override: TileSet
 
 @export_group("Cenas e Preloads")
@@ -71,6 +70,7 @@ var _edificio_atual_id: String = ""
 var _variacao_atual_index: int = 0
 var _veio_da_selecao: bool = false
 var _texto_detalhes_atual: String = ""
+var _zona_selecionada_atual: BuildingZone = null
 
 
 func _ready() -> void:
@@ -91,8 +91,39 @@ func _ready() -> void:
 
 
 # ==============================================================================
-# MODO 1: CATÁLOGO DE SELEÇÃO DE EDIFÍCIOS (AGRUPADO POR CATEGORIAS DA WHITELIST)
+# MODO 1: CATÁLOGO DE SELEÇÃO E FILTRAGEM POR ZONA
 # ==============================================================================
+func abrir_loja_com_zona(zona: BuildingZone, lista_edificios_globais: Array, total_na_zona: int) -> void:
+	_zona_selecionada_atual = zona
+	
+	# Check 1: Limite máximo de prédios na zona
+	if zona != null and not zona.tem_vaga_disponivel(total_na_zona):
+		print("[LOJA] A zona '", zona.nome_zona, "' atingiu o limite máximo (", zona.limite_maximo_edificios, ")!")
+		_exibir_aviso_zona_lotada(zona)
+		return
+
+	# Check 2: Filtrar edifícios permitidos pelas regras da zona
+	var lista_filtrada: Array = []
+	for item in lista_edificios_globais:
+		var b_data = item as BuildingData
+		if b_data == null: continue
+		
+		if zona == null or zona.pode_construir(b_data):
+			lista_filtrada.append(b_data)
+
+	if lista_filtrada.size() == 0:
+		print("[LOJA] Nenhuma construção é permitida na zona '", zona.nome_zona if zona else "Desconhecida", "'.")
+		return
+
+	abrir_modo_selecao(lista_filtrada)
+
+
+func _exibir_aviso_zona_lotada(zona: BuildingZone) -> void:
+	get_tree().paused = false
+	visible = false
+	print("[AVISO] Zona '", zona.nome_zona, "' está com o limite de construções atingido.")
+
+
 func abrir_modo_selecao(lista_edificios: Array) -> void:
 	get_tree().paused = true
 	_veio_da_selecao = false
@@ -120,7 +151,6 @@ func abrir_modo_selecao(lista_edificios: Array) -> void:
 			
 			categorias_map[cat_nome].append(b_data)
 
-		# Ordena as categorias na tela
 		var chaves_ordenadas: Array = []
 		for cat in CATEGORIAS_ACEITAS:
 			if categorias_map.has(cat):
@@ -130,18 +160,15 @@ func abrir_modo_selecao(lista_edificios: Array) -> void:
 			if not chaves_ordenadas.has(cat_chave) and cat_chave != "" and cat_chave != "Geral":
 				chaves_ordenadas.append(cat_chave)
 
-		# Itens sem categoria válida entram no final
 		if categorias_map.has(""):
 			chaves_ordenadas.append("")
 		if categorias_map.has("Geral") and not chaves_ordenadas.has("Geral"):
 			chaves_ordenadas.append("Geral")
 
-		# Instancia os grupos e os cards
 		for cat_chave in chaves_ordenadas:
 			var lista_cat: Array = categorias_map[cat_chave]
 			if lista_cat.size() == 0: continue
 
-			# Só cria o banner se a categoria for válida e não for vazia/Geral
 			if cat_chave != "" and cat_chave != "Geral":
 				var banner_categoria = _criar_divisor_categoria(cat_chave)
 				container_categorias.add_child(banner_categoria)
@@ -204,10 +231,7 @@ func abrir_modo_compra_por_dados(b_data: BuildingData, variacao_index: int = 0) 
 	elif "icone" in b_data:
 		tex = b_data.icone
 
-	# ID interno para lógica/sinais
 	var id_edificio = b_data.id if ("id" in b_data and b_data.id != "") else ""
-	
-	# Nome visual priorizado para exibição na UI
 	var nome_exibicao = b_data.nome if ("nome" in b_data and b_data.nome != "") else id_edificio
 
 	var cat = _obter_categoria_edificio(b_data)
@@ -233,7 +257,6 @@ func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String,
 	_edificio_atual_id = id_or_nome
 	_texto_detalhes_atual = texto_detalhes
 	
-	# Se um nome de exibição foi informado, usa ele no título; senão usa o ID como fallback
 	var titulo_final = nome_exibicao if nome_exibicao != "" else id_or_nome
 	
 	visible = true
@@ -248,7 +271,6 @@ func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String,
 
 	if label_nome: label_nome.text = "[center]" + tr(titulo_final) + "[/center]"
 	
-	# Esconde/Limpa categoria se for vazia ou Geral
 	if label_categoria:
 		if categoria != "" and categoria != "Geral":
 			label_categoria.text = tr(categoria)
@@ -313,11 +335,9 @@ func _obter_categoria_edificio(b_data: BuildingData) -> String:
 
 	var cat_encontrada: String = ""
 
-	# 1. Tenta pegar a categoria informada no próprio Resource .tres (se a variável ainda existir)
 	if "categoria" in b_data and b_data.categoria != null and str(b_data.categoria).strip_edges() != "":
 		cat_encontrada = str(b_data.categoria).strip_edges()
 
-	# 2. Se não houver no Resource, busca no Custom Data Layer do TileSet (usando a coordenada principal)
 	if cat_encontrada == "":
 		var tile_set_ref: TileSet = _obter_tileset_referencia()
 		if tile_set_ref != null:
@@ -343,7 +363,6 @@ func _obter_categoria_edificio(b_data: BuildingData) -> String:
 
 	cat_encontrada = cat_encontrada.strip_edges()
 
-	# 3. Valida se a categoria pertence à Whitelist
 	if cat_encontrada != "":
 		for cat_aceita in CATEGORIAS_ACEITAS:
 			if cat_encontrada.to_lower() == cat_aceita.to_lower():
@@ -411,6 +430,7 @@ func _on_fechar_central_pressed() -> void:
 
 func fechar_tudo() -> void:
 	_veio_da_selecao = false
+	_zona_selecionada_atual = null
 	get_tree().paused = false
 	visible = false
 	if overlay_fundo: overlay_fundo.visible = false
