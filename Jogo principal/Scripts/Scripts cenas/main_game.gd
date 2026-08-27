@@ -630,19 +630,7 @@ func escolher_missao_aleatoria():
 			Global.missao_aceita = false
 			print("[INFO] Turno 2: Missao obrigatoria - ", m_data.nome)
 			
-			if hud and hud.has_node("MissaoContainer"):
-				var missao_container = hud.get_node("MissaoContainer")
-				var vbox = missao_container.get_node("VBoxContainer")
-				
-				if vbox.has_node("missao_info"):
-					vbox.get_node("missao_info").text = m_data.info
-				
-				if vbox.has_node("missao_recompensa"):
-					vbox.get_node("missao_recompensa").text = "Custo: " + str(m_data.custo) + " dinheiro" + \
-						"\nPopularidade: +" + str(m_data.popularidade)
-				
-				missao_container.visible = true
-				Global.jogo_pausado = true
+			_abrir_container_missao()
 			return Global.missao_escolhida
 	
 	if Global.turno >= 4:
@@ -697,19 +685,7 @@ func escolher_missao_aleatoria():
 				if chave != chave_escolhida:
 					Global.turnos_sem_missao[chave] += 1
 			
-			if hud and hud.has_node("MissaoContainer"):
-				var missao_container = hud.get_node("MissaoContainer")
-				var vbox = missao_container.get_node("VBoxContainer")
-				
-				if vbox.has_node("missao_info"):
-					vbox.get_node("missao_info").text = m_data.info
-				
-				if vbox.has_node("missao_recompensa"):
-					vbox.get_node("missao_recompensa").text = "Custo: " + str(m_data.custo) + " dinheiro" + \
-						"\nPopularidade: +" + str(m_data.popularidade)
-				
-				missao_container.visible = true
-				Global.jogo_pausado = true
+			_abrir_container_missao()
 			
 			return Global.missao_escolhida
 		else:
@@ -720,6 +696,131 @@ func escolher_missao_aleatoria():
 			return null
 	
 	return null
+
+
+# ==============================================================================
+# SISTEMA DE MISSOES — AÇÕES DO JOGADOR
+# (chamadas pelo hud.gd, que só cuida de mostrar/ocultar e do texto)
+# ==============================================================================
+var _missao_check_aberta := false
+
+
+func aceitar_missao() -> void:
+	if Global.missao_escolhida == null:
+		print("Nenhuma missão ativa!")
+		return
+	
+	# Apenas ACEITA a missão — ela só é concluída de fato ao chamar concluir_missao(),
+	# e só se houver dinheiro suficiente.
+	Global.missao_aceita = true
+	print("Missão aceita: ", Global.missao_escolhida.nome, " — conclua antes de passar o turno, ou ela falhará!")
+	
+	_fechar_container_missao()
+	Global.jogo_pausado = false
+
+
+func recusar_missao() -> void:
+	if Global.missao_escolhida == null:
+		print("Nenhuma missão ativa!")
+		return
+	
+	var missao = Global.missao_escolhida
+	
+	# Perde a popularidade que ganharia
+	Global.popularidade -= missao.popularidade
+	
+	print("Missão recusada: ", missao.nome)
+	print("Popularidade perdida: -", missao.popularidade)
+	print("Popularidade atual: ", Global.popularidade)
+	
+	_fechar_container_missao()
+	Global.jogo_pausado = false
+	
+	Global.missao_escolhida = null
+	Global.missao_atual_turnos = 0
+
+
+func concluir_missao() -> void:
+	if Global.missao_escolhida == null or not Global.missao_aceita:
+		print("Nenhuma missão aceita para concluir no momento!")
+		return
+	
+	var missao = Global.missao_escolhida
+	
+	# Só pode concluir se tiver dinheiro suficiente
+	if Global.dinheiro < missao.custo:
+		print("Recursos insuficientes para concluir a missão!")
+		print("Necessário -> Dinheiro: ", missao.custo)
+		print("Você tem -> Dinheiro: ", Global.dinheiro)
+		return
+	
+	# Paga o custo e recebe a recompensa de popularidade
+	Global.dinheiro -= missao.custo
+	Global.popularidade += missao.popularidade
+	
+	Global.missoes_concluidas.append(missao.id)
+	if missao.id in Global.turnos_sem_missao:
+		Global.turnos_sem_missao.erase(missao.id)
+	
+	print("Missão concluída: ", missao.nome)
+	print("Gasto -> Dinheiro: ", missao.custo)
+	print("Popularidade: +", missao.popularidade)
+	print("Restante -> Dinheiro: ", Global.dinheiro)
+	
+	Global.missao_escolhida = null
+	Global.missao_aceita = false
+	Global.missao_atual_turnos = 0
+	Global.chance_missao = 30
+
+
+func abrir_checagem_missao() -> void:
+	if Global.missao_escolhida == null or not Global.missao_aceita:
+		return
+	if not hud or not hud.has_node("MissaoContainer"):
+		return
+	
+	_missao_check_aberta = true
+	
+	var missao_container = hud.get_node("MissaoContainer")
+	missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
+	missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+	missao_container.visible = true
+
+
+func fechar_checagem_missao() -> void:
+	_missao_check_aberta = false
+	_fechar_container_missao()
+
+
+func _fechar_container_missao() -> void:
+	if not hud or not hud.has_node("MissaoContainer"):
+		return
+	var missao_container = hud.get_node("MissaoContainer")
+	missao_container.visible = false
+	missao_container.get_node("VBoxContainer/HBoxContainer").visible = true
+	missao_container.get_node("VBoxContainer/HBoxContainer2").visible = false
+
+
+func _abrir_container_missao() -> void:
+	if hud and hud.has_node("MissaoContainer"):
+		hud.get_node("MissaoContainer").visible = true
+		Global.jogo_pausado = true
+
+
+## Chamado pelo hud.gd a cada turno que passa: se havia missão aceita e não
+## concluída a tempo, ela falha (perde 50% a mais de popularidade do que uma
+## recusa normal). Em seguida, sorteia a próxima missão, se for o caso.
+func processar_missao_no_turno() -> void:
+	if Global.missao_escolhida != null and Global.missao_aceita:
+		var popularidade_perdida = Global.missao_escolhida.popularidade * 1.5
+		Global.popularidade -= popularidade_perdida
+		print("Missão '", Global.missao_escolhida.nome, "' falhou por não ter sido concluída a tempo! Popularidade perdida: -", popularidade_perdida)
+		
+		Global.missao_escolhida = null
+		Global.missao_aceita = false
+		Global.missao_atual_turnos = 0
+	
+	escolher_missao_aleatoria()
 
 
 # ==============================================================================
