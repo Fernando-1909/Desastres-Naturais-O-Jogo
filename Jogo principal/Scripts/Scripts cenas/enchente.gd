@@ -41,6 +41,11 @@ class_name Enchente
 var turnos_passados: int = 0
 var nivel_atual: int = 1
 
+# Posição e altura-base da faixa de dano, sorteadas uma única vez quando a
+# enchente começa — a partir daí ela não se move mais, só cresce de tamanho.
+var _pos_fixa: Vector2 = Vector2.ZERO
+var _altura_base_fixa: float = 0.0
+
 # Retângulo de tiles afetado no turno atual (calculado a cada atualização, com base no AreaDano)
 var area_tiles: Rect2i
 
@@ -79,6 +84,8 @@ func _ready() -> void:
 	timer_visibilidade.one_shot = true
 	timer_visibilidade.timeout.connect(_on_timer_visibilidade_terminado)
 	
+	_definir_area_fixa()
+	
 	Global.nivel_enchente = nivel_atual
 	_aplicar_turno_atual()
 
@@ -104,7 +111,7 @@ func turno_passou() -> void:
 
 ## Recalcula a área de dano (tamanho já refletindo o nível atual) e reaplica o dano
 func _aplicar_turno_atual() -> void:
-	_gerar_area_dano()
+	_atualizar_tamanho_area_dano()
 	_converter_area_dano_para_tiles()
 	
 	var dano_atual = dano_infraestrutura + (nivel_atual - 1) * aumento_dano_por_nivel
@@ -113,7 +120,7 @@ func _aplicar_turno_atual() -> void:
 	timer_visibilidade.stop()
 	timer_visibilidade.start()
 	
-	print("[ENCHENTE] Nível ", nivel_atual, " (turno ", turnos_passados, "/", duracao_turnos, ") | Área: ", area_dano.position, " tamanho: ", area_dano.size, " | Dano: ", dano_atual)
+	print("[ENCHENTE] Nível ", nivel_atual, " (turno ", turnos_passados, "/", duracao_turnos, ") | Área: ", area_dano.position, " tamanho: ", area_dano.size, " | Dano base: ", dano_atual)
 	enchente_iniciada.emit(area_tiles, dano_atual)
 
 
@@ -131,23 +138,32 @@ func _gerar_area_grande_aleatoria() -> void:
 	area_visual.size = Vector2(largura, altura) * tile_size
 
 
-## Gera a faixa de dano (AreaDano): largura igual ao AreaVisual, altura
-## aleatória entre altura_dano_min/max SOMADA ao aumento do nível atual,
-## numa posição vertical aleatória dentro dos limites do AreaVisual.
-func _gerar_area_dano() -> void:
-	var altura_base = randf_range(altura_dano_min, altura_dano_max)
-	var altura = altura_base + (nivel_atual - 1) * aumento_altura_por_nivel
-	var largura = area_visual.size.x
+## Sorteia, uma ÚNICA vez (quando a enchente começa), a posição e a altura-base
+## da faixa de dano. A posição não muda mais depois disso — só o tamanho, à
+## medida que o nível sobe. O cálculo já reserva espaço suficiente pra faixa
+## crescer até o nível máximo sem estourar os limites do AreaVisual.
+func _definir_area_fixa() -> void:
+	_altura_base_fixa = randf_range(altura_dano_min, altura_dano_max)
+	
+	# Nível máximo que essa enchente consegue alcançar, dado duracao_turnos/turnos_por_nivel
+	var nivel_maximo = 1 + int(max(duracao_turnos - 1, 0) / float(turnos_por_nivel))
+	var altura_maxima_possivel = _altura_base_fixa + (nivel_maximo - 1) * aumento_altura_por_nivel
 	
 	var y_min = area_visual.position.y
-	var y_max = area_visual.position.y + area_visual.size.y - altura
+	var y_max = area_visual.position.y + area_visual.size.y - altura_maxima_possivel
 	if y_max < y_min:
-		y_max = y_min  # segurança, caso a faixa já seja maior que o AreaVisual
+		y_max = y_min  # segurança, caso a altura máxima já não caiba no AreaVisual
 	
-	var pos_y = randf_range(y_min, y_max)
-	var pos_x = area_visual.position.x
+	_pos_fixa = Vector2(area_visual.position.x, randf_range(y_min, y_max))
+
+
+## Atualiza só o TAMANHO (altura) da faixa de dano, de acordo com o nível atual.
+## A posição (_pos_fixa) não muda mais depois de definida em _definir_area_fixa().
+func _atualizar_tamanho_area_dano() -> void:
+	var altura = _altura_base_fixa + (nivel_atual - 1) * aumento_altura_por_nivel
+	var largura = area_visual.size.x
 	
-	area_dano.position = Vector2(pos_x, pos_y)
+	area_dano.position = _pos_fixa
 	area_dano.size = Vector2(largura, altura)
 	area_dano.visible = true
 

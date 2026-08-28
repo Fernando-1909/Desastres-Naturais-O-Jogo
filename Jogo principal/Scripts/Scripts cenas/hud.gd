@@ -10,7 +10,6 @@ var freecam: Camera2D
 var scene_camera: Camera2D
 var freecam_active := false
 var botoes_bloqueaveis = []
-var missao_check_aberta := false  # true quando a tela de missão está aberta só pra consulta (via ButtonMissaoCheck)
 
 # Quantas pessoas de população equivalem a 1 "unidade" de renda por turno.
 # Ajuste esse número pra calibrar o quanto a população influencia o dinheiro ganho.
@@ -79,20 +78,9 @@ func _on_button_turno_pressed() -> void:
 	# Avança qualquer desastre em curso (ex: enchente sobe de nível, reaplica dano)
 	main_game.avancar_turno_desastres()
 	
-	# SESSÃO DE MISSÕES
-	# Se a missão foi ACEITA mas não foi concluída antes de passar o turno,
-	# ela falha imediatamente e o jogador perde 50% a mais de popularidade
-	# (a "promessa falsa" custa mais caro do que simplesmente recusar).
-	if Global.missao_escolhida != null and Global.missao_aceita:
-		var popularidade_perdida = Global.missao_escolhida.popularidade * 1.5
-		Global.popularidade -= popularidade_perdida
-		print("Missão '", Global.missao_escolhida.nome, "' falhou por não ter sido concluída a tempo! Popularidade perdida: -", popularidade_perdida)
-		
-		Global.missao_escolhida = null
-		Global.missao_aceita = false
-		Global.missao_atual_turnos = 0
-	
-	main_game.escolher_missao_aleatoria()
+	# Processa o sistema de missões (falha por turno + sorteio da próxima),
+	# tudo centralizado no main_game agora.
+	main_game.processar_missao_no_turno()
 
 
 # Faixa (min, max) de renda por unidade, de acordo com a popularidade atual.
@@ -114,46 +102,11 @@ func _obter_range_por_popularidade() -> Vector2i:
 
 
 func _on_aceitar_missao_pressed() -> void:
-	if Global.missao_escolhida == null:
-		print("Nenhuma missão ativa!")
-		return
-	
-	# Apenas ACEITA a missão — ela só é concluída de fato ao apertar o botão
-	# de concluir (_on_button_missao_concluir_pressed), e só se houver dinheiro.
-	Global.missao_aceita = true
-	
-	print("Missão aceita: ", Global.missao_escolhida["nome"], " — conclua antes de passar o turno, ou ela falhará!")
-	
-	# Esconde o container de missão
-	$MissaoContainer.visible = false
-	
-	# Despausa o jogo
-	Global.jogo_pausado = false
+	main_game.aceitar_missao()
 
 
 func _on_recusar_missao_pressed() -> void:
-	if Global.missao_escolhida == null:
-		print("Nenhuma missão ativa!")
-		return
-	
-	var missao = Global.missao_escolhida
-	
-	# Perde a popularidade que ganharia
-	Global.popularidade -= missao.popularidade
-	
-	print("Missão recusada: ", missao.nome)
-	print("Popularidade perdida: -", missao.popularidade)
-	print("Popularidade atual: ", Global.popularidade)
-	
-	# Esconde o container de missão
-	$MissaoContainer.visible = false
-	
-	# Despausa o jogo
-	Global.jogo_pausado = false
-	
-	# Limpa a missão atual
-	Global.missao_escolhida = null
-	Global.missao_atual_turnos = 0
+	main_game.recusar_missao()
 
 
 # Labels
@@ -220,64 +173,12 @@ func _update_button_missao_check() -> void:
 
 
 func _on_button_missao_concluir_pressed() -> void:
-	if Global.missao_escolhida == null or not Global.missao_aceita:
-		print("Nenhuma missão aceita para concluir no momento!")
-		return
-	
-	var missao = Global.missao_escolhida
-	
-	# Só pode concluir se tiver dinheiro suficiente
-	if Global.dinheiro < missao.custo:
-		print("Recursos insuficientes para concluir a missão!")
-		print("Necessário -> Dinheiro: ", missao.custo)
-		print("Você tem -> Dinheiro: ", Global.dinheiro)
-		return
-	
-	# Paga o custo (dinheiro) e recebe a recompensa de popularidade
-	Global.dinheiro -= missao.custo
-	Global.popularidade += missao.popularidade
-	
-	# Adiciona o id da missão à lista de concluídas
-	Global.missoes_concluidas.append(missao.id)
-	
-	# Remove do contador de turnos sem missão
-	if missao.id in Global.turnos_sem_missao:
-		Global.turnos_sem_missao.erase(missao.id)
-	
-	print("Missão concluída: ", missao.nome)
-	print("Gasto -> Dinheiro: ", missao.custo)
-	print("Popularidade: +", missao.popularidade)
-	print("Restante -> Dinheiro: ", Global.dinheiro)
-	
-	# Limpa a missão atual e reseta contadores
-	Global.missao_escolhida = null
-	Global.missao_aceita = false
-	Global.missao_atual_turnos = 0
-	Global.chance_missao = 30
+	main_game.concluir_missao()
 
 
 func _on_button_missao_check_pressed() -> void:
-	# Só abre a tela de checagem se existe missão ativa e aceita
-	if Global.missao_escolhida == null or not Global.missao_aceita:
-		return
-	
-	missao_check_aberta = true
-	
-	# Esconde os botões de Aceitar/Recusar (não fazem sentido nesse modo)
-	$MissaoContainer/VBoxContainer/HBoxContainer.visible = false
-	
-	# Mostra o container com o botão de fechar
-	$MissaoContainer/VBoxContainer/HBoxContainer2.visible = true
-	
-	$MissaoContainer.visible = true
+	main_game.abrir_checagem_missao()
 
 
 func _on_missao_close_pressed() -> void:
-	missao_check_aberta = false
-	$MissaoContainer.visible = false
-	
-	# Restaura os botões de Aceitar/Recusar pra próxima vez que uma missão for oferecida
-	$MissaoContainer/VBoxContainer/HBoxContainer.visible = true
-	
-	# Esconde de novo o container do botão de fechar (só aparece durante a checagem)
-	$MissaoContainer/VBoxContainer/HBoxContainer2.visible = false
+	main_game.fechar_checagem_missao()
