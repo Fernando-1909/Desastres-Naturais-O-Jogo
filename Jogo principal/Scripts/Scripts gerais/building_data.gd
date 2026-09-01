@@ -24,6 +24,12 @@ extends Resource
 @export var bonus_populacao: int = 0
 @export var multiplicador_custo_upgrade: float = 1.5
 
+@export_group("Serviços e Socorro")
+## Quantidade de pessoas desabrigadas que esta construção pode acolher durante/após desastres
+@export var capacidade_abrigo: int = 0
+## Quantidade de equipes de bombeiros/resgate que esta construção disponibiliza no mapa
+@export var equipes_resgate: int = 0
+
 @export_group("Tiles no TileSet")
 ## Coloque aqui TODAS as coordenadas atlas que representam este prédio JÁ CONSTRUÍDO (variações)
 @export var tiles_atlas_coords: Array[Vector2i] = [] 

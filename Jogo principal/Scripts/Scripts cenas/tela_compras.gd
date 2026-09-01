@@ -27,6 +27,8 @@ const CATEGORIAS_ACEITAS: Array[String] = [
 @onready var painel_selecao: Control = $PainelSelecao
 @onready var painel_central: Control = $PainelCentral
 @onready var painel_detalhes: Control = $PainelDetalhes
+@onready var button_fechar_central: Button = $PainelCentral/ButtonFechar
+
 
 @export_group("Nós de Seleção (Catálogo)")
 @onready var container_categorias: VBoxContainer = $PainelSelecao/MargemSelecao/VBoxSelecao/ScrollContainer/ContainerCategorias
@@ -55,9 +57,6 @@ const CATEGORIAS_ACEITAS: Array[String] = [
 @onready var label_disc: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/LabelDisc
 @onready var button_aprimorar: Button = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar
 @onready var button_detalhes: Button = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes
-
-@export_group("Nós do Painel Central - Geral")
-@onready var button_fechar_central: Button = $PainelCentral/ButtonFechar
 
 @export_group("Nós do Painel Detalhes")
 @onready var label_titulo_detalhes: RichTextLabel = $PainelDetalhes/MargemDetalhes/VBoxDetalhes/LabelTituloDetalhes
@@ -239,6 +238,9 @@ func abrir_modo_compra_por_dados(b_data: BuildingData, variacao_index: int = 0) 
 	var pop = b_data.bonus_populacao if "bonus_populacao" in b_data else 0
 	var custo = b_data.custo_base if "custo_base" in b_data else 0
 	var det = b_data.texto_detalhes if "texto_detalhes" in b_data else ""
+	
+	var cap_abrigo = b_data.capacidade_abrigo if "capacidade_abrigo" in b_data else 0
+	var eq_resgate = b_data.equipes_resgate if "equipes_resgate" in b_data else 0
 
 	abrir_modo_compra(
 		id_edificio,
@@ -248,11 +250,13 @@ func abrir_modo_compra_por_dados(b_data: BuildingData, variacao_index: int = 0) 
 		custo,
 		tex,
 		det,
-		nome_exibicao
+		nome_exibicao,
+		cap_abrigo,
+		eq_resgate
 	)
 
 
-func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String, bonus_pop: int, custo: int, tex: Texture2D, texto_detalhes: String = "", nome_exibicao: String = "") -> void:
+func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String, bonus_pop: int, custo: int, tex: Texture2D, texto_detalhes: String = "", nome_exibicao: String = "", capacidade_abrigo: int = 0, equipes_resgate: int = 0) -> void:
 	get_tree().paused = true
 	_edificio_atual_id = id_or_nome
 	_texto_detalhes_atual = texto_detalhes
@@ -282,7 +286,14 @@ func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String,
 
 	if label_descricao: label_descricao.text = tr(descricao)
 	if label_bonus_pop: label_bonus_pop.text = tr("HUD_POPULARIDADE") + ": +" + str(bonus_pop)
-	if label_bonus_infra: label_bonus_infra.text = ""
+	
+	if label_bonus_infra:
+		var texto_extra = ""
+		if capacidade_abrigo > 0:
+			texto_extra += tr("Abrigo: ") + "+" + str(capacidade_abrigo) + " vagas "
+		if equipes_resgate > 0:
+			texto_extra += tr("Resgate: ") + "+" + str(equipes_resgate) + " equipe(s)"
+		label_bonus_infra.text = texto_extra
 
 	_definir_texto_botao(button_comprar, tr("UI_COMPRAR") + " ($" + str(custo) + ")")
 

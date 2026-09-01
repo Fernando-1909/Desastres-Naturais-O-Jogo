@@ -77,6 +77,9 @@ var icone_temp = preload("res://icon.svg")
 var freecam_enabled = false
 @onready var pop_up_scene = load("res://Jogo principal/building_hud.tscn")
 
+# Controle interno de resgate
+var equipes_bombeiro_ocupadas: int = 0
+
 
 # ==============================================================================
 # CICLO DE VIDA (READY & INPUT)
@@ -182,13 +185,70 @@ func contar_construcoes(categoria: String = "") -> int:
 
 
 # ==============================================================================
+# SISTEMA DE ABRIGOS E BOMBEIROS (RESGATE)
+# ==============================================================================
+func obter_capacidade_total_abrigos() -> int:
+	var total: int = 0
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio != null and predio.data != null and predio.durabilidade_atual > 0:
+			if "capacidade_abrigo" in predio.data:
+				total += predio.data.capacidade_abrigo
+	return total
+
+
+func obter_vagas_abrigos_disponiveis() -> int:
+	var pessoas_abrigadas = 0
+	if typeof(Global) != TYPE_NIL and "pessoas_abrigadas" in Global:
+		pessoas_abrigadas = Global.pessoas_abrigadas
+	return max(0, obter_capacidade_total_abrigos() - pessoas_abrigadas)
+
+
+func obter_equipes_bombeiro_totais() -> int:
+	var total: int = 0
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio != null and predio.data != null and predio.durabilidade_atual > 0:
+			if "equipes_resgate" in predio.data:
+				total += predio.data.equipes_resgate
+	return total
+
+
+func obter_equipes_bombeiro_disponiveis() -> int:
+	return max(0, obter_equipes_bombeiro_totais() - equipes_bombeiro_ocupadas)
+
+
+func alocar_equipe_bombeiro() -> bool:
+	if obter_equipes_bombeiro_disponiveis() > 0:
+		equipes_bombeiro_ocupadas += 1
+		return true
+	return false
+
+
+func liberar_equipe_bombeiro() -> void:
+	equipes_bombeiro_ocupadas = max(0, equipes_bombeiro_ocupadas - 1)
+
+
+func abrigar_pessoas(quantidade: int) -> int:
+	var vagas = obter_vagas_abrigos_disponiveis()
+	var abrigadas = min(vagas, quantidade)
+	if typeof(Global) != TYPE_NIL:
+		if "pessoas_abrigadas" in Global:
+			Global.pessoas_abrigadas += abrigadas
+		if "pessoas_desabrigadas" in Global:
+			Global.pessoas_desabrigadas = max(0, Global.pessoas_desabrigadas - abrigadas)
+	return abrigadas
+
+
+# ==============================================================================
 # SISTEMA DE POPULAÇÃO E NPCS
 # ==============================================================================
 func _atualizar_npcs_por_populacao() -> void:
 	if not cena_npc or not npc_container:
 		return
 	
-	var quantidade_alvo = int(Global.populacao / populacao_por_npc) + Global.pessoas_desabrigadas
+	var desabrigadas = Global.pessoas_desabrigadas if "pessoas_desabrigadas" in Global else 0
+	var quantidade_alvo = int(Global.populacao / populacao_por_npc) + desabrigadas
 	quantidade_alvo = max(quantidade_alvo, 0)
 	
 	while _npcs_ativos.size() < quantidade_alvo:
@@ -215,7 +275,8 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 	var moradores = predio.data.bonus_populacao
 	if moradores > 0:
 		Global.populacao = max(0, Global.populacao - moradores)
-		Global.pessoas_desabrigadas += moradores
+		if "pessoas_desabrigadas" in Global:
+			Global.pessoas_desabrigadas += moradores
 		print("[DESASTRE] '", predio.data.nome, "' foi destruída! ", moradores, " pessoas ficaram desabrigadas.")
 		_atualizar_npcs_por_populacao()
 
@@ -700,7 +761,6 @@ func escolher_missao_aleatoria():
 
 # ==============================================================================
 # SISTEMA DE MISSOES — AÇÕES DO JOGADOR
-# (chamadas pelo hud.gd, que só cuida de mostrar/ocultar e do texto)
 # ==============================================================================
 var _missao_check_aberta := false
 
@@ -710,8 +770,6 @@ func aceitar_missao() -> void:
 		print("Nenhuma missão ativa!")
 		return
 	
-	# Apenas ACEITA a missão — ela só é concluída de fato ao chamar concluir_missao(),
-	# e só se houver dinheiro suficiente.
 	Global.missao_aceita = true
 	print("Missão aceita: ", Global.missao_escolhida.nome, " — conclua antes de passar o turno, ou ela falhará!")
 	
@@ -725,8 +783,6 @@ func recusar_missao() -> void:
 		return
 	
 	var missao = Global.missao_escolhida
-	
-	# Perde a popularidade que ganharia
 	Global.popularidade -= missao.popularidade
 	
 	print("Missão recusada: ", missao.nome)
@@ -747,14 +803,12 @@ func concluir_missao() -> void:
 	
 	var missao = Global.missao_escolhida
 	
-	# Só pode concluir se tiver dinheiro suficiente
 	if Global.dinheiro < missao.custo:
 		print("Recursos insuficientes para concluir a missão!")
 		print("Necessário -> Dinheiro: ", missao.custo)
 		print("Você tem -> Dinheiro: ", Global.dinheiro)
 		return
 	
-	# Paga o custo e recebe a recompensa de popularidade
 	Global.dinheiro -= missao.custo
 	Global.popularidade += missao.popularidade
 	
@@ -807,9 +861,6 @@ func _abrir_container_missao() -> void:
 		Global.jogo_pausado = true
 
 
-## Chamado pelo hud.gd a cada turno que passa: se havia missão aceita e não
-## concluída a tempo, ela falha (perde 50% a mais de popularidade do que uma
-## recusa normal). Em seguida, sorteia a próxima missão, se for o caso.
 func processar_missao_no_turno() -> void:
 	if Global.missao_escolhida != null and Global.missao_aceita:
 		var popularidade_perdida = Global.missao_escolhida.popularidade * 1.5
@@ -843,7 +894,11 @@ func _abrir_modo_compra_para_dados(b_data: BuildingData, variacao_index: int = 0
 		b_data.descricao_curta,
 		b_data.bonus_populacao,
 		b_data.custo_base,
-		tex
+		tex,
+		b_data.texto_detalhes,
+		nome_exibicao,
+		b_data.capacidade_abrigo,
+		b_data.equipes_resgate
 	)
 
 func _abrir_tela_por_building_data(b_data: BuildingData) -> void:
@@ -960,7 +1015,6 @@ func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:
 			if construcoes_no_mapa.has(pos) and construcoes_no_mapa[pos] != null:
 				var predio: BuildingInstance = construcoes_no_mapa[pos]
 				
-				# Aplicação do multiplicador de dano da zona
 				var mult_dano: float = 1.0
 				if zona_por_tile.has(pos):
 					var zona: BuildingZone = zona_por_tile[pos]
