@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bl21dgphl64el"]
+
+[ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/Scripts/Scripts cenas/npc.gd" id="1_g0364"]
+[ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="2_k7djx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
+size = Vector2(4, 4)
+
+[node name="npc" type="CharacterBody2D" unique_id=588469051]
+script = ExtResource("1_g0364")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1626666825]
+position = Vector2(-4.7683716e-07, 4.7683716e-07)
+scale = Vector2(0.031249998, 0.031249998)
+texture = ExtResource("2_k7djx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1830427554]
+shape = SubResource("RectangleShape2D_g4v7s")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1692180595]

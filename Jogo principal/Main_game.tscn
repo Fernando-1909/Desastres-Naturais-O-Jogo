@@ -10,10 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cg5qkrc8cb38v" path="res://Jogo principal/tilesheets/aguaplaceholder.png" id="6_fo8d0"]
 [ext_resource type="Texture2D" uid="uid://cumrysl7bg33e" path="res://Jogo principal/tilesheets/TrocaPlaceholder.png" id="7_2cq4x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
-[ext_resource type="PackedScene" uid="uid://bkti7orp2yjfg" path="res://Jogo principal/Desastres/enchente.tscn" id="7_i63ni"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
-[ext_resource type="Script" uid="uid://dp7eroflj4ha1" path="res://Jogo principal/Scripts/Scripts gerais/npc.gd" id="10_k7th3"]
-[ext_resource type="Texture2D" uid="uid://c6tjaryoqnqk3" path="res://icon.svg" id="11_3axm1"]
 [ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
 [ext_resource type="PackedScene" uid="uid://2c2r30wkgw3n" path="res://Jogo principal/UI/building_zone.tscn" id="15_tkcjf"]
 [ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="16_fo8d0"]
@@ -493,19 +490,17 @@ func _on_teste_troca_pressed() -> void:
 			set_cell(cell, source_id, coord_agua)
 "
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
-size = Vector2(6, 6)
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_2cq4x"]
+vertices = PackedVector2Array(738, 314.52344, 738, 330, 375.0625, 330, 369.27344, 303.42188, 439.9922, 300.0078)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(440, 290, 748, 305, 748, 340, 367, 340, 357, 294)])
 
-[sub_resource type="NavigationPolygon" id="NavigationPolygon_botex"]
-vertices = PackedVector2Array(448.79688, 319.72656, 572.3281, 316.29688, 571.5781, 328.34375, 464, 332.3672, 445.21094, 493, 464, 479, 518, 493, 518, 479)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 0, 3, 5), PackedInt32Array(6, 4, 5, 7)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(528, 503, 435, 503, 439, 310, 583, 306, 581, 338, 474, 342, 474, 469, 528, 469)])
-
-[node name="MainGame" type="Node2D" unique_id=873718037]
+[node name="MainGame" type="Node2D" unique_id=873718037 node_paths=PackedStringArray("npc_container")]
 y_sort_enabled = true
 script = ExtResource("1_bvlld")
 pasta_edificios = "res://Jogo principal/Scripts/Scripts cons/"
-cena_enchente = ExtResource("7_i63ni")
+npc_container = NodePath("NpcContainer")
+populacao_por_npc = 10
 
 [node name="TileMapBase" type="TileMapLayer" parent="." unique_id=1540127578]
 texture_filter = 1
@@ -579,24 +574,6 @@ text = "  X  "
 [node name="FreeCamera2D" parent="." unique_id=834210011 instance=ExtResource("9_botex")]
 visible = true
 
-[node name="NPC" type="CharacterBody2D" parent="." unique_id=1465589073]
-position = Vector2(500, 488)
-script = ExtResource("10_k7th3")
-
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="NPC" unique_id=1527197258]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="NPC" unique_id=738524077]
-position = Vector2(1, 0)
-shape = SubResource("RectangleShape2D_g4v7s")
-
-[node name="Sprite2D" type="Sprite2D" parent="NPC" unique_id=220062411]
-position = Vector2(0.99999994, 0)
-scale = Vector2(0.04687512, 0.04687509)
-texture = ExtResource("11_3axm1")
-
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=992927352]
-navigation_polygon = SubResource("NavigationPolygon_botex")
-
 [node name="ButtonTesteCompra" type="Button" parent="." unique_id=1621438957]
 offset_left = 50.0
 offset_top = 175.0
@@ -662,6 +639,11 @@ limite_maximo_edificios = 2
 [node name="CollisionShape2D" parent="BuildingZone2" index="0" unique_id=711131371]
 position = Vector2(852, 129)
 debug_color = Color(0.8032692, 0.35889444, 0.56552446, 0.41960785)
+
+[node name="NpcContainer" type="Node2D" parent="." unique_id=507213809]
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="NpcContainer" unique_id=992927352]
+navigation_polygon = SubResource("NavigationPolygon_2cq4x")
 
 [connection signal="pressed" from="CanvasLayer/BuildingHUD/PanelContainer2/VBoxContainer/Button" to="." method="_on_button_close_menu_pressed"]
 [connection signal="pressed" from="TesteTroca" to="TileMapConstructions" method="_on_teste_troca_pressed"]

@@ -29,17 +29,19 @@ extends Node2D
 
 @export_group("Desastres")
 ## Arraste aqui o .tscn da cena de Enchente que criamos
-@export var cena_enchente: PackedScene
+@export var cena_enchente: PackedScene = preload("res://Jogo principal/Desastres/enchente.tscn")
 
 @export_group("População / NPCs")
 ## Arraste aqui o .tscn do NPC (npc.gd)
-@export var cena_npc: PackedScene
+@export var cena_npc: PackedScene = preload("res://Jogo principal/npc.tscn")
 ## Node onde os NPCs devem ser instanciados. IMPORTANTE: precisa ter um
 ## "NavigationRegion2D" como filho, porque o npc.gd usa
 ## get_parent().get_node("NavigationRegion2D") pra sortear destino.
 @export var npc_container: Node
 ## Quantos pontos de população equivalem a 1 NPC visível andando pelo mapa
 @export var populacao_por_npc: int = 30
+## Quantas pessoas desabrigadas equivalem a 1 NPC visível andando pelo mapa
+@export var desabrigados_por_npc: int = 10
 
 # NPCs atualmente instanciados no mapa (housed + desabrigados, controlados juntos)
 var _npcs_ativos: Array[Node] = []
@@ -112,6 +114,8 @@ func _ready() -> void:
 
 	# Escaneia o mapa para registrar predios que ja vieram desenhados no editor
 	_escanear_mapa_inicial()
+	
+	print("[DEBUG-NPC] _ready: cena_npc=", cena_npc, " | npc_container=", npc_container, " | populacao_inicial=", Global.populacao)
 	
 	# Sorteia os NPCs iniciais de acordo com a população inicial
 	_atualizar_npcs_por_populacao()
@@ -244,41 +248,57 @@ func abrigar_pessoas(quantidade: int) -> int:
 # SISTEMA DE POPULAÇÃO E NPCS
 # ==============================================================================
 func _atualizar_npcs_por_populacao() -> void:
+	print("[DEBUG-NPC] _atualizar_npcs_por_populacao chamada. cena_npc=", cena_npc, " | npc_container=", npc_container)
+	
 	if not cena_npc or not npc_container:
+		print("[DEBUG-NPC] Abortou: cena_npc ou npc_container não estão configurados no Inspector!")
 		return
 	
 	var desabrigadas = Global.pessoas_desabrigadas if "pessoas_desabrigadas" in Global else 0
-	var quantidade_alvo = int(Global.populacao / populacao_por_npc) + desabrigadas
+	var quantidade_alvo = int(Global.populacao / populacao_por_npc) + int(desabrigadas / desabrigados_por_npc)
 	quantidade_alvo = max(quantidade_alvo, 0)
+	
+	print("[DEBUG-NPC] populacao=", Global.populacao, " (/", populacao_por_npc, ") | desabrigadas=", desabrigadas, " (/", desabrigados_por_npc, ") | alvo=", quantidade_alvo, " | ativos_atualmente=", _npcs_ativos.size())
 	
 	while _npcs_ativos.size() < quantidade_alvo:
 		var novo_npc = cena_npc.instantiate()
 		npc_container.add_child(novo_npc)
 		_npcs_ativos.append(novo_npc)
+		print("[DEBUG-NPC] NPC instanciado! Total agora: ", _npcs_ativos.size())
 	
 	while _npcs_ativos.size() > quantidade_alvo:
 		var npc_removido = _npcs_ativos.pop_back()
 		if is_instance_valid(npc_removido):
 			npc_removido.queue_free()
+		print("[DEBUG-NPC] NPC removido! Total agora: ", _npcs_ativos.size())
 
 
 func _verificar_casa_destruida(predio: BuildingInstance) -> void:
+	print("[DEBUG-DESTRUIDA] Chamada! durabilidade=", predio.durabilidade_atual if predio else "predio nulo", " | ja_processado=", predio.moradores_desabrigados if predio else "-")
+	
 	if predio == null or predio.data == null:
+		print("[DEBUG-DESTRUIDA] Abortou: predio ou predio.data é null.")
 		return
 	if predio.durabilidade_atual > 0:
+		print("[DEBUG-DESTRUIDA] Abortou: durabilidade ainda > 0 (", predio.durabilidade_atual, ").")
 		return
 	if predio.moradores_desabrigados:
+		print("[DEBUG-DESTRUIDA] Abortou: essa casa já tinha sido processada antes.")
 		return
 	
 	predio.moradores_desabrigados = true
 	
 	var moradores = predio.data.bonus_populacao
+	print("[DEBUG-DESTRUIDA] bonus_populacao dessa casa (", predio.data.id, ") = ", moradores)
+	
 	if moradores > 0:
 		Global.populacao = max(0, Global.populacao - moradores)
 		if "pessoas_desabrigadas" in Global:
 			Global.pessoas_desabrigadas += moradores
-		print("[DESASTRE] '", predio.data.nome, "' foi destruída! ", moradores, " pessoas ficaram desabrigadas.")
+		print("[DESASTRE] '", predio.data.nome, "' foi destruída! ", moradores, " pessoas ficaram desabrigadas. Total desabrigadas agora: ", Global.pessoas_desabrigadas)
 		_atualizar_npcs_por_populacao()
+	else:
+		print("[DEBUG-DESTRUIDA] moradores = 0 — essa casa não tem bonus_populacao configurado no .tres, então ninguém fica desabrigado e o NPC não é atualizado!")
 
 
 # ==============================================================================
