@@ -167,8 +167,11 @@ func _update_missao_recompensa_label() -> void:
 		return
 	if Global.missao_escolhida != null:
 		var m = Global.missao_escolhida
-		missao_recompensa_label.text = "Custo: " + str(m.custo) + " dinheiro" + \
+		var texto = "Custo: " + str(m.custo) + " dinheiro" + \
 			"\nPopularidade: +" + str(m.popularidade)
+		if "bonus_populacao" in m and m.bonus_populacao > 0:
+			texto += "\nPopulação: +" + str(m.bonus_populacao)
+		missao_recompensa_label.text = texto
 	else:
 		missao_recompensa_label.text = ""
 

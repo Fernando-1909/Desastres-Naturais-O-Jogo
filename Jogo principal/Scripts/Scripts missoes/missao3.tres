@@ -5,7 +5,11 @@
 [resource]
 script = ExtResource("1")
 id = "missao3"
-nome = "Expandir cidade"
-info = "Com o aumento da população, precisamos expandir os limites da cidade para acomodar novos moradores."
-custo = 300.0
-popularidade = 20
+nome = "Sistema de Drenagem"
+info = "[b]Secretária:[/b] Depois da última enchente, várias casas ainda não se recuperaram de verdade. Um sistema de drenagem decente ia poupar a cidade de perder tudo de novo na próxima chuva forte.
+
+[b]Tesoureiro:[/b] É um projeto grande, e não temos garantia de que vai dar conta de uma enchente maior. Podemos investir esse dinheiro em algo com retorno mais certo, e torcer pro tempo colaborar.
+
+[b]Secretária:[/b] Torcer não segurou a água da última vez."
+custo = 700.0
+popularidade = 30

@@ -803,11 +803,16 @@ func recusar_missao() -> void:
 		return
 	
 	var missao = Global.missao_escolhida
-	Global.popularidade -= missao.popularidade
 	
-	print("Missão recusada: ", missao.nome)
-	print("Popularidade perdida: -", missao.popularidade)
-	print("Popularidade atual: ", Global.popularidade)
+	# Recusar é uma escolha neutra: mantém os recursos, mas abre mão do
+	# benefício. Sem penalidade — a decisão certa depende da prioridade
+	# do jogador no momento, não existe resposta "correta".
+	print("Missão recusada: ", missao.nome, " — recursos mantidos, oportunidade perdida.")
+	
+	# Essa missão já foi decidida (recusada) e não deve mais reaparecer
+	Global.missoes_concluidas.append(missao.id)
+	if missao.id in Global.turnos_sem_missao:
+		Global.turnos_sem_missao.erase(missao.id)
 	
 	_fechar_container_missao()
 	Global.jogo_pausado = false

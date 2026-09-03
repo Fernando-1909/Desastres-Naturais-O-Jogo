@@ -5,7 +5,11 @@
 [resource]
 script = ExtResource("1")
 id = "missao2"
-nome = "Construir praça"
-info = "A cidade está sem áreas de lazer e os moradores reclamam da falta de um espaço para descanso e convivência."
-custo = 200.0
-popularidade = 15
+nome = "Posto de Saúde"
+info = "[b]Secretária:[/b] As famílias estão indo até a cidade vizinha pra qualquer coisa, até uma febre. Um posto de saúde aqui mudaria isso, e as pessoas iam sentir a diferença rápido.
+
+[b]Tesoureiro:[/b] Concordo que faz falta, mas não é só construir — é manter funcionário, remédio, equipamento, todo mês. Talvez seja mais sábio esperar a cidade crescer um pouco mais antes de assumir esse compromisso.
+
+[b]Secretária:[/b] Ou talvez a cidade só cresça se as pessoas souberem que aqui elas são cuidadas."
+custo = 550.0
+popularidade = 25
