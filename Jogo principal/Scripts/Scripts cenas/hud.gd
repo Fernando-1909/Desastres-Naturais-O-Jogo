@@ -116,6 +116,7 @@ func _on_recusar_missao_pressed() -> void:
 @onready var missao_info_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoInfo
 @onready var missao_recompensa_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoRecompensa
 @onready var populacao_label: RichTextLabel = $PopulacaoContainer/HBoxContainer/PopulacaoLabel
+@onready var desabrigados_label: RichTextLabel = $DesabrigadosContainer/HBoxContainer/DesabrigadosLabel
 
 
 func _process(_delta: float) -> void:
@@ -126,11 +127,17 @@ func _process(_delta: float) -> void:
 	_update_missao_recompensa_label()
 	_update_button_missao_check()
 	_update_populacao_label()
+	_update_desabrigados_label()
 
 func _update_dinheiro_label() -> void:
 	if dinheiro_label == null:
 		return
 	dinheiro_label.text = "%s" % str(Global.dinheiro)
+	
+func _update_desabrigados_label() -> void:
+	if desabrigados_label == null:
+		return
+	desabrigados_label.text = "Desabrigados: %s" % str(Global.pessoas_desabrigadas)
 	
 func _update_populacao_label() -> void:
 	if populacao_label == null:

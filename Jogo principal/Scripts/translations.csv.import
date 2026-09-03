@@ -6,10 +6,10 @@ uid="uid://b25qendn0lhkt"
 
 [deps]
 
-files=["res://Jogo principal/Scripts/dialogues.pt.translation", "res://Jogo principal/Scripts/dialogues.en.translation"]
+files=["res://Jogo principal/Scripts/translations.pt.translation", "res://Jogo principal/Scripts/translations.en.translation"]
 
 source_file="res://Jogo principal/Scripts/translations.csv"
-dest_files=["res://Jogo principal/Scripts/dialogues.pt.translation", "res://Jogo principal/Scripts/dialogues.en.translation"]
+dest_files=["res://Jogo principal/Scripts/translations.pt.translation", "res://Jogo principal/Scripts/translations.en.translation"]
 
 [params]
 
