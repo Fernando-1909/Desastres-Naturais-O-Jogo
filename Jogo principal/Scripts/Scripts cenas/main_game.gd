@@ -422,11 +422,11 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 		building_id_custom = str(raw_custom_id).strip_edges().to_lower()
 
 	# --------------------------------------------------------------------------
-	# CASO TERRENO VAZIO -> ABRE O CATÁLOGO FILTRADO POR ZONA
+	# CASO TERRENO VAZIO OU TILE DA ZONA -> ABRE O CATÁLOGO FILTRADO POR ZONA
 	# --------------------------------------------------------------------------
 	if building_id_custom == "terreno_vazio" or building_id_custom == "":
 		var zona_atual = _obter_zona_no_tile(pos_tile)
-		var lista_opcoes = _obter_todos_edificios_disponiveis()
+		var lista_opcoes = _obter_edificios_para_zona(zona_atual)
 		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 
 		if zona_atual != null:
@@ -444,7 +444,7 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 		_abrir_modo_compra_para_dados(b_data, 0)
 	else:
 		var zona_atual = _obter_zona_no_tile(pos_tile)
-		var lista_opcoes = _obter_todos_edificios_disponiveis()
+		var lista_opcoes = _obter_edificios_para_zona(zona_atual)
 		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 
 		if zona_atual != null:
@@ -452,6 +452,23 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 		else:
 			tela_compras.abrir_modo_selecao(lista_opcoes)
 
+
+
+func _obter_edificios_para_zona(zona: BuildingZone) -> Array[BuildingData]:
+	var lista: Array[BuildingData] = []
+	for b_data in banco_edificios.values():
+		if not _eh_edificio_permitido_na_loja(b_data):
+			continue
+		
+		if zona != null:
+			if zona.pode_construir(b_data):
+				lista.append(b_data)
+		else:
+			lista.append(b_data)
+			
+	return lista
+	
+	
 
 # ==============================================================================
 # CARREGAMENTO DINÂMICO DE EDIFÍCIOS PARA A LOJA
@@ -514,26 +531,37 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		print("[ERRO] Edificio nao encontrado no banco de dados para: ", nome_ou_id_edificio)
 		return
 
-	# 1. Validacao de Recursos
+	# 1. Validacao de Regras da Zona
+	var zona_atual = _obter_zona_no_tile(_celula_selecionada)
+	if zona_atual:
+		if not zona_atual.pode_construir(b_data):
+			print("[ERRO] O edifício '", b_data.nome, "' não é permitido nesta zona!")
+			return
+		
+		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
+		if not zona_atual.tem_vaga_disponivel(total_na_zona):
+			print("[ERRO] Limite máximo de edifícios nesta zona atingido!")
+			return
+
+	# 2. Validacao de Recursos
 	if Global.dinheiro < b_data.custo_base:
 		print("[ERRO] Dinheiro insuficiente para comprar ", b_data.nome)
 		return
 
-	# 2. Transacao
+	# 3. Transacao
 	Global.dinheiro -= b_data.custo_base
 	
 	if b_data.bonus_populacao > 0:
 		Global.populacao += b_data.bonus_populacao
 		_atualizar_npcs_por_populacao()
 
-	# 3. Registra a nova instancia na memoria do mapa
+	# 4. Registra a nova instancia na memoria do mapa
 	var nova_instancia = BuildingInstance.new(b_data, _celula_selecionada)
 	if "variacao_index" in nova_instancia:
 		nova_instancia.variacao_index = variacao_index
 	construcoes_no_mapa[_celula_selecionada] = nova_instancia
 
 	# --- REGISTRO NA ZONA ---
-	var zona_atual = _obter_zona_no_tile(_celula_selecionada)
 	if zona_atual:
 		zona_por_tile[_celula_selecionada] = zona_atual
 		if not construcoes_por_zona.has(zona_atual):
@@ -541,7 +569,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		if not (construcoes_por_zona[zona_atual] as Array).has(_celula_selecionada):
 			(construcoes_por_zona[zona_atual] as Array).append(_celula_selecionada)
 
-	# 4. Obtem a coordenada atlas exata da variação escolhida
+	# 5. Obtem a coordenada atlas exata da variação escolhida
 	var novas_coords_atlas: Vector2i = Vector2i(-1, -1)
 	if b_data.has_method("get_atlas_coord_para_construir"):
 		novas_coords_atlas = b_data.get_atlas_coord_para_construir(variacao_index)
@@ -549,7 +577,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		var idx = min(variacao_index, b_data.tiles_atlas_coords.size() - 1)
 		novas_coords_atlas = b_data.tiles_atlas_coords[idx]
 
-	# 5. Descobre o source_id de forma segura
+	# 6. Descobre o source_id de forma segura
 	var source_id: int = -1
 	if "source_id" in b_data and b_data.source_id >= 0:
 		source_id = b_data.source_id
@@ -571,7 +599,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 			else:
 				source_id = 0
 
-	# 6. Troca o tile no mapa
+	# 7. Troca o tile no mapa
 	if novas_coords_atlas != Vector2i(-1, -1):
 		if tilemap_constructions:
 			tilemap_constructions.set_cell(_celula_selecionada, source_id, novas_coords_atlas)

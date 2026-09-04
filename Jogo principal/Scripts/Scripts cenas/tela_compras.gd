@@ -9,7 +9,7 @@ const CATEGORIAS_ACEITAS: Array[String] = [
 	"Residencial",
 	"Comercial",
 	"Industrial",
-	"Serviços",
+	"Funções",
 	"Infraestrutura",
 	"Lazer",
 	"Decoração",

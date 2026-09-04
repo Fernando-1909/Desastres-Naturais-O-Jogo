@@ -17,6 +17,8 @@
 [ext_resource type="PackedScene" uid="uid://wsb5vaomuml2" path="res://Jogo principal/UI/menu_pausa.tscn" id="16_tkcjf"]
 [ext_resource type="Resource" uid="uid://ywprn46r2bch" path="res://Jogo principal/Scripts/Scripts cons/casa_simples.tres" id="17_2cq4x"]
 [ext_resource type="Resource" uid="uid://bp12r8pe5sp1t" path="res://Jogo principal/Scripts/Scripts cons/cons_lazer.tres" id="18_2cq4x"]
+[ext_resource type="Resource" uid="uid://dv7ernpw1cxgi" path="res://Jogo principal/Scripts/Scripts cons/bombeiros.tres" id="18_a6fgx"]
+[ext_resource type="Resource" uid="uid://cko2p2hekohms" path="res://Jogo principal/Scripts/Scripts cons/abrigo.tres" id="19_fj0mr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_61lwm"]
 texture = ExtResource("2_rgx6x")
@@ -315,8 +317,10 @@ sources/0 = SubResource("TileSetAtlasSource_k6eoj")
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bbp3t"]
 texture = ExtResource("5_a6fgx")
 texture_region_size = Vector2i(32, 32)
+0:0/next_alternative_id = 2
 0:0/0 = 0
 0:0/0/custom_data_0 = true
+0:0/0/custom_data_2 = "terreno_vazio"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tkcjf"]
 texture = ExtResource("3_i63ni")
@@ -364,6 +368,7 @@ texture_region_size = Vector2i(32, 32)
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fj0mr"]
 texture = ExtResource("7_2cq4x")
 texture_region_size = Vector2i(32, 32)
+1:0/next_alternative_id = 2
 1:0/0 = 0
 1:0/0/texture_origin = Vector2i(0, 3)
 1:0/0/custom_data_0 = true
@@ -381,9 +386,11 @@ texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/texture_origin = Vector2i(0, 3)
 0:0/0/custom_data_0 = true
+0:0/0/custom_data_1 = "Funções"
 1:0/0 = 0
 1:0/0/texture_origin = Vector2i(0, 3)
 1:0/0/custom_data_0 = true
+1:0/0/custom_data_1 = "Funções"
 
 [sub_resource type="TileSet" id="TileSet_3axm1"]
 tile_size = Vector2i(32, 32)
@@ -500,7 +507,8 @@ y_sort_enabled = true
 script = ExtResource("1_bvlld")
 pasta_edificios = "res://Jogo principal/Scripts/Scripts cons/"
 npc_container = NodePath("NpcContainer")
-populacao_por_npc = 10
+populacao_por_npc = 5
+desabrigados_por_npc = 5
 
 [node name="TileMapBase" type="TileMapLayer" parent="." unique_id=1540127578]
 texture_filter = 1
@@ -515,7 +523,7 @@ tile_set = SubResource("TileSet_l2221")
 [node name="TileMapConstructions" type="TileMapLayer" parent="." unique_id=639958366]
 z_index = 1
 texture_filter = 1
-tile_map_data = PackedByteArray("AAAUAAcAAQAAAAAAAAAPAA0AAwAAAAAAAAAQAA0AAwAAAAAAAAARAA0AAwAAAAAAAAASAA0AAwAAAAAAAAATAA0AAwAAAAAAAAAPAA8AAwAAAAAAAAAQAA8AAwAAAAAAAAARAA8AAwAAAAAAAAASAA8AAwAAAAAAAAATAA8AAwAAAAAAAAAOAAoAAwAAAAAAAAAOAA0AAwAAAAAAAAAbAAYAAwAAAAAAAAAeAAYAAwAAAAAAAAAYAAYAAwAAAAAAAAAaAAoAAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAUAAcAAQAAAAAAAAAPAA0AAwAAAAAAAAAQAA0AAwAAAAAAAAARAA0AAwAAAAAAAAASAA0AAwAAAAAAAAATAA0AAwAAAAAAAAAPAA8AAwAAAAAAAAAQAA8AAwAAAAAAAAARAA8AAwAAAAAAAAASAA8AAwAAAAAAAAATAA8AAwAAAAAAAAAOAAoAAwAAAAAAAAAOAA0AAwAAAAAAAAAbAAYAAwAAAAAAAAAeAAYAAwAAAAAAAAAYAAYAAwAAAAAAAAAaAAoAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAUAAAAAAAAAAAAIAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAAOAAUAAAAAAAAAAAARAAUAAAAAAAAAAAA=")
 tile_set = SubResource("TileSet_3axm1")
 script = SubResource("GDScript_tkcjf")
 
@@ -619,26 +627,36 @@ visible = false
 [node name="TelaCompras" parent="." unique_id=2141866857 instance=ExtResource("15_61lwm")]
 visible = false
 
-[node name="BuildingZone" parent="." unique_id=514652450 instance=ExtResource("15_tkcjf")]
+[node name="Zona_Residencial" parent="." unique_id=514652450 instance=ExtResource("15_tkcjf")]
 position = Vector2(47, 53)
+scale = Vector2(1, 1.0198666)
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
 multiplicador_dano_enchente = 1.5
 
-[node name="CollisionShape2D" parent="BuildingZone" index="0" unique_id=711131371]
-position = Vector2(490, 463)
+[node name="CollisionShape2D" parent="Zona_Residencial" index="0" unique_id=711131371]
+position = Vector2(502, 446.13675)
 
-[node name="BuildingZone2" parent="." unique_id=1463022229 instance=ExtResource("15_tkcjf")]
+[node name="Zona_Teste" parent="." unique_id=1463022229 instance=ExtResource("15_tkcjf")]
 position = Vector2(47, 53)
 nome_zona = "Zona Lazer"
 categorias_permitidas = Array[String](["Lazer"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_2cq4x")])
 limite_maximo_edificios = 2
 
-[node name="CollisionShape2D" parent="BuildingZone2" index="0" unique_id=711131371]
+[node name="CollisionShape2D" parent="Zona_Teste" index="0" unique_id=711131371]
 position = Vector2(852, 129)
 debug_color = Color(0.8032692, 0.35889444, 0.56552446, 0.41960785)
+
+[node name="Zona_Funções" parent="." unique_id=825916287 instance=ExtResource("15_tkcjf")]
+nome_zona = "Zona Servicos"
+categorias_permitidas = Array[String](["Funções"])
+edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr")])
+limite_maximo_edificios = 3
+
+[node name="CollisionShape2D" parent="Zona_Funções" index="0" unique_id=711131371]
+position = Vector2(419, 187)
 
 [node name="NpcContainer" type="Node2D" parent="." unique_id=507213809]
 
@@ -649,5 +667,6 @@ navigation_polygon = SubResource("NavigationPolygon_2cq4x")
 [connection signal="pressed" from="TesteTroca" to="TileMapConstructions" method="_on_teste_troca_pressed"]
 [connection signal="pressed" from="DesastreButton" to="." method="_on_desastre_button_pressed"]
 
-[editable path="BuildingZone"]
-[editable path="BuildingZone2"]
+[editable path="Zona_Residencial"]
+[editable path="Zona_Teste"]
+[editable path="Zona_Funções"]

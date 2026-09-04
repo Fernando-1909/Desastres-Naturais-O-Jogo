@@ -49,6 +49,16 @@ PREDIO_PREFEITURA_NOME,"Prefeitura","City Hall"
 PREDIO_PREFEITURA_DESC,"Sede administrativa da cidade. Libera novas áreas e projetos.","City administrative headquarters. Unlocks new areas and projects."
 PREDIO_PREFEITURA_DETALHES,"O centro de comando da sua cidade. Aumentar o nível da prefeitura permite construir edifícios mais avançados e expandir os limites do mapa.","Your city's command center. Upgrading the city hall allows you to build more advanced structures and expand map borders."
 
+# --- ABRIGO E SOCORRO ---
+# Abrigo Comunitário
+PREDIO_ABRIGO_NOME,"Abrigo Comunitário","Community Shelter"
+PREDIO_ABRIGO_DESC,"Acolhe cidadãos desabrigados durante e após desastres.","Houses displaced citizens during and after disasters."
+PREDIO_ABRIGO_DETALHES,"O Abrigo Comunitário fornece vagas seguras para pessoas que perderam suas casas em enchentes e desastres. Mantenha abrigos suficientes para evitar queda de popularidade.","The Community Shelter provides safe spaces for people who lost their homes in floods and disasters. Keep enough shelters to avoid popularity drops."
+
+# Estação de Bombeiros
+PREDIO_BOMBEIROS_NOME,"Estação de Bombeiros","Fire Station"
+PREDIO_BOMBEIROS_DESC,"Disponibiliza equipes de resgate para salvar vítimas de emergências.","Provides rescue teams to save victims from emergencies."
+PREDIO_BOMBEIROS_DETALHES,"A Estação de Bombeiros envia equipes de resgate diretamente para áreas afetadas por desastres, reduzindo os danos e socorrendo a população.","The Fire Station dispatches rescue teams directly to disaster-affected areas, reducing damage and rescuing citizens."
 
 # --- DIÁLOGOS ---
 TXT_BR_BOAS_VINDAS,"[wave amp=30 freq=3]Selecione seu idioma / Select your language[/wave]","[wave amp=30 freq=3]Select your language / Selecione seu idioma[/wave]"
