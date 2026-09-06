@@ -12,4 +12,6 @@ info = "[b]Secretária:[/b] Depois da última enchente, várias casas ainda não
 
 [b]Secretária:[/b] Torcer não segurou a água da última vez."
 custo = 700.0
+edificio_id_alvo = ""
 popularidade = 30
+bonus_populacao = 12

@@ -606,6 +606,9 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		elif tile_map:
 			tile_map.set_cell(0, _celula_selecionada, source_id, novas_coords_atlas)
 		print("[INFO] ", b_data.nome, " (Variação ", variacao_index, ") construido com sucesso em ", _celula_selecionada)
+		
+		# 8. Checa se essa construção completa a missão ativa (se houver)
+		_verificar_missao_concluida_por_construcao(b_data)
 	else:
 		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
 
@@ -864,6 +867,9 @@ func concluir_missao() -> void:
 	
 	Global.dinheiro -= missao.custo
 	Global.popularidade += missao.popularidade
+	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
+		Global.populacao += missao.bonus_populacao
+		_atualizar_npcs_por_populacao()
 	
 	Global.missoes_concluidas.append(missao.id)
 	if missao.id in Global.turnos_sem_missao:
@@ -872,6 +878,8 @@ func concluir_missao() -> void:
 	print("Missão concluída: ", missao.nome)
 	print("Gasto -> Dinheiro: ", missao.custo)
 	print("Popularidade: +", missao.popularidade)
+	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
+		print("População: +", missao.bonus_populacao)
 	print("Restante -> Dinheiro: ", Global.dinheiro)
 	
 	Global.missao_escolhida = null
@@ -880,7 +888,42 @@ func concluir_missao() -> void:
 	Global.chance_missao = 30
 
 
-func abrir_checagem_missao() -> void:
+## Chamada toda vez que uma construção é finalizada. Se houver uma missão
+## ATIVA e ACEITA cujo "edificio_id_alvo" seja esse mesmo prédio, a missão é
+## concluída automaticamente — sem cobrar o "custo" da missão de novo, já que
+## o custo do prédio (b_data.custo_base) já foi pago na hora da compra.
+func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
+	if Global.missao_escolhida == null or not Global.missao_aceita:
+		return
+	if not ("edificio_id_alvo" in Global.missao_escolhida):
+		return
+	
+	var alvo = str(Global.missao_escolhida.edificio_id_alvo).strip_edges().to_lower()
+	if alvo == "" or alvo != str(b_data.id).strip_edges().to_lower():
+		return
+	
+	var missao = Global.missao_escolhida
+	
+	Global.popularidade += missao.popularidade
+	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
+		Global.populacao += missao.bonus_populacao
+		_atualizar_npcs_por_populacao()
+	
+	Global.missoes_concluidas.append(missao.id)
+	if missao.id in Global.turnos_sem_missao:
+		Global.turnos_sem_missao.erase(missao.id)
+	
+	print("[MISSÃO] '", missao.nome, "' concluída automaticamente ao construir '", b_data.nome, "'!")
+	print("Popularidade: +", missao.popularidade)
+	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
+		print("População: +", missao.bonus_populacao)
+	
+	Global.missao_escolhida = null
+	Global.missao_aceita = false
+	Global.missao_atual_turnos = 0
+	Global.chance_missao = 30
+	
+	_fechar_container_missao()
 	if Global.missao_escolhida == null or not Global.missao_aceita:
 		return
 	if not hud or not hud.has_node("MissaoContainer"):

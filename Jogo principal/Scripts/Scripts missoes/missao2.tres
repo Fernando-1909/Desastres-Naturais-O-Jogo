@@ -12,4 +12,6 @@ info = "[b]Secretária:[/b] As famílias estão indo até a cidade vizinha pra q
 
 [b]Secretária:[/b] Ou talvez a cidade só cresça se as pessoas souberem que aqui elas são cuidadas."
 custo = 550.0
+edificio_id_alvo = ""
 popularidade = 25
+bonus_populacao = 10

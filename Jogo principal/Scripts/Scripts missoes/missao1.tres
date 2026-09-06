@@ -12,4 +12,6 @@ info = "[b]Secretária:[/b] Tivemos três princípios de incêndio essa semana, 
 
 [b]Secretária:[/b] E se o imprevisto maior for justamente um incêndio que dava pra ter evitado?"
 custo = 400.0
+edificio_id_alvo = "bombeiros"
 popularidade = 20
+bonus_populacao = 8
