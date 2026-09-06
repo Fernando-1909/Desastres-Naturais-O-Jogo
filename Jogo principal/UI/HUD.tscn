@@ -198,15 +198,6 @@ grow_vertical = 2
 scale = Vector2(2, 2)
 text = "Passar turno"
 
-[node name="ButtonMissaoConcluir" type="Button" parent="." unique_id=798708446]
-layout_mode = 0
-offset_left = 747.0
-offset_top = 296.0
-offset_right = 1014.0
-offset_bottom = 349.0
-theme_override_font_sizes/font_size = 32
-text = "Concluir Missao"
-
 [node name="ButtonMissaoCheck" type="Button" parent="." unique_id=1927855174]
 visible = false
 layout_mode = 0
@@ -377,7 +368,6 @@ text = "Recusar"
 
 [connection signal="pressed" from="ButtonMapa" to="." method="_on_button_mapa_pressed"]
 [connection signal="pressed" from="ButtonTurno" to="." method="_on_button_turno_pressed"]
-[connection signal="pressed" from="ButtonMissaoConcluir" to="." method="_on_button_missao_concluir_pressed"]
 [connection signal="pressed" from="ButtonMissaoCheck" to="." method="_on_button_missao_check_pressed"]
 [connection signal="pressed" from="MapOverlay/PrefeituraButton" to="MapOverlay" method="_on_prefeitura_button_pressed"]
 [connection signal="pressed" from="MapOverlay/PraiaButton" to="MapOverlay" method="_on_praia_button_pressed"]
