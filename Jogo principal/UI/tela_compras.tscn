@@ -73,6 +73,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 0
 
 [node name="LabelTituloSelecao" type="RichTextLabel" parent="PainelSelecao/MargemSelecao/VBoxSelecao/HeaderSelecao" unique_id=1653727217]
+clip_contents = false
 layout_mode = 2
 mouse_filter = 2
 bbcode_enabled = true
@@ -133,6 +134,7 @@ size_flags_vertical = 4
 alignment = 1
 
 [node name="LabelGanhos" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=776694036]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
@@ -151,6 +153,7 @@ theme_override_constants/separation = 12
 alignment = 1
 
 [node name="LabelNome" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=1627136454]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
@@ -163,6 +166,7 @@ layout_mode = 2
 stretch_mode = 5
 
 [node name="LabelCategoria" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=190030663]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
@@ -170,6 +174,7 @@ fit_content = true
 horizontal_alignment = 1
 
 [node name="LabelNivel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=976686083]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
@@ -186,6 +191,7 @@ alignment = 1
 layout_mode = 2
 
 [node name="LabelDescricao" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1738052437]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
@@ -193,12 +199,14 @@ fit_content = true
 horizontal_alignment = 1
 
 [node name="LabelBonusPop" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=804549037]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 
 [node name="LabelBonusInfra" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1364742382]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
@@ -209,6 +217,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar" unique_id=373670690]
+clip_contents = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -226,6 +235,7 @@ layout_mode = 2
 theme_override_constants/separation = 12
 
 [node name="LabelDisc" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=497312614]
+clip_contents = false
 layout_mode = 2
 bbcode_enabled = true
 fit_content = true
@@ -236,6 +246,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar" unique_id=713711944]
+clip_contents = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -253,6 +264,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes" unique_id=2071852493]
+clip_contents = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -302,6 +314,7 @@ layout_mode = 2
 theme_override_constants/separation = 14
 
 [node name="LabelTituloDetalhes" type="RichTextLabel" parent="PainelDetalhes/MargemDetalhes/VBoxDetalhes" unique_id=688666758]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
@@ -309,6 +322,7 @@ fit_content = true
 autowrap_mode = 2
 
 [node name="LabelTextoDetalhes" type="RichTextLabel" parent="PainelDetalhes/MargemDetalhes/VBoxDetalhes" unique_id=462471512]
+clip_contents = false
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 19
 bbcode_enabled = true
