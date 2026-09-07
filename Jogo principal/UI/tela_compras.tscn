@@ -1,41 +1,33 @@
 [gd_scene format=3 uid="uid://bpobe74w27jcc"]
 
 [ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/Scripts cenas/tela_compras.gd" id="1_6tqbi"]
+[ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="2_82b8b"]
+[ext_resource type="Texture2D" uid="uid://5208k37kpkp7" path="res://Jogo principal/UI/Assets/allmenusprites.png" id="3_82tgc"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4v7s"]
-bg_color = Color(0.15686275, 0.27450982, 0.53333336, 0.6784314)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vcj6e"]
+texture = ExtResource("2_82b8b")
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tkcjf"]
-bg_color = Color(0.11612659, 0.116126604, 0.116126515, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="AtlasTexture" id="AtlasTexture_82b8b"]
+atlas = ExtResource("3_82tgc")
+region = Rect2(0.8360543, 0.8427155, 49.34142, 37.357388)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6tqbi"]
-bg_color = Color(0.078431375, 0.078431375, 0.09803922, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.23137255, 0.24313726, 0.2901961, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_82tgc"]
+texture = ExtResource("2_82b8b")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_82tgc"]
+atlas = ExtResource("3_82tgc")
+region = Rect2(0.8591423, 0.89294004, 49.333374, 37.453976)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g6gb0"]
+texture = ExtResource("2_82b8b")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g6gb0"]
+atlas = ExtResource("3_82tgc")
+region = Rect2(0.862627, 0.9241915, 49.59742, 36.62047)
 
 [node name="TelaCompras" type="CanvasLayer" unique_id=2141866857]
 process_mode = 3
@@ -62,7 +54,7 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_g4v7s")
+theme_override_styles/panel = SubResource("StyleBoxTexture_vcj6e")
 
 [node name="MargemSelecao" type="MarginContainer" parent="PainelSelecao" unique_id=1697367248]
 layout_mode = 2
@@ -104,7 +96,8 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 32
-text = "❌"
+icon = SubResource("AtlasTexture_82b8b")
+icon_alignment = 1
 
 [node name="PainelCentral" type="PanelContainer" parent="." unique_id=820898031]
 custom_minimum_size = Vector2(720, 400)
@@ -119,14 +112,14 @@ offset_right = 20.0
 offset_bottom = 22.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_tkcjf")
+theme_override_styles/panel = SubResource("StyleBoxTexture_82tgc")
 
 [node name="MargemInterna" type="MarginContainer" parent="PainelCentral" unique_id=1984089172]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
 
 [node name="ColunasGrid" type="HBoxContainer" parent="PainelCentral/MargemInterna" unique_id=2066357335]
 layout_mode = 2
@@ -141,6 +134,7 @@ alignment = 1
 
 [node name="LabelGanhos" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=776694036]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 horizontal_alignment = 1
@@ -158,6 +152,7 @@ alignment = 1
 
 [node name="LabelNome" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=1627136454]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 horizontal_alignment = 1
@@ -169,12 +164,14 @@ stretch_mode = 5
 
 [node name="LabelCategoria" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=190030663]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 horizontal_alignment = 1
 
 [node name="LabelNivel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=976686083]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 horizontal_alignment = 1
@@ -190,17 +187,20 @@ layout_mode = 2
 
 [node name="LabelDescricao" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1738052437]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 horizontal_alignment = 1
 
 [node name="LabelBonusPop" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=804549037]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 
 [node name="LabelBonusInfra" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1364742382]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 
@@ -216,6 +216,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
@@ -242,6 +243,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
@@ -258,6 +260,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
@@ -268,7 +271,8 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 32
-text = "❌"
+icon = SubResource("AtlasTexture_82tgc")
+icon_alignment = 1
 
 [node name="PainelDetalhes" type="PanelContainer" parent="." unique_id=1988168018]
 custom_minimum_size = Vector2(380, 200)
@@ -284,7 +288,7 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_6tqbi")
+theme_override_styles/panel = SubResource("StyleBoxTexture_g6gb0")
 
 [node name="MargemDetalhes" type="MarginContainer" parent="PainelDetalhes" unique_id=1861115596]
 layout_mode = 2
@@ -299,12 +303,14 @@ theme_override_constants/separation = 14
 
 [node name="LabelTituloDetalhes" type="RichTextLabel" parent="PainelDetalhes/MargemDetalhes/VBoxDetalhes" unique_id=688666758]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
 autowrap_mode = 2
 
 [node name="LabelTextoDetalhes" type="RichTextLabel" parent="PainelDetalhes/MargemDetalhes/VBoxDetalhes" unique_id=462471512]
 layout_mode = 2
+theme_override_font_sizes/normal_font_size = 19
 bbcode_enabled = true
 fit_content = true
 autowrap_mode = 2
@@ -315,4 +321,5 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 24
-text = "❌"
+icon = SubResource("AtlasTexture_g6gb0")
+icon_alignment = 1
