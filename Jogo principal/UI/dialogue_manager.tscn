@@ -1,17 +1,11 @@
 [gd_scene format=3 uid="uid://l4ep5qwntoxq"]
 
 [ext_resource type="Script" uid="uid://chvjmq6eve2uc" path="res://Jogo principal/Scripts/Scripts gerais/dialogue_manager.gd" id="1_5rgap"]
+[ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="2_lutnh"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4v7s"]
-bg_color = Color(0.24681494, 0.19233525, 0.43254337, 1)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jpfya"]
+texture = ExtResource("2_lutnh")
+expand_margin_top = 20.0
 
 [node name="DialogueManager" type="CanvasLayer" unique_id=1420897856]
 process_mode = 3
@@ -27,15 +21,15 @@ anchor_bottom = 1.0
 offset_top = -24.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_g4v7s")
+theme_override_styles/panel = SubResource("StyleBoxTexture_jpfya")
 
 [node name="MarginContainer" type="MarginContainer" parent="DialogueBox" unique_id=1324871687]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 12
+theme_override_constants/margin_left = 60
 theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
 
 [node name="ContentHBox" type="HBoxContainer" parent="DialogueBox/MarginContainer" unique_id=1722960342]
 layout_mode = 2
@@ -60,6 +54,7 @@ theme_override_constants/separation = 4
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 40
 bbcode_enabled = true
 text = "TESTE
 "
@@ -70,7 +65,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "Testando."
 scroll_active = false
