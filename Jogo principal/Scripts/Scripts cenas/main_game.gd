@@ -31,6 +31,9 @@ extends Node2D
 ## Arraste aqui o .tscn da cena de Enchente que criamos
 @export var cena_enchente: PackedScene = preload("res://Jogo principal/Desastres/enchente.tscn")
 
+@export_group("Resgate")
+@export var cena_ponto_resgate: PackedScene = preload("res://Jogo principal/UI/ponto_resgate.tscn")
+
 @export_group("População / NPCs")
 ## Arraste aqui o .tscn do NPC (npc.gd)
 @export var cena_npc: PackedScene = preload("res://Jogo principal/npc.tscn")
@@ -79,8 +82,11 @@ var icone_temp = preload("res://icon.svg")
 var freecam_enabled = false
 @onready var pop_up_scene = load("res://Jogo principal/building_hud.tscn")
 
-# Controle interno de resgate
+# Controle interno de resgate e emergências
 var equipes_bombeiro_ocupadas: int = 0
+var total_capacidade_abrigo: int = 0
+var total_equipes_resgate: int = 0
+var abrigo_ocupado: int = 0
 
 
 # ==============================================================================
@@ -114,6 +120,9 @@ func _ready() -> void:
 
 	# Escaneia o mapa para registrar predios que ja vieram desenhados no editor
 	_escanear_mapa_inicial()
+	
+	# Mapeia a capacidade de abrigo e equipes de bombeiros existentes no inicio
+	_recalcular_recursos_resgate()
 	
 	print("[DEBUG-NPC] _ready: cena_npc=", cena_npc, " | npc_container=", npc_container, " | populacao_inicial=", Global.populacao)
 	
@@ -191,56 +200,202 @@ func contar_construcoes(categoria: String = "") -> int:
 # ==============================================================================
 # SISTEMA DE ABRIGOS E BOMBEIROS (RESGATE)
 # ==============================================================================
-func obter_capacidade_total_abrigos() -> int:
-	var total: int = 0
+func contar_abrigos_construidos() -> int:
+	var total_abrigos: int = 0
 	for pos in construcoes_no_mapa.keys():
-		var predio: BuildingInstance = construcoes_no_mapa[pos]
-		if predio != null and predio.data != null and predio.durabilidade_atual > 0:
-			if "capacidade_abrigo" in predio.data:
-				total += predio.data.capacidade_abrigo
-	return total
+		var instancia: BuildingInstance = construcoes_no_mapa[pos]
+		if instancia and instancia.data and instancia.durabilidade_atual > 0:
+			var cat = str(instancia.data.categoria).to_lower().strip_edges() if "categoria" in instancia.data and instancia.data.categoria != null else ""
+			var id_predio = str(instancia.data.id).to_lower().strip_edges() if "id" in instancia.data and instancia.data.id != null else ""
+			
+			# Ignora explicitamente a prefeitura
+			if id_predio == "prefeitura" or "prefeitura" in cat:
+				continue
+
+			if cat == "abrigo" or "abrigo" in id_predio:
+				total_abrigos += 1
+	return total_abrigos
+
+
+func contar_estacoes_bombeiro_construidas() -> int:
+	var total_bombeiros: int = 0
+	for pos in construcoes_no_mapa.keys():
+		var instancia: BuildingInstance = construcoes_no_mapa[pos]
+		if instancia and instancia.data and instancia.durabilidade_atual > 0:
+			var cat = str(instancia.data.categoria).to_lower().strip_edges() if "categoria" in instancia.data and instancia.data.categoria != null else ""
+			var id_predio = str(instancia.data.id).to_lower().strip_edges() if "id" in instancia.data and instancia.data.id != null else ""
+			
+			if cat == "bombeiros" or "bombeiro" in id_predio:
+				total_bombeiros += 1
+	return total_bombeiros
+
+
+func _recalcular_recursos_resgate() -> void:
+	total_capacidade_abrigo = 0
+	total_equipes_resgate = 0
+
+	var qtd_abrigos = contar_abrigos_construidos()
+	var qtd_bombeiros = contar_estacoes_bombeiro_construidas()
+
+	# 1. Recalcula a capacidade apenas se houver abrigos construídos
+	if qtd_abrigos > 0:
+		for pos in construcoes_no_mapa.keys():
+			var instancia: BuildingInstance = construcoes_no_mapa[pos]
+			if instancia and instancia.data and instancia.durabilidade_atual > 0:
+				var data = instancia.data
+				var nivel = instancia.nivel_atual if "nivel_atual" in instancia else 1
+				var cat = str(data.categoria).to_lower().strip_edges() if "categoria" in data and data.categoria != null else ""
+				var id_predio = str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
+
+				if cat == "abrigo" or "abrigo" in id_predio:
+					if "capacidade_abrigo" in data and data.capacidade_abrigo != null:
+						total_capacidade_abrigo += int(data.capacidade_abrigo) * nivel
+
+	# 2. Recalcula as equipes de bombeiro apenas se houver estações construídas
+	if qtd_bombeiros > 0:
+		for pos in construcoes_no_mapa.keys():
+			var instancia: BuildingInstance = construcoes_no_mapa[pos]
+			if instancia and instancia.data and instancia.durabilidade_atual > 0:
+				var data = instancia.data
+				var nivel = instancia.nivel_atual if "nivel_atual" in instancia else 1
+				var cat = str(data.categoria).to_lower().strip_edges() if "categoria" in data and data.categoria != null else ""
+				var id_predio = str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
+
+				if cat == "bombeiros" or "bombeiro" in id_predio:
+					if "equipes_resgate" in data and data.equipes_resgate != null:
+						total_equipes_resgate += int(data.equipes_resgate) * nivel
+
+	# 3. Sincroniza com a classe Global
+	if typeof(Global) != TYPE_NIL:
+		if "capacidade_total_abrigo" in Global:
+			Global.capacidade_total_abrigo = total_capacidade_abrigo
+		
+		if "pessoas_abrigadas" in Global:
+			Global.pessoas_abrigadas = clamp(Global.pessoas_abrigadas, 0, total_capacidade_abrigo)
+			abrigo_ocupado = Global.pessoas_abrigadas
+
+	# Feedback do sistema no console
+	print("[SISTEMA RESGATE] Abrigos construídos: ", qtd_abrigos, 
+		  " | Capacidade Total: ", total_capacidade_abrigo, 
+		  " | Ocupação: ", abrigo_ocupado, "/", total_capacidade_abrigo, 
+		  " | Vagas Livres: ", obter_vagas_abrigos_disponiveis())
+
+
+func tem_abrigo_construido() -> bool:
+	return contar_abrigos_construidos() > 0
+
+
+func tem_estacao_bombeiros() -> bool:
+	return contar_estacoes_bombeiro_construidas() > 0
+
+
+func pode_realizar_resgate() -> bool:
+	var abrigos_qtd = contar_abrigos_construidos()
+	var bombeiros_qtd = contar_estacoes_bombeiro_construidas()
+
+	if bombeiros_qtd <= 0:
+		print("[RESGATE BLOQUEADO] Nenhuma Estação de Bombeiros construída no mapa.")
+		return false
+
+	if abrigos_qtd <= 0:
+		print("[RESGATE BLOQUEADO] Nenhum Abrigo construído no mapa (0 abrigos / 0 vagas).")
+		return false
+
+	if obter_equipes_bombeiro_disponiveis() <= 0:
+		print("[RESGATE BLOQUEADO] Todas as equipes de bombeiros estão ocupadas.")
+		return false
+
+	if obter_vagas_abrigos_disponiveis() <= 0:
+		print("[RESGATE BLOQUEADO] Todos os abrigos estão lotados (", abrigo_ocupado, "/", total_capacidade_abrigo, " vagas).")
+		return false
+
+	return true
+
+
+func _simular_emergencia(qtd_vitimas: int) -> void:
+	print("\n--- [ALERTA] Emergência Ocorreu! Vítimas a resgatar: ", qtd_vitimas, " ---")
+	print("[STATUS MAPA] Abrigos construídos: ", contar_abrigos_construidos(), 
+		  " | Vagas Totais: ", total_capacidade_abrigo, 
+		  " | Estações Bombeiro: ", contar_estacoes_bombeiro_construidas())
+
+	if not pode_realizar_resgate():
+		print("[RESGATE CANCELADO] O resgate não pôde ser iniciado por falta de pré-requisitos.")
+		return
+
+	if alocar_equipe_bombeiro():
+		var resgatados = abrigar_pessoas(qtd_vitimas)
+		print("[RESGATE SUCESSO] ", resgatados, " vítimas foram resgatadas e levadas ao abrigo.")
+		liberar_equipe_bombeiro()
+	else:
+		print("[RESGATE FALHOU] Não foi possível alocar uma equipe de bombeiros!")
+
+
+func processar_resgate_ponto(qtd_vitimas: int) -> bool:
+	if not pode_realizar_resgate():
+		return false
+
+	if alocar_equipe_bombeiro():
+		var resgatados = abrigar_pessoas(qtd_vitimas)
+		liberar_equipe_bombeiro()
+		return resgatados > 0
+
+	return false
+
+
+func obter_capacidade_total_abrigos() -> int:
+	return total_capacidade_abrigo
 
 
 func obter_vagas_abrigos_disponiveis() -> int:
-	var pessoas_abrigadas = 0
+	var pessoas_abrigadas = abrigo_ocupado
 	if typeof(Global) != TYPE_NIL and "pessoas_abrigadas" in Global:
 		pessoas_abrigadas = Global.pessoas_abrigadas
-	return max(0, obter_capacidade_total_abrigos() - pessoas_abrigadas)
+	return max(0, total_capacidade_abrigo - pessoas_abrigadas)
 
 
 func obter_equipes_bombeiro_totais() -> int:
-	var total: int = 0
-	for pos in construcoes_no_mapa.keys():
-		var predio: BuildingInstance = construcoes_no_mapa[pos]
-		if predio != null and predio.data != null and predio.durabilidade_atual > 0:
-			if "equipes_resgate" in predio.data:
-				total += predio.data.equipes_resgate
-	return total
+	return total_equipes_resgate
 
 
 func obter_equipes_bombeiro_disponiveis() -> int:
-	return max(0, obter_equipes_bombeiro_totais() - equipes_bombeiro_ocupadas)
+	return max(0, total_equipes_resgate - equipes_bombeiro_ocupadas)
 
 
 func alocar_equipe_bombeiro() -> bool:
 	if obter_equipes_bombeiro_disponiveis() > 0:
 		equipes_bombeiro_ocupadas += 1
+		print("[BOMBEIROS] Equipe alocada. Ocupadas: ", equipes_bombeiro_ocupadas, "/", total_equipes_resgate)
 		return true
+	print("[BOMBEIROS] Falha ao alocar equipe: Nenhuma equipe disponível!")
 	return false
 
 
 func liberar_equipe_bombeiro() -> void:
 	equipes_bombeiro_ocupadas = max(0, equipes_bombeiro_ocupadas - 1)
+	print("[BOMBEIROS] Equipe liberada. Ocupadas: ", equipes_bombeiro_ocupadas, "/", total_equipes_resgate)
 
 
 func abrigar_pessoas(quantidade: int) -> int:
+	if not tem_abrigo_construido():
+		print("[ABRIGO FALHOU] Impossível abrigar: Nenhum abrigo foi construído na cidade.")
+		return 0
+
 	var vagas = obter_vagas_abrigos_disponiveis()
+	if vagas <= 0:
+		print("[ABRIGO FALHOU] Impossível abrigar: Capacidade máxima atingida (", abrigo_ocupado, "/", total_capacidade_abrigo, ").")
+		return 0
+
 	var abrigadas = min(vagas, quantidade)
+	abrigo_ocupado += abrigadas
+	
 	if typeof(Global) != TYPE_NIL:
 		if "pessoas_abrigadas" in Global:
-			Global.pessoas_abrigadas += abrigadas
+			Global.pessoas_abrigadas = abrigo_ocupado
 		if "pessoas_desabrigadas" in Global:
 			Global.pessoas_desabrigadas = max(0, Global.pessoas_desabrigadas - abrigadas)
+			
+	_recalcular_recursos_resgate()
+	print("[ABRIGO] ", abrigadas, " pessoas abrigadas. Ocupação total: ", abrigo_ocupado, "/", total_capacidade_abrigo)
 	return abrigadas
 
 
@@ -273,32 +428,47 @@ func _atualizar_npcs_por_populacao() -> void:
 		print("[DEBUG-NPC] NPC removido! Total agora: ", _npcs_ativos.size())
 
 
+# ==============================================================================
+# DESTRUIÇÃO E RESGATE
+# ==============================================================================
 func _verificar_casa_destruida(predio: BuildingInstance) -> void:
-	print("[DEBUG-DESTRUIDA] Chamada! durabilidade=", predio.durabilidade_atual if predio else "predio nulo", " | ja_processado=", predio.moradores_desabrigados if predio else "-")
-	
 	if predio == null or predio.data == null:
-		print("[DEBUG-DESTRUIDA] Abortou: predio ou predio.data é null.")
 		return
 	if predio.durabilidade_atual > 0:
-		print("[DEBUG-DESTRUIDA] Abortou: durabilidade ainda > 0 (", predio.durabilidade_atual, ").")
 		return
 	if predio.moradores_desabrigados:
-		print("[DEBUG-DESTRUIDA] Abortou: essa casa já tinha sido processada antes.")
 		return
-	
+
 	predio.moradores_desabrigados = true
-	
+	_recalcular_recursos_resgate()
+
 	var moradores = predio.data.bonus_populacao
-	print("[DEBUG-DESTRUIDA] bonus_populacao dessa casa (", predio.data.id, ") = ", moradores)
-	
 	if moradores > 0:
 		Global.populacao = max(0, Global.populacao - moradores)
 		if "pessoas_desabrigadas" in Global:
 			Global.pessoas_desabrigadas += moradores
-		print("[DESASTRE] '", predio.data.nome, "' foi destruída! ", moradores, " pessoas ficaram desabrigadas. Total desabrigadas agora: ", Global.pessoas_desabrigadas)
+		
 		_atualizar_npcs_por_populacao()
-	else:
-		print("[DEBUG-DESTRUIDA] moradores = 0 — essa casa não tem bonus_populacao configurado no .tres, então ninguém fica desabrigado e o NPC não é atualizado!")
+		_instanciar_ponto_resgate(predio.posicao_tile, moradores)
+
+
+func _instanciar_ponto_resgate(pos_tile: Vector2i, vitimas: int) -> void:
+	if not cena_ponto_resgate:
+		return
+
+	var pos_global = Vector2.ZERO
+	if tilemap_constructions:
+		pos_global = tilemap_constructions.to_global(tilemap_constructions.map_to_local(pos_tile))
+	elif tile_map:
+		pos_global = tile_map.to_global(tile_map.map_to_local(pos_tile))
+
+	# Deslocamento Y para o ícone aparecer acima da casa
+	pos_global.y -= 25.0
+
+	var ponto = cena_ponto_resgate.instantiate()
+	add_child(ponto)
+	ponto.inicializar(pos_tile, pos_global, vitimas, self)
+	print("[RESGATE] Pop-in de emergência criado no tile: ", pos_tile)
 
 
 # ==============================================================================
@@ -366,10 +536,16 @@ func _carregar_todas_as_missoes() -> void:
 
 
 # ==============================================================================
-# LEITURA DE CLIQUES NO MAPA
+# LEITURA DE CLIQUES NO MAPA E TECLAS DE ATALHO
 # ==============================================================================
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
+		# Tecla E para testar uma emergência no sistema de resgate
+		if event.keycode == KEY_E:
+			_simular_emergencia(3)
+			return
+
+		# Tecla D para aplicar dano na construção selecionada
 		if event.keycode == KEY_D and _celula_selecionada in construcoes_no_mapa:
 			var predio: BuildingInstance = construcoes_no_mapa[_celula_selecionada]
 			if predio:
@@ -453,7 +629,6 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 			tela_compras.abrir_modo_selecao(lista_opcoes)
 
 
-
 func _obter_edificios_para_zona(zona: BuildingZone) -> Array[BuildingData]:
 	var lista: Array[BuildingData] = []
 	for b_data in banco_edificios.values():
@@ -467,8 +642,7 @@ func _obter_edificios_para_zona(zona: BuildingZone) -> Array[BuildingData]:
 			lista.append(b_data)
 			
 	return lista
-	
-	
+
 
 # ==============================================================================
 # CARREGAMENTO DINÂMICO DE EDIFÍCIOS PARA A LOJA
@@ -607,6 +781,9 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 			tile_map.set_cell(0, _celula_selecionada, source_id, novas_coords_atlas)
 		print("[INFO] ", b_data.nome, " (Variação ", variacao_index, ") construido com sucesso em ", _celula_selecionada)
 		
+		# Recalcula capacidade de abrigo e resgate com o novo prédio
+		_recalcular_recursos_resgate()
+
 		# 8. Checa se essa construção completa a missão ativa (se houver)
 		_verificar_missao_concluida_por_construcao(b_data)
 	else:
@@ -623,6 +800,7 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	if Global.dinheiro >= custo:
 		Global.dinheiro -= custo
 		predio.nivel_atual += 1
+		_recalcular_recursos_resgate()
 		print("[INFO] ", predio.data.nome, " aprimorado para o nivel ", predio.nivel_atual)
 	else:
 		print("[ERRO] Dinheiro insuficiente para upgrade!")
@@ -668,7 +846,13 @@ func _registrar_predio_se_existir(pos: Vector2i, tile_data: TileData, atlas_coor
 	if building_id_custom == "terreno_vazio" or building_id_custom == "":
 		return
 
-	var b_data = _buscar_data_por_atlas_coords(atlas_coords)
+	# 1. Busca primeiro pelo ID registrado na Custom Data Layer do TileMap
+	var b_data: BuildingData = _buscar_data_por_id(building_id_custom)
+	
+	# 2. Se não encontrar pelo ID, usa as coordenadas do atlas como fallback
+	if not b_data:
+		b_data = _buscar_data_por_atlas_coords(atlas_coords)
+
 	if b_data:
 		if b_data.has_method("tem_tile_vazio") and b_data.tem_tile_vazio() and b_data.tile_vazio_atlas_coords == atlas_coords:
 			return
@@ -679,6 +863,9 @@ func _registrar_predio_se_existir(pos: Vector2i, tile_data: TileData, atlas_coor
 		elif "atlas_coords" in b_data and b_data.atlas_coords == atlas_coords:
 			eh_tile_construido = true
 		elif "tile_atlas_coords" in b_data and b_data.tile_atlas_coords == atlas_coords:
+			eh_tile_construido = true
+		elif building_id_custom != "":
+			# Se encontrou pelo ID customizado, confirma a vinculação
 			eh_tile_construido = true
 
 		if eh_tile_construido:
@@ -834,13 +1021,8 @@ func recusar_missao() -> void:
 		return
 	
 	var missao = Global.missao_escolhida
-	
-	# Recusar é uma escolha neutra: mantém os recursos, mas abre mão do
-	# benefício. Sem penalidade — a decisão certa depende da prioridade
-	# do jogador no momento, não existe resposta "correta".
 	print("Missão recusada: ", missao.nome, " — recursos mantidos, oportunidade perdida.")
 	
-	# Essa missão já foi decidida (recusada) e não deve mais reaparecer
 	Global.missoes_concluidas.append(missao.id)
 	if missao.id in Global.turnos_sem_missao:
 		Global.turnos_sem_missao.erase(missao.id)
@@ -888,10 +1070,6 @@ func concluir_missao() -> void:
 	Global.chance_missao = 30
 
 
-## Chamada toda vez que uma construção é finalizada. Se houver uma missão
-## ATIVA e ACEITA cujo "edificio_id_alvo" seja esse mesmo prédio, a missão é
-## concluída automaticamente — sem cobrar o "custo" da missão de novo, já que
-## o custo do prédio (b_data.custo_base) já foi pago na hora da compra.
 func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
 	if Global.missao_escolhida == null or not Global.missao_aceita:
 		return
@@ -924,17 +1102,12 @@ func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
 	Global.chance_missao = 30
 	
 	_fechar_container_missao()
-	if Global.missao_escolhida == null or not Global.missao_aceita:
-		return
-	if not hud or not hud.has_node("MissaoContainer"):
-		return
-	
-	_missao_check_aberta = true
-	
-	var missao_container = hud.get_node("MissaoContainer")
-	missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
-	missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
-	missao_container.visible = true
+	if hud and hud.has_node("MissaoContainer"):
+		_missao_check_aberta = true
+		var missao_container = hud.get_node("MissaoContainer")
+		missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
+		missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+		missao_container.visible = true
 
 
 func fechar_checagem_missao() -> void:
@@ -1101,6 +1274,9 @@ func _on_enchente_terminada() -> void:
 func avancar_turno_desastres() -> void:
 	if _enchente_ativa:
 		_enchente_ativa.turno_passou()
+
+	# Avança o tempo de todos os pontos de resgate ativos na cena
+	get_tree().call_group("pontos_resgate", "avancar_turno")
 
 
 func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:

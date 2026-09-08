@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://b35wml677h7ut" path="res://Tiny Swords (Free Pack)/Terrain/Tileset/Water Foam.png" id="4_s5vy2"]
 [ext_resource type="Texture2D" uid="uid://droowgmpfju68" path="res://Tiny Swords (Free Pack)/Terrain/Decorations/Rocks in the Water/Water Rocks_02.png" id="5_bywh7"]
 [ext_resource type="Texture2D" uid="uid://x4csfle5625" path="res://Tiny Swords (Free Pack)/Terrain/Tileset/Shadow.png" id="5_yo3on"]
-[ext_resource type="Texture2D" uid="uid://ccbwjdyijokgd" path="res://Jogo principal/tilesheets/Tiles_Meni_new.png" id="6_n7h4f"]
 [ext_resource type="Texture2D" uid="uid://01jt78xkixyc" path="res://Tiny Swords (Free Pack)/Terrain/Decorations/Bushes/Bushe1.png" id="8_38h03"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="8_b8lgx"]
 [ext_resource type="Texture2D" uid="uid://dpiv63tf6qgyb" path="res://Tiny Swords (Free Pack)/Terrain/Decorations/Bushes/Bushe2.png" id="9_7csi2"]
@@ -216,7 +215,6 @@ tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_b8lgx")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wkq2h"]
-texture = ExtResource("6_n7h4f")
 0:0/0 = 0
 0:0/0/terrain_set = 0
 0:0/0/terrain = 0

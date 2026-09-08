@@ -9,6 +9,11 @@ var turno: int
 var renda: int             # Quantidade de "unidades" de renda geradas por turno (baseado na população)
 var idioma_atual: String = "pt"
 
+#Variáveis Resgate
+var pessoas_abrigadas: int = 0
+var capacidade_total_abrigo: int = 0
+var total_equipes_resgate: int = 0
+
 # Sinal emitido sempre que o idioma do jogo e alterado
 signal idioma_alterado(novo_idioma: String)
 

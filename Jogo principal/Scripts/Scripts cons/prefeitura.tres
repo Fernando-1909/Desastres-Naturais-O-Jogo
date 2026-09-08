@@ -8,6 +8,7 @@ script = ExtResource("1_or3bn")
 id = "prefeitura"
 nome = "PREDIO_PREFEITURA_NOME"
 icone = ExtResource("1_n55wy")
+icones = Array[Texture2D]([null])
 eh_unica = true
 nivel_maximo = 2
 custo_base = 1000.0
