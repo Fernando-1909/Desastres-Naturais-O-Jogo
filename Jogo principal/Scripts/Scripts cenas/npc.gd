@@ -11,7 +11,19 @@ func _ready() -> void:
 	# Configurar o agente de navegação
 	navigation_agent.path_desired_distance = 4.0
 	navigation_agent.target_desired_distance = 4.0
-	navigation_agent.avoidance_enabled = true
+	# Desligado de propósito: assim os NPCs não ficam se desviando uns dos
+	# outros (podem se atravessar livremente, como pedido).
+	navigation_agent.avoidance_enabled = false
+	
+	# Colisão física: colide com construções, mas NÃO com outros NPCs.
+	# Camada 2 = "sou um NPC" | Máscara 1 = "só colido com a camada 1"
+	# (ajuste esses números se o seu projeto usar camadas diferentes pras
+	# construções/obstáculos no TileMap).
+	collision_layer = 2
+	collision_mask = 1
+	
+	# Nasce dentro da zona de navegação, em vez de na origem do container
+	_posicionar_dentro_da_zona()
 	
 	# Começar movimento
 	escolher_novo_destino()
@@ -30,18 +42,37 @@ func _physics_process(delta: float) -> void:
 	velocity = direction * speed
 	move_and_slide()
 
+## Sorteia um ponto dentro do polígono da NavigationRegion2D (irmã do NPC,
+## filha do mesmo container) e usa ele como posição inicial — assim o NPC já
+## nasce dentro da zona andável, em vez de nascer na origem do container.
+func _posicionar_dentro_da_zona() -> void:
+	var navigation_region = get_parent().get_node_or_null("NavigationRegion2D")
+	if not navigation_region or not navigation_region.navigation_polygon:
+		push_warning("Npc: NavigationRegion2D (ou o polígono dele) não encontrado — não foi possível posicionar dentro da zona.")
+		return
+	
+	var vertices = navigation_region.navigation_polygon.vertices
+	if vertices.size() < 3:
+		return
+	
+	var ponto_local = ponto_aleatorio_no_poligono(vertices)
+	global_position = navigation_region.to_global(ponto_local)
+
 func escolher_novo_destino() -> void:
 	# Pega o polígono do NavigationRegion2D pai
-	var navigation_region = get_parent().get_node("NavigationRegion2D")
+	var navigation_region = get_parent().get_node_or_null("NavigationRegion2D")
 	
 	if navigation_region and navigation_region.navigation_polygon:
 		var polygon = navigation_region.navigation_polygon
 		var vertices = polygon.vertices
 		
 		if vertices.size() > 0:
-			# Gerar um ponto aleatório dentro do polígono
-			var random_point = ponto_aleatorio_no_poligono(vertices)
-			navigation_agent.target_position = random_point
+			# O ponto sorteado está em espaço LOCAL do NavigationRegion2D —
+			# precisa converter pra GLOBAL antes de usar como destino, senão
+			# o NPC mira num ponto deslocado sempre que a região não estiver
+			# exatamente na origem (0,0) do mundo.
+			var random_point_local = ponto_aleatorio_no_poligono(vertices)
+			navigation_agent.target_position = navigation_region.to_global(random_point_local)
 
 func ponto_aleatorio_no_poligono(vertices: PackedVector2Array) -> Vector2:
 	# Método simples: escolhe um triângulo aleatório do polígono
