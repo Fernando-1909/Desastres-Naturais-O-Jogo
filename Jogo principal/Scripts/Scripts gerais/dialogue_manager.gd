@@ -10,12 +10,12 @@ const PORTRAIT_MAP: Dictionary = {
 var loaded_portraits: Dictionary = {}
 
 # --- REFERÊNCIAS AOS NÓS (Usando Nomes Únicos %) ---
-@onready var dialogue_box: PanelContainer = %DialogueBox
-@onready var dialogue_text: RichTextLabel = %DialogueText
-@onready var portrait: TextureRect = %Portrait
-@onready var author_label: RichTextLabel = %NameLabel
+@onready var dialogue_box: PanelContainer = %CaixaDialogo
+@onready var dialogue_text: RichTextLabel = %TextoDialogo
+@onready var portrait: TextureRect = %PortraitDialogo
+@onready var author_label: RichTextLabel = %NomeLabel
 @onready var choices_container: VBoxContainer = %ChoicesContainer
-@onready var timer: Timer = %Timer
+@onready var timer: Timer = %Timing
 @onready var margin_container: MarginContainer = %ContainerDialogo  # marque como Unique Name na cena
 
 @export var estilo_padrao: StyleBoxTexture      # StyleBox pra 16:9 ou mais estreito
