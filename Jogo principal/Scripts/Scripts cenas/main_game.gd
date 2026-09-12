@@ -115,6 +115,9 @@ func _ready() -> void:
 		tela_compras.compra_confirmada.connect(_on_compra_confirmada)
 		tela_compras.aprimoramento_confirmado.connect(_on_aprimoramento_confirmado)
 	
+	if tela_compras and not tela_compras.reconstrucao_confirmada.is_connected(_on_reconstrucao_confirmada):
+		tela_compras.reconstrucao_confirmada.connect(_on_reconstrucao_confirmada)
+	
 	if freecam_camera:
 		freecam_camera.enabled = true
 
@@ -133,7 +136,7 @@ func _ready() -> void:
 # ==============================================================================
 # GERENCIAMENTO DE ZONAS DE CONSTRUÇÃO
 # ==============================================================================
-func _obter_zona_no_tile(pos_tile: Vector2i) -> BuildingZone:
+func _obter_zona_no_tile(pos_tile: Vector2i) -> Node:
 	var pos_global = Vector2.ZERO
 	if tilemap_constructions:
 		pos_global = tilemap_constructions.to_global(tilemap_constructions.map_to_local(pos_tile))
@@ -142,7 +145,7 @@ func _obter_zona_no_tile(pos_tile: Vector2i) -> BuildingZone:
 
 	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
 	for no in zonas:
-		if no is BuildingZone and no.contem_posicao_global(pos_global):
+		if no.has_method("contem_posicao_global") and no.contem_posicao_global(pos_global):
 			return no
 	return null
 
@@ -436,13 +439,16 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 		return
 	if predio.durabilidade_atual > 0:
 		return
-	if predio.moradores_desabrigados:
+	if "moradores_desabrigados" in predio and predio.moradores_desabrigados:
 		return
 
-	predio.moradores_desabrigados = true
+	if "moradores_desabrigados" in predio:
+		predio.moradores_desabrigados = true
 	_recalcular_recursos_resgate()
 
-	var moradores = predio.data.bonus_populacao
+	_aplicar_tile_destruido(predio)
+
+	var moradores = predio.data.bonus_populacao if "bonus_populacao" in predio.data else 0
 	if moradores > 0:
 		Global.populacao = max(0, Global.populacao - moradores)
 		if "pessoas_desabrigadas" in Global:
@@ -450,6 +456,25 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 		
 		_atualizar_npcs_por_populacao()
 		_instanciar_ponto_resgate(predio.posicao_tile, moradores)
+
+
+func _aplicar_tile_destruido(predio: BuildingInstance) -> void:
+	if not predio or not predio.data:
+		return
+	
+	var b_data = predio.data
+	if b_data.has_method("tem_tile_destruido") and b_data.tem_tile_destruido():
+		var src_id = b_data.get_destroyed_source_id() if b_data.has_method("get_destroyed_source_id") else 0
+		var coords = b_data.destroyed_tile_atlas_coords if "destroyed_tile_atlas_coords" in b_data else Vector2i(-1, -1)
+		var pos_tile = predio.posicao_tile
+		
+		if coords != Vector2i(-1, -1):
+			if tilemap_constructions:
+				tilemap_constructions.set_cell(pos_tile, src_id, coords)
+			elif tile_map:
+				tile_map.set_cell(0, pos_tile, src_id, coords)
+				
+			print("[SISTEMA] Construção em ", pos_tile, " foi alterada para o sprite destruído (Source: ", src_id, ", Coords: ", coords, ")")
 
 
 func _instanciar_ponto_resgate(pos_tile: Vector2i, vitimas: int) -> void:
@@ -576,10 +601,25 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	if not tela_compras: return
 	_celula_selecionada = pos_tile
 
-	# 1. Se já existe uma construção viva salva na memória -> Modo Upgrade / Detalhes
+	# 1. Se já existe uma construção salva na memória -> Verifica a durabilidade
 	if construcoes_no_mapa.has(pos_tile) and construcoes_no_mapa[pos_tile] != null:
 		var predio_existente: BuildingInstance = construcoes_no_mapa[pos_tile]
-		_abrir_modo_upgrade_instancia(predio_existente)
+		
+		# Se a durabilidade for 0 ou menor, tenta abrir a reconstrução
+		if predio_existente.durabilidade_atual <= 0:
+			if _enchente_ativa != null:
+				if cena_ponto_resgate:
+					var aviso_temp = cena_ponto_resgate.instantiate()
+					add_child(aviso_temp)
+					aviso_temp._mostrar_aviso("Não é possível reconstruir estruturas enquanto um desastre estiver ocorrendo!")
+					if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+						aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
+				return
+				
+			tela_compras.abrir_modo_reconstrucao(predio_existente, pos_tile)
+		else:
+			# Se estiver inteiro/com vida, abre a tela normal de upgrade
+			_abrir_modo_upgrade_instancia(predio_existente)
 		return
 
 	# 2. Busca o TileData
@@ -1092,9 +1132,6 @@ func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
 		Global.turnos_sem_missao.erase(missao.id)
 	
 	print("[MISSÃO] '", missao.nome, "' concluída automaticamente ao construir '", b_data.nome, "'!")
-	print("Popularidade: +", missao.popularidade)
-	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
-		print("População: +", missao.bonus_populacao)
 	
 	Global.missao_escolhida = null
 	Global.missao_aceita = false
@@ -1105,8 +1142,10 @@ func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
 	if hud and hud.has_node("MissaoContainer"):
 		_missao_check_aberta = true
 		var missao_container = hud.get_node("MissaoContainer")
-		missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
-		missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+		if missao_container.has_node("VBoxContainer/HBoxContainer"):
+			missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
+		if missao_container.has_node("VBoxContainer/HBoxContainer2"):
+			missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
 		missao_container.visible = true
 
 
@@ -1120,8 +1159,10 @@ func _fechar_container_missao() -> void:
 		return
 	var missao_container = hud.get_node("MissaoContainer")
 	missao_container.visible = false
-	missao_container.get_node("VBoxContainer/HBoxContainer").visible = true
-	missao_container.get_node("VBoxContainer/HBoxContainer2").visible = false
+	if missao_container.has_node("VBoxContainer/HBoxContainer"):
+		missao_container.get_node("VBoxContainer/HBoxContainer").visible = true
+	if missao_container.has_node("VBoxContainer/HBoxContainer2"):
+		missao_container.get_node("VBoxContainer/HBoxContainer2").visible = false
 
 
 func _abrir_container_missao() -> void:
@@ -1157,17 +1198,20 @@ func _abrir_modo_compra_para_dados(b_data: BuildingData, variacao_index: int = 0
 
 	var nome_exibicao = b_data.nome if ("nome" in b_data and b_data.nome != "") else b_data.id
 
+	var cap_abrigo = b_data.capacidade_abrigo if "capacidade_abrigo" in b_data and b_data.capacidade_abrigo != null else 0
+	var eq_resgate = b_data.equipes_resgate if "equipes_resgate" in b_data and b_data.equipes_resgate != null else 0
+
 	tela_compras.abrir_modo_compra(
 		nome_exibicao,
 		cat_nome,
-		b_data.descricao_curta,
-		b_data.bonus_populacao,
-		b_data.custo_base,
+		b_data.descricao_curta if "descricao_curta" in b_data else "",
+		b_data.bonus_populacao if "bonus_populacao" in b_data else 0,
+		b_data.custo_base if "custo_base" in b_data else 0,
 		tex,
-		b_data.texto_detalhes,
+		b_data.texto_detalhes if "texto_detalhes" in b_data else "",
 		nome_exibicao,
-		b_data.capacidade_abrigo,
-		b_data.equipes_resgate
+		cap_abrigo,
+		eq_resgate
 	)
 
 func _abrir_tela_por_building_data(b_data: BuildingData) -> void:
@@ -1186,21 +1230,120 @@ func _abrir_tela_por_building_data(b_data: BuildingData) -> void:
 		_abrir_modo_compra_para_dados(b_data)
 
 func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
+	if not predio or not predio.data:
+		return
+
 	var b_data = predio.data
 	var idx = predio.variacao_index if "variacao_index" in predio else 0
-	var tex = b_data.get_icone_variacao(idx) if b_data.has_method("get_icone_variacao") else (b_data.icone if b_data.icone else icone_temp)
+	var tex = b_data.get_icone_variacao(idx) if b_data.has_method("get_icone_variacao") else (b_data.icone if "icone" in b_data and b_data.icone else icone_temp)
 	
-	tela_compras.abrir_modo_upgrade(
-		b_data.nome,
-		predio.nivel_atual,
-		predio.get_ganhos_atuais(),
-		predio.get_durabilidade_pct(),
-		predio.get_custo_upgrade(),
-		tex,
-		b_data.descricao_curta,
-		b_data.texto_detalhes,
-		b_data.pode_aprimorar and (predio.nivel_atual < b_data.nivel_maximo)
-	)
+	# Recalcula a capacidade atualizada dos abrigos e equipes
+	if has_method("_recalcular_recursos_resgate"):
+		_recalcular_recursos_resgate()
+	
+	var cat = str(b_data.categoria).to_lower().strip_edges() if "categoria" in b_data and b_data.categoria != null else ""
+	var id_predio = str(b_data.id).to_lower().strip_edges() if "id" in b_data and b_data.id != null else ""
+	
+	var texto_stats_custom = ""
+	
+	# Caso a construção seja um abrigo, exibe a contagem de vagas
+	if cat == "abrigo" or "abrigo" in id_predio or ("capacidade_abrigo" in b_data and b_data.capacidade_abrigo > 0):
+		var vagas_disponiveis = obter_vagas_abrigos_disponiveis() if has_method("obter_vagas_abrigos_disponiveis") else 0
+		var cap_total = total_capacidade_abrigo if "total_capacidade_abrigo" in self else 0
+		texto_stats_custom = tr("UI_VAGAS_ABRIGO") + ": " + str(vagas_disponiveis) + " / " + str(cap_total)
+	elif cat == "bombeiros" or "bombeiro" in id_predio or ("equipes_resgate" in b_data and b_data.equipes_resgate > 0):
+		var equipes_disponiveis = obter_equipes_bombeiro_disponiveis() if has_method("obter_equipes_bombeiro_disponiveis") else 0
+		var eq_total = total_equipes_resgate if "total_equipes_resgate" in self else 0
+		texto_stats_custom = tr("UI_EQUIPES_RESGATE") + ": " + str(equipes_disponiveis) + " / " + str(eq_total)
+
+	if tela_compras and tela_compras.has_method("abrir_modo_upgrade"):
+		var n_atual = predio.nivel_atual if "nivel_atual" in predio else 1
+		var n_max = b_data.nivel_maximo if "nivel_maximo" in b_data else 1
+		var pode_up = b_data.pode_aprimorar if "pode_aprimorar" in b_data else false
+		
+		tela_compras.abrir_modo_upgrade(
+			b_data.nome if "nome" in b_data else "",
+			n_atual,
+			predio.get_ganhos_atuais() if predio.has_method("get_ganhos_atuais") else 0,
+			predio.get_durabilidade_pct() if predio.has_method("get_durabilidade_pct") else 1.0,
+			predio.get_custo_upgrade() if predio.has_method("get_custo_upgrade") else 0,
+			tex,
+			b_data.descricao_curta if "descricao_curta" in b_data else "",
+			b_data.texto_detalhes if "texto_detalhes" in b_data else "",
+			pode_up and (n_atual < n_max),
+			texto_stats_custom
+		)
+
+func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
+	# 0. Impede a reconstrução se houver desastre ativo e exibe a tela de aviso de ponto_resgate
+	if _enchente_ativa != null:
+		print("[RECONSTRUÇÃO BLOQUEADA] Impossível reconstruir durante um desastre ativo!")
+		if cena_ponto_resgate:
+			var aviso_temp = cena_ponto_resgate.instantiate()
+			add_child(aviso_temp)
+			aviso_temp._mostrar_aviso("Não é possível reconstruir estruturas enquanto um desastre estiver ocorrendo!")
+			if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+				aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
+		return
+
+	if not construcoes_no_mapa.has(pos_tile):
+		print("[RECONSTRUÇÃO ERRO] Construção não encontrada na posição: ", pos_tile)
+		return
+
+	# Verificação de Saldo
+	var dinheiro_atual = Global.dinheiro if typeof(Global) != TYPE_NIL and "dinheiro" in Global else 999999
+	if dinheiro_atual < custo:
+		print("[RECONSTRUÇÃO BLOQUEADA] Dinheiro insuficiente! Necessário: $", custo)
+		return
+
+	# 1. Deduz o Custo
+	if typeof(Global) != TYPE_NIL and "dinheiro" in Global:
+		Global.dinheiro -= custo
+
+	# 2. Restaura a Durabilidade e o Estado de Desabrigados
+	var instancia: BuildingInstance = construcoes_no_mapa[pos_tile]
+	var durabilidade_max = instancia.durabilidade_maxima if "durabilidade_maxima" in instancia else 100
+	instancia.durabilidade_atual = durabilidade_max
+	
+	# RESTAURA A FLAG PARA PERMITIR FUTURAS DESTRUIÇÕES
+	if "moradores_desabrigados" in instancia:
+		instancia.moradores_desabrigados = false
+
+	# 3. Restaura Visualmente no TileMap
+	_restaurar_tile_grafico(pos_tile, instancia)
+
+	# 4. Recalcula Redes de Resgate, Abrigos e Capacidade
+	_recalcular_recursos_resgate()
+
+	print("[RECONSTRUÇÃO SUCESSO] Estrutura '", instancia.data.nome, "' reconstruída em ", pos_tile)
+
+
+func _restaurar_tile_grafico(pos_tile: Vector2i, instancia: BuildingInstance) -> void:
+	var tm: Object = tilemap_constructions if tilemap_constructions else tile_map
+	if not tm or not instancia or not instancia.data: return
+
+	var b_data = instancia.data
+	var source_id = b_data.source_id if "source_id" in b_data else 0
+	
+	# Resgata a variação original que foi construída no local
+	var idx = instancia.variacao_index if "variacao_index" in instancia else 0
+	var atlas_coords: Vector2i = Vector2i.ZERO
+	if b_data.has_method("get_atlas_coord_para_construir"):
+		atlas_coords = b_data.get_atlas_coord_para_construir(idx)
+	elif "tiles_atlas_coords" in b_data and b_data.tiles_atlas_coords is Array and b_data.tiles_atlas_coords.size() > 0:
+		var i = min(idx, b_data.tiles_atlas_coords.size() - 1)
+		atlas_coords = b_data.tiles_atlas_coords[i]
+	elif "atlas_coords" in b_data:
+		atlas_coords = b_data.atlas_coords
+
+	# Identifica o tipo correto do nó para chamar set_cell sem erros de tipo
+	if tm is TileMapLayer:
+		tm.set_cell(pos_tile, source_id, atlas_coords)
+	elif tm is TileMap:
+		tm.set_cell(0, pos_tile, source_id, atlas_coords)
+	else:
+		tm.call("set_cell", pos_tile, source_id, atlas_coords)
+
 
 func _buscar_data_por_id(p_id: String) -> BuildingData:
 	if p_id == "":
@@ -1245,7 +1388,7 @@ func _on_desastre_button_pressed() -> void:
 # ==============================================================================
 # INTEGRAÇÃO COM A CENA DE DESASTRE: ENCHENTE E ZONAS
 # ==============================================================================
-var _enchente_ativa: Enchente = null
+var _enchente_ativa: Node = null
 
 func _iniciar_enchente() -> void:
 	if not cena_enchente:
@@ -1256,10 +1399,12 @@ func _iniciar_enchente() -> void:
 		print("[AVISO] Já existe uma enchente ativa! Aguarde ela terminar antes de iniciar outra.")
 		return
 	
-	var enchente: Enchente = cena_enchente.instantiate()
+	var enchente = cena_enchente.instantiate()
 	add_child(enchente)
-	enchente.enchente_iniciada.connect(_on_enchente_iniciada)
-	enchente.enchente_terminada.connect(_on_enchente_terminada)
+	if enchente.has_signal("enchente_iniciada"):
+		enchente.enchente_iniciada.connect(_on_enchente_iniciada)
+	if enchente.has_signal("enchente_terminada"):
+		enchente.enchente_terminada.connect(_on_enchente_terminada)
 	_enchente_ativa = enchente
 	
 	Global.enchente += 1

@@ -24,6 +24,7 @@ UI_NIVEL_MAXIMO,"NÍVEL MÁXIMO","MAX LEVEL"
 UI_DETALHES,"DETALHES","DETAILS"
 UI_NIVEL,"NÍVEL","LEVEL"
 UI_GANHOS,"GANHOS","EARNINGS"
+UI_EQUIPES_RESGATE,"Equipes Livres","Available Teams"
 UI_CATALOGO_TITULO,"Construções Disponíveis","Available Buildings"
 
 # --- CATEGORIAS DE EDIFÍCIOS (building_data) ---

@@ -35,6 +35,9 @@ extends Resource
 @export var tiles_atlas_coords: Array[Vector2i] = [] 
 @export var source_id: int = 4                       # ID da fonte no TileSet
 @export var tile_vazio_atlas_coords: Vector2i = Vector2i(-1, -1)
+## Configurações para a versão destruída da construção
+@export var destroyed_source_id: int = -1            # Se -1, reutiliza o source_id padrão
+@export var destroyed_tile_atlas_coords: Vector2i = Vector2i(-1, -1) # Posição (x, y) do tile destruído
 
 
 ## Retorna true se o .tres tem pelo menos 1 imagem válida associada
@@ -69,6 +72,14 @@ func get_icone_variacao(indice: int = 0) -> Texture2D:
 
 func tem_tile_vazio() -> bool:
 	return tile_vazio_atlas_coords != Vector2i(-1, -1)
+
+
+func tem_tile_destruido() -> bool:
+	return destroyed_tile_atlas_coords != Vector2i(-1, -1)
+
+
+func get_destroyed_source_id() -> int:
+	return destroyed_source_id if destroyed_source_id >= 0 else source_id
 
 
 func get_atlas_coord_para_construir(indice: int = -1) -> Vector2i:

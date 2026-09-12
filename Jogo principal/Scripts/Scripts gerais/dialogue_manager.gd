@@ -22,21 +22,22 @@ var dialogue_data: Dictionary = {}
 var current_node_id: String = ""        
 var is_dialogue_active: bool = false    
 var last_advance_frame: int = -1        
+var _was_paused_before_dialogue: bool = false
 
 func _ready() -> void:
-	# Garante que o sistema de diálogo continue recebendo inputs mesmo com o jogo pausado
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	dialogue_box.visible = false
-	choices_container.visible = false
-	dialogue_text.text = ""
+	if dialogue_box: dialogue_box.visible = false
+	if choices_container: choices_container.visible = false
+	if dialogue_text: dialogue_text.text = ""
 	
-	timer.one_shot = false
-	timer.wait_time = 0.03 
-	if not timer.timeout.is_connected(_on_timer_timeout):
-		timer.timeout.connect(_on_timer_timeout)
+	if timer:
+		timer.one_shot = false
+		timer.wait_time = 0.03 
+		if not timer.timeout.is_connected(_on_timer_timeout):
+			timer.timeout.connect(_on_timer_timeout)
 	
-	if not dialogue_box.gui_input.is_connected(_on_dialogue_box_gui_input):
+	if dialogue_box and not dialogue_box.gui_input.is_connected(_on_dialogue_box_gui_input):
 		dialogue_box.gui_input.connect(_on_dialogue_box_gui_input)
 	
 	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", "escolha_inicio")
@@ -46,21 +47,17 @@ func _input(event: InputEvent) -> void:
 	if not is_dialogue_active:
 		return
 		
-	if event.is_action_pressed("ui_accept") and not choices_container.visible:
+	if event.is_action_pressed("ui_accept") and choices_container and not choices_container.visible:
 		advance_dialogue()
 
 
-# --- DETECÇÃO DE CLIQUE NA CAIXA ---
-
 func _on_dialogue_box_gui_input(event: InputEvent) -> void:
-	if not is_dialogue_active or choices_container.visible:
+	if not is_dialogue_active or (choices_container and choices_container.visible):
 		return
 		
 	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventScreenTouch and event.pressed):
 		advance_dialogue()
 
-
-# --- FUNÇÕES DE NAVEGAÇÃO E CARREGAMENTO ---
 
 func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String) -> void:
 	if not FileAccess.file_exists(caminho_arquivo):
@@ -72,16 +69,18 @@ func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String) -> 
 	arquivo.close()
 	
 	var dados = JSON.parse_string(conteudo)
-	if dados == null:
-		printerr("Erro ao ler JSON.")
+	if dados == null or not (dados is Dictionary):
+		printerr("Erro ao ler JSON ou formato inválido.")
 		return
 		
 	dialogue_data = dados
 	current_node_id = no_inicial
 	is_dialogue_active = true
-	dialogue_box.visible = true
-	choices_container.hide()
 	
+	if dialogue_box: dialogue_box.visible = true
+	if choices_container: choices_container.hide()
+	
+	_was_paused_before_dialogue = get_tree().paused
 	get_tree().paused = true
 	show_current_line()
 
@@ -98,15 +97,20 @@ func show_current_line() -> void:
 	atualizar_autor_e_portrait(autor_id)
 	
 	var texto_chave = dados_fala.get("texto_chave", "")
-	dialogue_text.text = tr(texto_chave)
-	dialogue_text.visible_characters = 0
-	timer.start()
+	if dialogue_text:
+		dialogue_text.text = tr(texto_chave)
+		dialogue_text.visible_characters = 0
+	if timer:
+		timer.start()
 
 
 func atualizar_autor_e_portrait(autor_id: String) -> void:
 	if author_label:
 		author_label.text = tr(autor_id)
 	
+	if not portrait:
+		return
+		
 	if autor_id == "" or not PORTRAIT_MAP.has(autor_id):
 		portrait.hide()
 		return
@@ -133,12 +137,17 @@ func advance_dialogue() -> void:
 		return
 	last_advance_frame = current_frame
 
-	if not timer.is_stopped():
+	if timer and not timer.is_stopped():
 		timer.stop()                            
-		dialogue_text.visible_characters = -1   
+		if dialogue_text:
+			dialogue_text.visible_characters = -1   
 		return
 	
 	var blocos = dialogue_data.get("dialogos", {})
+	if not blocos.has(current_node_id):
+		end_dialogue()
+		return
+
 	var dados_fala = blocos[current_node_id]
 	
 	if dados_fala.has("escolhas") and not dados_fala["escolhas"].is_empty():
@@ -154,22 +163,23 @@ func advance_dialogue() -> void:
 
 
 func mostrar_menu_escolhas(opcoes: Array) -> void:
+	if not choices_container:
+		return
+
 	for child in choices_container.get_children():
+		choices_container.remove_child(child)
 		child.queue_free()
 		
 	choices_container.show()
 	
 	for opcao in opcoes:
 		var btn = Button.new()
-		# Define a largura (ex: 360px) e altura (ex: 48px) do botão
 		btn.custom_minimum_size = Vector2(360, 48)
-		# Impede que o botão estique em 100% da tela, mantendo-o centralizado
 		btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		btn.focus_mode = Control.FOCUS_NONE
 		
 		var rtl = RichTextLabel.new()
 		rtl.bbcode_enabled = true
-		# Centralização nativa (evita erros com tags [center])
 		rtl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		rtl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		rtl.text = tr(opcao.get("texto_chave", ""))
@@ -185,12 +195,15 @@ func mostrar_menu_escolhas(opcoes: Array) -> void:
 
 
 func _on_opcao_selecionada(proximo_id: String) -> void:
-	choices_container.hide()
+	if choices_container:
+		choices_container.hide()
 	
 	if proximo_id == "resposta_pt":
-		Global.alterar_idioma("pt")
+		if Global and Global.has_method("alterar_idioma"):
+			Global.alterar_idioma("pt")
 	elif proximo_id == "resposta_en":
-		Global.alterar_idioma("en")
+		if Global and Global.has_method("alterar_idioma"):
+			Global.alterar_idioma("en")
 		
 	if proximo_id == "fim" or proximo_id == "":
 		end_dialogue()
@@ -201,15 +214,14 @@ func _on_opcao_selecionada(proximo_id: String) -> void:
 
 func end_dialogue() -> void:
 	is_dialogue_active = false
-	dialogue_box.visible = false
-	choices_container.hide()
-	dialogue_text.text = ""
-	get_tree().paused = false
+	if dialogue_box: dialogue_box.visible = false
+	if choices_container: choices_container.hide()
+	if dialogue_text: dialogue_text.text = ""
+	get_tree().paused = _was_paused_before_dialogue
 
-
-# --- SINAIS ---
 
 func _on_timer_timeout() -> void:
-	dialogue_text.visible_characters += 1
-	if dialogue_text.visible_ratio >= 1.0:
-		timer.stop()
+	if dialogue_text:
+		dialogue_text.visible_characters += 1
+		if dialogue_text.visible_ratio >= 1.0:
+			if timer: timer.stop()

@@ -3,8 +3,10 @@ class_name TelaCompras
 
 signal compra_confirmada(id_edificio: String, variacao_index: int)
 signal aprimoramento_confirmado(id_edificio: String)
+signal reconstrucao_confirmada(pos_tile: Vector2i, custo: int)
 
-## Lista oficial de categorias aceitas no jogo
+enum ModoTela { COMPRA, UPGRADE, RECONSTRUCAO }
+
 const CATEGORIAS_ACEITAS: Array[String] = [
 	"Residencial",
 	"Comercial",
@@ -29,7 +31,6 @@ const CATEGORIAS_ACEITAS: Array[String] = [
 @onready var painel_detalhes: Control = $PainelDetalhes
 @onready var button_fechar_central: Button = $PainelCentral/ButtonFechar
 
-
 @export_group("Nós de Seleção (Catálogo)")
 @onready var container_categorias: VBoxContainer = $PainelSelecao/MargemSelecao/VBoxSelecao/ScrollContainer/ContainerCategorias
 @onready var button_fechar_selecao: Button = $PainelSelecao/ButtonFecharSelecao
@@ -45,7 +46,7 @@ const CATEGORIAS_ACEITAS: Array[String] = [
 @onready var label_categoria: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelCategoria
 @onready var label_nivel: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNivel
 
-@export_group("Nós do Painel Central - Coluna Direita (Compra)")
+@export_group("Nós do Painel Central - Coluna Direita (Compra / Reconstrução)")
 @onready var container_compra: Control = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra
 @onready var label_descricao: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelDescricao
 @onready var label_bonus_pop: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/LabelBonusPop
@@ -63,13 +64,20 @@ const CATEGORIAS_ACEITAS: Array[String] = [
 @onready var label_texto_detalhes: RichTextLabel = $PainelDetalhes/MargemDetalhes/VBoxDetalhes/LabelTextoDetalhes
 @onready var button_fechar_detalhes: Button = $PainelDetalhes/ButtonFecharDetalhes
 
+@export_group("Configurações de Reconstrução")
+@export var multiplicador_custo_reconstrucao: float = 0.6
 
-# Controle interno de navegação
+# Controle interno
+var _modo_atual: ModoTela = ModoTela.COMPRA
 var _edificio_atual_id: String = ""
 var _variacao_atual_index: int = 0
 var _veio_da_selecao: bool = false
 var _texto_detalhes_atual: String = ""
 var _zona_selecionada_atual: BuildingZone = null
+
+# Variáveis específicas de Reconstrução
+var _pos_tile_reconstrucao: Vector2i = Vector2i(-1, -1)
+var _custo_reconstrucao_atual: int = 0
 
 
 func _ready() -> void:
@@ -90,28 +98,84 @@ func _ready() -> void:
 
 
 # ==============================================================================
-# MODO 1: CATÁLOGO DE SELEÇÃO E FILTRAGEM POR ZONA
+# MODO RECONSTRUÇÃO
+# ==============================================================================
+func abrir_modo_reconstrucao(instancia: BuildingInstance, pos_tile: Vector2i, pct_custo_override: float = -1.0) -> void:
+	if instancia == null or instancia.data == null:
+		return
+
+	_modo_atual = ModoTela.RECONSTRUCAO
+	_veio_da_selecao = false
+	_pos_tile_reconstrucao = pos_tile
+	
+	get_tree().paused = true
+	var b_data = instancia.data
+	
+	_edificio_atual_id = b_data.id if ("id" in b_data and b_data.id != "") else "Estrutura"
+	var nome_exibicao = b_data.nome if ("nome" in b_data and b_data.nome != "") else _edificio_atual_id
+	_texto_detalhes_atual = b_data.texto_detalhes if "texto_detalhes" in b_data else ""
+	
+	var custo_base = b_data.custo_base if "custo_base" in b_data else 100
+	if "custo_reconstrucao" in b_data and b_data.custo_reconstrucao > 0:
+		_custo_reconstrucao_atual = b_data.custo_reconstrucao
+	else:
+		var fator = pct_custo_override if pct_custo_override >= 0.0 else multiplicador_custo_reconstrucao
+		_custo_reconstrucao_atual = int(custo_base * fator)
+
+	visible = true
+	if overlay_fundo: overlay_fundo.visible = true
+	if painel_selecao: painel_selecao.visible = false
+	if painel_central: painel_central.visible = true
+	if painel_detalhes: painel_detalhes.visible = false
+
+	if container_compra: container_compra.visible = true
+	if container_upgrade: container_upgrade.visible = false
+	if coluna_stats: coluna_stats.visible = false
+
+	if label_nome: 
+		label_nome.text = "[center]" + tr(nome_exibicao) + " [color=red](Destruído)[/color][/center]"
+	if label_categoria: 
+		label_categoria.text = "[center]" + tr("Reconstrução de Estrutura") + "[/center]"
+	if label_nivel: 
+		label_nivel.text = ""
+
+	if icone:
+		var var_idx = instancia.variacao_index if "variacao_index" in instancia else 0
+		if b_data.has_method("get_icone_variacao"):
+			icone.texture = b_data.get_icone_variacao(var_idx)
+		elif "icone" in b_data:
+			icone.texture = b_data.icone
+
+	if label_descricao: 
+		label_descricao.text = tr("Esta estrutura foi severamente danificada por um desastre. Realize a reconstrução para restaurar sua integridade e recuperar os serviços oferecidos à cidade.")
+	
+	var pop = b_data.bonus_populacao if "bonus_populacao" in b_data else 0
+	if label_bonus_pop: 
+		label_bonus_pop.text = tr("População Restabelecida") + ": +" + str(pop)
+	
+	if label_bonus_infra:
+		label_bonus_infra.text = tr("Restaura durabilidade para 100%")
+
+	_definir_texto_botao(button_comprar, tr("Reconstruir") + " ($" + str(_custo_reconstrucao_atual) + ")")
+
+
+# ==============================================================================
+# MODO CATÁLOGO & COMPRA DADOS
 # ==============================================================================
 func abrir_loja_com_zona(zona: BuildingZone, lista_edificios_globais: Array, total_na_zona: int) -> void:
 	_zona_selecionada_atual = zona
-	
-	# Check 1: Limite máximo de prédios na zona
 	if zona != null and not zona.tem_vaga_disponivel(total_na_zona):
-		print("[LOJA] A zona '", zona.nome_zona, "' atingiu o limite máximo (", zona.limite_maximo_edificios, ")!")
 		_exibir_aviso_zona_lotada(zona)
 		return
 
-	# Check 2: Filtrar edifícios permitidos pelas regras da zona
 	var lista_filtrada: Array = []
 	for item in lista_edificios_globais:
 		var b_data = item as BuildingData
 		if b_data == null: continue
-		
 		if zona == null or zona.pode_construir(b_data):
 			lista_filtrada.append(b_data)
 
 	if lista_filtrada.size() == 0:
-		print("[LOJA] Nenhuma construção é permitida na zona '", zona.nome_zona if zona else "Desconhecida", "'.")
 		return
 
 	abrir_modo_selecao(lista_filtrada)
@@ -120,7 +184,6 @@ func abrir_loja_com_zona(zona: BuildingZone, lista_edificios_globais: Array, tot
 func _exibir_aviso_zona_lotada(zona: BuildingZone) -> void:
 	get_tree().paused = false
 	visible = false
-	print("[AVISO] Zona '", zona.nome_zona, "' está com o limite de construções atingido.")
 
 
 func abrir_modo_selecao(lista_edificios: Array) -> void:
@@ -203,9 +266,7 @@ func _criar_divisor_categoria(nome_categoria: String) -> Control:
 	label.scroll_active = false
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.custom_minimum_size = Vector2(0, 30)
-	
-	var texto_cat = tr(nome_categoria).to_upper()
-	label.text = "[center][b]=== " + texto_cat + " ===[/b][/center]"
+	label.text = "[center][b]=== " + tr(nome_categoria).to_upper() + " ===[/b][/center]"
 	return label
 
 
@@ -215,13 +276,8 @@ func _on_card_construcao_selecionado(b_data: BuildingData, variacao_index: int) 
 	abrir_modo_compra_por_dados(b_data, variacao_index)
 
 
-# ==============================================================================
-# MODO 2: JANELA DE CONFIRMAÇÃO DE COMPRA
-# ==============================================================================
 func abrir_modo_compra_por_dados(b_data: BuildingData, variacao_index: int = 0) -> void:
-	if b_data == null:
-		push_error("TelaCompras: b_data é NULO ao tentar abrir modo de compra!")
-		return
+	if b_data == null: return
 
 	_variacao_atual_index = variacao_index
 	var tex: Texture2D = null
@@ -238,30 +294,20 @@ func abrir_modo_compra_por_dados(b_data: BuildingData, variacao_index: int = 0) 
 	var pop = b_data.bonus_populacao if "bonus_populacao" in b_data else 0
 	var custo = b_data.custo_base if "custo_base" in b_data else 0
 	var det = b_data.texto_detalhes if "texto_detalhes" in b_data else ""
-	
 	var cap_abrigo = b_data.capacidade_abrigo if "capacidade_abrigo" in b_data else 0
 	var eq_resgate = b_data.equipes_resgate if "equipes_resgate" in b_data else 0
 
-	abrir_modo_compra(
-		id_edificio,
-		cat,
-		desc,
-		pop,
-		custo,
-		tex,
-		det,
-		nome_exibicao,
-		cap_abrigo,
-		eq_resgate
-	)
+	abrir_modo_compra(id_edificio, cat, desc, pop, custo, tex, det, nome_exibicao, cap_abrigo, eq_resgate)
 
 
 func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String, bonus_pop: int, custo: int, tex: Texture2D, texto_detalhes: String = "", nome_exibicao: String = "", capacidade_abrigo: int = 0, equipes_resgate: int = 0) -> void:
+	_modo_atual = ModoTela.COMPRA
 	get_tree().paused = true
 	_edificio_atual_id = id_or_nome
 	_texto_detalhes_atual = texto_detalhes
 	
 	var titulo_final = nome_exibicao if nome_exibicao != "" else id_or_nome
+	var lang = TranslationServer.get_locale().left(2).to_lower()
 	
 	visible = true
 	if overlay_fundo: overlay_fundo.visible = true
@@ -274,13 +320,7 @@ func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String,
 	if coluna_stats: coluna_stats.visible = false
 
 	if label_nome: label_nome.text = "[center]" + tr(titulo_final) + "[/center]"
-	
-	if label_categoria:
-		if categoria != "" and categoria != "Geral":
-			label_categoria.text = tr(categoria)
-		else:
-			label_categoria.text = ""
-
+	if label_categoria: label_categoria.text = "[center]" + (tr(categoria) if (categoria != "" and categoria != "Geral") else "") + "[/center]"
 	if label_nivel: label_nivel.text = ""
 	if icone: icone.texture = tex
 
@@ -290,18 +330,26 @@ func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String,
 	if label_bonus_infra:
 		var texto_extra = ""
 		if capacidade_abrigo > 0:
-			texto_extra += tr("Abrigo: ") + "+" + str(capacidade_abrigo) + " vagas "
+			var txt_vagas = tr("UI_VAGAS_ABRIGO")
+			if txt_vagas == "UI_VAGAS_ABRIGO": 
+				txt_vagas = "Shelter Capacity" if lang == "en" else "Vagas do Abrigo"
+			texto_extra += txt_vagas + ": +" + str(capacidade_abrigo) + " "
 		if equipes_resgate > 0:
-			texto_extra += tr("Resgate: ") + "+" + str(equipes_resgate) + " equipe(s)"
+			var txt_eq = tr("UI_EQUIPES_RESGATE")
+			if txt_eq == "UI_EQUIPES_RESGATE": 
+				txt_eq = "Rescue Teams" if lang == "en" else "Equipes de Resgate"
+			texto_extra += txt_eq + ": +" + str(equipes_resgate) + " "
+		label_bonus_infra.bbcode_enabled = true
 		label_bonus_infra.text = texto_extra
 
-	_definir_texto_botao(button_comprar, tr("UI_COMPRAR") + " ($" + str(custo) + ")")
+	var txt_comprar = tr("UI_COMPRAR")
+	if txt_comprar == "UI_COMPRAR":
+		txt_comprar = "Buy" if lang == "en" else "Comprar"
+	_definir_texto_botao(button_comprar, txt_comprar + " ($" + str(custo) + ")")
 
 
-# ==============================================================================
-# MODO 3: UPGRADE
-# ==============================================================================
-func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabilidade_pct: float, custo_upgrade: int, tex: Texture2D, descricao: String, texto_detalhes: String, pode_aprimorar: bool) -> void:
+func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabilidade_pct: float, custo_upgrade: int, tex: Texture2D, descricao: String, texto_detalhes: String, pode_aprimorar: bool, texto_stats_customizado: String = "") -> void:
+	_modo_atual = ModoTela.UPGRADE
 	get_tree().paused = true
 	_veio_da_selecao = false
 	_edificio_atual_id = nome_edificio
@@ -317,12 +365,42 @@ func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabili
 	if container_upgrade: container_upgrade.visible = true
 	if coluna_stats: coluna_stats.visible = true
 
-	if label_ganhos: label_ganhos.text = tr("UI_GANHOS") + ": $" + str(ganhos)
+	# Detecta o idioma atual ("en", "pt", etc.)
+	var lang = TranslationServer.get_locale().left(2).to_lower()
+
+	if label_ganhos:
+		label_ganhos.bbcode_enabled = true
+		if texto_stats_customizado != "":
+			var txt_final = texto_stats_customizado
+			
+			# Substitui chave de vagas com fallback por idioma
+			if txt_final.contains("UI_VAGAS_ABRIGO"):
+				var trad = tr("UI_VAGAS_ABRIGO")
+				if trad == "UI_VAGAS_ABRIGO":
+					trad = "Shelter Capacity" if lang == "en" else "Vagas do Abrigo"
+				txt_final = txt_final.replace("UI_VAGAS_ABRIGO", trad)
+			elif txt_final.contains("UI_EQUIPES_RESGATE"):
+				var trad = tr("UI_EQUIPES_RESGATE")
+				if trad == "UI_EQUIPES_RESGATE":
+					trad = "Rescue Teams" if lang == "en" else "Equipes de Resgate"
+				txt_final = txt_final.replace("UI_EQUIPES_RESGATE", trad)
+			
+			label_ganhos.text = "[center]" + txt_final + "[/center]"
+		else:
+			var txt_ganhos = tr("UI_GANHOS")
+			if txt_ganhos == "UI_GANHOS":
+				txt_ganhos = "Earnings" if lang == "en" else "Ganhos"
+			label_ganhos.text = "[center]" + txt_ganhos + ": $" + str(ganhos) + "[/center]"
+
 	if barra_infra: barra_infra.value = durabilidade_pct
 
 	if label_nome: label_nome.text = "[center]" + tr(nome_edificio) + "[/center]"
 	if label_categoria: label_categoria.text = ""
-	if label_nivel: label_nivel.text = tr("UI_NIVEL") + ": " + str(nivel)
+	if label_nivel: 
+		var txt_niv = tr("UI_NIVEL")
+		if txt_niv == "UI_NIVEL": 
+			txt_niv = "Level" if lang == "en" else "Nível"
+		label_nivel.text = "[center]" + txt_niv + ": " + str(nivel) + "[/center]"
 	if icone: icone.texture = tex
 
 	if label_disc: label_disc.text = tr(descricao)
@@ -330,20 +408,27 @@ func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabili
 	if button_aprimorar:
 		button_aprimorar.disabled = not pode_aprimorar
 		if pode_aprimorar:
-			_definir_texto_botao(button_aprimorar, tr("UI_APRIMORAR") + " ($" + str(custo_upgrade) + ")")
+			var txt_ap = tr("UI_APRIMORAR")
+			if txt_ap == "UI_APRIMORAR": 
+				txt_ap = "Upgrade" if lang == "en" else "Aprimorar"
+			_definir_texto_botao(button_aprimorar, txt_ap + " ($" + str(custo_upgrade) + ")")
 		else:
-			_definir_texto_botao(button_aprimorar, tr("UI_NIVEL_MAXIMO"))
+			var txt_max = tr("UI_NIVEL_MAXIMO")
+			if txt_max == "UI_NIVEL_MAXIMO": 
+				txt_max = "Max Level" if lang == "en" else "Nível Máximo"
+			_definir_texto_botao(button_aprimorar, txt_max)
 
-	_definir_texto_botao(button_detalhes, tr("UI_DETALHES"))
+	var txt_det = tr("UI_DETALHES")
+	if txt_det == "UI_DETALHES": 
+		txt_det = "Details" if lang == "en" else "Detalhes"
+	_definir_texto_botao(button_detalhes, txt_det)
 
 
 # ==============================================================================
-# LEITURA E VALIDAÇÃO DE CATEGORIA (CUSTOM DATA TILESET -> WHITELIST)
+# HELPERS E CATEGORIAS
 # ==============================================================================
 func _obter_categoria_edificio(b_data: BuildingData) -> String:
-	if b_data == null:
-		return ""
-
+	if b_data == null: return ""
 	var cat_encontrada: String = ""
 
 	if "categoria" in b_data and b_data.categoria != null and str(b_data.categoria).strip_edges() != "":
@@ -369,10 +454,6 @@ func _obter_categoria_edificio(b_data: BuildingData) -> String:
 						var tile_data: TileData = source.get_tile_data(coords, 0)
 						if tile_data != null:
 							cat_encontrada = _obter_custom_data_seguro(tile_set_ref, tile_data, "categoria")
-							if cat_encontrada == "":
-								cat_encontrada = _obter_custom_data_seguro(tile_set_ref, tile_data, "Categoria")
-
-	cat_encontrada = cat_encontrada.strip_edges()
 
 	if cat_encontrada != "":
 		for cat_aceita in CATEGORIAS_ACEITAS:
@@ -383,9 +464,7 @@ func _obter_categoria_edificio(b_data: BuildingData) -> String:
 
 
 func _obter_tileset_referencia() -> TileSet:
-	if tile_set_override != null:
-		return tile_set_override
-
+	if tile_set_override != null: return tile_set_override
 	var main = get_parent()
 	if main:
 		if "tilemap_constructions" in main and main.tilemap_constructions and main.tilemap_constructions.tile_set:
@@ -396,12 +475,10 @@ func _obter_tileset_referencia() -> TileSet:
 
 
 func _obter_custom_data_seguro(ts: TileSet, td: TileData, nome_camada: String) -> String:
-	if ts == null or td == null:
-		return ""
+	if ts == null or td == null: return ""
 	if ts.has_custom_data_layer_by_name(nome_camada):
 		var val = td.get_custom_data(nome_camada)
-		if val != null:
-			return str(val).strip_edges()
+		if val != null: return str(val).strip_edges()
 	return ""
 
 
@@ -409,15 +486,23 @@ func _obter_custom_data_seguro(ts: TileSet, td: TileData, nome_camada: String) -
 # AÇÕES E NAVEGAÇÃO
 # ==============================================================================
 func _on_comprar_pressed() -> void:
-	var id_emitir = _edificio_atual_id
-	var var_emitir = _variacao_atual_index
-	fechar_tudo()
-	compra_confirmada.emit(id_emitir, var_emitir)
+	if _modo_atual == ModoTela.RECONSTRUCAO:
+		var pos = _pos_tile_reconstrucao
+		var custo = _custo_reconstrucao_atual
+		fechar_tudo()
+		reconstrucao_confirmada.emit(pos, custo)
+	else:
+		var id_emitir = _edificio_atual_id
+		var var_emitir = _variacao_atual_index
+		fechar_tudo()
+		compra_confirmada.emit(id_emitir, var_emitir)
+
 
 func _on_aprimorar_pressed() -> void:
 	var id_emitir = _edificio_atual_id
 	fechar_tudo()
 	aprimoramento_confirmado.emit(id_emitir)
+
 
 func _on_detalhes_pressed() -> void:
 	if painel_detalhes:
@@ -427,9 +512,11 @@ func _on_detalhes_pressed() -> void:
 			label_texto_detalhes.text = tr(_texto_detalhes_atual)
 		painel_detalhes.visible = true
 
+
 func _on_fechar_detalhes_pressed() -> void:
 	if painel_detalhes:
 		painel_detalhes.visible = false
+
 
 func _on_fechar_central_pressed() -> void:
 	if _veio_da_selecao:
@@ -439,9 +526,11 @@ func _on_fechar_central_pressed() -> void:
 	else:
 		fechar_tudo()
 
+
 func fechar_tudo() -> void:
 	_veio_da_selecao = false
 	_zona_selecionada_atual = null
+	_pos_tile_reconstrucao = Vector2i(-1, -1)
 	get_tree().paused = false
 	visible = false
 	if overlay_fundo: overlay_fundo.visible = false
@@ -454,6 +543,7 @@ func _definir_texto_botao(botao: Button, texto: String) -> void:
 	if botao == null: return
 	var rtl = botao.get_node_or_null("RichTextLabel") as RichTextLabel
 	if rtl:
+		rtl.bbcode_enabled = true
 		rtl.text = "[center]" + texto + "[/center]"
 	else:
 		botao.text = texto
