@@ -15,19 +15,20 @@ script = ExtResource("1_5rgap")
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 180)
 anchors_preset = -1
-anchor_left = 0.022000002
+anchor_left = 0.065000005
 anchor_top = 0.702
-anchor_right = 0.97700006
+anchor_right = 0.933
 anchor_bottom = 0.98
-offset_left = -0.34400177
+offset_left = 0.11999512
 offset_top = 0.10397339
-offset_right = -0.5040283
+offset_right = 0.18395996
 offset_bottom = -0.040039063
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxTexture_jpfya")
 
 [node name="MarginContainer" type="MarginContainer" parent="DialogueBox" unique_id=1324871687]
+unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 60

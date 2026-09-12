@@ -16,6 +16,7 @@ var loaded_portraits: Dictionary = {}
 @onready var author_label: RichTextLabel = %NameLabel
 @onready var choices_container: VBoxContainer = %ChoicesContainer
 @onready var timer: Timer = %Timer
+@onready var margin_container: MarginContainer = %MarginContainer  # marque como Unique Name na cena
 
 @export var estilo_padrao: StyleBoxTexture      # StyleBox pra 16:9 ou mais estreito
 @export var estilo_widescreen: StyleBoxTexture  # StyleBox pra telas mais largas que 16:9
@@ -28,6 +29,17 @@ var last_advance_frame: int = -1
 	
 const RATIO_16_9 := 16.0 / 9.0 # para mudar sprite conforme ratio
 const NOME_STYLE := "panel"  # nome do slot de estilo
+
+# --- CONSTANTES DE ESCALA (AJUSTE PROS VALORES REAIS DO SEU PROJETO) ---
+const ALTURA_REFERENCIA := 648.0   # altura da resolução em que você desenhou o layout original
+const FONTE_BASE := 30              # tamanho de fonte atual do DialogueText/NameLabel nessa resolução
+
+# Margens atuais do MarginContainer (conforme Theme Overrides -> Constants)
+const MARGEM_ESQUERDA_BASE := 60
+const MARGEM_TOPO_BASE := 12
+const MARGEM_DIREITA_BASE := 40
+const MARGEM_BAIXO_BASE := 40
+
 
 func _ready() -> void:
 	# Garante que o sistema de diálogo continue recebendo inputs mesmo com o jogo pausado
@@ -57,10 +69,11 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_atualizar_estilo_caixa)
 	_atualizar_estilo_caixa()
 
-#Funcao pra atualizar o sprite conforme o ratio
+#Funcao pra atualizar o sprite, fonte e margens conforme o ratio e a resolucao
 func _atualizar_estilo_caixa() -> void:
 	var tela := get_viewport().get_visible_rect().size
 	var proporcao_atual := tela.x / tela.y
+	var fator := tela.y / ALTURA_REFERENCIA
 
 	var caixa: Control = %DialogueBox
 
@@ -68,6 +81,20 @@ func _atualizar_estilo_caixa() -> void:
 		caixa.add_theme_stylebox_override(NOME_STYLE, estilo_widescreen)
 	else:
 		caixa.add_theme_stylebox_override(NOME_STYLE, estilo_padrao)
+
+	# Escala da fonte (RichTextLabel usa "normal_font_size", nao "font_size")
+	dialogue_text.add_theme_font_size_override("normal_font_size", int(FONTE_BASE * fator))
+	author_label.add_theme_font_size_override("normal_font_size", int(FONTE_BASE * fator))
+
+	# Escala do retrato (relativa ao tamanho original, sem precisar de valor base fixo)
+	portrait.scale = Vector2.ONE * fator
+
+	# Escala das margens do container (cada lado com seu valor base)
+	margin_container.add_theme_constant_override("margin_left", int(MARGEM_ESQUERDA_BASE * fator))
+	margin_container.add_theme_constant_override("margin_top", int(MARGEM_TOPO_BASE * fator))
+	margin_container.add_theme_constant_override("margin_right", int(MARGEM_DIREITA_BASE * fator))
+	margin_container.add_theme_constant_override("margin_bottom", int(MARGEM_BAIXO_BASE * fator))
+
 
 func _input(event: InputEvent) -> void:
 	if not is_dialogue_active:
