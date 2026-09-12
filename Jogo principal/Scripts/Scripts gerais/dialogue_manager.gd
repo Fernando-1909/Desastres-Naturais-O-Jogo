@@ -75,7 +75,7 @@ func _atualizar_estilo_caixa() -> void:
 	var proporcao_atual := tela.x / tela.y
 	var fator := tela.y / ALTURA_REFERENCIA
 
-	var caixa: Control = %DialogueBox
+	var caixa: Control = %CaixaDialogo
 
 	if proporcao_atual > RATIO_16_9:
 		caixa.add_theme_stylebox_override(NOME_STYLE, estilo_widescreen)
