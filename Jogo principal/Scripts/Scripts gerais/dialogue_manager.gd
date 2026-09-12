@@ -17,11 +17,17 @@ var loaded_portraits: Dictionary = {}
 @onready var choices_container: VBoxContainer = %ChoicesContainer
 @onready var timer: Timer = %Timer
 
+@export var estilo_padrao: StyleBoxTexture      # StyleBox pra 16:9 ou mais estreito
+@export var estilo_widescreen: StyleBoxTexture  # StyleBox pra telas mais largas que 16:9
+
 # --- VARIÁVEIS DE CONTROLE ---
 var dialogue_data: Dictionary = {}        
 var current_node_id: String = ""        
 var is_dialogue_active: bool = false    
-var last_advance_frame: int = -1        
+var last_advance_frame: int = -1    
+	
+const RATIO_16_9 := 16.0 / 9.0 # para mudar sprite conforme ratio
+const NOME_STYLE := "panel"  # nome do slot de estilo
 
 func _ready() -> void:
 	# Garante que o sistema de diálogo continue recebendo inputs mesmo com o jogo pausado
@@ -40,7 +46,28 @@ func _ready() -> void:
 		dialogue_box.gui_input.connect(_on_dialogue_box_gui_input)
 	
 	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", "escolha_inicio")
+	
+	# Script da mudança de estilo conforme o ratio
+	estilo_padrao = StyleBoxTexture.new()
+	estilo_padrao.texture = load("res://Jogo principal/UI/Assets/Rebecatrue4.png")
+	estilo_padrao.expand_margin_top = 20
+	estilo_widescreen = StyleBoxTexture.new()
+	estilo_widescreen.texture = load("res://Jogo principal/UI/Assets/Rebecatrue4.png")
+	estilo_widescreen.expand_margin_top = 20
+	get_viewport().size_changed.connect(_atualizar_estilo_caixa)
+	_atualizar_estilo_caixa()
 
+#Funcao pra atualizar o sprite conforme o ratio
+func _atualizar_estilo_caixa() -> void:
+	var tela := get_viewport().get_visible_rect().size
+	var proporcao_atual := tela.x / tela.y
+
+	var caixa: Control = %DialogueBox
+
+	if proporcao_atual > RATIO_16_9:
+		caixa.add_theme_stylebox_override(NOME_STYLE, estilo_widescreen)
+	else:
+		caixa.add_theme_stylebox_override(NOME_STYLE, estilo_padrao)
 
 func _input(event: InputEvent) -> void:
 	if not is_dialogue_active:
