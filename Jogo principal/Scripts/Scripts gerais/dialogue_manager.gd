@@ -61,7 +61,7 @@ func _ready() -> void:
 	
 	# Script da mudança de estilo conforme o ratio
 	estilo_padrao = StyleBoxTexture.new()
-	estilo_padrao.texture = load("res://Jogo principal/UI/Assets/Rebecatrue4.png")
+	estilo_padrao.texture = load("res://Jogo principal/UI/Assets/Rebecatrue3.png")
 	estilo_padrao.expand_margin_top = 20
 	estilo_widescreen = StyleBoxTexture.new()
 	estilo_widescreen.texture = load("res://Jogo principal/UI/Assets/Rebecatrue4.png")
