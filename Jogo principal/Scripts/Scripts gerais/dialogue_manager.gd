@@ -16,7 +16,7 @@ var loaded_portraits: Dictionary = {}
 @onready var author_label: RichTextLabel = %NameLabel
 @onready var choices_container: VBoxContainer = %ChoicesContainer
 @onready var timer: Timer = %Timer
-@onready var margin_container: MarginContainer = %MarginContainer  # marque como Unique Name na cena
+@onready var margin_container: MarginContainer = %ContainerDialogo  # marque como Unique Name na cena
 
 @export var estilo_padrao: StyleBoxTexture      # StyleBox pra 16:9 ou mais estreito
 @export var estilo_widescreen: StyleBoxTexture  # StyleBox pra telas mais largas que 16:9
