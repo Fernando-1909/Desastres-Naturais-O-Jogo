@@ -30,6 +30,12 @@ extends Node2D
 @export_group("Desastres")
 ## Arraste aqui o .tscn da cena de Enchente que criamos
 @export var cena_enchente: PackedScene = preload("res://Jogo principal/Desastres/enchente.tscn")
+## Quanto CADA Bomba de Drenagem construída reduz o tamanho/dano da enchente
+## ativa (0.12 = 12% por bomba). O id do prédio precisa ser "bomba_drenagem".
+@export var mitigacao_por_bomba: float = 0.12
+## Redução máxima possível somando todas as bombas — a enchente nunca é
+## totalmente anulada, sempre sobra pelo menos essa fração do efeito original.
+@export var mitigacao_maxima_enchente: float = 0.75
 
 @export_group("Resgate")
 @export var cena_ponto_resgate: PackedScene = preload("res://Jogo principal/UI/ponto_resgate.tscn")
@@ -1407,9 +1413,22 @@ func _iniciar_enchente() -> void:
 		enchente.enchente_terminada.connect(_on_enchente_terminada)
 	_enchente_ativa = enchente
 	
+	# Se já existem Bombas de Drenagem construídas, a enchente já nasce mitigada
+	if enchente.has_method("definir_mitigacao"):
+		enchente.definir_mitigacao(_calcular_mitigacao_enchente())
+	
 	Global.enchente += 1
 	if "desastres" in Global and Global.desastres.has("enchente"):
 		Global.desastres["enchente"] += 1
+
+
+## Quanto a enchente ativa está sendo reduzida agora, com base na quantidade
+## de Bombas de Drenagem no mapa (id "bomba_drenagem"). Recalculado a cada
+## turno, então construir uma bomba NO MEIO da enchente já ajuda a partir do
+## próximo turno.
+func _calcular_mitigacao_enchente() -> float:
+	var quantidade_bombas = contar_construcoes_por_categoria("bomba_drenagem")
+	return min(quantidade_bombas * mitigacao_por_bomba, mitigacao_maxima_enchente)
 
 
 func _on_enchente_terminada() -> void:
@@ -1418,6 +1437,8 @@ func _on_enchente_terminada() -> void:
 
 func avancar_turno_desastres() -> void:
 	if _enchente_ativa:
+		if _enchente_ativa.has_method("definir_mitigacao"):
+			_enchente_ativa.definir_mitigacao(_calcular_mitigacao_enchente())
 		_enchente_ativa.turno_passou()
 
 	# Avança o tempo de todos os pontos de resgate ativos na cena

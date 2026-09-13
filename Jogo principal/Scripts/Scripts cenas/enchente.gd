@@ -49,6 +49,12 @@ var _altura_base_fixa: float = 0.0
 # Retângulo de tiles afetado no turno atual (calculado a cada atualização, com base no AreaDano)
 var area_tiles: Rect2i
 
+# Mitigação atual (0.0 a 1.0), vinda de construções como a Bomba de Drenagem.
+# Reduz tanto o TAMANHO quanto o DANO da enchente. O main_game atualiza isso
+# a cada turno, então bombas construídas DURANTE a enchente já fazem efeito
+# a partir do próximo turno.
+var mitigacao_atual: float = 0.0
+
 ## Emitido toda vez que a área de dano é (re)calculada — no início e a cada turno
 ## que passa enquanto a enchente segue ativa — com o retângulo (em tiles) e o dano a aplicar.
 ## Quem escuta esse sinal (ex: main_game.gd) decide como aplicar o dano nas construções.
@@ -90,6 +96,15 @@ func _ready() -> void:
 	_aplicar_turno_atual()
 
 
+## Chamado pelo main_game (ex: em _iniciar_enchente e a cada turno) pra
+## atualizar o quanto essa enchente está sendo mitigada por construções como
+## a Bomba de Drenagem. 0.0 = nenhuma mitigação | 1.0 = anularia por completo
+## (o main_game já limita isso a um teto antes de chamar, pra enchente nunca
+## sumir de vez só com bombas).
+func definir_mitigacao(valor: float) -> void:
+	mitigacao_atual = clamp(valor, 0.0, 1.0)
+
+
 ## Chamado pelo main_game a cada turno que passa, enquanto esta enchente estiver ativa.
 func turno_passou() -> void:
 	turnos_passados += 1
@@ -114,13 +129,14 @@ func _aplicar_turno_atual() -> void:
 	_atualizar_tamanho_area_dano()
 	_converter_area_dano_para_tiles()
 	
-	var dano_atual = dano_infraestrutura + (nivel_atual - 1) * aumento_dano_por_nivel
+	var dano_sem_mitigacao = dano_infraestrutura + (nivel_atual - 1) * aumento_dano_por_nivel
+	var dano_atual = dano_sem_mitigacao * (1.0 - mitigacao_atual)
 	
 	# Reinicia a visibilidade temporária da faixa de dano
 	timer_visibilidade.stop()
 	timer_visibilidade.start()
 	
-	print("[ENCHENTE] Nível ", nivel_atual, " (turno ", turnos_passados, "/", duracao_turnos, ") | Área: ", area_dano.position, " tamanho: ", area_dano.size, " | Dano base: ", dano_atual)
+	print("[ENCHENTE] Nível ", nivel_atual, " (turno ", turnos_passados, "/", duracao_turnos, ") | Mitigação: ", int(mitigacao_atual * 100), "% | Área: ", area_dano.position, " tamanho: ", area_dano.size, " | Dano: ", dano_atual)
 	enchente_iniciada.emit(area_tiles, dano_atual)
 
 
@@ -157,10 +173,12 @@ func _definir_area_fixa() -> void:
 	_pos_fixa = Vector2(area_visual.position.x, randf_range(y_min, y_max))
 
 
-## Atualiza só o TAMANHO (altura) da faixa de dano, de acordo com o nível atual.
+## Atualiza só o TAMANHO (altura) da faixa de dano, de acordo com o nível atual
+## e a mitigação atual (ex: Bombas de Drenagem reduzem esse tamanho).
 ## A posição (_pos_fixa) não muda mais depois de definida em _definir_area_fixa().
 func _atualizar_tamanho_area_dano() -> void:
-	var altura = _altura_base_fixa + (nivel_atual - 1) * aumento_altura_por_nivel
+	var altura_sem_mitigacao = _altura_base_fixa + (nivel_atual - 1) * aumento_altura_por_nivel
+	var altura = altura_sem_mitigacao * (1.0 - mitigacao_atual)
 	var largura = area_visual.size.x
 	
 	area_dano.position = _pos_fixa
