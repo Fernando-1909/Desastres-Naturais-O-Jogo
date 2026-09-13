@@ -38,7 +38,7 @@ const CATEGORIAS_ACEITAS: Array[String] = [
 @export_group("Nós do Painel Central - Coluna Stats")
 @onready var coluna_stats: Control = $PainelCentral/MargemInterna/ColunasGrid/ColunaStats
 @onready var label_ganhos: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaStats/LabelGanhos
-@onready var barra_infra: ProgressBar = $PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra
+@onready var barra_infra: TextureProgressBar = $PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra
 
 @export_group("Nós do Painel Central - Coluna Esquerda")
 @onready var label_nome: RichTextLabel = $PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda/LabelNome

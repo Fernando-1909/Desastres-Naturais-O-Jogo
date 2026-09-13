@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://gbo2y5k8gibw" path="res://Jogo principal/Scripts/Scripts cenas/tela_compras.gd" id="1_6tqbi"]
 [ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="2_82b8b"]
 [ext_resource type="Texture2D" uid="uid://5208k37kpkp7" path="res://Jogo principal/UI/Assets/allmenusprites.png" id="3_82tgc"]
+[ext_resource type="Texture2D" uid="uid://clb44p18ipuim" path="res://Jogo principal/UI/Assets/HPBARUNDER.png" id="4_jpfya"]
+[ext_resource type="Texture2D" uid="uid://htrkn2oncm71" path="res://Jogo principal/UI/Assets/HPPROGRESS.png" id="5_130iq"]
+[ext_resource type="Texture2D" uid="uid://847g2if2t1u7" path="res://Jogo principal/UI/Assets/HPBAROVER.png" id="5_qd2tu"]
+[ext_resource type="Script" uid="uid://rn5nqs7vbh4c" path="res://Jogo principal/Scripts/Scripts gerais/barra_infra.gd" id="7_qd2tu"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vcj6e"]
 texture = ExtResource("2_82b8b")
@@ -141,9 +145,28 @@ bbcode_enabled = true
 fit_content = true
 horizontal_alignment = 1
 
-[node name="BarraInfra" type="ProgressBar" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=829637639]
-custom_minimum_size = Vector2(130, 24)
+[node name="BarraInfra" type="TextureProgressBar" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=18743803]
+custom_minimum_size = Vector2(130, 50)
 layout_mode = 2
+nine_patch_stretch = true
+texture_under = ExtResource("4_jpfya")
+texture_over = ExtResource("5_qd2tu")
+texture_progress = ExtResource("5_130iq")
+script = ExtResource("7_qd2tu")
+
+[node name="PorcentagemBarra" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats/BarraInfra" unique_id=2022895355]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.77, 0.22330001, 0.27796996, 1)
+theme_override_colors/font_shadow_color = Color(0.43, 0.13072, 0.12039999, 1)
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/normal_font_size = 20
+text = "100%"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ColunaEsquerda" type="VBoxContainer" parent="PainelCentral/MargemInterna/ColunasGrid" unique_id=1728191275]
 layout_mode = 2
