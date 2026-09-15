@@ -5,9 +5,17 @@ const PORTRAIT_MAP: Dictionary = {
 	"SISTEMA": "res://Jogo principal/UI/Assets/Portraits/rean_portrait.jpeg",
 	#"DEFESA_CIVIL": "res://assets/portraits/defesa_civil.png",
 	#"ENGENHEIRO_VIRTUAL": "res://assets/portraits/engenheiro.png"
+	#"SECRETARIA": "res://assets/portraits/secretaria.png",
+	#"TESOUREIRO": "res://assets/portraits/tesoureiro.png"
 }
 
 var loaded_portraits: Dictionary = {}
+
+## Emitido sempre que um diálogo termina (o de idioma, o de uma missão, etc.),
+## com o id do último nó mostrado. Quem inicia um diálogo específico (ex:
+## main_game, antes de abrir a caixa de missão) escuta esse sinal pra saber
+## a hora certa de continuar o fluxo.
+signal dialogo_finalizado(ultimo_no_id: String)
 
 # --- REFERÊNCIAS AOS NÓS (Usando Nomes Únicos %) ---
 @onready var dialogue_box: PanelContainer = %CaixaDialogo
@@ -45,6 +53,7 @@ func _ready() -> void:
 	# Garante que o sistema de diálogo continue recebendo inputs mesmo com o jogo pausado
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
+	visible = false  # começa totalmente desativado — só liga quando uma missão chamar
 	dialogue_box.visible = false
 	choices_container.visible = false
 	dialogue_text.text = ""
@@ -56,8 +65,6 @@ func _ready() -> void:
 	
 	if not dialogue_box.gui_input.is_connected(_on_dialogue_box_gui_input):
 		dialogue_box.gui_input.connect(_on_dialogue_box_gui_input)
-	
-	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", "escolha_inicio")
 	
 	# Script da mudança de estilo conforme o ratio
 	estilo_padrao = StyleBoxTexture.new()
@@ -133,11 +140,19 @@ func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String) -> 
 	dialogue_data = dados
 	current_node_id = no_inicial
 	is_dialogue_active = true
+	visible = true  # reativa a cena inteira (estava totalmente desligada)
 	dialogue_box.visible = true
 	choices_container.hide()
 	
 	get_tree().paused = true
 	show_current_line()
+
+
+## Ponto de entrada usado pelo main_game pra tocar o diálogo de uma missão
+## específica antes de abrir a caixa de missão. `no_inicial` é o id do
+## primeiro nó dessa missão em dialogues.json (ex: "missao1_1").
+func iniciar_dialogo_da_missao(no_inicial: String) -> void:
+	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", no_inicial)
 
 
 func show_current_line() -> void:
@@ -241,11 +256,6 @@ func mostrar_menu_escolhas(opcoes: Array) -> void:
 func _on_opcao_selecionada(proximo_id: String) -> void:
 	choices_container.hide()
 	
-	if proximo_id == "resposta_pt":
-		Global.alterar_idioma("pt")
-	elif proximo_id == "resposta_en":
-		Global.alterar_idioma("en")
-		
 	if proximo_id == "fim" or proximo_id == "":
 		end_dialogue()
 	else:
@@ -254,11 +264,14 @@ func _on_opcao_selecionada(proximo_id: String) -> void:
 
 
 func end_dialogue() -> void:
+	var ultimo_no := current_node_id
 	is_dialogue_active = false
 	dialogue_box.visible = false
 	choices_container.hide()
 	dialogue_text.text = ""
 	get_tree().paused = false
+	visible = false  # desativa a cena inteira até o próximo diálogo ser chamado
+	dialogo_finalizado.emit(ultimo_no)
 
 
 # --- SINAIS ---

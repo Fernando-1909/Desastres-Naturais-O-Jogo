@@ -57,6 +57,13 @@ func _on_button_turno_pressed() -> void:
 	Global.turno += 1
 	print("Turno: ", Global.turno)
 	
+	# Se o jogador passou do último turno jogável, o jogo acaba aqui: vai
+	# direto pra tela de Game Over e nem processa renda/desastres/missões.
+	if main_game and "turno_final" in main_game and Global.turno > main_game.turno_final:
+		print("[FIM DE JOGO] Turno ", Global.turno, " > turno final (", main_game.turno_final, "). Indo para Game Over.")
+		get_tree().change_scene_to_file("res://Jogo principal/UI/game_over.tscn")
+		return
+	
 	# Sistema de renda (dinheiro) — baseado na população da cidade.
 	# Cada POPULACAO_POR_UNIDADE_RENDA pessoas contam como 1 unidade de renda,
 	# e cada unidade sorteia um valor dentro da faixa definida pela popularidade.
@@ -158,6 +165,8 @@ func _update_missao_info_label() -> void:
 	if missao_info_label == null:
 		return
 	if Global.missao_escolhida != null:
+		# O diálogo (Secretária/Tesoureiro) já rodou antes de abrir essa caixa.
+		# Aqui só mostramos a descrição curta da missão (campo "info" da .tres).
 		missao_info_label.text = str(Global.missao_escolhida.info)
 	else:
 		missao_info_label.text = ""

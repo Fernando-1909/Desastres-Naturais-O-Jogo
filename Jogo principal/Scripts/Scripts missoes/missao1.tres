@@ -6,11 +6,7 @@
 script = ExtResource("1")
 id = "missao1"
 nome = "Corpo de Bombeiros"
-info = "[b]Secretária:[/b] Tivemos três princípios de incêndio essa semana, e o mais próximo que temos de ajuda são vizinhos com baldes. Um dia desses não vai dar pra apagar a tempo.
-
-[b]Tesoureiro:[/b] Ninguém aqui quer ver a cidade pegando fogo, mas um corpo de bombeiros completo é caro, e mal começamos a nos organizar financeiramente. Se guardarmos esse valor, temos fôlego pra imprevistos maiores.
-
-[b]Secretária:[/b] E se o imprevisto maior for justamente um incêndio que dava pra ter evitado?"
+info = "A cidade sofreu vários princípios de incêndio recentemente, e ainda não temos uma equipe preparada para apagar um fogo maior. Construa um Corpo de Bombeiros para proteger os moradores."
 custo = 400.0
 edificio_id_alvo = "bombeiros"
 popularidade = 20

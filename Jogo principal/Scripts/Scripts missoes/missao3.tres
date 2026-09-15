@@ -6,11 +6,7 @@
 script = ExtResource("1")
 id = "missao3"
 nome = "Sistema de Drenagem"
-info = "[b]Secretária:[/b] Depois da última enchente, várias casas ainda não se recuperaram de verdade. As bombas de drenagem que já temos ajudam, mas são só um paliativo — um sistema de drenagem de verdade ia poupar a cidade de perder tudo de novo na próxima chuva forte.
-
-[b]Tesoureiro:[/b] É um projeto grande, e não temos garantia de que vai dar conta de uma enchente maior. Podemos investir esse dinheiro em algo com retorno mais certo, e torcer pro tempo colaborar.
-
-[b]Secretária:[/b] Torcer não segurou a água da última vez."
+info = "Depois da última enchente, várias casas ainda não se recuperaram de verdade. Construa um Sistema de Drenagem para reduzir os estragos da próxima chuva forte."
 custo = 700.0
 edificio_id_alvo = ""
 popularidade = 30

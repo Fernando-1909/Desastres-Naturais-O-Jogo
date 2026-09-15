@@ -61,16 +61,21 @@ PREDIO_BOMBEIROS_NOME,"Estação de Bombeiros","Fire Station"
 PREDIO_BOMBEIROS_DESC,"Disponibiliza equipes de resgate para salvar vítimas de emergências.","Provides rescue teams to save victims from emergencies."
 PREDIO_BOMBEIROS_DETALHES,"A Estação de Bombeiros envia equipes de resgate diretamente para áreas afetadas por desastres, reduzindo os danos e socorrendo a população.","The Fire Station dispatches rescue teams directly to disaster-affected areas, reducing damage and rescuing citizens."
 
-# --- DIÁLOGOS ---
-TXT_BR_BOAS_VINDAS,"[wave amp=30 freq=3]Selecione seu idioma / Select your language[/wave]","[wave amp=30 freq=3]Select your language / Selecione seu idioma[/wave]"
-OPT_PT,"[b][color=green]✔ Português[/color][/b]","[b][color=green]✔ Portuguese[/color][/b]"
-OPT_EN,"[b][color=aqua]✔ English[/color][/b]","[b][color=aqua]✔ English[/color][/b]"
-TXT_CONFIRM_PT,"Você escolheu [color=green]Português[/color]! Vamos proteger nossa cidade.","You chose [color=green]Portuguese[/color]! Let's protect our city."
-TXT_CONFIRM_EN,"You chose [color=aqua]English[/color]! Let's protect our city.","You chose [color=aqua]English[/color]! Let's protect our city."
-TXT_COMUM_1,"Prefeito! Recebemos um [pulse color=red freq=2.0][b]ALERTA URGENTE[/b][/pulse]. Um desastre meteorológico está se aproximando!","Mayor! We received an [pulse color=red freq=2.0][b]URGENT ALERT[/b][/pulse]. A disaster is approaching!"
-TXT_COMUM_2,"Precisamos gerenciar nossos recursos [shake rate=20 level=10][b]RÁPIDO[/b][/shake].","We need to manage our resources [shake rate=20 level=10][b]QUICKLY[/b][/shake]."
-TXT_PERGUNTA_ACAO,"[wave amp=20 freq=2]Qual será a sua estratégia de prevenção imediata?[/wave]","[wave amp=20 freq=2]What will be your immediate prevention strategy?[/wave]"
-OPT_DESASTRE_1,"[color=lightblue]🌊 Drenagem de Enchentes[/color]","[color=lightblue]🌊 Flood Drainage[/color]"
-OPT_DESASTRE_2,"[color=orange]🌋 Reforço de Terremotos[/color]","[color=orange]🌋 Earthquake Reinforcement[/color]"
-TXT_RAMO_ENCHENTE,"Excelente. Investiremos em [rainbow freq=0.5 sat=100 val=100]bueiros inteligentes[/rainbow].","Excellent. We will invest in [rainbow freq=0.5 sat=100 val=100]smart drains[/rainbow]."
-TXT_RAMO_TERREMOTO,"Ótimo. Vamos aplicar [b]amortecedores nas fundações[/b].","Great. Let's apply [b]dampers to foundations[/b]."
+# --- DIÁLOGOS DAS MISSÕES (Secretária x Tesoureiro) ---
+SECRETARIA,"Secretária","Secretary"
+TESOUREIRO,"Tesoureiro","Treasurer"
+
+# Missão 1 - Corpo de Bombeiros
+TXT_MISSAO1_1,"Tivemos três princípios de incêndio essa semana, e o mais próximo que temos de ajuda são vizinhos com baldes. Um dia desses não vai dar pra apagar a tempo.","We had three near-fires this week, and the closest thing we have to help is neighbors with buckets. One of these days we won't put it out in time."
+TXT_MISSAO1_2,"Ninguém aqui quer ver a cidade pegando fogo, mas um corpo de bombeiros completo é caro, e mal começamos a nos organizar financeiramente. Se guardarmos esse valor, temos fôlego pra imprevistos maiores.","Nobody here wants to see the city on fire, but a full fire department is expensive, and we've barely started organizing our finances. If we save that money, we'll have room for bigger emergencies."
+TXT_MISSAO1_3,"E se o imprevisto maior for justamente um incêndio que dava pra ter evitado?","And what if the bigger emergency is exactly a fire we could have prevented?"
+
+# Missão 2 - Posto de Saúde
+TXT_MISSAO2_1,"As famílias estão indo até a cidade vizinha pra qualquer coisa, até uma febre. Um posto de saúde aqui mudaria isso, e as pessoas iam sentir a diferença rápido.","Families are traveling to the next town for anything, even a fever. A health post here would change that, and people would feel the difference fast."
+TXT_MISSAO2_2,"Concordo que faz falta, mas não é só construir — é manter funcionário, remédio, equipamento, todo mês. Talvez seja mais sábio esperar a cidade crescer um pouco mais antes de assumir esse compromisso.","I agree it's needed, but it's not just building it — it's staff, medicine, equipment, every month. Maybe it's wiser to wait for the city to grow a bit more before taking on that commitment."
+TXT_MISSAO2_3,"Ou talvez a cidade só cresça se as pessoas souberem que aqui elas são cuidadas.","Or maybe the city will only grow if people know they're taken care of here."
+
+# Missão 3 - Sistema de Drenagem
+TXT_MISSAO3_1,"Depois da última enchente, várias casas ainda não se recuperaram de verdade. As bombas de drenagem que já temos ajudam, mas são só um paliativo — um sistema de drenagem de verdade ia poupar a cidade de perder tudo de novo na próxima chuva forte.","After the last flood, several houses still haven't really recovered. The drainage pumps we already have help, but they're just a band-aid — a real drainage system would spare the city from losing everything again in the next big storm."
+TXT_MISSAO3_2,"É um projeto grande, e não temos garantia de que vai dar conta de uma enchente maior. Podemos investir esse dinheiro em algo com retorno mais certo, e torcer pro tempo colaborar.","It's a big project, and we have no guarantee it will handle a bigger flood. We could invest this money in something with a surer return, and hope the weather cooperates."
+TXT_MISSAO3_3,"Torcer não segurou a água da última vez.","Hoping didn't hold back the water last time."

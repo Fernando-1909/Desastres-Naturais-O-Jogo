@@ -8,6 +8,12 @@ extends Node2D
 @onready var hud = $CanvasLayer/Hud
 @onready var menu_pausa: MenuPausa = $MenuPausa
 
+# Referência à cena de diálogos, já instanciada na árvore. Em vez de um
+# caminho fixo (que pode não bater com a posição real dela na sua cena),
+# procuramos automaticamente por qualquer node que tenha o método
+# iniciar_dialogo_da_missao (ver _encontrar_dialogue_manager, chamado no _ready).
+var dialogue_manager: Node = null
+
 # REFERENCIA A TELA DE COMPRAS E AO TILEMAP (Suporta TileMapLayer e TileMap)
 @onready var tela_compras: TelaCompras = $TelaCompras
 @onready var tilemap_constructions: TileMapLayer = $TileMapConstructions
@@ -36,6 +42,15 @@ extends Node2D
 ## Redução máxima possível somando todas as bombas — a enchente nunca é
 ## totalmente anulada, sempre sobra pelo menos essa fração do efeito original.
 @export var mitigacao_maxima_enchente: float = 0.75
+
+@export_group("Progressão do Jogo")
+## Turno em que a enchente começa automaticamente (sem precisar do botão de teste)
+@export var turno_inicio_enchente: int = 8
+## Quantos turnos a enchente automática dura (turno_inicio_enchente até
+## turno_inicio_enchente + duracao_enchente_turnos - 1)
+@export var duracao_enchente_turnos: int = 5
+## Último turno jogável. Ao entrar no turno seguinte (turno_final + 1), o jogo acaba.
+@export var turno_final: int = 15
 
 @export_group("Resgate")
 @export var cena_ponto_resgate: PackedScene = preload("res://Jogo principal/UI/ponto_resgate.tscn")
@@ -137,6 +152,30 @@ func _ready() -> void:
 	
 	# Sorteia os NPCs iniciais de acordo com a população inicial
 	_atualizar_npcs_por_populacao()
+
+	# Encontra o DialogueManager em qualquer lugar da cena (não depende de caminho fixo)
+	dialogue_manager = _encontrar_dialogue_manager()
+	if dialogue_manager:
+		print("[DEBUG-DIALOGO] DialogueManager encontrado em: ", dialogue_manager.get_path())
+	else:
+		print("[AVISO] DialogueManager não encontrado na cena! Diálogos de missão não vão tocar.")
+
+
+## Procura, em toda a árvore da cena, por um node que tenha o método
+## iniciar_dialogo_da_missao (assinatura do dialogue_manager.gd). Assim não
+## precisamos acertar o caminho exato de onde o DialogueManager foi colocado.
+func _encontrar_dialogue_manager() -> Node:
+	return _buscar_no_com_metodo(self, "iniciar_dialogo_da_missao")
+
+
+func _buscar_no_com_metodo(no: Node, metodo: String) -> Node:
+	if no.has_method(metodo):
+		return no
+	for filho in no.get_children():
+		var encontrado = _buscar_no_com_metodo(filho, metodo)
+		if encontrado:
+			return encontrado
+	return null
 
 
 # ==============================================================================
@@ -959,6 +998,16 @@ func _resetar_estado_construcoes() -> void:
 # ==============================================================================
 # SISTEMA DE MISSOES
 # ==============================================================================
+
+# Cada missão tem sua própria sequência de diálogo em dialogues.json (a
+# conversa entre Secretária e Tesoureiro). Aqui mapeamos o id da missão
+# para o id do PRIMEIRO nó dessa sequência.
+const DIALOGO_INICIAL_POR_MISSAO := {
+	"missao1": "missao1_1",
+	"missao2": "missao2_1",
+	"missao3": "missao3_1",
+}
+
 func escolher_missao_aleatoria():
 	if Global.turno <= 0:
 		return null
@@ -975,7 +1024,7 @@ func escolher_missao_aleatoria():
 			Global.missao_aceita = false
 			print("[INFO] Turno 2: Missao obrigatoria - ", m_data.nome)
 			
-			_abrir_container_missao()
+			_iniciar_fluxo_da_missao(m_data)
 			return Global.missao_escolhida
 	
 	if Global.turno >= 4:
@@ -1030,7 +1079,7 @@ func escolher_missao_aleatoria():
 				if chave != chave_escolhida:
 					Global.turnos_sem_missao[chave] += 1
 			
-			_abrir_container_missao()
+			_iniciar_fluxo_da_missao(m_data)
 			
 			return Global.missao_escolhida
 		else:
@@ -1175,6 +1224,31 @@ func _abrir_container_missao() -> void:
 	if hud and hud.has_node("MissaoContainer"):
 		hud.get_node("MissaoContainer").visible = true
 		Global.jogo_pausado = true
+
+
+## Toca primeiro o diálogo da missão (Secretária/Tesoureiro) na cena
+## DialogueManager, e SÓ DEPOIS que ele terminar é que a caixa de missão
+## (MissaoContainer) aparece. Se não houver DialogueManager configurado ou a
+## missão não tiver diálogo mapeado, cai direto na caixa de missão de sempre.
+func _iniciar_fluxo_da_missao(missao: MissionData) -> void:
+	var no_inicial: String = DIALOGO_INICIAL_POR_MISSAO.get(missao.id, "")
+
+	if dialogue_manager and no_inicial != "" and dialogue_manager.has_method("iniciar_dialogo_da_missao"):
+		if not dialogue_manager.dialogo_finalizado.is_connected(_on_dialogo_da_missao_finalizado):
+			dialogue_manager.dialogo_finalizado.connect(_on_dialogo_da_missao_finalizado, CONNECT_ONE_SHOT)
+		dialogue_manager.iniciar_dialogo_da_missao(no_inicial)
+	else:
+		if not dialogue_manager:
+			print("[AVISO] DialogueManager não encontrado na cena — abrindo a missão direto na caixa.")
+		_abrir_container_missao()
+
+
+## Chamado quando o DialogueManager termina o diálogo da missão (conectado
+## como CONNECT_ONE_SHOT em _iniciar_fluxo_da_missao). A cena do diálogo já
+## se desativa sozinha (ver dialogue_manager.gd -> end_dialogue); aqui só
+## precisamos mostrar a caixa de missão de sempre.
+func _on_dialogo_da_missao_finalizado(_ultimo_no_id: String) -> void:
+	_abrir_container_missao()
 
 
 func processar_missao_no_turno() -> void:
@@ -1396,7 +1470,10 @@ func _on_desastre_button_pressed() -> void:
 # ==============================================================================
 var _enchente_ativa: Node = null
 
-func _iniciar_enchente() -> void:
+## duracao_customizada: se > 0, sobrescreve a duração padrão da cena de enchente
+## (usado pela enchente automática, que dura duracao_enchente_turnos turnos).
+## Deixe -1 (padrão) para usar a duração configurada na própria cena.
+func _iniciar_enchente(duracao_customizada: int = -1) -> void:
 	if not cena_enchente:
 		print("[AVISO] Nenhuma cena de Enchente configurada em 'cena_enchente' (Inspector do main_game)!")
 		return
@@ -1406,6 +1483,8 @@ func _iniciar_enchente() -> void:
 		return
 	
 	var enchente = cena_enchente.instantiate()
+	if duracao_customizada > 0 and "duracao_turnos" in enchente:
+		enchente.duracao_turnos = duracao_customizada
 	add_child(enchente)
 	if enchente.has_signal("enchente_iniciada"):
 		enchente.enchente_iniciada.connect(_on_enchente_iniciada)
@@ -1435,7 +1514,17 @@ func _on_enchente_terminada() -> void:
 	_enchente_ativa = null
 
 
+## Verifica se é a hora de disparar a enchente automaticamente (turno_inicio_enchente),
+## sem depender do botão de teste. Chamada uma vez por turno, antes de tudo o resto.
+func _verificar_inicio_automatico_de_enchente() -> void:
+	if Global.turno == turno_inicio_enchente and _enchente_ativa == null:
+		print("[ENCHENTE AUTOMÁTICA] Iniciando no turno ", Global.turno, " | duração: ", duracao_enchente_turnos, " turnos")
+		_iniciar_enchente(duracao_enchente_turnos)
+
+
 func avancar_turno_desastres() -> void:
+	_verificar_inicio_automatico_de_enchente()
+
 	if _enchente_ativa:
 		if _enchente_ativa.has_method("definir_mitigacao"):
 			_enchente_ativa.definir_mitigacao(_calcular_mitigacao_enchente())

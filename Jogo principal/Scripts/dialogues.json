@@ -1,64 +1,50 @@
 {
   "dialogos": {
-	"escolha_inicio": {
-	  "autor": "SISTEMA",
-	  "texto_chave": "TXT_BR_BOAS_VINDAS",
-	  "escolhas": [
-		{
-		  "texto_chave": "OPT_PT",
-		  "proximo": "resposta_pt"
-		},
-		{
-		  "texto_chave": "OPT_EN",
-		  "proximo": "resposta_en"
-		}
-	  ]
+	"missao1_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_MISSAO1_1",
+	  "proximo": "missao1_2"
 	},
-	"resposta_pt": {
-	  "autor": "SISTEMA",
-	  "texto_chave": "TXT_CONFIRM_PT",
-	  "proximo": "dialogo_comum_1"
+	"missao1_2": {
+	  "autor": "TESOUREIRO",
+	  "texto_chave": "TXT_MISSAO1_2",
+	  "proximo": "missao1_3"
 	},
-	"resposta_en": {
-	  "autor": "SISTEMA",
-	  "texto_chave": "TXT_CONFIRM_EN",
-	  "proximo": "dialogo_comum_1"
-	},
-	
-	"dialogo_comum_1": {
-	  "autor": "DEFESA CIVIL",
-	  "texto_chave": "TXT_COMUM_1",
-	  "proximo": "dialogo_comum_2"
-	},
-	"dialogo_comum_2": {
-	  "autor": "DEFESA CIVIL",
-	  "texto_chave": "TXT_COMUM_2",
-	  "proximo": "escolha_desastre"
-	},
-	
-	"escolha_desastre": {
-	  "autor": "SISTEMA",
-	  "texto_chave": "TXT_PERGUNTA_ACAO",
-	  "escolhas": [
-		{
-		  "texto_chave": "OPT_DESASTRE_1",
-		  "proximo": "ramo_enchente"
-		},
-		{
-		  "texto_chave": "OPT_DESASTRE_2",
-		  "proximo": "ramo_terremoto"
-		}
-	  ]
-	},
-	
-	"ramo_enchente": {
-	  "autor": "ENGENHEIRO VIRTUAL",
-	  "texto_chave": "TXT_RAMO_ENCHENTE",
+	"missao1_3": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_MISSAO1_3",
 	  "proximo": "fim"
 	},
-	"ramo_terremoto": {
-	  "autor": "ENGENHEIRO VIRTUAL",
-	  "texto_chave": "TXT_RAMO_TERREMOTO",
+
+	"missao2_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_MISSAO2_1",
+	  "proximo": "missao2_2"
+	},
+	"missao2_2": {
+	  "autor": "TESOUREIRO",
+	  "texto_chave": "TXT_MISSAO2_2",
+	  "proximo": "missao2_3"
+	},
+	"missao2_3": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_MISSAO2_3",
+	  "proximo": "fim"
+	},
+
+	"missao3_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_MISSAO3_1",
+	  "proximo": "missao3_2"
+	},
+	"missao3_2": {
+	  "autor": "TESOUREIRO",
+	  "texto_chave": "TXT_MISSAO3_2",
+	  "proximo": "missao3_3"
+	},
+	"missao3_3": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_MISSAO3_3",
 	  "proximo": "fim"
 	}
   }

@@ -19,6 +19,7 @@
 [ext_resource type="Resource" uid="uid://bp12r8pe5sp1t" path="res://Jogo principal/Scripts/Scripts cons/cons_lazer.tres" id="18_2cq4x"]
 [ext_resource type="Resource" uid="uid://dv7ernpw1cxgi" path="res://Jogo principal/Scripts/Scripts cons/bombeiros.tres" id="18_a6fgx"]
 [ext_resource type="Resource" uid="uid://cko2p2hekohms" path="res://Jogo principal/Scripts/Scripts cons/abrigo.tres" id="19_fj0mr"]
+[ext_resource type="PackedScene" uid="uid://l4ep5qwntoxq" path="res://Jogo principal/UI/dialogue_manager.tscn" id="20_fj0mr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_61lwm"]
 texture = ExtResource("2_rgx6x")
@@ -664,6 +665,9 @@ position = Vector2(419, 187)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="NpcContainer" unique_id=992927352]
 navigation_polygon = SubResource("NavigationPolygon_2cq4x")
+
+[node name="DialogueManager" parent="." unique_id=1420897856 instance=ExtResource("20_fj0mr")]
+visible = false
 
 [connection signal="pressed" from="CanvasLayer/BuildingHUD/PanelContainer2/VBoxContainer/Button" to="." method="_on_button_close_menu_pressed"]
 [connection signal="pressed" from="TesteTroca" to="TileMapConstructions" method="_on_teste_troca_pressed"]
