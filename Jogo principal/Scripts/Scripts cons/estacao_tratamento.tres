@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://bvgdeedirk4kb"]
+
+[ext_resource type="Texture2D" uid="uid://dd22ja8qdic4e" path="res://Jogo principal/tilesheets/Prefeitura_level2.png" id="1_exjwu"]
+[ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="1_ttaju"]
+
+[resource]
+script = ExtResource("1_ttaju")
+id = "estacao_tratamento"
+nome = "PREDIO_ESTACAO_TRATAMENTO_NOME"
+icone = ExtResource("1_exjwu")
+icones = Array[Texture2D]([ExtResource("1_exjwu")])
+eh_unica = true
+pode_aprimorar = false
+descricao_curta = "PREDIO_ESTACAO_TRATAMENTO_DESC"
+texto_detalhes = "PREDIO_ESTACAO_TRATAMENTO_DETALHES"
+durabilidade_maxima = 500.0
+ganhos_base = 50.0
+capacidade_bombas = 3
+tiles_atlas_coords = Array[Vector2i]([Vector2i(0, 0)])
+source_id = 10
+metadata/_custom_type_script = "uid://bh8jua7ha1i6r"

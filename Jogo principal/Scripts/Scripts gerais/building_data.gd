@@ -29,6 +29,8 @@ extends Resource
 @export var capacidade_abrigo: int = 0
 ## Quantidade de equipes de bombeiros/resgate que esta construção disponibiliza no mapa
 @export var equipes_resgate: int = 0
+## Quantidade máxima de bombas de drenagem disponibilizadas por esta construção
+@export var capacidade_bombas: int = 0
 
 @export_group("Tiles no TileSet")
 ## Coloque aqui TODAS as coordenadas atlas que representam este prédio JÁ CONSTRUÍDO (variações)

@@ -3,12 +3,14 @@
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/Scripts/Scripts cenas/main_game.gd" id="1_bvlld"]
 [ext_resource type="Texture2D" uid="uid://cc3c6k2peoxc3" path="res://Jogo principal/tilesheets/Tilesheet_ground.png" id="2_rgx6x"]
 [ext_resource type="Texture2D" uid="uid://ds87osgiqay5b" path="res://Jogo principal/tilesheets/Prefeitura_level_1.png" id="3_i63ni"]
-[ext_resource type="Texture2D" uid="uid://skw0w28d2se7" path="res://Jogo principal/tilesheets/Tilesheet_Cons.png" id="4_botex"]
 [ext_resource type="Texture2D" uid="uid://b2fqehi7wkwks" path="res://Jogo principal/tilesheets/Sombra.png" id="4_fj0mr"]
 [ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
 [ext_resource type="Texture2D" uid="uid://d0q1wqnavhphj" path="res://Casas.png" id="5_a6fgx"]
+[ext_resource type="Texture2D" uid="uid://dd22ja8qdic4e" path="res://Jogo principal/tilesheets/Prefeitura_level2.png" id="5_k6eoj"]
 [ext_resource type="Texture2D" uid="uid://cumrysl7bg33e" path="res://Jogo principal/tilesheets/TrocaPlaceholder.png" id="7_2cq4x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
+[ext_resource type="Texture2D" uid="uid://dmturgo7w0jr5" path="res://Jogo principal/tilesheets/Cons_Funções.png" id="7_gjpgg"]
+[ext_resource type="Texture2D" uid="uid://dhegv4jp33c6k" path="res://Jogo principal/tilesheets/Construcao.png" id="8_cuk6r"]
 [ext_resource type="Texture2D" uid="uid://d2sxwstgtywa4" path="res://Jogo principal/tilesheets/Terreno_construcao.png" id="8_fj0mr"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
 [ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
@@ -20,6 +22,7 @@
 [ext_resource type="Resource" uid="uid://dv7ernpw1cxgi" path="res://Jogo principal/Scripts/Scripts cons/bombeiros.tres" id="18_a6fgx"]
 [ext_resource type="Resource" uid="uid://cko2p2hekohms" path="res://Jogo principal/Scripts/Scripts cons/abrigo.tres" id="19_fj0mr"]
 [ext_resource type="PackedScene" uid="uid://l4ep5qwntoxq" path="res://Jogo principal/UI/dialogue_manager.tscn" id="20_fj0mr"]
+[ext_resource type="Resource" uid="uid://bvgdeedirk4kb" path="res://Jogo principal/Scripts/Scripts cons/estacao_tratamento.tres" id="22_gjpgg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_61lwm"]
 texture = ExtResource("2_rgx6x")
@@ -349,6 +352,14 @@ texture_region_size = Vector2i(112, 64)
 3:1/0 = 0
 5:1/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4pjq3"]
+texture = ExtResource("5_k6eoj")
+texture_region_size = Vector2i(112, 64)
+0:0/0 = 0
+0:0/0/custom_data_0 = true
+0:0/0/custom_data_1 = "Funções"
+0:0/0/custom_data_2 = "estacao_tratamento"
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bbp3t"]
 texture = ExtResource("5_a6fgx")
 texture_region_size = Vector2i(80, 64)
@@ -359,6 +370,22 @@ texture_region_size = Vector2i(80, 64)
 1:0/0 = 0
 1:0/0/custom_data_0 = true
 1:0/0/custom_data_2 = "casa_destruida"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qg202"]
+texture = ExtResource("7_gjpgg")
+texture_region_size = Vector2i(112, 64)
+0:0/0 = 0
+0:0/0/custom_data_0 = true
+0:0/0/custom_data_1 = "Funções"
+0:0/0/custom_data_2 = "bombeiros"
+1:0/0 = 0
+1:0/0/custom_data_0 = true
+1:0/0/custom_data_1 = "Funções"
+1:0/0/custom_data_2 = "abrigo"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3brof"]
+texture = ExtResource("8_cuk6r")
+texture_region_size = Vector2i(32, 32)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fj0mr"]
 texture = ExtResource("7_2cq4x")
@@ -382,19 +409,6 @@ texture_region_size = Vector2i(32, 32)
 0:0/0/custom_data_0 = true
 0:0/0/custom_data_2 = "terreno_vazio"
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k7th3"]
-texture = ExtResource("4_botex")
-texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-0:0/0/texture_origin = Vector2i(0, 3)
-0:0/0/custom_data_0 = true
-0:0/0/custom_data_1 = "Funções"
-0:0/0/custom_data_2 = "abrigo"
-1:0/0 = 0
-1:0/0/texture_origin = Vector2i(0, 3)
-1:0/0/custom_data_0 = true
-1:0/0/custom_data_1 = "Funções"
-
 [sub_resource type="TileSet" id="TileSet_3axm1"]
 tile_size = Vector2i(32, 32)
 custom_data_layer_0/name = "clicavel"
@@ -403,12 +417,14 @@ custom_data_layer_1/name = "categoria"
 custom_data_layer_1/type = 4
 custom_data_layer_2/name = "building_id"
 custom_data_layer_2/type = 4
-sources/8 = SubResource("TileSetAtlasSource_k7th3")
 sources/4 = SubResource("TileSetAtlasSource_fj0mr")
-sources/1 = SubResource("TileSetAtlasSource_tkcjf")
 sources/5 = SubResource("TileSetAtlasSource_gjpgg")
 sources/11 = SubResource("TileSetAtlasSource_bbp3t")
-tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [1, Vector2i(0, 0)], [2, Vector2i(1, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [8, Vector2i(0, 0)], [7, Vector2i(0, 0)], [8, Vector2i(1, 0)], [9, Vector2i(0, 0)], [11, Vector2i(0, 0)], [10, Vector2i(0, 0)], [11, Vector2i(1, 0)]]
+sources/3 = SubResource("TileSetAtlasSource_3brof")
+sources/1 = SubResource("TileSetAtlasSource_tkcjf")
+sources/10 = SubResource("TileSetAtlasSource_4pjq3")
+sources/15 = SubResource("TileSetAtlasSource_qg202")
+tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [1, Vector2i(0, 0)], [8, Vector2i(0, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [8, Vector2i(0, 0)], [7, Vector2i(0, 0)], [8, Vector2i(1, 0)], [9, Vector2i(0, 0)], [11, Vector2i(0, 0)], [10, Vector2i(0, 0)], [11, Vector2i(1, 0)], [13, Vector2i(0, 0)], [15, Vector2i(0, 0)], [14, Vector2i(0, 0)], [15, Vector2i(1, 0)]]
 
 [sub_resource type="GDScript" id="GDScript_tkcjf"]
 script/source = "extends TileMapLayer
@@ -586,6 +602,7 @@ text = "  X  "
 visible = true
 
 [node name="ButtonTesteCompra" type="Button" parent="." unique_id=1621438957]
+visible = false
 offset_left = 50.0
 offset_top = 175.0
 offset_right = 120.0
@@ -594,6 +611,7 @@ text = "Compra
 "
 
 [node name="ButtonTesteUpgrade" type="Button" parent="." unique_id=1858005919]
+visible = false
 offset_left = 53.0
 offset_top = 221.0
 offset_right = 128.0
@@ -602,6 +620,7 @@ text = "Upgrade
 "
 
 [node name="TesteTroca" type="Button" parent="." unique_id=561321752]
+visible = false
 offset_left = 24.0
 offset_top = 260.0
 offset_right = 193.0
@@ -609,6 +628,7 @@ offset_bottom = 291.0
 text = "Trocar sprite de casa"
 
 [node name="ButtonTestePausa" type="Button" parent="." unique_id=697155415]
+visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -618,6 +638,7 @@ grow_horizontal = 0
 text = "Pausa"
 
 [node name="DesastreButton" type="Button" parent="." unique_id=1984064466]
+visible = false
 offset_left = 1047.0
 offset_top = 386.0
 offset_right = 1176.0
@@ -655,7 +676,7 @@ debug_color = Color(0.8032692, 0.35889444, 0.56552446, 0.41960785)
 [node name="Zona_Funções" parent="." unique_id=825916287 instance=ExtResource("15_tkcjf")]
 nome_zona = "Zona Servicos"
 categorias_permitidas = Array[String](["Funções"])
-edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr")])
+edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr"), ExtResource("22_gjpgg")])
 limite_maximo_edificios = 3
 
 [node name="CollisionShape2D" parent="Zona_Funções" index="0" unique_id=711131371]

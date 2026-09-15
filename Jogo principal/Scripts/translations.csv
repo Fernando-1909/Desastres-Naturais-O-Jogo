@@ -50,6 +50,11 @@ PREDIO_PREFEITURA_NOME,"Prefeitura","City Hall"
 PREDIO_PREFEITURA_DESC,"Sede administrativa da cidade. Libera novas áreas e projetos.","City administrative headquarters. Unlocks new areas and projects."
 PREDIO_PREFEITURA_DETALHES,"O centro de comando da sua cidade. Aumentar o nível da prefeitura permite construir edifícios mais avançados e expandir os limites do mapa.","Your city's command center. Upgrading the city hall allows you to build more advanced structures and expand map borders."
 
+# Estação de Tratamento
+PREDIO_ESTACAO_TRATAMENTO_NOME,"Estação de Tratamento","Treatment Plant"
+PREDIO_ESTACAO_TRATAMENTO_DESC,"Unidade central de infraestrutura hídrica para controle de enchentes na cidade.","Central water infrastructure facility for flood control in the city."
+PREDIO_ESTACAO_TRATAMENTO_DETALHES,"Atua como a matriz operacional do sistema de drenagem urbana. A Estação de Tratamento processa o volume hídrico e habilita o funcionamento de todas as Bombas de Drenagem ativas no mapa, permitindo a redução direta do dano e da área de inundação das enchentes. Se esta estrutura for destruída ou desativada, as bombas perdem a capacidade de mitigação.","Acts as the operational hub of the urban drainage system. The Treatment Plant processes water volume and enables all active Drainage Pumps across the map, allowing direct reduction of flood damage and inundation area. If this facility is destroyed or disabled, pumps lose their mitigation capacity."
+
 # --- ABRIGO E SOCORRO ---
 # Abrigo Comunitário
 PREDIO_ABRIGO_NOME,"Abrigo Comunitário","Community Shelter"
