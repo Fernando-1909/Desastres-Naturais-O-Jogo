@@ -61,7 +61,7 @@ func _on_button_turno_pressed() -> void:
 	# direto pra tela de Game Over e nem processa renda/desastres/missões.
 	if main_game and "turno_final" in main_game and Global.turno > main_game.turno_final:
 		print("[FIM DE JOGO] Turno ", Global.turno, " > turno final (", main_game.turno_final, "). Indo para Game Over.")
-		get_tree().change_scene_to_file("res://Jogo principal/UI/game_over.tscn")
+		get_tree().change_scene_to_file("res://Jogo principal/game_over.tscn")
 		return
 	
 	# Sistema de renda (dinheiro) — baseado na população da cidade.

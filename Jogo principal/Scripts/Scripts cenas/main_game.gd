@@ -118,6 +118,7 @@ func _ready() -> void:
 	_carregar_todos_os_edificios()
 	_carregar_todas_as_missoes()
 	# variaveis de teste para testar no inicio
+	Global.popularidade = 40
 	Global.dinheiro = 1000
 	Global.populacao = 10
 	
@@ -1282,6 +1283,16 @@ func processar_missao_no_turno() -> void:
 		Global.missao_atual_turnos = 0
 	
 	escolher_missao_aleatoria()
+	
+	_verificar_derrota()
+
+
+## Se a popularidade cair abaixo de 0, a população perdeu a confiança na
+## gestão e o jogo termina ali — vai direto pra tela de derrota.
+func _verificar_derrota() -> void:
+	if Global.popularidade < 0:
+		print("[FIM DE JOGO] Popularidade abaixo de 0 (", Global.popularidade, "). Indo para tela de derrota.")
+		get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
 
 
 # ==============================================================================
