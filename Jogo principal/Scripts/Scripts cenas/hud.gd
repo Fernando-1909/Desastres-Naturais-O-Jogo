@@ -125,6 +125,10 @@ func _on_recusar_missao_pressed() -> void:
 @onready var populacao_label: RichTextLabel = $PopulacaoContainer/HBoxContainer/PopulacaoLabel
 @onready var desabrigados_label: RichTextLabel = $DesabrigadosContainer/HBoxContainer/DesabrigadosLabel
 
+# ButtonMissaoCheck pode estar aninhado em algum container — busca em
+# qualquer profundidade da árvore, em vez de exigir que seja filho direto.
+@onready var button_missao_check: Button = find_child("ButtonMissaoCheck", true, false)
+
 
 func _process(_delta: float) -> void:
 	_update_dinheiro_label()
@@ -165,8 +169,6 @@ func _update_missao_info_label() -> void:
 	if missao_info_label == null:
 		return
 	if Global.missao_escolhida != null:
-		# O diálogo (Secretária/Tesoureiro) já rodou antes de abrir essa caixa.
-		# Aqui só mostramos a descrição curta da missão (campo "info" da .tres).
 		missao_info_label.text = str(Global.missao_escolhida.info)
 	else:
 		missao_info_label.text = ""
@@ -185,10 +187,10 @@ func _update_missao_recompensa_label() -> void:
 		missao_recompensa_label.text = ""
 
 func _update_button_missao_check() -> void:
-	if not has_node("ButtonMissaoCheck"):
+	if button_missao_check == null:
 		return
 	# O botão só aparece se existe uma missão ativa E ela já foi aceita
-	$ButtonMissaoCheck.visible = (Global.missao_escolhida != null and Global.missao_aceita)
+	button_missao_check.visible = (Global.missao_escolhida != null and Global.missao_aceita)
 
 
 func _on_button_missao_concluir_pressed() -> void:

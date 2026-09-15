@@ -489,6 +489,7 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 
 	if "moradores_desabrigados" in predio:
 		predio.moradores_desabrigados = true
+	Global.casas_destruidas += 1
 	_recalcular_recursos_resgate()
 
 	_aplicar_tile_destruido(predio)
@@ -1204,6 +1205,25 @@ func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
 		missao_container.visible = true
 
 
+## Abre a caixa de missão em modo só-consulta: mostra a informação da missão
+## aceita, mas esconde os botões de Aceitar/Recusar (HBoxContainer) e mostra
+## o botão de fechar (HBoxContainer2) no lugar deles.
+func abrir_checagem_missao() -> void:
+	if Global.missao_escolhida == null or not Global.missao_aceita:
+		return
+	if not hud or not hud.has_node("MissaoContainer"):
+		return
+	
+	_missao_check_aberta = true
+	
+	var missao_container = hud.get_node("MissaoContainer")
+	if missao_container.has_node("VBoxContainer/HBoxContainer"):
+		missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
+	if missao_container.has_node("VBoxContainer/HBoxContainer2"):
+		missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+	missao_container.visible = true
+
+
 func fechar_checagem_missao() -> void:
 	_missao_check_aberta = false
 	_fechar_container_missao()
@@ -1553,6 +1573,7 @@ func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:
 
 				var dano_final = dano * mult_dano
 				predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - dano_final)
+				Global.dano_total += dano_final
 				atingidos += 1
 				print("[ENCHENTE] Dano em ", pos, ": ", dano_final, " (Mult. Zona: x", mult_dano, ") | Vida: ", predio.durabilidade_atual)
 				_verificar_casa_destruida(predio)

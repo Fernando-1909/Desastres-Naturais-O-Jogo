@@ -21,6 +21,8 @@ signal idioma_alterado(novo_idioma: String)
 var aquecimento: int
 var enchente: int
 var nivel_enchente: int = 0   # Nível atual da enchente ativa (0 = nenhuma enchente ativa)
+var dano_total: float = 0.0   # Soma de todo o dano de infraestrutura já sofrido no jogo
+var casas_destruidas: int = 0 # Quantas construções chegaram a 0 de durabilidade
 
 # Variáveis de missões
 var missao_escolhida: MissionData = null
