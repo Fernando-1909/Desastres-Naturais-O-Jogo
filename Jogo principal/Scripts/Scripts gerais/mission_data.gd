@@ -26,4 +26,3 @@ extends Resource
 
 @export_group("Recompensa (se aceitar e concluir)")
 @export var popularidade: int = 0                     # Popularidade ganha ao concluir
-@export var bonus_populacao: int = 0                  # População extra ganha ao concluir

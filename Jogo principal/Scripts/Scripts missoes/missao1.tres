@@ -10,4 +10,3 @@ info = "A cidade sofreu vários princípios de incêndio recentemente, e ainda n
 custo = 400.0
 edificio_id_alvo = "bombeiros"
 popularidade = 20
-bonus_populacao = 8
