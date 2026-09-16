@@ -804,8 +804,15 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		return
 
 	# 1. Validacao de Regras da Zona
+	var id_limpo = str(b_data.id).to_lower().strip_edges() if "id" in b_data and b_data.id != null else ""
 	var zona_atual = _obter_zona_no_tile(_celula_selecionada)
+	
 	if zona_atual:
+		# Bloqueia a construção caso a zona exija a Estação e ainda esteja bloqueada
+		if "desbloqueada" in zona_atual and not zona_atual.desbloqueada:
+			print("[ERRO] Esta zona precisa de uma Estação de Tratamento ativa para ser utilizada!")
+			return
+
 		if not zona_atual.pode_construir(b_data):
 			print("[ERRO] O edifício '", b_data.nome, "' não é permitido nesta zona!")
 			return
@@ -813,6 +820,10 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 		if not zona_atual.tem_vaga_disponivel(total_na_zona):
 			print("[ERRO] Limite máximo de edifícios nesta zona atingido!")
+			return
+	else:
+		if id_limpo == "bomba_drenagem" or "bomba" in id_limpo:
+			print("[ERRO] A bomba de drenagem só pode ser construída dentro da Zona do Rio!")
 			return
 
 	# 2. Validacao de Recursos
@@ -887,6 +898,10 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	else:
 		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
 	
+	# --- VERIFICADOR E DESBLOQUEIO DA ZONA DO RIO ---
+	if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
+		_ativar_terrenos_zona_rio()
+
 	_atualizar_sistema_drenagem()
 
 func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
@@ -904,6 +919,13 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	else:
 		print("[ERRO] Dinheiro insuficiente para upgrade!")
 
+
+func _ativar_terrenos_zona_rio() -> void:
+	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	for zona in zonas:
+		if zona is BuildingZone:
+			if zona.tipo_zona == "rio" or zona.precisa_estacao_tratamento:
+				zona.desbloquear_zona()
 
 func _on_tile_clicado(argument) -> void:
 	if typeof(argument) == TYPE_STRING:
@@ -1556,20 +1578,32 @@ func _spawnar_bomba_teste() -> void:
 		print("[ERRO] Nenhum TileMap ou TileMapLayer configurado!")
 		return
 
-	# 1. Tenta carregar o recurso da bomba
+	# 1. Carrega o recurso da bomba
 	var bomba_data = load("res://recursos/construcoes/bomba_drenagem.tres") as BuildingData
 	if not bomba_data:
 		bomba_data = _buscar_data_por_id("bomba_drenagem")
 
-	# Trava de segurança: impede o crash se o recurso não for encontrado
 	if not bomba_data:
-		print("[ERRO] Recurso da bomba não encontrado! Verifique o caminho do arquivo .tres ou a busca por ID.")
+		print("[ERRO] Recurso da bomba não encontrado!")
 		return
 
 	var pos_mouse = get_global_mouse_position()
 	var pos_tile: Vector2i = tm.local_to_map(tm.to_local(pos_mouse))
+	var pos_global: Vector2 = tm.to_global(tm.map_to_local(pos_tile))
 
-	# 2. Cria a instância com dados válidos
+	# 2. Valida se a posição atual está dentro de uma zona permitida
+	var dentro_de_zona_valida: bool = false
+	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+		if zona is BuildingZone:
+			if zona.contem_posicao_global(pos_global) and zona.pode_construir(bomba_data):
+				dentro_de_zona_valida = true
+				break
+
+	if not dentro_de_zona_valida:
+		print("[BLOQUEADO] A bomba de drenagem só pode ser construída na Zona do Rio!")
+		return
+
+	# 3. Instancia a bomba no mapa
 	var nova_bomba = BuildingInstance.new(bomba_data, pos_tile)
 	if "durabilidade_maxima" in bomba_data:
 		nova_bomba.durabilidade_atual = bomba_data.durabilidade_maxima
@@ -1578,14 +1612,17 @@ func _spawnar_bomba_teste() -> void:
 
 	construcoes_no_mapa[pos_tile] = nova_bomba
 
-	# 3. Renderiza no mapa
+	# 4. Renderiza visualmente
+	var source_id: int = bomba_data.source_id
+	var atlas_coords: Vector2i = bomba_data.get_atlas_coord_para_construir()
+
 	if tm is TileMapLayer:
-		tm.set_cell(pos_tile, 0, Vector2i(2, 4))
+		tm.set_cell(pos_tile, source_id, atlas_coords)
 	elif tm is TileMap:
-		tm.set_cell(0, pos_tile, 0, Vector2i(2, 4))
+		tm.set_cell(0, pos_tile, source_id, atlas_coords)
 
 	_atualizar_sistema_drenagem()
-	print("Bomba de teste adicionada no tile: ", pos_tile)
+	print("Bomba de teste adicionada na Zona do Rio | Tile: ", pos_tile)
 	print("Nova mitigação da enchente: ", _calcular_mitigacao_enchente() * 100.0, "%")
 
 
