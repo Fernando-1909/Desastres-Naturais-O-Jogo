@@ -46,7 +46,7 @@ text = "❌"
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_vertical = 3
-text = "Missão!"
+text = "Missão concluída!"
 
 [node name="MissaoInfo" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=1201003855]
 custom_minimum_size = Vector2(0, 50)

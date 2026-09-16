@@ -18,7 +18,10 @@ offset_top = 18.0
 offset_right = 779.0
 offset_bottom = 124.0
 theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
 text = "Fim de jogo!"
+fit_content = true
+scroll_active = false
 
 [node name="Agradecimento" type="RichTextLabel" parent="." unique_id=1475967336]
 layout_mode = 0
@@ -27,7 +30,10 @@ offset_top = 558.0
 offset_right = 677.0
 offset_bottom = 604.0
 theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
 text = "Obrigado por jogar!"
+fit_content = true
+scroll_active = false
 horizontal_alignment = 1
 
 [node name="DefeatMessage" type="RichTextLabel" parent="." unique_id=1817242701]
@@ -37,7 +43,10 @@ offset_top = 119.0
 offset_right = 1000.0
 offset_bottom = 462.0
 theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
 text = "Mensagem de derrota"
+fit_content = true
+scroll_active = false
 horizontal_alignment = 1
 
 [node name="Timer" type="Timer" parent="." unique_id=1732634397]

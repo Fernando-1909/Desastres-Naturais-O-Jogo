@@ -946,6 +946,9 @@ func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
 	
 	print("[MISSÃO SUCESSO] '", missao.nome, "' concluída ao construir '", b_data.nome, "'!")
 	
+	# Guarda a missão concluída pra tela de confirmação (ver hud.gd)
+	ultima_missao_concluida = missao
+	
 	# Reseta os estados de missão
 	Global.missao_escolhida = null
 	Global.missao_aceita = false
@@ -1259,6 +1262,11 @@ func escolher_missao_aleatoria():
 # ==============================================================================
 var _missao_check_aberta := false
 
+# Guarda a última missão concluída, pra podermos mostrar "Missão concluída:
+# <nome>" na tela de confirmação mesmo depois de Global.missao_escolhida
+# já ter sido zerado (ver hud.gd -> _update_missao_info_label / _update_missao_recompensa_label).
+var ultima_missao_concluida: MissionData = null
+
 
 func aceitar_missao() -> void:
 	if Global.missao_escolhida == null:
@@ -1321,10 +1329,25 @@ func concluir_missao() -> void:
 		print("População: +", missao.bonus_populacao)
 	print("Restante -> Dinheiro: ", Global.dinheiro)
 	
+	# Guarda a missão concluída pra tela de confirmação (ver hud.gd)
+	ultima_missao_concluida = missao
+	
 	Global.missao_escolhida = null
 	Global.missao_aceita = false
 	Global.missao_atual_turnos = 0
 	Global.chance_missao = 30
+	
+	# Mostra a tela de confirmação com "Missão concluída: <nome>", em vez de
+	# simplesmente fechar o container sem feedback nenhum.
+	_fechar_container_missao()
+	if hud and hud.has_node("MissaoContainer"):
+		_missao_check_aberta = true
+		var missao_container = hud.get_node("MissaoContainer")
+		if missao_container.has_node("VBoxContainer/HBoxContainer"):
+			missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
+		if missao_container.has_node("VBoxContainer/HBoxContainer2"):
+			missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+		missao_container.visible = true
 
 
 func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
@@ -1357,6 +1380,9 @@ func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
 		Global.turnos_sem_missao.erase(missao.id)
 	
 	print("[MISSÃO] '", missao.nome, "' concluída automaticamente ao construir '", b_data.nome, "'!")
+	
+	# Guarda a missão concluída pra tela de confirmação (ver hud.gd)
+	ultima_missao_concluida = missao
 	
 	Global.missao_escolhida = null
 	Global.missao_aceita = false

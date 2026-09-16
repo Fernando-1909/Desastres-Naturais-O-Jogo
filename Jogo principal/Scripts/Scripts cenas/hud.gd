@@ -120,6 +120,7 @@ func _on_recusar_missao_pressed() -> void:
 @onready var dinheiro_label: RichTextLabel = $DinheiroContainer/HBoxContainer/DinheiroLabel
 @onready var turno_label: RichTextLabel = $TurnoContainer/HBoxContainer/TurnoLabel
 @onready var popularidade_label: RichTextLabel = $PopularidadeContainer/HBoxContainer/PopularidadeLabel
+@onready var missao_titulo_label: RichTextLabel = $MissaoContainer/VBoxContainer/Missaolabel
 @onready var missao_info_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoInfo
 @onready var missao_recompensa_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoRecompensa
 @onready var populacao_label: RichTextLabel = $PopulacaoContainer/HBoxContainer/PopulacaoLabel
@@ -134,6 +135,7 @@ func _process(_delta: float) -> void:
 	_update_dinheiro_label()
 	_update_turno_label()
 	_update_popularidade_label()
+	_update_missao_titulo_label()
 	_update_missao_info_label()
 	_update_missao_recompensa_label()
 	_update_button_missao_check()
@@ -165,11 +167,23 @@ func _update_popularidade_label() -> void:
 		return
 	popularidade_label.text = str("Popularidade: ", str(Global.popularidade)) + "%"
 
+func _update_missao_titulo_label() -> void:
+	if missao_titulo_label == null:
+		return
+	if _missao_recem_concluida() != null:
+		missao_titulo_label.text = "Missão concluída!"
+	elif Global.missao_escolhida != null:
+		missao_titulo_label.text = "Missão!"
+	else:
+		missao_titulo_label.text = "Missão!"
+
 func _update_missao_info_label() -> void:
 	if missao_info_label == null:
 		return
 	if Global.missao_escolhida != null:
 		missao_info_label.text = str(Global.missao_escolhida.info)
+	elif _missao_recem_concluida() != null:
+		missao_info_label.text = "Missão concluída: " + str(_missao_recem_concluida().nome)
 	else:
 		missao_info_label.text = ""
 
@@ -183,8 +197,26 @@ func _update_missao_recompensa_label() -> void:
 		if "bonus_populacao" in m and m.bonus_populacao > 0:
 			texto += "\nPopulação: +" + str(m.bonus_populacao)
 		missao_recompensa_label.text = texto
+	elif _missao_recem_concluida() != null:
+		var m = _missao_recem_concluida()
+		var texto = "Popularidade: +" + str(m.popularidade)
+		if "bonus_populacao" in m and m.bonus_populacao > 0:
+			texto += "\nPopulação: +" + str(m.bonus_populacao)
+		missao_recompensa_label.text = texto
 	else:
 		missao_recompensa_label.text = ""
+
+# Só considera a missão como "recém-concluída" enquanto a tela de
+# confirmação (HBoxContainer2 dentro do MissaoContainer) estiver aberta —
+# ou seja, entre a conclusão e o jogador clicar em fechar.
+func _missao_recem_concluida() -> MissionData:
+	if main_game == null:
+		return null
+	if not ("_missao_check_aberta" in main_game) or not main_game._missao_check_aberta:
+		return null
+	if not ("ultima_missao_concluida" in main_game):
+		return null
+	return main_game.ultima_missao_concluida
 
 func _update_button_missao_check() -> void:
 	if button_missao_check == null:
