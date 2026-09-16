@@ -5,7 +5,7 @@ extends Node2D
 # ==============================================================================
 @onready var player_camera = $Player/Camera2D
 @onready var freecam_camera = $FreeCamera2D
-@onready var hud = $CanvasLayer/Hud
+@onready var hud = $CanvasLayer/Ui
 @onready var menu_pausa: MenuPausa = $MenuPausa
 
 # Referência à cena de diálogos, já instanciada na árvore. Em vez de um

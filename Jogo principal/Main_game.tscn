@@ -5,12 +5,12 @@
 [ext_resource type="Texture2D" uid="uid://ds87osgiqay5b" path="res://Jogo principal/tilesheets/Prefeitura_level_1.png" id="3_i63ni"]
 [ext_resource type="Texture2D" uid="uid://skw0w28d2se7" path="res://Jogo principal/tilesheets/Tilesheet_Cons.png" id="4_botex"]
 [ext_resource type="Texture2D" uid="uid://b2fqehi7wkwks" path="res://Jogo principal/tilesheets/Sombra.png" id="4_fj0mr"]
-[ext_resource type="PackedScene" uid="uid://cb7r1e8nan7ka" path="res://Jogo principal/UI/HUD.tscn" id="4_w688r"]
 [ext_resource type="Texture2D" uid="uid://d0q1wqnavhphj" path="res://Casas.png" id="5_a6fgx"]
 [ext_resource type="Texture2D" uid="uid://cumrysl7bg33e" path="res://Jogo principal/tilesheets/TrocaPlaceholder.png" id="7_2cq4x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
 [ext_resource type="Texture2D" uid="uid://d2sxwstgtywa4" path="res://Jogo principal/tilesheets/Terreno_construcao.png" id="8_fj0mr"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
+[ext_resource type="PackedScene" uid="uid://dfblr8ogepa0k" path="res://Jogo principal/UI/UI.tscn" id="10_bbp3t"]
 [ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
 [ext_resource type="PackedScene" uid="uid://2c2r30wkgw3n" path="res://Jogo principal/UI/building_zone.tscn" id="15_tkcjf"]
 [ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="16_fo8d0"]
@@ -533,7 +533,7 @@ script = SubResource("GDScript_tkcjf")
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2101390061]
 layer = 3
 
-[node name="Hud" parent="CanvasLayer" unique_id=364686226 instance=ExtResource("4_w688r")]
+[node name="Ui" parent="CanvasLayer" unique_id=13768816 instance=ExtResource("10_bbp3t")]
 
 [node name="BuildingHUD" parent="CanvasLayer" unique_id=1691753199 instance=ExtResource("7_botex")]
 

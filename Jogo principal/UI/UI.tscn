@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dfblr8ogepa0k"]
 
 [ext_resource type="Texture2D" uid="uid://5208k37kpkp7" path="res://Jogo principal/UI/Assets/allmenusprites.png" id="1_fmcfc"]
+[ext_resource type="Script" uid="uid://cmg5ypr4637en" path="res://Jogo principal/Scripts/Scripts cenas/ui.gd" id="1_xchpd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hgtue"]
 
@@ -36,24 +37,25 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_xchpd")
 
-[node name="CanvasUI" type="CanvasLayer" parent="." unique_id=1959308223]
-
-[node name="PainelExibição" type="PanelContainer" parent="CanvasUI" unique_id=864111286]
-offset_right = 200.0
+[node name="PainelExibição" type="PanelContainer" parent="." unique_id=864111286]
+layout_mode = 0
+offset_right = 892.0
 offset_bottom = 60.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_hgtue")
 
-[node name="Exibição" type="HBoxContainer" parent="CanvasUI/PainelExibição" unique_id=781331788]
+[node name="Exibição" type="HBoxContainer" parent="PainelExibição" unique_id=781331788]
 layout_mode = 2
 
-[node name="Dinheiro" type="NinePatchRect" parent="CanvasUI/PainelExibição/Exibição" unique_id=1205225060]
+[node name="Dinheiro" type="NinePatchRect" parent="PainelExibição/Exibição" unique_id=1205225060]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 2
 texture = SubResource("CompressedTexture2D_t6wq4")
 region_rect = Rect2(-0.14517975, 125.93373, 140.50888, 37.529434)
 
-[node name="Numero" type="RichTextLabel" parent="CanvasUI/PainelExibição/Exibição/Dinheiro" unique_id=1864070031]
+[node name="Numero" type="RichTextLabel" parent="PainelExibição/Exibição/Dinheiro" unique_id=1864070031]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 0
 offset_left = 45.0
@@ -64,13 +66,13 @@ theme_override_font_sizes/normal_font_size = 30
 text = "999999999"
 vertical_alignment = 1
 
-[node name="Popularidade" type="NinePatchRect" parent="CanvasUI/PainelExibição/Exibição" unique_id=1986681808]
+[node name="Popularidade" type="NinePatchRect" parent="PainelExibição/Exibição" unique_id=1986681808]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 2
 texture = SubResource("CompressedTexture2D_t6wq4")
 region_rect = Rect2(-0.7272606, 85.83722, 140.89966, 37.529434)
 
-[node name="Numero" type="RichTextLabel" parent="CanvasUI/PainelExibição/Exibição/Popularidade" unique_id=170140550]
+[node name="Numero" type="RichTextLabel" parent="PainelExibição/Exibição/Popularidade" unique_id=170140550]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 0
 offset_left = 55.0
@@ -81,14 +83,14 @@ theme_override_font_sizes/normal_font_size = 30
 text = "99999999"
 vertical_alignment = 1
 
-[node name="População" type="NinePatchRect" parent="CanvasUI/PainelExibição/Exibição" unique_id=526860094]
+[node name="População" type="NinePatchRect" parent="PainelExibição/Exibição" unique_id=526860094]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 2
 offset_transform_enabled = true
 texture = SubResource("CompressedTexture2D_t6wq4")
 region_rect = Rect2(0.82001495, 45.952682, 140.33588, 37.426605)
 
-[node name="Numero" type="RichTextLabel" parent="CanvasUI/PainelExibição/Exibição/População" unique_id=1691916487]
+[node name="Numero" type="RichTextLabel" parent="PainelExibição/Exibição/População" unique_id=1691916487]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 0
 offset_left = 45.0
@@ -99,14 +101,14 @@ theme_override_font_sizes/normal_font_size = 30
 text = "999999999"
 vertical_alignment = 1
 
-[node name="Desabrigados" type="NinePatchRect" parent="CanvasUI/PainelExibição/Exibição" unique_id=1835060316]
+[node name="Desabrigados" type="NinePatchRect" parent="PainelExibição/Exibição" unique_id=1835060316]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 2
 offset_transform_enabled = true
 texture = SubResource("AtlasTexture_bspta")
 region_rect = Rect2(0.11984253, 164.47923, 140.33588, 37.40094)
 
-[node name="Numero" type="RichTextLabel" parent="CanvasUI/PainelExibição/Exibição/Desabrigados" unique_id=437836959]
+[node name="Numero" type="RichTextLabel" parent="PainelExibição/Exibição/Desabrigados" unique_id=437836959]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 0
 offset_left = 45.0
@@ -117,7 +119,8 @@ theme_override_font_sizes/normal_font_size = 30
 text = "999999999"
 vertical_alignment = 1
 
-[node name="PainelBotoes" type="PanelContainer" parent="CanvasUI" unique_id=1135250201]
+[node name="PainelBotoes" type="PanelContainer" parent="." unique_id=1135250201]
+layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -126,23 +129,24 @@ offset_bottom = 60.0
 grow_horizontal = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_37yws")
 
-[node name="Botoes" type="HBoxContainer" parent="CanvasUI/PainelBotoes" unique_id=925209081]
+[node name="Botoes" type="HBoxContainer" parent="PainelBotoes" unique_id=925209081]
 layout_mode = 2
 alignment = 2
 
-[node name="MenuH" type="TextureButton" parent="CanvasUI/PainelBotoes/Botoes" unique_id=394040628]
+[node name="MenuH" type="TextureButton" parent="PainelBotoes/Botoes" unique_id=394040628]
 custom_minimum_size = Vector2(80, 60)
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_37yws")
 stretch_mode = 0
 
-[node name="Pausa" type="TextureButton" parent="CanvasUI/PainelBotoes/Botoes" unique_id=858040893]
+[node name="Pausa" type="TextureButton" parent="PainelBotoes/Botoes" unique_id=858040893]
 custom_minimum_size = Vector2(80, 60)
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_hgtue")
 stretch_mode = 0
 
-[node name="PainelTurnos" type="PanelContainer" parent="CanvasUI" unique_id=394342575]
+[node name="PainelTurnos" type="PanelContainer" parent="." unique_id=394342575]
+layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -154,23 +158,23 @@ grow_horizontal = 0
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_37yws")
 
-[node name="Turnos" type="HBoxContainer" parent="CanvasUI/PainelTurnos" unique_id=613444587]
+[node name="Turnos" type="HBoxContainer" parent="PainelTurnos" unique_id=613444587]
 layout_mode = 2
 alignment = 2
 
-[node name="PularTurno" type="TextureButton" parent="CanvasUI/PainelTurnos/Turnos" unique_id=445198342]
+[node name="PularTurno" type="TextureButton" parent="PainelTurnos/Turnos" unique_id=445198342]
 custom_minimum_size = Vector2(80, 60)
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_gdrsp")
 stretch_mode = 0
 
-[node name="Turno" type="NinePatchRect" parent="CanvasUI/PainelTurnos/Turnos" unique_id=1396184424]
+[node name="Turno" type="NinePatchRect" parent="PainelTurnos/Turnos" unique_id=1396184424]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 2
 offset_transform_enabled = true
 texture = SubResource("AtlasTexture_gp8g6")
 
-[node name="Numero" type="RichTextLabel" parent="CanvasUI/PainelTurnos/Turnos/Turno" unique_id=809114242]
+[node name="Numero" type="RichTextLabel" parent="PainelTurnos/Turnos/Turno" unique_id=809114242]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 0
 offset_left = 150.0
@@ -181,7 +185,7 @@ theme_override_font_sizes/normal_font_size = 30
 text = "999"
 vertical_alignment = 1
 
-[node name="Turno" type="RichTextLabel" parent="CanvasUI/PainelTurnos/Turnos/Turno" unique_id=1610462845]
+[node name="TurnoTexto" type="RichTextLabel" parent="PainelTurnos/Turnos/Turno" unique_id=1610462845]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 0
 offset_left = -15.0
@@ -192,3 +196,100 @@ theme_override_font_sizes/normal_font_size = 30
 text = "TURNO"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="MissaoContainer" type="PanelContainer" parent="." unique_id=398981937]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -153.0
+offset_top = -218.5
+offset_right = 153.0
+offset_bottom = 218.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MissaoContainer" unique_id=1636567380]
+layout_mode = 2
+theme_override_constants/separation = 35
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MissaoContainer/VBoxContainer" unique_id=315756901]
+visible = false
+layout_mode = 2
+layout_direction = 3
+
+[node name="MissaoClose" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer2" unique_id=662127343]
+layout_mode = 2
+text = "❌"
+
+[node name="Missaolabel" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=1177224926]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_vertical = 3
+text = "Missão!"
+
+[node name="MissaoInfo" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=1136737772]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+bbcode_enabled = true
+text = "Informação"
+fit_content = true
+scroll_active = false
+
+[node name="MissaoRecompensa" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=586251722]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+bbcode_enabled = true
+text = "awawaaa
+"
+fit_content = true
+scroll_active = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MissaoContainer/VBoxContainer" unique_id=1379370479]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 95
+
+[node name="AceitarMissao" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer" unique_id=846462766]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.8745098, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0.16470589, 0.6666667, 0.18039216, 1)
+theme_override_colors/font_hover_color = Color(0.105882354, 0.9882353, 0.05882353, 1)
+theme_override_colors/icon_normal_color = Color(0, 0.9882353, 0.2509804, 1)
+theme_override_font_sizes/font_size = 23
+text = "Aceitar"
+
+[node name="RecusarMissao" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer" unique_id=903564183]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8745098, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0.68573314, 8.4228816e-07, 3.85046e-07, 1)
+theme_override_colors/font_pressed_color = Color(0.62557507, 1.4318898e-06, 5.7756904e-07, 1)
+theme_override_colors/font_hover_color = Color(0.7330022, 1.6484782e-06, 3.85046e-07, 1)
+theme_override_font_sizes/font_size = 23
+text = "Recusar"
+
+[node name="ButtonMissaoCheck" type="Button" parent="." unique_id=1002366362]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -53.0
+offset_right = 117.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "Missão"
+
+[connection signal="pressed" from="PainelTurnos/Turnos/PularTurno" to="." method="_on_pular_turno_pressed"]
+[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]
+[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer/AceitarMissao" to="." method="_on_aceitar_missao_pressed"]
+[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer/RecusarMissao" to="." method="_on_recusar_missao_pressed"]
+[connection signal="pressed" from="ButtonMissaoCheck" to="." method="_on_button_missao_check_pressed"]

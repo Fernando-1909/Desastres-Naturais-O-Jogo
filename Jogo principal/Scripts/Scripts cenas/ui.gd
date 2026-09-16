@@ -1,8 +1,7 @@
 extends Control
 
 @onready var global = get_node("/root/Global")
-@onready var main_game = get_tree().current_scene
-
+@onready var main_game = get_tree().current_scene 
 
 signal toggle_freecam  # ← adiciona essa linha
 
@@ -48,7 +47,7 @@ func _on_button_mapa_pressed() -> void:
 	$MapOverlay.visible = !$MapOverlay.visible
 
 
-func _on_button_turno_pressed() -> void:
+func _on_pular_turno_pressed() -> void:
 	# Verifica se o jogo está pausado
 	if Global.jogo_pausado:
 		print("Jogo pausado! Não é possível avançar o turno.")
@@ -117,13 +116,13 @@ func _on_recusar_missao_pressed() -> void:
 
 
 # Labels
-@onready var dinheiro_label: RichTextLabel = $DinheiroContainer/HBoxContainer/DinheiroLabel
-@onready var turno_label: RichTextLabel = $TurnoContainer/HBoxContainer/TurnoLabel
-@onready var popularidade_label: RichTextLabel = $PopularidadeContainer/HBoxContainer/PopularidadeLabel
+@onready var dinheiro_label: RichTextLabel = $PainelExibição/Exibição/Dinheiro/Numero
+@onready var turno_label: RichTextLabel = $PainelTurnos/Turnos/Turno/Numero
+@onready var popularidade_label: RichTextLabel = $PainelExibição/Exibição/Popularidade/Numero
 @onready var missao_info_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoInfo
 @onready var missao_recompensa_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoRecompensa
-@onready var populacao_label: RichTextLabel = $PopulacaoContainer/HBoxContainer/PopulacaoLabel
-@onready var desabrigados_label: RichTextLabel = $DesabrigadosContainer/HBoxContainer/DesabrigadosLabel
+@onready var populacao_label: RichTextLabel = $PainelExibição/Exibição/População/Numero
+@onready var desabrigados_label: RichTextLabel = $PainelExibição/Exibição/Desabrigados/Numero
 
 # ButtonMissaoCheck pode estar aninhado em algum container — busca em
 # qualquer profundidade da árvore, em vez de exigir que seja filho direto.
@@ -148,22 +147,22 @@ func _update_dinheiro_label() -> void:
 func _update_desabrigados_label() -> void:
 	if desabrigados_label == null:
 		return
-	desabrigados_label.text = "Desabrigados: %s" % str(Global.pessoas_desabrigadas)
+	desabrigados_label.text = "%s" % str(Global.pessoas_desabrigadas)
 	
 func _update_populacao_label() -> void:
 	if populacao_label == null:
 		return
-	populacao_label.text = "População: %s" % str(Global.populacao)
+	populacao_label.text = "%s" % str(Global.populacao)
 
 func _update_turno_label() -> void:
 	if turno_label == null:
 		return
-	turno_label.text = "Turno: %s" % str(Global.turno)
+	turno_label.text = "%s" % str(Global.turno)
 
 func _update_popularidade_label() -> void:
 	if popularidade_label == null:
 		return
-	popularidade_label.text = str("Popularidade: ", str(Global.popularidade)) + "%"
+	popularidade_label.text = str(str(Global.popularidade)) + "%"
 
 func _update_missao_info_label() -> void:
 	if missao_info_label == null:
