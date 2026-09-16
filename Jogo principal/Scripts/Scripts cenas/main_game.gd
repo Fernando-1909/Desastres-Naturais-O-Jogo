@@ -95,6 +95,8 @@ var zona_por_tile: Dictionary = {}
 # Chave = BuildingZone | Valor = Array[Vector2i]
 var construcoes_por_zona: Dictionary = {}
 
+var _tiles_ocultos_zona_rio: Array[Dictionary] = []
+
 # Controle do lote/tile atualmente selecionado pelo clique do jogador
 var _celula_selecionada: Vector2i = Vector2i(-1, -1)
 var _building_data_selecionado: BuildingData = null
@@ -146,6 +148,9 @@ func _ready() -> void:
 
 	# Escaneia o mapa para registrar predios que ja vieram desenhados no editor
 	_escanear_mapa_inicial()
+	
+	# Oculta os terrenos vazios das zonas bloqueadas no início
+	_ocultar_terrenos_zona_bloqueada()
 	
 	_atualizar_sistema_drenagem()
 	
@@ -507,7 +512,9 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 		
 		_atualizar_npcs_por_populacao()
 		_instanciar_ponto_resgate(predio.posicao_tile, moradores)
-		_atualizar_sistema_drenagem()
+
+	# Atualiza o sistema de drenagem para qualquer estrutura destruída
+	_atualizar_sistema_drenagem()
 
 
 func _aplicar_tile_destruido(predio: BuildingInstance) -> void:
@@ -808,7 +815,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	var zona_atual = _obter_zona_no_tile(_celula_selecionada)
 	
 	if zona_atual:
-		# Bloqueia a construção caso a zona exija a Estação e ainda esteja bloqueada
 		if "desbloqueada" in zona_atual and not zona_atual.desbloqueada:
 			print("[ERRO] Esta zona precisa de uma Estação de Tratamento ativa para ser utilizada!")
 			return
@@ -837,6 +843,10 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	if b_data.bonus_populacao > 0:
 		Global.populacao += b_data.bonus_populacao
 		_atualizar_npcs_por_populacao()
+		
+		# Se não houver desastre ativo e existirem pessoas no abrigo, libera o espaço
+		if _enchente_ativa == null and Global.pessoas_abrigadas > 0:
+			_processar_retorno_abrigo_para_casas()
 
 	# 4. Registra a nova instancia na memoria do mapa
 	var nova_instancia = BuildingInstance.new(b_data, _celula_selecionada)
@@ -890,10 +900,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 			tile_map.set_cell(0, _celula_selecionada, source_id, novas_coords_atlas)
 		print("[INFO] ", b_data.nome, " (Variação ", variacao_index, ") construido com sucesso em ", _celula_selecionada)
 		
-		# Recalcula capacidade de abrigo e resgate com o novo prédio
 		_recalcular_recursos_resgate()
-
-		# 8. Checa se essa construção completa a missão ativa (se houver)
 		_verificar_missao_concluida_por_construcao(b_data)
 	else:
 		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
@@ -914,7 +921,12 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	if Global.dinheiro >= custo:
 		Global.dinheiro -= custo
 		predio.nivel_atual += 1
+		
+		# Atualiza os sistemas dinâmicos afetados por nível
 		_recalcular_recursos_resgate()
+		_atualizar_sistema_drenagem()
+		_atualizar_npcs_por_populacao()
+		
 		print("[INFO] ", predio.data.nome, " aprimorado para o nivel ", predio.nivel_atual)
 	else:
 		print("[ERRO] Dinheiro insuficiente para upgrade!")
@@ -927,6 +939,22 @@ func _ativar_terrenos_zona_rio() -> void:
 			if zona.tipo_zona == "rio" or zona.precisa_estacao_tratamento:
 				zona.desbloquear_zona()
 
+	# Restaura a visibilidade dos terrenos vazios previamente ocultados
+	var tm: Object = tilemap_constructions if tilemap_constructions else tile_map
+	if tm:
+		for item in _tiles_ocultos_zona_rio:
+			var pos: Vector2i = item["pos"]
+			var src_id: int = item["source_id"]
+			var coords: Vector2i = item["atlas_coords"]
+			
+			if tm is TileMapLayer:
+				tm.set_cell(pos, src_id, coords)
+			elif tm is TileMap:
+				tm.set_cell(0, pos, src_id, coords)
+		
+		_tiles_ocultos_zona_rio.clear()
+		
+		
 func _on_tile_clicado(argument) -> void:
 	if typeof(argument) == TYPE_STRING:
 		var id_string: String = argument
@@ -1030,6 +1058,41 @@ func _resetar_estado_construcoes() -> void:
 		for chave in Global.construcoes:
 			Global.construcoes[chave] = false
 
+
+
+func _processar_retorno_abrigo_para_casas() -> void:
+	# Só libera se o desastre acabou e se houver pessoas abrigadas
+	if _enchente_ativa != null or Global.pessoas_abrigadas <= 0:
+		return
+
+	# 1. Calcula a capacidade total de moradias intactas/construídas
+	var capacidade_casas_intactas: int = 0
+	for pos in construcoes_no_mapa.keys():
+		var inst: BuildingInstance = construcoes_no_mapa[pos]
+		if inst and inst.durabilidade_atual > 0 and inst.data:
+			var cat = str(inst.data.categoria).to_lower().strip_edges() if "categoria" in inst.data and inst.data.categoria != null else ""
+			var id_p = str(inst.data.id).to_lower().strip_edges() if "id" in inst.data and inst.data.id != null else ""
+			
+			if cat != "abrigo" and not "abrigo" in id_p and cat != "bombeiros":
+				if "bonus_populacao" in inst.data and inst.data.bonus_populacao > 0:
+					capacidade_casas_intactas += inst.data.bonus_populacao * (inst.nivel_atual if "nivel_atual" in inst else 1)
+
+	# 2. Vagas disponíveis = Capacidade total intacta - População alojada
+	var vagas_livres = max(0, capacidade_casas_intactas - Global.populacao)
+
+	# 3. Transfere as pessoas do abrigo para as moradias e atualiza o contador histórico
+	if vagas_livres > 0:
+		var liberados = min(Global.pessoas_abrigadas, vagas_livres)
+		Global.pessoas_abrigadas -= liberados
+		Global.populacao += liberados
+		
+		# Registra o histórico total de pessoas resgatadas que retornaram para casa
+		Global.total_pessoas_retornadas_casa += liberados
+		
+		_recalcular_recursos_resgate()
+		_atualizar_npcs_por_populacao()
+		
+		print("[ABRIGO] ", liberados, " pessoas saíram do abrigo! Total acumulado resgatado/retornado: ", Global.total_pessoas_retornadas_casa)
 
 # ==============================================================================
 # SISTEMA DE MISSOES
@@ -1420,7 +1483,7 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 		)
 
 func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
-	# 0. Impede a reconstrução se houver desastre ativo e exibe a tela de aviso de ponto_resgate
+	# 0. Impede a reconstrução se houver desastre ativo
 	if _enchente_ativa != null:
 		print("[RECONSTRUÇÃO BLOQUEADA] Impossível reconstruir durante um desastre ativo!")
 		if cena_ponto_resgate:
@@ -1445,24 +1508,63 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 	if typeof(Global) != TYPE_NIL and "dinheiro" in Global:
 		Global.dinheiro -= custo
 
-	# 2. Restaura a Durabilidade e o Estado de Desabrigados
+	# 2. Restaura a Durabilidade e o Estado da Estrutura
 	var instancia: BuildingInstance = construcoes_no_mapa[pos_tile]
 	var durabilidade_max = instancia.durabilidade_maxima if "durabilidade_maxima" in instancia else 100
 	instancia.durabilidade_atual = durabilidade_max
 	
-	# RESTAURA A FLAG PARA PERMITIR FUTURAS DESTRUIÇÕES
 	if "moradores_desabrigados" in instancia:
 		instancia.moradores_desabrigados = false
 
-	# 3. Restaura Visualmente no TileMap
+	# 3. Gerencia a População e a Desocupação do Abrigo
+	if instancia.data and "bonus_populacao" in instancia.data and instancia.data.bonus_populacao > 0:
+		if Global.pessoas_abrigadas > 0:
+			# Se houver desabrigados no abrigo, move-os de volta para esta casa restaurada
+			_processar_retorno_abrigo_para_casas()
+		else:
+			# Se o abrigo já estiver vazio, restaura a população original normalmente
+			var moradores = instancia.data.bonus_populacao
+			Global.populacao += moradores
+			_atualizar_npcs_por_populacao()
+
+	# 4. Restaura Visualmente no TileMap
 	_restaurar_tile_grafico(pos_tile, instancia)
 
-	# 4. Recalcula Redes de Resgate, Abrigos e Capacidade
+	# 5. Recalcula Redes de Resgate, Abrigos e Drenagem
 	_recalcular_recursos_resgate()
-	
 	_atualizar_sistema_drenagem()
 
 	print("[RECONSTRUÇÃO SUCESSO] Estrutura '", instancia.data.nome, "' reconstruída em ", pos_tile)
+
+
+func _ocultar_terrenos_zona_bloqueada() -> void:
+	_tiles_ocultos_zona_rio.clear()
+	var tm: Object = tilemap_constructions if tilemap_constructions else tile_map
+	if not tm:
+		return
+		
+	var celulas = tm.get_used_cells() if tm is TileMapLayer else tm.get_used_cells(0)
+	
+	for pos in celulas:
+		# Ignora células que já possuem edifícios construídos
+		if construcoes_no_mapa.has(pos):
+			continue
+			
+		var zona = _obter_zona_no_tile(pos)
+		if zona and "desbloqueada" in zona and not zona.desbloqueada:
+			var src_id = tm.get_cell_source_id(pos) if tm is TileMapLayer else tm.get_cell_source_id(0, pos)
+			var atlas_coords = tm.get_cell_atlas_coords(pos) if tm is TileMapLayer else tm.get_cell_atlas_coords(0, pos)
+			
+			_tiles_ocultos_zona_rio.append({
+				"pos": pos,
+				"source_id": src_id,
+				"atlas_coords": atlas_coords
+			})
+			
+			if tm is TileMapLayer:
+				tm.set_cell(pos, -1)
+			elif tm is TileMap:
+				tm.set_cell(0, pos, -1)
 
 
 func _restaurar_tile_grafico(pos_tile: Vector2i, instancia: BuildingInstance) -> void:
@@ -1704,6 +1806,8 @@ func _atualizar_sistema_drenagem() -> void:
 
 func _on_enchente_terminada() -> void:
 	_enchente_ativa = null
+	print("[DESASTRE] Enchente finalizada. Verificando retorno de desabrigados para casas...")
+	_processar_retorno_abrigo_para_casas()
 
 
 ## Verifica se é a hora de disparar a enchente automaticamente (turno_inicio_enchente),
