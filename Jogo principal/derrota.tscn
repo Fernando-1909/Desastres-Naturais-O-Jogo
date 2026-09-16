@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://u15j2r1duof8"]
+
+[ext_resource type="Script" uid="uid://b1qiuu7n7yi0o" path="res://Jogo principal/Scripts/Scripts cenas/derrota.gd" id="1_oc0lw"]
+
+[node name="Derrota" type="Control" unique_id=996712436]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_oc0lw")
+
+[node name="Fimdejogo" type="RichTextLabel" parent="." unique_id=328622291]
+layout_mode = 0
+offset_left = 451.0
+offset_top = 18.0
+offset_right = 779.0
+offset_bottom = 124.0
+theme_override_font_sizes/normal_font_size = 40
+text = "Fim de jogo!"
+
+[node name="Agradecimento" type="RichTextLabel" parent="." unique_id=1475967336]
+layout_mode = 0
+offset_left = 485.0
+offset_top = 558.0
+offset_right = 677.0
+offset_bottom = 604.0
+theme_override_font_sizes/normal_font_size = 25
+text = "Obrigado por jogar!"
+horizontal_alignment = 1
+
+[node name="DefeatMessage" type="RichTextLabel" parent="." unique_id=1817242701]
+layout_mode = 0
+offset_left = 125.0
+offset_top = 119.0
+offset_right = 1000.0
+offset_bottom = 462.0
+theme_override_font_sizes/normal_font_size = 25
+text = "Mensagem de derrota"
+horizontal_alignment = 1
+
+[node name="Timer" type="Timer" parent="." unique_id=1732634397]

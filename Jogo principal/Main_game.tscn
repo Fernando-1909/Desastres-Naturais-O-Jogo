@@ -652,7 +652,7 @@ visible = false
 visible = false
 
 [node name="Zona_Residencial" parent="." unique_id=514652450 instance=ExtResource("15_tkcjf")]
-position = Vector2(47, 53)
+position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
@@ -660,7 +660,7 @@ limite_maximo_edificios = 4
 multiplicador_dano_enchente = 1.5
 
 [node name="CollisionShape2D" parent="Zona_Residencial" index="0" unique_id=711131371]
-position = Vector2(502, 446.13675)
+position = Vector2(0, 0.98049927)
 
 [node name="Zona_Teste" parent="." unique_id=1463022229 instance=ExtResource("15_tkcjf")]
 position = Vector2(47, 53)
@@ -674,6 +674,7 @@ position = Vector2(852, 129)
 debug_color = Color(0.8032692, 0.35889444, 0.56552446, 0.41960785)
 
 [node name="Zona_Funções" parent="." unique_id=825916287 instance=ExtResource("15_tkcjf")]
+position = Vector2(0, -1)
 nome_zona = "Zona Servicos"
 categorias_permitidas = Array[String](["Funções"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr"), ExtResource("22_gjpgg")])

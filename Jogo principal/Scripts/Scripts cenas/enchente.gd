@@ -23,11 +23,16 @@ class_name Enchente
 @export var tile_size: Vector2 = Vector2(16, 16)
 
 ## Altura (em pixels) da faixa de dano no nível 1, sorteada dentro dessa faixa.
-## A largura da faixa é sempre igual à largura do AreaVisual.
 @export var altura_dano_min: float = 100.0
 @export var altura_dano_max: float = 150.0
 ## Quanto a altura da faixa aumenta a cada nível acima do 1 (nível 2: +200, nível 3: +400...)
 @export var aumento_altura_por_nivel: float = 200.0
+
+## Largura (X, em pixels) da faixa de dano em cada nível. Índice 0 = nível 1,
+## índice 1 = nível 2, índice 2 = nível 3, etc. Níveis além do array usam o
+## último valor da lista. A posição (borda esquerda) fica fixa — só a largura
+## cresce pra direita.
+@export var larguras_por_nivel: Array[float] = [169.0, 570.0, 1153.0]
 
 ## Dano de infraestrutura no nível 1
 @export var dano_infraestrutura: float = 25.0
@@ -154,7 +159,8 @@ func _gerar_area_grande_aleatoria() -> void:
 	area_visual.size = Vector2(largura, altura) * tile_size
 
 
-## Sorteia, uma ÚNICA vez (quando a enchente começa), a posição e a altura-base
+## Sorteia, uma ÚNICA vez (quando a enchente começa), a posição-base — agora a
+## borda INFERIOR, já que a faixa passou a crescer pra CIMA — e a altura-base
 ## da faixa de dano. A posição não muda mais depois disso — só o tamanho, à
 ## medida que o nível sobe. O cálculo já reserva espaço suficiente pra faixa
 ## crescer até o nível máximo sem estourar os limites do AreaVisual.
@@ -165,25 +171,37 @@ func _definir_area_fixa() -> void:
 	var nivel_maximo = 1 + int(max(duracao_turnos - 1, 0) / float(turnos_por_nivel))
 	var altura_maxima_possivel = _altura_base_fixa + (nivel_maximo - 1) * aumento_altura_por_nivel
 	
-	var y_min = area_visual.position.y
-	var y_max = area_visual.position.y + area_visual.size.y - altura_maxima_possivel
-	if y_max < y_min:
-		y_max = y_min  # segurança, caso a altura máxima já não caiba no AreaVisual
+	# _pos_fixa.y guarda a borda INFERIOR fixa (a faixa cresce pra cima a
+	# partir dela, não mais pra baixo a partir do topo)
+	var y_bottom_min = area_visual.position.y + altura_maxima_possivel
+	var y_bottom_max = area_visual.position.y + area_visual.size.y
+	if y_bottom_min > y_bottom_max:
+		y_bottom_min = y_bottom_max  # segurança, caso a altura máxima já não caiba no AreaVisual
 	
-	_pos_fixa = Vector2(area_visual.position.x, randf_range(y_min, y_max))
+	_pos_fixa = Vector2(area_visual.position.x, randf_range(y_bottom_min, y_bottom_max))
 
 
-## Atualiza só o TAMANHO (altura) da faixa de dano, de acordo com o nível atual
-## e a mitigação atual (ex: Bombas de Drenagem reduzem esse tamanho).
-## A posição (_pos_fixa) não muda mais depois de definida em _definir_area_fixa().
+## Atualiza o TAMANHO (largura e altura) da faixa de dano, de acordo com o
+## nível atual e a mitigação atual (ex: Bombas de Drenagem reduzem a altura).
+## A borda inferior (_pos_fixa.y) fica fixa — a faixa cresce pra CIMA (Y
+## diminuindo) conforme a altura aumenta, em vez de pra baixo.
 func _atualizar_tamanho_area_dano() -> void:
 	var altura_sem_mitigacao = _altura_base_fixa + (nivel_atual - 1) * aumento_altura_por_nivel
 	var altura = altura_sem_mitigacao * (1.0 - mitigacao_atual)
-	var largura = area_visual.size.x
+	var largura = _obter_largura_por_nivel(nivel_atual)
 	
-	area_dano.position = _pos_fixa
+	area_dano.position = Vector2(_pos_fixa.x, _pos_fixa.y - altura)
 	area_dano.size = Vector2(largura, altura)
 	area_dano.visible = true
+
+
+## Retorna a largura configurada pra esse nível em "larguras_por_nivel".
+## Níveis acima do tamanho da lista repetem o último valor cadastrado.
+func _obter_largura_por_nivel(nivel: int) -> float:
+	if larguras_por_nivel.is_empty():
+		return area_visual.size.x
+	var indice = clamp(nivel - 1, 0, larguras_por_nivel.size() - 1)
+	return larguras_por_nivel[indice]
 
 
 ## Converte a área de dano (em pixels) pra coordenadas de tile, guardando
