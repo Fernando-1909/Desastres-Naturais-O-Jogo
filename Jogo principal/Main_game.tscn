@@ -513,7 +513,6 @@ texture = ExtResource("8_cuk6r")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/custom_data_0 = true
-0:0/0/custom_data_2 = "terreno_vazio"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fj0mr"]
 texture = ExtResource("7_2cq4x")
@@ -535,8 +534,7 @@ texture = ExtResource("8_fj0mr")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/custom_data_0 = true
-0:0/0/custom_data_1 = "Infraestrutura"
-0:0/0/custom_data_2 = "bomba_drenagem"
+0:0/0/custom_data_2 = "terreno_vazio"
 
 [sub_resource type="TileSet" id="TileSet_3axm1"]
 tile_size = Vector2i(32, 32)
@@ -674,7 +672,7 @@ tile_set = SubResource("TileSet_l2221")
 [node name="TileMapConstructions" type="TileMapLayer" parent="." unique_id=639958366]
 z_index = 1
 texture_filter = 1
-tile_map_data = PackedByteArray("AAAWAAgAAQAAAAAAAAAYAAMACwAAAAAAAAAcAAUACwAAAAAAAAAUAAQACwAAAAAAAAANAA4ACwAAAAAAAAAQAA0ACwAAAAAAAAATAA4ACwAAAAAAAAAcAA0ACwAAAAAAAAAKAAkACwAAAAAAAAAKAAUADwAAAAAAAAAgAAQADwABAAAAAAAHAAQADwABAAAAAAAYAAwADwABAAAAAAA=")
+tile_map_data = PackedByteArray("AAAWAAgAAQAAAAAAAAAYAAMABQAAAAAAAAAcAAUABQAAAAAAAAAUAAQABQAAAAAAAAAQAA0ABQAAAAAAAAATAA4ABQAAAAAAAAAcAA0ABQAAAAAAAAAKAAkABQAAAAAAAAAKAAUABQAAAAAAAAAgAAQADwABAAAAAAAHAAQADwABAAAAAAAYAAwADwABAAAAAAAeAA8ABQAAAAAAAAANAA4ABQAAAAAAAAAfAAwABQAAAAAAAAA=")
 tile_set = SubResource("TileSet_3axm1")
 script = SubResource("GDScript_tkcjf")
 
