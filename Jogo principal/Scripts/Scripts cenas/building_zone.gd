@@ -28,6 +28,10 @@ class_name BuildingZone
 @export_group("Estado e Economia")
 ## Se falso, o jogador precisará comprar a zona antes de construir nela
 @export var desbloqueada_por_padrao: bool = true
+## Marca se esta zona exige a Estação de Tratamento para se tornar ativa
+@export var precisa_estacao_tratamento: bool = false
+## Nó pai (ex: Node2D ou TileMap) que agrupa os sprites de terreno vazio desta zona
+@export var container_terrenos_vazios: Node2D
 ## Custo para desbloquear esta zona durante a partida
 @export var custo_desbloqueio: int = 1000
 ## Multiplicador de renda/impostos dos prédios construídos aqui (ex: 1.2 = +20%)
@@ -45,9 +49,20 @@ class_name BuildingZone
 ## Multiplicador de dano de enchente (ex: 2.0 = dobro de dano, 0.0 = imune)
 @export var multiplicador_dano_enchente: float = 1.0
 
+var desbloqueada: bool = true
+
 
 func _ready() -> void:
 	add_to_group("zonas_construcao")
+	
+	if not Engine.is_editor_hint():
+		if precisa_estacao_tratamento:
+			desbloqueada = false
+			definir_visibilidade_terrenos(false)
+		else:
+			desbloqueada = desbloqueada_por_padrao
+			definir_visibilidade_terrenos(desbloqueada)
+
 	queue_redraw()
 
 
@@ -75,6 +90,19 @@ func _obter_collision_child() -> CollisionShape2D:
 	return null
 
 
+## Alterna a visibilidade do container de terrenos vazios
+func definir_visibilidade_terrenos(visivel: bool) -> void:
+	if container_terrenos_vazios:
+		container_terrenos_vazios.visible = visivel
+
+
+## Desbloqueia a zona e ativa os sprites de terrenos vazios
+func desbloquear_zona() -> void:
+	desbloqueada = true
+	definir_visibilidade_terrenos(true)
+	print("[ZONA] Zona '", nome_zona, "' foi desbloqueada com sucesso!")
+
+
 ## Verifica se uma posição global está dentro dos limites desta zona
 func contem_posicao_global(pos_global: Vector2) -> bool:
 	var space_state = get_world_2d().direct_space_state
@@ -92,6 +120,9 @@ func contem_posicao_global(pos_global: Vector2) -> bool:
 
 ## Valida se o prédio atende às regras da zona
 func pode_construir(b_data: BuildingData) -> bool:
+	if not desbloqueada:
+		return false
+
 	if b_data == null:
 		return false
 

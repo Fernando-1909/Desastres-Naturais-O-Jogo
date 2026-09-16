@@ -7,6 +7,7 @@ extends Node2D
 @onready var freecam_camera = $FreeCamera2D
 @onready var hud = $CanvasLayer/Ui
 @onready var menu_pausa: MenuPausa = $MenuPausa
+@onready var sistema_drenagem: SistemaDrenagem = $SistemaDrenagem
 
 # Referência à cena de diálogos, já instanciada na árvore. Em vez de um
 # caminho fixo (que pode não bater com a posição real dela na sua cena),
@@ -146,6 +147,8 @@ func _ready() -> void:
 	# Escaneia o mapa para registrar predios que ja vieram desenhados no editor
 	_escanear_mapa_inicial()
 	
+	_atualizar_sistema_drenagem()
+	
 	# Mapeia a capacidade de abrigo e equipes de bombeiros existentes no inicio
 	_recalcular_recursos_resgate()
 	
@@ -160,6 +163,7 @@ func _ready() -> void:
 		print("[DEBUG-DIALOGO] DialogueManager encontrado em: ", dialogue_manager.get_path())
 	else:
 		print("[AVISO] DialogueManager não encontrado na cena! Diálogos de missão não vão tocar.")
+
 
 
 ## Procura, em toda a árvore da cena, por um node que tenha o método
@@ -503,6 +507,7 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 		
 		_atualizar_npcs_por_populacao()
 		_instanciar_ponto_resgate(predio.posicao_tile, moradores)
+		_atualizar_sistema_drenagem()
 
 
 func _aplicar_tile_destruido(predio: BuildingInstance) -> void:
@@ -611,6 +616,12 @@ func _carregar_todas_as_missoes() -> void:
 # LEITURA DE CLIQUES NO MAPA E TECLAS DE ATALHO
 # ==============================================================================
 func _unhandled_input(event: InputEvent) -> void:
+	
+	# Pressione a tecla 'T' para spawnar uma bomba no local do mouse
+	if event is InputEventKey and event.pressed and event.keycode == KEY_T:
+		_spawnar_bomba_teste()
+		
+		
 	if event is InputEventKey and event.pressed and not event.echo:
 		# Tecla E para testar uma emergência no sistema de resgate
 		if event.keycode == KEY_E:
@@ -793,8 +804,15 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		return
 
 	# 1. Validacao de Regras da Zona
+	var id_limpo = str(b_data.id).to_lower().strip_edges() if "id" in b_data and b_data.id != null else ""
 	var zona_atual = _obter_zona_no_tile(_celula_selecionada)
+	
 	if zona_atual:
+		# Bloqueia a construção caso a zona exija a Estação e ainda esteja bloqueada
+		if "desbloqueada" in zona_atual and not zona_atual.desbloqueada:
+			print("[ERRO] Esta zona precisa de uma Estação de Tratamento ativa para ser utilizada!")
+			return
+
 		if not zona_atual.pode_construir(b_data):
 			print("[ERRO] O edifício '", b_data.nome, "' não é permitido nesta zona!")
 			return
@@ -802,6 +820,10 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 		if not zona_atual.tem_vaga_disponivel(total_na_zona):
 			print("[ERRO] Limite máximo de edifícios nesta zona atingido!")
+			return
+	else:
+		if id_limpo == "bomba_drenagem" or "bomba" in id_limpo:
+			print("[ERRO] A bomba de drenagem só pode ser construída dentro da Zona do Rio!")
 			return
 
 	# 2. Validacao de Recursos
@@ -875,7 +897,12 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		_verificar_missao_concluida_por_construcao(b_data)
 	else:
 		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
+	
+	# --- VERIFICADOR E DESBLOQUEIO DA ZONA DO RIO ---
+	if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
+		_ativar_terrenos_zona_rio()
 
+	_atualizar_sistema_drenagem()
 
 func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	if _celula_selecionada == Vector2i(-1, -1): return
@@ -892,6 +919,13 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	else:
 		print("[ERRO] Dinheiro insuficiente para upgrade!")
 
+
+func _ativar_terrenos_zona_rio() -> void:
+	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	for zona in zonas:
+		if zona is BuildingZone:
+			if zona.tipo_zona == "rio" or zona.precisa_estacao_tratamento:
+				zona.desbloquear_zona()
 
 func _on_tile_clicado(argument) -> void:
 	if typeof(argument) == TYPE_STRING:
@@ -1425,6 +1459,8 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 
 	# 4. Recalcula Redes de Resgate, Abrigos e Capacidade
 	_recalcular_recursos_resgate()
+	
+	_atualizar_sistema_drenagem()
 
 	print("[RECONSTRUÇÃO SUCESSO] Estrutura '", instancia.data.nome, "' reconstruída em ", pos_tile)
 
@@ -1532,13 +1568,138 @@ func _iniciar_enchente(duracao_customizada: int = -1) -> void:
 		Global.desastres["enchente"] += 1
 
 
-## Quanto a enchente ativa está sendo reduzida agora, com base na quantidade
-## de Bombas de Drenagem no mapa (id "bomba_drenagem"). Recalculado a cada
-## turno, então construir uma bomba NO MEIO da enchente já ajuda a partir do
-## próximo turno.
+# ==============================================================================
+# CORREÇÕES DO SISTEMA DE DRENAGEM E MITIGAÇÃO
+# ==============================================================================
+
+func _spawnar_bomba_teste() -> void:
+	var tm: Object = tilemap_constructions if tilemap_constructions else tile_map
+	if not tm:
+		print("[ERRO] Nenhum TileMap ou TileMapLayer configurado!")
+		return
+
+	# 1. Carrega o recurso da bomba
+	var bomba_data = load("res://recursos/construcoes/bomba_drenagem.tres") as BuildingData
+	if not bomba_data:
+		bomba_data = _buscar_data_por_id("bomba_drenagem")
+
+	if not bomba_data:
+		print("[ERRO] Recurso da bomba não encontrado!")
+		return
+
+	var pos_mouse = get_global_mouse_position()
+	var pos_tile: Vector2i = tm.local_to_map(tm.to_local(pos_mouse))
+	var pos_global: Vector2 = tm.to_global(tm.map_to_local(pos_tile))
+
+	# 2. Valida se a posição atual está dentro de uma zona permitida
+	var dentro_de_zona_valida: bool = false
+	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+		if zona is BuildingZone:
+			if zona.contem_posicao_global(pos_global) and zona.pode_construir(bomba_data):
+				dentro_de_zona_valida = true
+				break
+
+	if not dentro_de_zona_valida:
+		print("[BLOQUEADO] A bomba de drenagem só pode ser construída na Zona do Rio!")
+		return
+
+	# 3. Instancia a bomba no mapa
+	var nova_bomba = BuildingInstance.new(bomba_data, pos_tile)
+	if "durabilidade_maxima" in bomba_data:
+		nova_bomba.durabilidade_atual = bomba_data.durabilidade_maxima
+	else:
+		nova_bomba.durabilidade_atual = 100.0
+
+	construcoes_no_mapa[pos_tile] = nova_bomba
+
+	# 4. Renderiza visualmente
+	var source_id: int = bomba_data.source_id
+	var atlas_coords: Vector2i = bomba_data.get_atlas_coord_para_construir()
+
+	if tm is TileMapLayer:
+		tm.set_cell(pos_tile, source_id, atlas_coords)
+	elif tm is TileMap:
+		tm.set_cell(0, pos_tile, source_id, atlas_coords)
+
+	_atualizar_sistema_drenagem()
+	print("Bomba de teste adicionada na Zona do Rio | Tile: ", pos_tile)
+	print("Nova mitigação da enchente: ", _calcular_mitigacao_enchente() * 100.0, "%")
+
+
 func _calcular_mitigacao_enchente() -> float:
-	var quantidade_bombas = contar_construcoes_por_categoria("bomba_drenagem")
-	return min(quantidade_bombas * mitigacao_por_bomba, mitigacao_maxima_enchente)
+	# 1. Checa se existe uma Estação de Tratamento/Drenagem ativa e inteira
+	var tem_estacao: bool = false
+	var qtd_bombas: int = 0
+
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio and predio.durabilidade_atual > 0 and predio.data:
+			var id_predio = str(predio.data.id).to_lower().strip_edges()
+			if id_predio == "estacao_tratamento" or id_predio == "estacao_drenagem":
+				tem_estacao = true
+			elif id_predio == "bomba_drenagem" or "bomba" in id_predio:
+				qtd_bombas += 1
+
+	# Se a estação estiver destruída ou ausente, a mitigação zerará
+	if not tem_estacao:
+		return 0.0
+
+	# 2. Usa o sistema de drenagem como prioridade se disponível
+	if sistema_drenagem and sistema_drenagem.has_method("obter_multiplicador_dano"):
+		var mult_dano = sistema_drenagem.obter_multiplicador_dano()
+		var mitigacao = 1.0 - mult_dano
+		return clamp(mitigacao, 0.0, mitigacao_maxima_enchente)
+
+	# 3. Fallback: calcula diretamente com base nas variáveis exportadas
+	var mitigacao_total = float(qtd_bombas) * mitigacao_por_bomba
+	return clamp(mitigacao_total, 0.0, mitigacao_maxima_enchente)
+
+
+func _atualizar_sistema_drenagem() -> void:
+	if not sistema_drenagem:
+		return
+
+	# 1. Verifica se a estação principal está ativa
+	var tem_estacao: bool = false
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio and predio.durabilidade_atual > 0 and predio.data:
+			var id_predio = str(predio.data.id).to_lower().strip_edges()
+			if id_predio == "estacao_tratamento" or id_predio == "estacao_drenagem":
+				tem_estacao = true
+				break
+
+	sistema_drenagem.definir_estacao_construida(tem_estacao)
+
+	# 2. Se não houver estação ativa, desativa o efeito na enchente
+	if not tem_estacao:
+		if _enchente_ativa and _enchente_ativa.has_method("definir_mitigacao"):
+			_enchente_ativa.definir_mitigacao(0.0)
+		return
+
+	# 3. Sincroniza bombas ativas no mapa
+	if "_sprites_bombas" in sistema_drenagem:
+		for pos_tile in sistema_drenagem._sprites_bombas.keys():
+			if not construcoes_no_mapa.has(pos_tile) or construcoes_no_mapa[pos_tile].durabilidade_atual <= 0:
+				sistema_drenagem.remover_bomba_do_tile(pos_tile)
+
+		for pos_tile in construcoes_no_mapa.keys():
+			var predio: BuildingInstance = construcoes_no_mapa[pos_tile]
+			if predio and predio.durabilidade_atual > 0 and predio.data:
+				var id_predio = str(predio.data.id).to_lower().strip_edges()
+				if id_predio == "bomba_drenagem" or "bomba" in id_predio:
+					if not sistema_drenagem._sprites_bombas.has(pos_tile):
+						var pos_global = Vector2.ZERO
+						if tilemap_constructions:
+							pos_global = tilemap_constructions.to_global(tilemap_constructions.map_to_local(pos_tile))
+						elif tile_map:
+							pos_global = tile_map.to_global(tile_map.map_to_local(pos_tile))
+
+						sistema_drenagem.adicionar_bomba_no_tile(pos_tile, pos_global)
+
+	# 4. Atualiza a mitigação na enchente ativa
+	if _enchente_ativa and _enchente_ativa.has_method("definir_mitigacao"):
+		_enchente_ativa.definir_mitigacao(_calcular_mitigacao_enchente())
 
 
 func _on_enchente_terminada() -> void:
