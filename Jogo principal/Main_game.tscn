@@ -514,7 +514,6 @@ texture = ExtResource("8_cuk6r")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/custom_data_0 = true
-0:0/0/custom_data_2 = "terreno_vazio"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fj0mr"]
 texture = ExtResource("7_2cq4x")
@@ -536,8 +535,7 @@ texture = ExtResource("8_fj0mr")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 0:0/0/custom_data_0 = true
-0:0/0/custom_data_1 = "Infraestrutura"
-0:0/0/custom_data_2 = "bomba_drenagem"
+0:0/0/custom_data_2 = "terreno_vazio"
 
 [sub_resource type="TileSet" id="TileSet_3axm1"]
 tile_size = Vector2i(32, 32)
