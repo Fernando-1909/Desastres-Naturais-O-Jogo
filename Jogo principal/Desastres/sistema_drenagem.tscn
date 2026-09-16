@@ -5,6 +5,7 @@
 
 [node name="SistemaDrenagem" type="Node2D" unique_id=1457716148]
 script = ExtResource("1_l6bws")
+reducao_dano_por_bomba = 0.5
 texture_bomba = ExtResource("2_l50p5")
 
 [node name="ContainerBombas" type="Node2D" parent="." unique_id=284592939]
