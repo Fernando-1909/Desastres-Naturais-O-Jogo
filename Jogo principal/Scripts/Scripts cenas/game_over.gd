@@ -1,6 +1,5 @@
 extends Control
 @onready var game_over: Control = $"."
-@onready var info_vitoria: RichTextLabel = $InfoVitoria
 @onready var informações: RichTextLabel = $Informações
 @onready var info_desabrigados: RichTextLabel = $InfoDesabrigados
 @onready var info_casas_destruidas: RichTextLabel = $InfoCasasDestruidas
@@ -15,17 +14,6 @@ func _ready() -> void:
 
 func _montar_resumo() -> void:
 	# --- Avaliação geral, com base na popularidade final ---
-	if info_vitoria:
-		info_vitoria.text = _avaliar_gestao()
-
-	# --- Visão geral (turno final, dinheiro, população) ---
-	if informações:
-		informações.text = "[b]Turno final:[/b] %s\n[b]Dinheiro:[/b] %s\n[b]População:[/b] %s\n[b]Popularidade:[/b] %s%%" % [
-			str(Global.turno),
-			str(Global.dinheiro),
-			str(Global.populacao),
-			str(Global.popularidade)
-		]
 
 	# --- Pessoas desabrigadas ---
 	if info_desabrigados:

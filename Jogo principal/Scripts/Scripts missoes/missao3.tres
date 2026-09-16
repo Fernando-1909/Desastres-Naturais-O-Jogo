@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="MissionData" format=3]
+[gd_resource type="Resource" script_class="MissionData" format=3 uid="uid://c4txgfvw3iaar"]
 
-[ext_resource type="Script" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1"]
+[ext_resource type="Script" uid="uid://cjpjipeery1b5" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
@@ -8,5 +8,4 @@ id = "missao3"
 nome = "Sistema de Drenagem"
 info = "Depois da última enchente, várias casas ainda não se recuperaram de verdade. Construa um Sistema de Drenagem para reduzir os estragos da próxima chuva forte."
 custo = 700.0
-edificio_id_alvo = ""
 popularidade = 30
