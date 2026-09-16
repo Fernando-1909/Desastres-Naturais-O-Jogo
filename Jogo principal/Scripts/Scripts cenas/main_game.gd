@@ -400,6 +400,27 @@ func processar_resgate_ponto(qtd_vitimas: int) -> bool:
 	return false
 
 
+func processar_construcoes_no_turno() -> void:
+	for pos in construcoes_no_mapa.keys():
+		var instancia: BuildingInstance = construcoes_no_mapa[pos]
+		if instancia and "em_construcao" in instancia and instancia.em_construcao:
+			instancia.turnos_restantes -= 1
+			
+			if instancia.turnos_restantes <= 0:
+				instancia.em_construcao = false
+				
+				# Restaura visualmente no TileMap para o sprite final
+				_restaurar_tile_grafico(pos, instancia)
+				
+				# Recalcula sistemas e valida missões após a conclusão
+				_recalcular_recursos_resgate()
+				_atualizar_sistema_drenagem()
+				if instancia.data:
+					_verificar_conclusao_construcao(instancia.data)
+					
+				print("[SISTEMA] Obra concluída no tile: ", pos)
+
+
 func obter_capacidade_total_abrigos() -> int:
 	return total_capacidade_abrigo
 
@@ -672,10 +693,21 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	if not tela_compras: return
 	_celula_selecionada = pos_tile
 
-	# 1. Se já existe uma construção salva na memória -> Verifica a durabilidade
+	# 1. Se já existe uma construção salva na memória -> Verifica estado e durabilidade
 	if construcoes_no_mapa.has(pos_tile) and construcoes_no_mapa[pos_tile] != null:
 		var predio_existente: BuildingInstance = construcoes_no_mapa[pos_tile]
 		
+		# BLOQUEIO: Se a estrutura estiver em obra, exibe o aviso do sistema de resgate
+		if "em_construcao" in predio_existente and predio_existente.em_construcao:
+			if cena_ponto_resgate:
+				var aviso_temp = cena_ponto_resgate.instantiate()
+				add_child(aviso_temp)
+				var restam = predio_existente.turnos_restantes if "turnos_restantes" in predio_existente else 1
+				aviso_temp._mostrar_aviso("Esta estrutura está em construção! Restam " + str(restam) + " turno(s).")
+				if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+					aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
+			return
+
 		if predio_existente.durabilidade_atual <= 0:
 			if _enchente_ativa != null:
 				if cena_ponto_resgate:
@@ -713,7 +745,6 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	# 4. Tenta identificar o prédio pelo ID customizado ou pelas coordenadas no Atlas
 	var b_data: BuildingData = null
 	if building_id_custom == "terreno_vazio":
-		# Se é explicitamente terreno vazio, evita o fallback de busca por atlas
 		b_data = null
 	elif building_id_custom != "":
 		b_data = _buscar_data_por_id(building_id_custom)
@@ -837,13 +868,21 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 			print("[ERRO] A bomba de drenagem só pode ser construída dentro da Zona do Rio!")
 			return
 
-	# 2. Validacao de Recursos
-	if Global.dinheiro < b_data.custo_base:
-		print("[ERRO] Dinheiro insuficiente para comprar ", b_data.nome)
+	# 2. Validacao e Calculo Dinamico de Custo e Tempo de Construcao
+	var custo_final: int = b_data.custo_base if "custo_base" in b_data else 0
+	var tempo_construcao: int = b_data.tempo_construcao_turnos if "tempo_construcao_turnos" in b_data else 0
+
+	# Regra especial: Bomba de drenagem durante a enchente ativa
+	if (id_limpo == "bomba_drenagem" or "bomba" in id_limpo) and _enchente_ativa != null:
+		custo_final *= 2
+		tempo_construcao = 0
+
+	if Global.dinheiro < custo_final:
+		print("[ERRO] Dinheiro insuficiente para comprar ", b_data.nome, " (Custo: ", custo_final, ")")
 		return
 
 	# 3. Transacao
-	Global.dinheiro -= b_data.custo_base
+	Global.dinheiro -= custo_final
 	
 	if b_data.bonus_populacao > 0:
 		Global.populacao += b_data.bonus_populacao
@@ -852,10 +891,18 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		if _enchente_ativa == null and Global.pessoas_abrigadas > 0:
 			_processar_retorno_abrigo_para_casas()
 
-	# 4. Registra a nova instancia na memoria do mapa
+	# 4. Registra a nova instancia na memoria do mapa com controle de obras
 	var nova_instancia = BuildingInstance.new(b_data, _celula_selecionada)
 	if "variacao_index" in nova_instancia:
 		nova_instancia.variacao_index = variacao_index
+
+	var precisa_construir = tempo_construcao > 0
+	
+	if "em_construcao" in nova_instancia:
+		nova_instancia.em_construcao = precisa_construir
+	if "turnos_restantes" in nova_instancia:
+		nova_instancia.turnos_restantes = tempo_construcao if precisa_construir else 0
+
 	construcoes_no_mapa[_celula_selecionada] = nova_instancia
 
 	# Registro na Zona
@@ -866,48 +913,66 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		if not (construcoes_por_zona[zona_atual] as Array).has(_celula_selecionada):
 			(construcoes_por_zona[zona_atual] as Array).append(_celula_selecionada)
 
-	# 5. Obtem a coordenada atlas exata
+	# 5. Determina Sprite e Source ID (Modo Obra vs Modo Final)
 	var novas_coords_atlas: Vector2i = Vector2i(-1, -1)
-	if b_data.has_method("get_atlas_coord_para_construir"):
-		novas_coords_atlas = b_data.get_atlas_coord_para_construir(variacao_index)
-	elif "tiles_atlas_coords" in b_data and b_data.tiles_atlas_coords is Array and b_data.tiles_atlas_coords.size() > 0:
-		var idx = min(variacao_index, b_data.tiles_atlas_coords.size() - 1)
-		novas_coords_atlas = b_data.tiles_atlas_coords[idx]
-
-	# 6. Descobre o source_id de forma segura
 	var source_id: int = -1
-	if "source_id" in b_data and b_data.source_id >= 0:
-		source_id = b_data.source_id
+
+	if precisa_construir:
+		# Usa as coordenadas e source_id da textura de obra do resource .tres
+		if b_data.has_method("get_under_construction_source_id"):
+			source_id = b_data.get_under_construction_source_id()
+		elif "source_id" in b_data:
+			source_id = b_data.source_id
+
+		if "under_construction_tile_atlas_coords" in b_data:
+			novas_coords_atlas = b_data.under_construction_tile_atlas_coords
 	else:
-		if tilemap_constructions:
-			source_id = tilemap_constructions.get_cell_source_id(_celula_selecionada)
-		elif tile_map:
-			source_id = tile_map.get_cell_source_id(0, _celula_selecionada)
+		# Usa a coordenada padrão do edifício pronto
+		if b_data.has_method("get_atlas_coord_para_construir"):
+			novas_coords_atlas = b_data.get_atlas_coord_para_construir(variacao_index)
+		elif "tiles_atlas_coords" in b_data and b_data.tiles_atlas_coords is Array and b_data.tiles_atlas_coords.size() > 0:
+			var idx = min(variacao_index, b_data.tiles_atlas_coords.size() - 1)
+			novas_coords_atlas = b_data.tiles_atlas_coords[idx]
 
-		if source_id == -1:
-			var ts: TileSet = null
-			if tilemap_constructions and tilemap_constructions.tile_set:
-				ts = tilemap_constructions.tile_set
-			elif tile_map and tile_map.tile_set:
-				ts = tile_map.tile_set
+	# 6. Fallback seguro para o source_id caso não tenha sido preenchido
+	if source_id == -1:
+		if "source_id" in b_data and b_data.source_id >= 0:
+			source_id = b_data.source_id
+		else:
+			if tilemap_constructions:
+				source_id = tilemap_constructions.get_cell_source_id(_celula_selecionada)
+			elif tile_map:
+				source_id = tile_map.get_cell_source_id(0, _celula_selecionada)
 
-			if ts and ts.get_source_count() > 0:
-				source_id = ts.get_source_id(0)
-			else:
-				source_id = 0
+			if source_id == -1:
+				var ts: TileSet = null
+				if tilemap_constructions and tilemap_constructions.tile_set:
+					ts = tilemap_constructions.tile_set
+				elif tile_map and tile_map.tile_set:
+					ts = tile_map.tile_set
 
-	# 7. Troca o tile no mapa
+				if ts and ts.get_source_count() > 0:
+					source_id = ts.get_source_id(0)
+				else:
+					source_id = 0
+
+	# 7. Troca o tile no TileMap
 	if novas_coords_atlas != Vector2i(-1, -1):
 		if tilemap_constructions:
 			tilemap_constructions.set_cell(_celula_selecionada, source_id, novas_coords_atlas)
 		elif tile_map:
 			tile_map.set_cell(0, _celula_selecionada, source_id, novas_coords_atlas)
-		print("[INFO] ", b_data.nome, " (Variação ", variacao_index, ") construido com sucesso em ", _celula_selecionada)
+		
+		if precisa_construir:
+			print("[INFO] Obra de ", b_data.nome, " iniciada em ", _celula_selecionada, ". Conclusão em ", tempo_construcao, " turno(s).")
+		else:
+			print("[INFO] ", b_data.nome, " (Variação ", variacao_index, ") construído com sucesso em ", _celula_selecionada)
 		
 		_recalcular_recursos_resgate()
 		
-		# --- PASSO 3: Chamada para verificar o objetivo/missão da construção ---
-		_verificar_conclusao_construcao(b_data)
+		# Valida missões apenas se a construção não precisar aguardar turnos
+		if not precisa_construir:
+			_verificar_conclusao_construcao(b_data)
 	else:
 		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
 	
@@ -1506,12 +1571,18 @@ func _abrir_modo_compra_para_dados(b_data: BuildingData, variacao_index: int = 0
 	var cap_abrigo = b_data.capacidade_abrigo if "capacidade_abrigo" in b_data and b_data.capacidade_abrigo != null else 0
 	var eq_resgate = b_data.equipes_resgate if "equipes_resgate" in b_data and b_data.equipes_resgate != null else 0
 
+	# Exibe o custo ajustado na UI caso esteja em situação de desastre
+	var custo: int = b_data.custo_base if "custo_base" in b_data else 0
+	var id_limpo = str(b_data.id).to_lower().strip_edges() if "id" in b_data and b_data.id != null else ""
+	if (id_limpo == "bomba_drenagem" or "bomba" in id_limpo) and _enchente_ativa != null:
+		custo *= 2
+
 	tela_compras.abrir_modo_compra(
 		nome_exibicao,
 		cat_nome,
 		b_data.descricao_curta if "descricao_curta" in b_data else "",
 		b_data.bonus_populacao if "bonus_populacao" in b_data else 0,
-		b_data.custo_base if "custo_base" in b_data else 0,
+		custo,
 		tex,
 		b_data.texto_detalhes if "texto_detalhes" in b_data else "",
 		nome_exibicao,
@@ -1919,6 +1990,9 @@ func _verificar_inicio_automatico_de_enchente() -> void:
 
 
 func avancar_turno_desastres() -> void:
+	# Processa o progresso de todas as construções em andamento
+	processar_construcoes_no_turno()
+
 	_verificar_inicio_automatico_de_enchente()
 
 	if _enchente_ativa:
