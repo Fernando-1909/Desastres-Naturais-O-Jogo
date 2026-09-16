@@ -529,6 +529,7 @@ func _aplicar_tile_destruido(predio: BuildingInstance) -> void:
 		
 		if coords != Vector2i(-1, -1):
 			if tilemap_constructions:
+				
 				tilemap_constructions.set_cell(pos_tile, src_id, coords)
 			elif tile_map:
 				tile_map.set_cell(0, pos_tile, src_id, coords)
@@ -670,7 +671,6 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	if construcoes_no_mapa.has(pos_tile) and construcoes_no_mapa[pos_tile] != null:
 		var predio_existente: BuildingInstance = construcoes_no_mapa[pos_tile]
 		
-		# Se a durabilidade for 0 ou menor, tenta abrir a reconstrução
 		if predio_existente.durabilidade_atual <= 0:
 			if _enchente_ativa != null:
 				if cena_ponto_resgate:
@@ -683,55 +683,53 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 				
 			tela_compras.abrir_modo_reconstrucao(predio_existente, pos_tile)
 		else:
-			# Se estiver inteiro/com vida, abre a tela normal de upgrade
 			_abrir_modo_upgrade_instancia(predio_existente)
 		return
 
-	# 2. Busca o TileData
+	# 2. Busca o TileData e as coordenadas do atlas no TileMap
 	var tile_data: TileData = null
+	var atlas_coords: Vector2i = Vector2i(-1, -1)
 	if tilemap_constructions:
 		tile_data = tilemap_constructions.get_cell_tile_data(pos_tile)
+		atlas_coords = tilemap_constructions.get_cell_atlas_coords(pos_tile)
 	elif tile_map:
 		tile_data = tile_map.get_cell_tile_data(0, pos_tile)
+		atlas_coords = tile_map.get_cell_atlas_coords(0, pos_tile)
 
 	if tile_data == null: return
 
-	# 3. Lê as Custom Data Layers 'building_id'
+	# 3. Lê Custom Data Layer 'building_id'
 	var building_id_custom = ""
-	var raw_custom_id = tile_data.get_custom_data("building_id")
-	if raw_custom_id != null:
-		building_id_custom = str(raw_custom_id).strip_edges().to_lower()
+	if tile_data.has_custom_data("building_id"):
+		var raw_custom_id = tile_data.get_custom_data("building_id")
+		if raw_custom_id != null:
+			building_id_custom = str(raw_custom_id).strip_edges().to_lower()
 
-	# --------------------------------------------------------------------------
-	# CASO TERRENO VAZIO OU TILE DA ZONA -> ABRE O CATÁLOGO FILTRADO POR ZONA
-	# --------------------------------------------------------------------------
-	if building_id_custom == "terreno_vazio" or building_id_custom == "":
-		var zona_atual = _obter_zona_no_tile(pos_tile)
-		var lista_opcoes = _obter_edificios_para_zona(zona_atual)
-		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
+	# 4. Tenta identificar o prédio pelo ID customizado ou pelas coordenadas no Atlas
+	var b_data: BuildingData = null
+	if building_id_custom != "" and building_id_custom != "terreno_vazio":
+		b_data = _buscar_data_por_id(building_id_custom)
+	
+	if b_data == null and atlas_coords != Vector2i(-1, -1):
+		b_data = _buscar_data_por_atlas_coords(atlas_coords)
 
-		if zona_atual != null:
-			tela_compras.abrir_loja_com_zona(zona_atual, lista_opcoes, total_na_zona)
-		else:
-			tela_compras.abrir_modo_selecao(lista_opcoes)
+	# 5. Se o sprite pertence a um prédio válido no banco de dados, registra e abre upgrade
+	if b_data != null:
+		var nova_instancia = BuildingInstance.new(b_data, pos_tile)
+		construcoes_no_mapa[pos_tile] = nova_instancia
+		_building_data_selecionado = b_data
+		_abrir_modo_upgrade_instancia(nova_instancia)
 		return
 
-	# --------------------------------------------------------------------------
-	# CASO OUTRO PRÉDIO PRÉ-DEFINIDO (Ex: Prefeitura colocada previamente)
-	# --------------------------------------------------------------------------
-	var b_data: BuildingData = _buscar_data_por_id(building_id_custom)
-	if b_data != null:
-		_building_data_selecionado = b_data
-		_abrir_modo_compra_para_dados(b_data, 0)
-	else:
-		var zona_atual = _obter_zona_no_tile(pos_tile)
-		var lista_opcoes = _obter_edificios_para_zona(zona_atual)
-		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
+	# 6. Caso contrário, abre a loja para construir
+	var zona_atual = _obter_zona_no_tile(pos_tile)
+	var lista_opcoes = _obter_edificios_para_zona(zona_atual)
+	var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 
-		if zona_atual != null:
-			tela_compras.abrir_loja_com_zona(zona_atual, lista_opcoes, total_na_zona)
-		else:
-			tela_compras.abrir_modo_selecao(lista_opcoes)
+	if zona_atual != null:
+		tela_compras.abrir_loja_com_zona(zona_atual, lista_opcoes, total_na_zona)
+	else:
+		tela_compras.abrir_modo_selecao(lista_opcoes)
 
 
 func _obter_edificios_para_zona(zona: BuildingZone) -> Array[BuildingData]:
@@ -844,7 +842,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		Global.populacao += b_data.bonus_populacao
 		_atualizar_npcs_por_populacao()
 		
-		# Se não houver desastre ativo e existirem pessoas no abrigo, libera o espaço
 		if _enchente_ativa == null and Global.pessoas_abrigadas > 0:
 			_processar_retorno_abrigo_para_casas()
 
@@ -854,7 +851,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		nova_instancia.variacao_index = variacao_index
 	construcoes_no_mapa[_celula_selecionada] = nova_instancia
 
-	# --- REGISTRO NA ZONA ---
+	# Registro na Zona
 	if zona_atual:
 		zona_por_tile[_celula_selecionada] = zona_atual
 		if not construcoes_por_zona.has(zona_atual):
@@ -862,7 +859,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		if not (construcoes_por_zona[zona_atual] as Array).has(_celula_selecionada):
 			(construcoes_por_zona[zona_atual] as Array).append(_celula_selecionada)
 
-	# 5. Obtem a coordenada atlas exata da variação escolhida
+	# 5. Obtem a coordenada atlas exata
 	var novas_coords_atlas: Vector2i = Vector2i(-1, -1)
 	if b_data.has_method("get_atlas_coord_para_construir"):
 		novas_coords_atlas = b_data.get_atlas_coord_para_construir(variacao_index)
@@ -901,15 +898,64 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		print("[INFO] ", b_data.nome, " (Variação ", variacao_index, ") construido com sucesso em ", _celula_selecionada)
 		
 		_recalcular_recursos_resgate()
-		_verificar_missao_concluida_por_construcao(b_data)
+		
+		# --- PASSO 3: Chamada para verificar o objetivo/missão da construção ---
+		_verificar_conclusao_construcao(b_data)
 	else:
 		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
 	
-	# --- VERIFICADOR E DESBLOQUEIO DA ZONA DO RIO ---
+	# Desbloqueios e atualizações de drenagem
 	if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
 		_ativar_terrenos_zona_rio()
 
 	_atualizar_sistema_drenagem()
+
+
+func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
+	if Global.missao_escolhida == null or not Global.missao_aceita:
+		return
+	
+	if not ("edificio_id_alvo" in Global.missao_escolhida):
+		return
+	
+	var alvo = str(Global.missao_escolhida.edificio_id_alvo).strip_edges().to_lower()
+	var predio_construido = str(b_data.id).strip_edges().to_lower()
+	
+	if alvo == "" or alvo != predio_construido:
+		return
+	
+	var missao = Global.missao_escolhida
+	
+	# Aplica as recompensas da missão
+	Global.popularidade += missao.popularidade
+	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
+		Global.populacao += missao.bonus_populacao
+		_atualizar_npcs_por_populacao()
+	
+	# Registra a conclusão
+	Global.missoes_concluidas.append(missao.id)
+	if missao.id in Global.turnos_sem_missao:
+		Global.turnos_sem_missao.erase(missao.id)
+	
+	print("[MISSÃO SUCESSO] '", missao.nome, "' concluída ao construir '", b_data.nome, "'!")
+	
+	# Reseta os estados de missão
+	Global.missao_escolhida = null
+	Global.missao_aceita = false
+	Global.missao_atual_turnos = 0
+	Global.chance_missao = 30
+	
+	# Atualiza a interface
+	_fechar_container_missao()
+	if hud and hud.has_node("MissaoContainer"):
+		_missao_check_aberta = true
+		var missao_container = hud.get_node("MissaoContainer")
+		if missao_container.has_node("VBoxContainer/HBoxContainer"):
+			missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
+		if missao_container.has_node("VBoxContainer/HBoxContainer2"):
+			missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+		missao_container.visible = true
+
 
 func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	if _celula_selecionada == Vector2i(-1, -1): return
@@ -990,15 +1036,22 @@ func _registrar_predio_se_existir(pos: Vector2i, tile_data: TileData, atlas_coor
 	if not tile_data:
 		return
 	
-	var building_id_custom = str(tile_data.get_custom_data("building_id")).strip_edges().to_lower()
+	var building_id_custom = ""
+	if tile_data.has_custom_data("building_id"):
+		var raw_custom_id = tile_data.get_custom_data("building_id")
+		if raw_custom_id != null:
+			building_id_custom = str(raw_custom_id).strip_edges().to_lower()
 	
-	if building_id_custom == "terreno_vazio" or building_id_custom == "":
+	# Ignora apenas se for explicitamente marcado como terreno vazio
+	if building_id_custom == "terreno_vazio":
 		return
 
-	# 1. Busca primeiro pelo ID registrado na Custom Data Layer do TileMap
-	var b_data: BuildingData = _buscar_data_por_id(building_id_custom)
+	# 1. Tenta buscar pelo building_id do TileSet
+	var b_data: BuildingData = null
+	if building_id_custom != "":
+		b_data = _buscar_data_por_id(building_id_custom)
 	
-	# 2. Se não encontrar pelo ID, usa as coordenadas do atlas como fallback
+	# 2. Fallback: se o building_id não existir ou não estiver setado no TileSet, busca pelas coordenadas do Atlas
 	if not b_data:
 		b_data = _buscar_data_por_atlas_coords(atlas_coords)
 
@@ -1014,7 +1067,6 @@ func _registrar_predio_se_existir(pos: Vector2i, tile_data: TileData, atlas_coor
 		elif "tile_atlas_coords" in b_data and b_data.tile_atlas_coords == atlas_coords:
 			eh_tile_construido = true
 		elif building_id_custom != "":
-			# Se encontrou pelo ID customizado, confirma a vinculação
 			eh_tile_construido = true
 
 		if eh_tile_construido:

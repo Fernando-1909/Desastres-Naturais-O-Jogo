@@ -14,6 +14,12 @@ extends Resource
 @export var nivel_maximo: int = 1                     # Nível máximo
 @export var custo_base: float = 100.0                 # Preço de compra (dinheiro)
 
+@export_group("Tempo de Construção e Emergência")
+## Quantidade de turnos necessária para finalizar a obra (0 = instantâneo)
+@export var tempo_construcao_turnos: int = 1          
+## Multiplicador de custo quando comprado em modo de emergência (ex: bomba no desastre)
+@export var multiplicador_custo_emergencia: float = 1.5 
+
 @export_group("Descrições")
 @export_multiline var descricao_curta: String = ""    
 @export_multiline var texto_detalhes: String = ""    
@@ -37,6 +43,14 @@ extends Resource
 @export var tiles_atlas_coords: Array[Vector2i] = [] 
 @export var source_id: int = 4                       # ID da fonte no TileSet
 @export var tile_vazio_atlas_coords: Vector2i = Vector2i(-1, -1)
+
+@export_subgroup("Tile em Construção / Obra")
+## ID da fonte no TileSet para a versão em obra (se -1, reutiliza o source_id padrão)
+@export var under_construction_source_id: int = -1    
+## Coordenada atlas (x, y) do sprite de estrutura em construção
+@export var under_construction_tile_atlas_coords: Vector2i = Vector2i(-1, -1) 
+
+@export_subgroup("Tile Destruído")
 ## Configurações para a versão destruída da construção
 @export var destroyed_source_id: int = -1            # Se -1, reutiliza o source_id padrão
 @export var destroyed_tile_atlas_coords: Vector2i = Vector2i(-1, -1) # Posição (x, y) do tile destruído
@@ -76,8 +90,16 @@ func tem_tile_vazio() -> bool:
 	return tile_vazio_atlas_coords != Vector2i(-1, -1)
 
 
+func tem_tile_em_construcao() -> bool:
+	return under_construction_tile_atlas_coords != Vector2i(-1, -1)
+
+
 func tem_tile_destruido() -> bool:
 	return destroyed_tile_atlas_coords != Vector2i(-1, -1)
+
+
+func get_under_construction_source_id() -> int:
+	return under_construction_source_id if under_construction_source_id >= 0 else source_id
 
 
 func get_destroyed_source_id() -> int:

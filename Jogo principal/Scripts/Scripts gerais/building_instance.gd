@@ -7,12 +7,18 @@ var nivel_atual: int = 1       # Nível atual desta instância
 var durabilidade_atual: float  # Vida atual desta construção específica
 var moradores_desabrigados: bool = false  # true depois que os moradores desta casa já foram contados como desabrigados
 
+# Controle do estado de obra por turnos
+var em_construcao: bool = false
+var turnos_restantes: int = 0
+
 # Construtor da instância
 func _init(p_data: BuildingData, p_posicao: Vector2i) -> void:
 	data = p_data
 	posicao_tile = p_posicao
 	nivel_atual = 1
 	durabilidade_atual = p_data.durabilidade_maxima
+	em_construcao = false
+	turnos_restantes = 0
 
 # Calcula porcentagem de durabilidade (0.0 a 100.0)
 func get_durabilidade_pct() -> float:
