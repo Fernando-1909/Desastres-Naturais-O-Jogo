@@ -14,6 +14,7 @@ var pessoas_abrigadas: int = 0
 var capacidade_total_abrigo: int = 0
 var total_equipes_resgate: int = 0
 var total_pessoas_retornadas_casa: int = 0  # Contador acumulativo total
+var total_civis_resgatados: int = 0         # Contador acumulativo de vítimas levadas a abrigos
 
 # Sinal emitido sempre que o idioma do jogo e alterado
 signal idioma_alterado(novo_idioma: String)

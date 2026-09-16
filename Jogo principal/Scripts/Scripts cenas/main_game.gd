@@ -451,6 +451,8 @@ func abrigar_pessoas(quantidade: int) -> int:
 			Global.pessoas_abrigadas = abrigo_ocupado
 		if "pessoas_desabrigadas" in Global:
 			Global.pessoas_desabrigadas = max(0, Global.pessoas_desabrigadas - abrigadas)
+		if "total_civis_resgatados" in Global:
+			Global.total_civis_resgatados += abrigadas
 			
 	_recalcular_recursos_resgate()
 	print("[ABRIGO] ", abrigadas, " pessoas abrigadas. Ocupação total: ", abrigo_ocupado, "/", total_capacidade_abrigo)
@@ -594,7 +596,7 @@ func _carregar_todas_as_missoes() -> void:
 	banco_missoes.clear()
 	
 	for m_data in banco_missoes_manual:
-		if m_data and m_data.id != "":
+		if m_data and m_data.id != "" and not m_data.id.to_lower() in MISSOES_REMOVIDAS:
 			banco_missoes[m_data.id.to_lower()] = m_data
 			print("[INFO] Missao (manual) registrada: ", m_data.id)
 	
@@ -611,8 +613,11 @@ func _carregar_todas_as_missoes() -> void:
 						var caminho_completo = pasta_missoes.path_join(nome_limpo)
 						var recurso = load(caminho_completo) as MissionData
 						if recurso and recurso.id != "":
-							banco_missoes[recurso.id.to_lower()] = recurso
-							print("[INFO] Missao (automatica) carregada: ", recurso.id)
+							if recurso.id.to_lower() in MISSOES_REMOVIDAS:
+								print("[INFO] Missao '", recurso.id, "' ignorada (está em MISSOES_REMOVIDAS).")
+							else:
+								banco_missoes[recurso.id.to_lower()] = recurso
+								print("[INFO] Missao (automatica) carregada: ", recurso.id)
 				nome_arquivo = dir.get_next()
 			dir.list_dir_end()
 	else:
@@ -1103,9 +1108,13 @@ func _processar_retorno_abrigo_para_casas() -> void:
 # para o id do PRIMEIRO nó dessa sequência.
 const DIALOGO_INICIAL_POR_MISSAO := {
 	"missao1": "missao1_1",
-	"missao2": "missao2_1",
 	"missao3": "missao3_1",
 }
+
+# Missões que não fazem mais parte do jogo. Mesmo que o .tres ainda exista
+# na pasta por engano, ele nunca é carregado. O ideal ainda é apagar o
+# arquivo de verdade da pasta de missões, mas isso evita voltar por acidente.
+const MISSOES_REMOVIDAS := ["missao2"]
 
 func escolher_missao_aleatoria():
 	if Global.turno <= 0:
@@ -1266,13 +1275,21 @@ func concluir_missao() -> void:
 
 func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
 	if Global.missao_escolhida == null or not Global.missao_aceita:
+		print("[DEBUG-MISSAO] Sem missão ativa/aceita no momento (escolhida=", Global.missao_escolhida, " | aceita=", Global.missao_aceita, ") — nada a checar.")
 		return
 	if not ("edificio_id_alvo" in Global.missao_escolhida):
+		print("[DEBUG-MISSAO] A missão '", Global.missao_escolhida.id, "' não tem o campo 'edificio_id_alvo' no .tres.")
 		return
 	
 	var alvo = str(Global.missao_escolhida.edificio_id_alvo).strip_edges().to_lower()
-	if alvo == "" or alvo != str(b_data.id).strip_edges().to_lower():
+	var id_construido = str(b_data.id).strip_edges().to_lower()
+	print("[DEBUG-MISSAO] missão ativa='", Global.missao_escolhida.id, "' | edificio_id_alvo='", alvo, "' | id do prédio construído='", id_construido, "'")
+	
+	if alvo == "" or alvo != id_construido:
+		print("[DEBUG-MISSAO] Não bateu — 'edificio_id_alvo' da missão está vazio ou diferente do id do prédio. Missão NÃO foi concluída.")
 		return
+	
+	print("[DEBUG-MISSAO] Bateu! Concluindo a missão '", Global.missao_escolhida.id, "' automaticamente.")
 	
 	var missao = Global.missao_escolhida
 	

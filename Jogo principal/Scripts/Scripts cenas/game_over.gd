@@ -27,6 +27,10 @@ func _montar_resumo() -> void:
 	if info_dano:
 		info_dano.text = "[b]Dano total sofrido:[/b] %s" % str(int(Global.dano_total))
 
+	# --- Civis resgatados ---
+	if info_civis:
+		info_civis.text = "[b]Civis resgatados:[/b] %s" % str(Global.total_civis_resgatados)
+
 
 
 ## Retorna um texto curto avaliando a gestão do jogador, com base na
