@@ -18,4 +18,6 @@ ganhos_base = 50.0
 capacidade_bombas = 3
 tiles_atlas_coords = Array[Vector2i]([Vector2i(0, 0)])
 source_id = 10
+under_construction_source_id = 3
+under_construction_tile_atlas_coords = Vector2i(0, 0)
 metadata/_custom_type_script = "uid://bh8jua7ha1i6r"
