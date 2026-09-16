@@ -694,7 +694,7 @@ debug_color = Color(0.98745674, 0.11128371, 0, 0.41960785)
 
 [node name="Zona_Rio" parent="." unique_id=1505758871 instance=ExtResource("15_tkcjf")]
 nome_zona = "Zona de drenagem"
-tipo_zona = "rio"
+tipo_zona = "Ribeirinha"
 precisa_estacao_tratamento = true
 categorias_permitidas = Array[String](["Infraestrutura"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("23_cuk6r")])
