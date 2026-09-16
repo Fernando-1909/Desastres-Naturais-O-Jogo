@@ -707,10 +707,12 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 
 	# 4. Tenta identificar o prédio pelo ID customizado ou pelas coordenadas no Atlas
 	var b_data: BuildingData = null
-	if building_id_custom != "" and building_id_custom != "terreno_vazio":
+	if building_id_custom == "terreno_vazio":
+		# Se é explicitamente terreno vazio, evita o fallback de busca por atlas
+		b_data = null
+	elif building_id_custom != "":
 		b_data = _buscar_data_por_id(building_id_custom)
-	
-	if b_data == null and atlas_coords != Vector2i(-1, -1):
+	elif atlas_coords != Vector2i(-1, -1):
 		b_data = _buscar_data_por_atlas_coords(atlas_coords)
 
 	# 5. Se o sprite pertence a um prédio válido no banco de dados, registra e abre upgrade
@@ -1668,13 +1670,16 @@ func _buscar_data_por_atlas_coords(coords: Vector2i) -> BuildingData:
 	for b_data in banco_edificios.values():
 		if not b_data:
 			continue
+		
+		# Se as coordenadas do tile forem o 'tile_vazio' do recurso, ignora (indica terreno sem construção)
+		if b_data.has_method("tem_tile_vazio") and b_data.tem_tile_vazio() and b_data.tile_vazio_atlas_coords == coords:
+			continue
+			
 		if "tiles_atlas_coords" in b_data and b_data.tiles_atlas_coords is Array and b_data.tiles_atlas_coords.has(coords):
 			return b_data
 		if "atlas_coords" in b_data and b_data.atlas_coords == coords:
 			return b_data
 		if "tile_atlas_coords" in b_data and b_data.tile_atlas_coords == coords:
-			return b_data
-		if b_data.has_method("tem_tile_vazio") and b_data.tem_tile_vazio() and b_data.tile_vazio_atlas_coords == coords:
 			return b_data
 	return null
 

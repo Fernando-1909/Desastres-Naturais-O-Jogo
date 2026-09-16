@@ -7,6 +7,7 @@
 script = ExtResource("1_bgghn")
 id = "bombeiros"
 nome = "PREDIO_BOMBEIROS_NOME"
+icone = ExtResource("1_0arqj")
 icones = Array[Texture2D]([ExtResource("1_0arqj")])
 eh_unica = true
 pode_aprimorar = false
