@@ -5,7 +5,8 @@
 [resource]
 script = ExtResource("1")
 id = "missao3"
-nome = "Sistema de Drenagem"
-info = "Depois da última enchente, várias casas ainda não se recuperaram de verdade. Construa um Sistema de Drenagem para reduzir os estragos da próxima chuva forte."
+nome = "Estação de Tratamento"
+info = "Especialistas alertam que a cidade não está preparada para lidar com grandes volumes de água em caso de chuva forte. Construa uma Estação de Tratamento para reduzir os riscos antes que um problema maior aconteça."
 custo = 700.0
+edificio_id_alvo = "estacao_tratamento"
 popularidade = 30
