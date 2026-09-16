@@ -18,6 +18,7 @@ var dialogue_manager: Node = null
 # REFERENCIA A TELA DE COMPRAS E AO TILEMAP (Suporta TileMapLayer e TileMap)
 @onready var tela_compras: TelaCompras = $TelaCompras
 @onready var tilemap_constructions: TileMapLayer = $TileMapConstructions
+@onready var tilemap_base: TileMapLayer = $TileMapBase
 
 # REFERENCIA AOS BOTOES DE TESTE
 @onready var button_teste_compra: Button = $ButtonTesteCompra
@@ -1832,6 +1833,11 @@ func _iniciar_enchente(duracao_customizada: int = -1) -> void:
 		enchente.enchente_terminada.connect(_on_enchente_terminada)
 	_enchente_ativa = enchente
 	
+	# Alaga o TileMapBase inteiro assim que a enchente começa — ele guarda
+	# o mapa original sozinho e restaura tudo quando ela terminar.
+	if tilemap_base and tilemap_base.has_method("alagar_mapa"):
+		tilemap_base.alagar_mapa()
+	
 	# Se já existem Bombas de Drenagem construídas, a enchente já nasce mitigada
 	if enchente.has_method("definir_mitigacao"):
 		enchente.definir_mitigacao(_calcular_mitigacao_enchente())
@@ -1978,6 +1984,11 @@ func _atualizar_sistema_drenagem() -> void:
 func _on_enchente_terminada() -> void:
 	_enchente_ativa = null
 	print("[DESASTRE] Enchente finalizada. Verificando retorno de desabrigados para casas...")
+	
+	# Restaura o TileMapBase pro estado de antes da enchente
+	if tilemap_base and tilemap_base.has_method("restaurar_mapa"):
+		tilemap_base.restaurar_mapa()
+	
 	_processar_retorno_abrigo_para_casas()
 
 
