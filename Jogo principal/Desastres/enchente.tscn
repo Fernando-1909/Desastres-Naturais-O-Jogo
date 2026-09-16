@@ -6,10 +6,10 @@
 script = ExtResource("1_7osat")
 
 [node name="AreaVisual" type="ColorRect" parent="." unique_id=152624416]
-offset_left = 398.0
-offset_top = 1.0
-offset_right = 1151.0
-offset_bottom = 517.0
+offset_left = 382.0
+offset_top = 60.0
+offset_right = 1135.0
+offset_bottom = 576.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 color = Color(0.1, 0.4, 0.9, 0.35)

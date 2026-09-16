@@ -1,10 +1,10 @@
 [gd_scene format=4 uid="uid://5lfugjx2eqnp"]
 
 [ext_resource type="Script" uid="uid://dm516ncg55ogk" path="res://Jogo principal/Scripts/Scripts cenas/main_game.gd" id="1_bvlld"]
-[ext_resource type="Texture2D" uid="uid://dwgypjihsv6ko" path="res://Jogo principal/tilesheets/Agua.png" id="2_qg202"]
+[ext_resource type="Texture2D" uid="uid://bap0np6ixutro" path="res://Jogo principal/tilesheets/Agua.png" id="2_qg202"]
 [ext_resource type="Texture2D" uid="uid://cc3c6k2peoxc3" path="res://Jogo principal/tilesheets/Tilesheet_ground.png" id="2_rgx6x"]
 [ext_resource type="Texture2D" uid="uid://ds87osgiqay5b" path="res://Jogo principal/tilesheets/Prefeitura_level_1.png" id="3_i63ni"]
-[ext_resource type="Texture2D" uid="uid://u415dxy4uqq7" path="res://Jogo principal/tilesheets/Tile.png" id="4_3brof"]
+[ext_resource type="Texture2D" uid="uid://biv1smaklvoqf" path="res://Jogo principal/tilesheets/Tile.png" id="4_3brof"]
 [ext_resource type="Texture2D" uid="uid://b2fqehi7wkwks" path="res://Jogo principal/tilesheets/Sombra.png" id="4_fj0mr"]
 [ext_resource type="Texture2D" uid="uid://d0q1wqnavhphj" path="res://Casas.png" id="5_a6fgx"]
 [ext_resource type="Texture2D" uid="uid://dd22ja8qdic4e" path="res://Jogo principal/tilesheets/Prefeitura_level2.png" id="5_k6eoj"]
@@ -770,7 +770,6 @@ grow_horizontal = 0
 text = "Pausa"
 
 [node name="DesastreButton" type="Button" parent="." unique_id=1984064466]
-visible = false
 offset_left = 1047.0
 offset_top = 386.0
 offset_right = 1176.0
