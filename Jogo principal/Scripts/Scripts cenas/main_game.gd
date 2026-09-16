@@ -1393,10 +1393,10 @@ func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
 	if hud and hud.has_node("MissaoContainer"):
 		_missao_check_aberta = true
 		var missao_container = hud.get_node("MissaoContainer")
-		if missao_container.has_node("VBoxContainer/HBoxContainer"):
-			missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
-		if missao_container.has_node("VBoxContainer/HBoxContainer2"):
-			missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+		if missao_container.has_node("MarginContainer/VBoxContainer/HBoxContainer"):
+			missao_container.get_node("MarginContainer/VBoxContainer/HBoxContainer").visible = false
+		if missao_container.has_node("MarginContainer/VBoxContainer/HBoxContainer2"):
+			missao_container.get_node("MarginContainer/VBoxContainer/HBoxContainer2").visible = true
 		missao_container.visible = true
 
 
@@ -1412,10 +1412,10 @@ func abrir_checagem_missao() -> void:
 	_missao_check_aberta = true
 	
 	var missao_container = hud.get_node("MissaoContainer")
-	if missao_container.has_node("VBoxContainer/HBoxContainer"):
-		missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
-	if missao_container.has_node("VBoxContainer/HBoxContainer2"):
-		missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+	if missao_container.has_node("MarginContainer/VBoxContainer/HBoxContainer"):
+		missao_container.get_node("MarginContainer/VBoxContainer/HBoxContainer").visible = false
+	if missao_container.has_node("MarginContainer/VBoxContainer/HBoxContainer2"):
+		missao_container.get_node("MarginContainer/VBoxContainer/HBoxContainer2").visible = true
 	missao_container.visible = true
 
 

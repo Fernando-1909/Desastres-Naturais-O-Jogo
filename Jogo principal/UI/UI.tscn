@@ -2,6 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://5208k37kpkp7" path="res://Jogo principal/UI/Assets/allmenusprites.png" id="1_fmcfc"]
 [ext_resource type="Script" uid="uid://cmg5ypr4637en" path="res://Jogo principal/Scripts/Scripts cenas/ui.gd" id="1_xchpd"]
+[ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="3_p88rf"]
+[ext_resource type="Texture2D" uid="uid://ogf3vv3cfdd7" path="res://Jogo principal/UI/Assets/Rebecatrue2.png" id="4_hdnfl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hgtue"]
 
@@ -29,6 +31,13 @@ region = Rect2(54.85831, 0.012067795, 49.246243, 37.182175)
 [sub_resource type="AtlasTexture" id="AtlasTexture_gp8g6"]
 atlas = ExtResource("1_fmcfc")
 region = Rect2(146.6458, 45.865997, 140.49828, 37.279976)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bhunq"]
+texture = ExtResource("3_p88rf")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_riqys"]
+atlas = ExtResource("1_fmcfc")
+region = Rect2(0.6737709, 0.9998293, 49.728035, 37.566288)
 
 [node name="Ui" type="Control" unique_id=13768816]
 layout_mode = 3
@@ -199,82 +208,147 @@ vertical_alignment = 1
 
 [node name="MissaoContainer" type="PanelContainer" parent="." unique_id=398981937]
 visible = false
+custom_minimum_size = Vector2(500, 300)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -153.0
-offset_top = -218.5
-offset_right = 153.0
-offset_bottom = 218.5
+offset_left = -143.0
+offset_top = -126.0
+offset_right = 143.0
+offset_bottom = 126.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_bhunq")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MissaoContainer" unique_id=1636567380]
+[node name="MarginContainer" type="MarginContainer" parent="MissaoContainer" unique_id=2080117820]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MissaoContainer/MarginContainer" unique_id=1636567380]
 layout_mode = 2
 theme_override_constants/separation = 35
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="MissaoContainer/VBoxContainer" unique_id=315756901]
-visible = false
+[node name="HBoxContainer2" type="HBoxContainer" parent="MissaoContainer/MarginContainer/VBoxContainer" unique_id=315756901]
 layout_mode = 2
 layout_direction = 3
 
-[node name="MissaoClose" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer2" unique_id=662127343]
+[node name="MissaoClose" type="TextureButton" parent="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=367046579]
 layout_mode = 2
-text = "❌"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = SubResource("AtlasTexture_riqys")
 
-[node name="Missaolabel" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=1177224926]
+[node name="Missaolabel" type="RichTextLabel" parent="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1177224926]
 custom_minimum_size = Vector2(0, 25)
+clip_contents = false
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 3
+size_flags_vertical = 4
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, -6)
+theme_override_colors/selection_color = Color(1, 0.100000024, 0.11499977, 0.8)
+theme_override_colors/font_outline_color = Color(0.78039217, 0.3372549, 0.13333334, 1)
+theme_override_colors/font_shadow_color = Color(0.5411765, 0.27058825, 0, 1)
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/normal_font_size = 30
 text = "Missão!"
+scroll_active = false
 
-[node name="MissaoInfo" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=1136737772]
+[node name="MissaoInfo" type="RichTextLabel" parent="MissaoContainer/MarginContainer/VBoxContainer" unique_id=1136737772]
 custom_minimum_size = Vector2(0, 50)
+clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/normal_font_size = 22
 bbcode_enabled = true
 text = "Informação"
 fit_content = true
 scroll_active = false
 
-[node name="MissaoRecompensa" type="RichTextLabel" parent="MissaoContainer/VBoxContainer" unique_id=586251722]
+[node name="MissaoRecompensa" type="RichTextLabel" parent="MissaoContainer/MarginContainer/VBoxContainer" unique_id=586251722]
 custom_minimum_size = Vector2(0, 50)
+clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_colors/selection_color = Color(0.9843137, 1, 0.101960786, 0.8)
+theme_override_colors/font_outline_color = Color(0.5019608, 0.47843137, 0.1764706, 1)
+theme_override_colors/font_shadow_color = Color(0.3882353, 0.3647059, 0.24313726, 1)
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/normal_font_size = 22
 bbcode_enabled = true
 text = "awawaaa
 "
 fit_content = true
 scroll_active = false
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MissaoContainer/VBoxContainer" unique_id=1379370479]
+[node name="HBoxContainer" type="HBoxContainer" parent="MissaoContainer/MarginContainer/VBoxContainer" unique_id=1379370479]
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 95
+theme_override_constants/separation = 40
 
-[node name="AceitarMissao" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer" unique_id=846462766]
+[node name="Aceitar" type="TextureButton" parent="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1816779965]
+custom_minimum_size = Vector2(130, 60)
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.8745098, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0.16470589, 0.6666667, 0.18039216, 1)
-theme_override_colors/font_hover_color = Color(0.105882354, 0.9882353, 0.05882353, 1)
-theme_override_colors/icon_normal_color = Color(0, 0.9882353, 0.2509804, 1)
-theme_override_font_sizes/font_size = 23
-text = "Aceitar"
+size_flags_horizontal = 3
+texture_normal = ExtResource("4_hdnfl")
+stretch_mode = 0
 
-[node name="RecusarMissao" type="Button" parent="MissaoContainer/VBoxContainer/HBoxContainer" unique_id=903564183]
+[node name="AceitarLabel" type="RichTextLabel" parent="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Aceitar" unique_id=374842215]
+clip_contents = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/selection_color = Color(0.101960786, 1, 0.21960784, 0.8)
+theme_override_colors/font_outline_color = Color(0, 0.4392157, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.09019608, 0.5882353, 0.09803922, 1)
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/normal_font_size = 25
+text = "ACEITAR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Recusar" type="TextureButton" parent="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=123458290]
+custom_minimum_size = Vector2(130, 60)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8745098, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0.68573314, 8.4228816e-07, 3.85046e-07, 1)
-theme_override_colors/font_pressed_color = Color(0.62557507, 1.4318898e-06, 5.7756904e-07, 1)
-theme_override_colors/font_hover_color = Color(0.7330022, 1.6484782e-06, 3.85046e-07, 1)
-theme_override_font_sizes/font_size = 23
+texture_normal = ExtResource("4_hdnfl")
+stretch_mode = 0
+
+[node name="RecusarLabel" type="RichTextLabel" parent="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Recusar" unique_id=2022467207]
+clip_contents = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/selection_color = Color(1, 0.101960786, 0.101960786, 0.8)
+theme_override_colors/font_outline_color = Color(0.36862746, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.5882353, 0.09019608, 0.09019608, 1)
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/normal_font_size = 25
 text = "Recusar"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ButtonMissaoCheck" type="Button" parent="." unique_id=1002366362]
 visible = false
@@ -288,8 +362,9 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 32
 text = "Missão"
 
+[connection signal="pressed" from="PainelBotoes/Botoes/Pausa" to="." method="_on_pausa_pressed"]
 [connection signal="pressed" from="PainelTurnos/Turnos/PularTurno" to="." method="_on_pular_turno_pressed"]
-[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]
-[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer/AceitarMissao" to="." method="_on_aceitar_missao_pressed"]
-[connection signal="pressed" from="MissaoContainer/VBoxContainer/HBoxContainer/RecusarMissao" to="." method="_on_recusar_missao_pressed"]
+[connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]
+[connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Aceitar" to="." method="_on_aceitar_pressed"]
+[connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Recusar" to="." method="_on_recusar_pressed"]
 [connection signal="pressed" from="ButtonMissaoCheck" to="." method="_on_button_missao_check_pressed"]

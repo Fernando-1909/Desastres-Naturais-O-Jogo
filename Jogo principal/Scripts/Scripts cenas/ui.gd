@@ -105,22 +105,12 @@ func _obter_range_por_popularidade() -> Vector2i:
 	else:
 		return Vector2i(181, 200)
 
-
-
-func _on_aceitar_missao_pressed() -> void:
-	main_game.aceitar_missao()
-
-
-func _on_recusar_missao_pressed() -> void:
-	main_game.recusar_missao()
-
-
 # Labels
 @onready var dinheiro_label: RichTextLabel = $PainelExibição/Exibição/Dinheiro/Numero
 @onready var turno_label: RichTextLabel = $PainelTurnos/Turnos/Turno/Numero
 @onready var popularidade_label: RichTextLabel = $PainelExibição/Exibição/Popularidade/Numero
-@onready var missao_info_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoInfo
-@onready var missao_recompensa_label: RichTextLabel = $MissaoContainer/VBoxContainer/MissaoRecompensa
+@onready var missao_info_label: RichTextLabel = $MissaoContainer/MarginContainer/VBoxContainer/MissaoInfo
+@onready var missao_recompensa_label: RichTextLabel = $MissaoContainer/MarginContainer/VBoxContainer/MissaoRecompensa
 @onready var populacao_label: RichTextLabel = $PainelExibição/Exibição/População/Numero
 @onready var desabrigados_label: RichTextLabel = $PainelExibição/Exibição/Desabrigados/Numero
 
@@ -202,3 +192,15 @@ func _on_button_missao_check_pressed() -> void:
 
 func _on_missao_close_pressed() -> void:
 	main_game.fechar_checagem_missao()
+
+func _on_pausa_pressed() -> void:
+	var evento := InputEventAction.new()
+	evento.action = "ui_cancel"
+	evento.pressed = true
+	Input.parse_input_event(evento)
+
+func _on_aceitar_pressed() -> void:
+	main_game.aceitar_missao()
+
+func _on_recusar_pressed() -> void:
+	main_game.recusar_missao()
