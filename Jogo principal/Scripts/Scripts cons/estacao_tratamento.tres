@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://bvgdeedirk4kb"]
 
-[ext_resource type="Texture2D" uid="uid://dd22ja8qdic4e" path="res://Jogo principal/tilesheets/Prefeitura_level2.png" id="1_exjwu"]
+[ext_resource type="Texture2D" uid="uid://buxanp4637wr4" path="res://Jogo principal/tilesheets/estacao_de_agua.png" id="1_exjwu"]
 [ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="1_ttaju"]
 
 [resource]
@@ -15,9 +15,11 @@ descricao_curta = "PREDIO_ESTACAO_TRATAMENTO_DESC"
 texto_detalhes = "PREDIO_ESTACAO_TRATAMENTO_DETALHES"
 durabilidade_maxima = 500.0
 ganhos_base = 50.0
+bonus_populacao = 10
 capacidade_bombas = 3
 tiles_atlas_coords = Array[Vector2i]([Vector2i(0, 0)])
-source_id = 10
+source_id = 0
+tile_vazio_atlas_coords = Vector2i(0, 0)
 under_construction_source_id = 3
 under_construction_tile_atlas_coords = Vector2i(0, 0)
 metadata/_custom_type_script = "uid://bh8jua7ha1i6r"

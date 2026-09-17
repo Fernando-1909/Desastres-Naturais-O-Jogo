@@ -413,10 +413,22 @@ func processar_construcoes_no_turno() -> void:
 				# Restaura visualmente no TileMap para o sprite final
 				_restaurar_tile_grafico(pos, instancia)
 				
+				# Adiciona o bônus de população somente após a conclusão da obra
+				if instancia.data and "bonus_populacao" in instancia.data and instancia.data.bonus_populacao > 0:
+					Global.populacao += instancia.data.bonus_populacao
+					_atualizar_npcs_por_populacao()
+					if _enchente_ativa == null and Global.pessoas_abrigadas > 0:
+						_processar_retorno_abrigo_para_casas()
+				
 				# Recalcula sistemas e valida missões após a conclusão
 				_recalcular_recursos_resgate()
 				_atualizar_sistema_drenagem()
+
 				if instancia.data:
+					var id_limpo = str(instancia.data.id).to_lower().strip_edges() if "id" in instancia.data and instancia.data.id != null else ""
+					if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
+						_ativar_terrenos_zona_rio()
+
 					_verificar_conclusao_construcao(instancia.data)
 					
 				print("[SISTEMA] Obra concluída no tile: ", pos)
@@ -766,6 +778,15 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 
 	if zona_atual != null:
+		# Exibe aviso caso a zona já tenha atingido o limite máximo de construções
+		if not zona_atual.tem_vaga_disponivel(total_na_zona):
+			if cena_ponto_resgate:
+				var aviso_temp = cena_ponto_resgate.instantiate()
+				add_child(aviso_temp)
+				aviso_temp._mostrar_aviso("Esta zona já atingiu o limite máximo de construções!")
+				if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+					aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
+			return
 		tela_compras.abrir_loja_com_zona(zona_atual, lista_opcoes, total_na_zona)
 	else:
 		tela_compras.abrir_modo_selecao(lista_opcoes)
@@ -863,6 +884,12 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 		if not zona_atual.tem_vaga_disponivel(total_na_zona):
 			print("[ERRO] Limite máximo de edifícios nesta zona atingido!")
+			if cena_ponto_resgate:
+				var aviso_temp = cena_ponto_resgate.instantiate()
+				add_child(aviso_temp)
+				aviso_temp._mostrar_aviso("Limite máximo de edifícios nesta zona atingido!")
+				if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+					aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
 			return
 	else:
 		if id_limpo == "bomba_drenagem" or "bomba" in id_limpo:
@@ -885,7 +912,10 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	# 3. Transacao
 	Global.dinheiro -= custo_final
 	
-	if b_data.bonus_populacao > 0:
+	var precisa_construir = tempo_construcao > 0
+
+	# A população só aumenta imediatamente se a construção for instantânea (tempo = 0)
+	if not precisa_construir and b_data.bonus_populacao > 0:
 		Global.populacao += b_data.bonus_populacao
 		_atualizar_npcs_por_populacao()
 		
@@ -897,8 +927,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	if "variacao_index" in nova_instancia:
 		nova_instancia.variacao_index = variacao_index
 
-	var precisa_construir = tempo_construcao > 0
-	
 	if "em_construcao" in nova_instancia:
 		nova_instancia.em_construcao = precisa_construir
 	if "turnos_restantes" in nova_instancia:
@@ -919,7 +947,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	var source_id: int = -1
 
 	if precisa_construir:
-		# Usa as coordenadas e source_id da textura de obra do resource .tres
 		if b_data.has_method("get_under_construction_source_id"):
 			source_id = b_data.get_under_construction_source_id()
 		elif "source_id" in b_data:
@@ -928,7 +955,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		if "under_construction_tile_atlas_coords" in b_data:
 			novas_coords_atlas = b_data.under_construction_tile_atlas_coords
 	else:
-		# Usa a coordenada padrão do edifício pronto
 		if b_data.has_method("get_atlas_coord_para_construir"):
 			novas_coords_atlas = b_data.get_atlas_coord_para_construir(variacao_index)
 		elif "tiles_atlas_coords" in b_data and b_data.tiles_atlas_coords is Array and b_data.tiles_atlas_coords.size() > 0:
@@ -971,14 +997,12 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 		
 		_recalcular_recursos_resgate()
 		
-		# Valida missões apenas se a construção não precisar aguardar turnos
 		if not precisa_construir:
 			_verificar_conclusao_construcao(b_data)
 	else:
 		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
 	
-	# Desbloqueios e atualizações de drenagem
-	if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
+	if (id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem") and not precisa_construir:
 		_ativar_terrenos_zona_rio()
 
 	_atualizar_sistema_drenagem()

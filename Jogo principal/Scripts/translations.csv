@@ -43,28 +43,28 @@ CAT_ENERGIA,"Energia","Energy"
 # Casa Residencial Simples
 PREDIO_CASA_SIMPLES_NOME,"Casa Residencial","Residential House"
 PREDIO_CASA_SIMPLES_DESC,"Aumenta a capacidade de moradores e a receita de impostos.","Increases resident capacity and tax revenue."
-PREDIO_CASA_SIMPLES_DETALHES,"Casas residenciais geram renda constante de impostos por morador. Mantenha a durabilidade alta para evitar queda na arrecadação.","Residential houses generate steady tax income per resident. Keep durability high to avoid drops in revenue."
+PREDIO_CASA_SIMPLES_DETALHES,"Gera [color=#FFD700]+10[/color] habitantes na cidade e arrecada impostos continuamente por morador.","Generates [color=#FFD700]+10[/color] citizens in the city and continuously collects tax per resident."
 
 # Prefeitura
 PREDIO_PREFEITURA_NOME,"Prefeitura","City Hall"
 PREDIO_PREFEITURA_DESC,"Sede administrativa da cidade. Libera novas áreas e projetos.","City administrative headquarters. Unlocks new areas and projects."
-PREDIO_PREFEITURA_DETALHES,"O centro de comando da sua cidade. Aumentar o nível da prefeitura permite construir edifícios mais avançados e expandir os limites do mapa.","Your city's command center. Upgrading the city hall allows you to build more advanced structures and expand map borders."
+PREDIO_PREFEITURA_DETALHES,"Sede administrativa. Aumenta a capacidade do território e libera novas áreas a cada [color=#FFD700]+1[/color] nível.","Administrative headquarters. Increases territory capacity and unlocks new areas every [color=#FFD700]+1[/color] level."
 
 # Estação de Tratamento
 PREDIO_ESTACAO_TRATAMENTO_NOME,"Estação de Tratamento","Treatment Plant"
 PREDIO_ESTACAO_TRATAMENTO_DESC,"Unidade central de infraestrutura hídrica para controle de enchentes na cidade.","Central water infrastructure facility for flood control in the city."
-PREDIO_ESTACAO_TRATAMENTO_DETALHES,"Atua como a matriz operacional do sistema de drenagem urbana. A Estação de Tratamento processa o volume hídrico e habilita o funcionamento de todas as Bombas de Drenagem ativas no mapa, permitindo a redução direta do dano e da área de inundação das enchentes. Se esta estrutura for destruída ou desativada, as bombas perdem a capacidade de mitigação.","Acts as the operational hub of the urban drainage system. The Treatment Plant processes water volume and enables all active Drainage Pumps across the map, allowing direct reduction of flood damage and inundation area. If this facility is destroyed or disabled, pumps lose their mitigation capacity."
+PREDIO_ESTACAO_TRATAMENTO_DETALHES,"Habilita a [color=#FFD700]Zona do Rio[/color] e ativa o funcionamento de [color=#FFD700]100%[/color] das Bombas de Drenagem no mapa.","Unlocks the [color=#FFD700]River Zone[/color] and enables [color=#FFD700]100%[/color] of active Drainage Pumps on the map."
 
 # --- ABRIGO E SOCORRO ---
 # Abrigo Comunitário
 PREDIO_ABRIGO_NOME,"Abrigo Comunitário","Community Shelter"
 PREDIO_ABRIGO_DESC,"Acolhe cidadãos desabrigados durante e após desastres.","Houses displaced citizens during and after disasters."
-PREDIO_ABRIGO_DETALHES,"O Abrigo Comunitário fornece vagas seguras para pessoas que perderam suas casas em enchentes e desastres. Mantenha abrigos suficientes para evitar queda de popularidade.","The Community Shelter provides safe spaces for people who lost their homes in floods and disasters. Keep enough shelters to avoid popularity drops."
+PREDIO_ABRIGO_DETALHES,"Cada unidade acolhe até [color=#FFD700]20[/color] cidadãos desabrigados e evita a perda de popularidade durante enchentes.","Each are houses up to [color=#FFD700]20[/color] displaced citizens and prevents popularity loss during floods."
 
 # Estação de Bombeiros
 PREDIO_BOMBEIROS_NOME,"Estação de Bombeiros","Fire Station"
 PREDIO_BOMBEIROS_DESC,"Disponibiliza equipes de resgate para salvar vítimas de emergências.","Provides rescue teams to save victims from emergencies."
-PREDIO_BOMBEIROS_DETALHES,"A Estação de Bombeiros envia equipes de resgate diretamente para áreas afetadas por desastres, reduzindo os danos e socorrendo a população.","The Fire Station dispatches rescue teams directly to disaster-affected areas, reducing damage and rescuing citizens."
+PREDIO_BOMBEIROS_DETALHES,"Habilita [color=#FFD700]2[/color] equipes de resgate ativa para socorrer vítimas durante enchentes.","Unlocks [color=#FFD700]2[/color] active rescue teams to save victims during floods."
 
 # --- DIÁLOGOS DAS MISSÕES (Secretária x Tesoureiro) ---
 SECRETARIA,"Secretária","Secretary"
@@ -74,7 +74,6 @@ TESOUREIRO,"Tesoureiro","Treasurer"
 TXT_MISSAO1_1,"Tivemos três princípios de incêndio essa semana, e o mais próximo que temos de ajuda são vizinhos com baldes. Um dia desses não vai dar pra apagar a tempo.","We had three near-fires this week, and the closest thing we have to help is neighbors with buckets. One of these days we won't put it out in time."
 TXT_MISSAO1_2,"Ninguém aqui quer ver a cidade pegando fogo, mas um corpo de bombeiros completo é caro, e mal começamos a nos organizar financeiramente. Se guardarmos esse valor, temos fôlego pra imprevistos maiores.","Nobody here wants to see the city on fire, but a full fire department is expensive, and we've barely started organizing our finances. If we save that money, we'll have room for bigger emergencies."
 TXT_MISSAO1_3,"E se o imprevisto maior for justamente um incêndio que dava pra ter evitado?","And what if the bigger emergency is exactly a fire we could have prevented?"
-
 
 # Missão 3 - Estação de Tratamento
 TXT_MISSAO3_1,"Os especialistas da Defesa Civil avisam que a cidade não tem nenhum sistema pra lidar com um temporal forte — se isso acontecer, não vamos ter como reagir a tempo. Uma Estação de Tratamento resolveria isso antes que vire um problema de verdade.","Civil Defense specialists warn the city has no system to handle a major storm — if it happens, we won't be able to react in time. A Treatment Plant would solve that before it becomes a real problem."
