@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="2_aeats"]
 [ext_resource type="Theme" uid="uid://cx782b1sg8nsm" path="res://Jogo principal/UI/Temas/base.tres" id="2_fhcsi"]
 [ext_resource type="PackedScene" uid="uid://d3uu1eucewefv" path="res://Jogo principal/UI/menu_opcoes.tscn" id="3_lu62e"]
+[ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="4_at68a"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_riqys"]
 texture = ExtResource("2_aeats")
@@ -23,6 +24,20 @@ expand_margin_left = 8.0
 expand_margin_top = 8.0
 expand_margin_right = 8.0
 expand_margin_bottom = 8.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_at68a"]
+atlas = ExtResource("4_at68a")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aeats"]
+texture = SubResource("AtlasTexture_at68a")
+modulate_color = Color(1.9521393, 1.9521393, 1.9521393, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wciel"]
+atlas = ExtResource("4_at68a")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4hf2b"]
+texture = SubResource("AtlasTexture_wciel")
+modulate_color = Color(1.5720325, 1.5720325, 1.5720325, 1)
 
 [node name="MenuPausa" type="CanvasLayer" unique_id=643096711]
 process_mode = 3
@@ -96,6 +111,8 @@ theme_override_constants/separation = 3
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
 offset_transform_scale = Vector2(0.9, 1.2)
+theme_override_styles/pressed = SubResource("StyleBoxTexture_aeats")
+theme_override_styles/hover = SubResource("StyleBoxTexture_4hf2b")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonContinuar" unique_id=1487881233]
 clip_contents = false
@@ -143,6 +160,8 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
 offset_transform_scale = Vector2(0.9, 1.2)
+theme_override_styles/pressed = SubResource("StyleBoxTexture_aeats")
+theme_override_styles/hover = SubResource("StyleBoxTexture_4hf2b")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonMenu" unique_id=1233872568]
 layout_mode = 1
