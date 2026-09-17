@@ -3,8 +3,8 @@ extends Camera2D
 var dragging: bool = false
 var last_drag_pos: Vector2 = Vector2.ZERO
 
-var zoom_min: float = 0.9
-var zoom_max: float = 3.0
+var zoom_min: float = 2.5
+var zoom_max: float = 5.0
 var zoom_speed: float = 0.1
 
 # ==========================================
@@ -21,6 +21,10 @@ var margem_zoom_out: float = 150.0
 
 
 func _ready() -> void:
+	# Começa sempre no zoom mínimo
+	zoom = Vector2(zoom_min, zoom_min)
+
+	# Ajusta a posição de acordo com os limites
 	limitar_camera()
 
 

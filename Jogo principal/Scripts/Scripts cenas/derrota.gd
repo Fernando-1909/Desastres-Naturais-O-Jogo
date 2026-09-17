@@ -1,34 +1,25 @@
 extends Control
 
-@export var tempo_na_tela: float = 6.5
-
 @onready var defeat_message: RichTextLabel = get_node_or_null("DefeatMessage")
-@onready var timer_retorno: Timer = get_node_or_null("TimerRetorno")
+@onready var botao_retorno: Button = get_node_or_null("BotaoRetorno")
 
 
 func _ready() -> void:
 	_preencher_mensagem()
-	_iniciar_retorno_automatico()
-
 
 func _preencher_mensagem() -> void:
 	if not defeat_message:
-		push_warning("Derrota: node 'DefeatMessage' (RichTextLabel) não encontrado — crie um pra mostrar a mensagem na tela.")
+		push_warning("Game Over: node 'DefeatMessage' (RichTextLabel) não encontrado.")
 		return
+
+	# Derrota causada pelas enchentes
+	if Global.enchentederrota:
+		defeat_message.text = "[center]Sua gestão chegou ao fim[/center]\n\nAs enchentes destruíram casas demais enquanto a popularidade da cidade estava em 0. A população perdeu a confiança na gestão e o município não conseguiu se recuperar.\n\nLembre-se: durante uma enchente, proteja as áreas residenciais e mantenha a cidade preparada para reduzir as perdas."
+
+	# Derrota causada por uma missão
+	elif Global.missaoderrota:
+		defeat_message.text = "[center]Sua gestão chegou ao fim[/center]\n\nUma missão não foi concluída a tempo e a popularidade da cidade chegou a 0. A população perdeu a confiança na gestão e começou a deixar o município.\n\nLembre-se: fique atento às missões e tome decisões que mantenham a confiança da população."
+
 	
-	defeat_message.text = "[b]Sua gestão chegou ao fim[/b]\n\nA popularidade da cidade caiu abaixo de zero: a população perdeu a confiança e começou a deixar o município.\n\n[b]Lembre-se:[/b] moradores insatisfeitos se mudam. Mantenha a popularidade em dia — cada decisão pesa na hora de manter as pessoas por aqui.\n\nNão desista. Toda gestão começa de novo com o que foi aprendido."
-
-
-func _iniciar_retorno_automatico() -> void:
-	if timer_retorno:
-		timer_retorno.wait_time = tempo_na_tela
-		timer_retorno.one_shot = true
-		timer_retorno.timeout.connect(_voltar_ao_menu)
-		timer_retorno.start()
-	else:
-		await get_tree().create_timer(tempo_na_tela).timeout
-		_voltar_ao_menu()
-
-
-func _voltar_ao_menu() -> void:
+func _on_button_pressed() -> void:
 	get_tree().change_scene_to_file("res://Menu Principal/main_menu.tscn")
