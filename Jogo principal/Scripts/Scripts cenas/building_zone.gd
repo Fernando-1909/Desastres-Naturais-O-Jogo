@@ -24,6 +24,8 @@ class_name BuildingZone
 @export_group("Identificação da Zona")
 @export var nome_zona: String = "Zona Residencial"
 @export var tipo_zona: String = "Baixada"
+## Identificador para agrupar áreas duplicadas (ex: "rio", "residencial"). Se deixado em branco, o 'nome_zona' será usado.
+@export var id_grupo: String = ""
 
 @export_group("Estado e Economia")
 ## Se falso, o jogador precisará comprar a zona antes de construir nela
@@ -97,10 +99,12 @@ func definir_visibilidade_terrenos(visivel: bool) -> void:
 
 
 ## Desbloqueia a zona e ativa os sprites de terrenos vazios
+## Desbloqueia esta zona e todas as zonas parceiras do mesmo grupo
 func desbloquear_zona() -> void:
-	desbloqueada = true
-	definir_visibilidade_terrenos(true)
-	print("[ZONA] Zona '", nome_zona, "' foi desbloqueada com sucesso!")
+	for zona in obter_todas_zonas_do_grupo():
+		zona.desbloqueada = true
+		zona.definir_visibilidade_terrenos(true)
+	print("[ZONA] Grupo de zonas '", obter_id_grupo(), "' foi desbloqueado com sucesso!")
 
 
 ## Verifica se uma posição global está dentro dos limites desta zona
@@ -141,6 +145,41 @@ func pode_construir(b_data: BuildingData) -> bool:
 
 	return true
 
+
+## Retorna o ID do grupo (ou o 'nome_zona' em minúsculas caso 'id_grupo' esteja vazio)
+func obter_id_grupo() -> String:
+	if id_grupo.strip_edges() != "":
+		return id_grupo.strip_edges().to_lower()
+	return nome_zona.strip_edges().to_lower()
+
+
+## Verifica se outra zona pertence ao mesmo grupo funcional desta
+func pertence_ao_mesmo_grupo(outra_zona: BuildingZone) -> bool:
+	if outra_zona == null:
+		return false
+	return self.obter_id_grupo() == outra_zona.obter_id_grupo()
+
+
+## Retorna todas as zonas na cena que compartilham o mesmo ID de grupo
+func obter_todas_zonas_do_grupo() -> Array[BuildingZone]:
+	var resultado: Array[BuildingZone] = []
+	var todas_zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	var meu_id = obter_id_grupo()
+	
+	for z in todas_zonas:
+		if z is BuildingZone and z.obter_id_grupo() == meu_id:
+			resultado.append(z)
+			
+	return resultado
+
+
+## Verifica se a posição global está dentro de QUALQUER uma das zonas pertencentes a este grupo
+func contem_posicao_global_no_grupo(pos_global: Vector2) -> bool:
+	for zona in obter_todas_zonas_do_grupo():
+		if zona.contem_posicao_global(pos_global):
+			return true
+	return false
+	
 
 func tem_vaga_disponivel(total_construcoes_atuais: int) -> bool:
 	if limite_maximo_edificios <= 0:

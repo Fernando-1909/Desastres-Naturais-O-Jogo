@@ -207,9 +207,24 @@ func _obter_zona_no_tile(pos_tile: Vector2i) -> Node:
 
 
 func _contar_construcoes_na_zona(zona: BuildingZone) -> int:
-	if zona == null or not construcoes_por_zona.has(zona):
+	if zona == null:
 		return 0
-	return (construcoes_por_zona[zona] as Array).size()
+		
+	var total = 0
+	for pos_tile in construcoes_no_mapa.keys():
+		var predio = construcoes_no_mapa[pos_tile]
+		if predio != null:
+			var pos_global = Vector2.ZERO
+			if tilemap_constructions:
+				pos_global = tilemap_constructions.to_global(tilemap_constructions.map_to_local(pos_tile))
+			elif tile_map:
+				pos_global = tile_map.to_global(tile_map.map_to_local(pos_tile))
+				
+			# Verifica se o prédio está em QUALQUER área pertencente ao mesmo grupo
+			if zona.contem_posicao_global_no_grupo(pos_global):
+				total += 1
+				
+	return total
 
 
 # ==============================================================================
@@ -784,12 +799,22 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 		_abrir_modo_upgrade_instancia(nova_instancia)
 		return
 
-	# 6. Caso contrário, abre a loja para construir
+	# 6. Caso contrário, verifica a zona e abre a loja para construir
 	var zona_atual = _obter_zona_no_tile(pos_tile)
 	var lista_opcoes = _obter_edificios_para_zona(zona_atual)
 	var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 
 	if zona_atual != null:
+		# BLOQUEIO DE ZONA CHEIA: Impede a abertura da loja e exibe o popup de aviso
+		if not zona_atual.tem_vaga_disponivel(total_na_zona):
+			if cena_ponto_resgate:
+				var aviso_temp = cena_ponto_resgate.instantiate()
+				add_child(aviso_temp)
+				aviso_temp._mostrar_aviso("Limite máximo de edifícios nesta zona atingido!")
+				if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+					aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
+			return
+
 		tela_compras.abrir_loja_com_zona(zona_atual, lista_opcoes, total_na_zona)
 	else:
 		tela_compras.abrir_modo_selecao(lista_opcoes)
