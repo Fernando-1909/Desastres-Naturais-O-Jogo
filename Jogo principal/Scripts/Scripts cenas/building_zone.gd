@@ -28,15 +28,17 @@ class_name BuildingZone
 @export var id_grupo: String = ""
 
 @export_group("Estado e Economia")
-## Se falso, o jogador precisará comprar a zona antes de construir nela
+## Se falso, o jogador precisará comprar/liberar a zona antes de construir nela
 @export var desbloqueada_por_padrao: bool = true
-## Marca se esta zona exige a Estação de Tratamento para se tornar ativa
+## ID do edifício necessário para liberar esta zona (ex: "estacao_tratamento", "bombeiros")
+@export var edificio_requisito_id: String = ""
+## Mantido para compatibilidade prévia
 @export var precisa_estacao_tratamento: bool = false
-## Nó pai (ex: Node2D ou TileMap) que agrupa os sprites de terreno vazio desta zona
+## Nó pai que agrupa os sprites de terreno vazio desta zona
 @export var container_terrenos_vazios: Node2D
 ## Custo para desbloquear esta zona durante a partida
 @export var custo_desbloqueio: int = 1000
-## Multiplicador de renda/impostos dos prédios construídos aqui (ex: 1.2 = +20%)
+## Multiplicador de renda/impostos dos prédios construídos aqui
 @export var multiplicador_receita: float = 1.0
 
 @export_group("Regras de Construção")
@@ -48,7 +50,7 @@ class_name BuildingZone
 @export var limite_maximo_edificios: int = 5
 
 @export_group("Impacto Ambiental e Desastres")
-## Multiplicador de dano de enchente (ex: 2.0 = dobro de dano, 0.0 = imune)
+## Multiplicador de dano de enchente
 @export var multiplicador_dano_enchente: float = 1.0
 
 var desbloqueada: bool = true
@@ -58,12 +60,14 @@ func _ready() -> void:
 	add_to_group("zonas_construcao")
 	
 	if not Engine.is_editor_hint():
-		if precisa_estacao_tratamento:
+		# Se tiver qualquer requisito cadastrado ou for marcada para iniciar bloqueada
+		var tem_requisito = precisa_estacao_tratamento or edificio_requisito_id.strip_edges() != "" or not desbloqueada_por_padrao
+		if tem_requisito:
 			desbloqueada = false
 			definir_visibilidade_terrenos(false)
 		else:
-			desbloqueada = desbloqueada_por_padrao
-			definir_visibilidade_terrenos(desbloqueada)
+			desbloqueada = true
+			definir_visibilidade_terrenos(true)
 
 	queue_redraw()
 
@@ -79,9 +83,7 @@ func _draw() -> void:
 		if collision_node.shape is RectangleShape2D:
 			var rect_shape = collision_node.shape as RectangleShape2D
 			var rect = Rect2(-rect_shape.size / 2.0, rect_shape.size)
-			# Desenha o preenchimento translúcido
 			draw_rect(rect, cor_da_zona, true)
-			# Desenha a borda sólida
 			draw_rect(rect, Color(cor_da_zona.r, cor_da_zona.g, cor_da_zona.b, 1.0), false, 2.0)
 
 
@@ -92,22 +94,19 @@ func _obter_collision_child() -> CollisionShape2D:
 	return null
 
 
-## Alterna a visibilidade do container de terrenos vazios
 func definir_visibilidade_terrenos(visivel: bool) -> void:
 	if container_terrenos_vazios:
 		container_terrenos_vazios.visible = visivel
 
 
-## Desbloqueia a zona e ativa os sprites de terrenos vazios
-## Desbloqueia esta zona e todas as zonas parceiras do mesmo grupo
+## Desbloqueia esta zona e todas as zonas pertencentes ao mesmo grupo
 func desbloquear_zona() -> void:
 	for zona in obter_todas_zonas_do_grupo():
 		zona.desbloqueada = true
 		zona.definir_visibilidade_terrenos(true)
-	print("[ZONA] Grupo de zonas '", obter_id_grupo(), "' foi desbloqueado com sucesso!")
+	print("[ZONA] Grupo de zonas '", obter_id_grupo(), "' foi liberado para construção!")
 
 
-## Verifica se uma posição global está dentro dos limites desta zona
 func contem_posicao_global(pos_global: Vector2) -> bool:
 	var space_state = get_world_2d().direct_space_state
 	var query = PhysicsPointQueryParameters2D.new()
@@ -122,45 +121,45 @@ func contem_posicao_global(pos_global: Vector2) -> bool:
 	return false
 
 
-## Valida se o prédio atende às regras da zona
 func pode_construir(b_data: BuildingData) -> bool:
 	if not desbloqueada:
 		return false
-
 	if b_data == null:
 		return false
-
+	
+	var id_p = str(b_data.id).to_lower().strip_edges() if "id" in b_data and b_data.id != null else ""
+	var cat_p = str(b_data.categoria).to_lower().strip_edges() if "categoria" in b_data and b_data.categoria != null else ""
+	
 	if edificios_permitidos.size() > 0:
-		return edificios_permitidos.has(b_data)
-
-	if categorias_permitidas.size() > 0:
-		var cat_bdata = ""
-		if "categoria" in b_data and b_data.categoria != null:
-			cat_bdata = str(b_data.categoria).strip_edges().to_lower()
-		
-		for cat in categorias_permitidas:
-			if cat.strip_edges().to_lower() == cat_bdata:
+		for ed in edificios_permitidos:
+			if ed and ed.id.to_lower().strip_edges() == id_p:
 				return true
 		return false
-
+	
+	if categorias_permitidas.size() > 0:
+		var permitida = false
+		for cat in categorias_permitidas:
+			if cat.to_lower().strip_edges() == cat_p:
+				permitida = true
+				break
+		if not permitida:
+			return false
+	
 	return true
 
 
-## Retorna o ID do grupo (ou o 'nome_zona' em minúsculas caso 'id_grupo' esteja vazio)
 func obter_id_grupo() -> String:
 	if id_grupo.strip_edges() != "":
 		return id_grupo.strip_edges().to_lower()
 	return nome_zona.strip_edges().to_lower()
 
 
-## Verifica se outra zona pertence ao mesmo grupo funcional desta
 func pertence_ao_mesmo_grupo(outra_zona: BuildingZone) -> bool:
 	if outra_zona == null:
 		return false
 	return self.obter_id_grupo() == outra_zona.obter_id_grupo()
 
 
-## Retorna todas as zonas na cena que compartilham o mesmo ID de grupo
 func obter_todas_zonas_do_grupo() -> Array[BuildingZone]:
 	var resultado: Array[BuildingZone] = []
 	var todas_zonas = get_tree().get_nodes_in_group("zonas_construcao")
@@ -173,13 +172,14 @@ func obter_todas_zonas_do_grupo() -> Array[BuildingZone]:
 	return resultado
 
 
-## Verifica se a posição global está dentro de QUALQUER uma das zonas pertencentes a este grupo
 func contem_posicao_global_no_grupo(pos_global: Vector2) -> bool:
-	for zona in obter_todas_zonas_do_grupo():
-		if zona.contem_posicao_global(pos_global):
+	var grupo = obter_id_grupo()
+	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	for z in zonas:
+		if z is BuildingZone and z.obter_id_grupo() == grupo and z.contem_posicao_global(pos_global):
 			return true
 	return false
-	
+
 
 func tem_vaga_disponivel(total_construcoes_atuais: int) -> bool:
 	if limite_maximo_edificios <= 0:
@@ -187,6 +187,5 @@ func tem_vaga_disponivel(total_construcoes_atuais: int) -> bool:
 	return total_construcoes_atuais < limite_maximo_edificios
 
 
-## Retorna o multiplicador de dano aplicado por desastres nesta zona
 func obter_multiplicador_dano() -> float:
 	return multiplicador_dano_enchente
