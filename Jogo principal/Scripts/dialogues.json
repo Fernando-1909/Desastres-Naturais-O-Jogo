@@ -46,6 +46,101 @@
 	  "autor": "SECRETARIA",
 	  "texto_chave": "TXT_MISSAO3_3",
 	  "proximo": "fim"
-	}
-  }
+	},
+"tutorial_1": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_1",
+  "proximo": "tutorial_2"
+},
+"tutorial_2": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_2",
+  "proximo": "tutorial_3"
+},
+"tutorial_3": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_3",
+  "proximo": "tutorial_4"
+},
+"tutorial_4": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_4",
+  "proximo": "tutorial_5"
+},
+"tutorial_5": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_5",
+  "proximo": "tutorial_6"
+},
+"tutorial_6": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_6",
+  "proximo": "tutorial_7"
+},
+"tutorial_7": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_7",
+  "proximo": "tutorial_8"
+},
+"tutorial_8": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_8",
+  "proximo": "tutorial_9"
+},
+"tutorial_9": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_9",
+  "proximo": "tutorial_10"
+},
+"tutorial_10": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_10",
+  "proximo": "tutorial_12"
+},
+"tutorial_11": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_11",
+  "proximo": "tutorial_13"
+},
+"tutorial_12": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_12",
+  "proximo": "tutorial_14"
+},
+"tutorial_13": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_13",
+  "proximo": "tutorial_15"
+},
+"tutorial_14": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_14",
+  "proximo": "tutorial_16"
+},
+"tutorial_15": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_15",
+  "proximo": "tutorial_17"
+},
+"tutorial_16": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_16",
+  "proximo": "tutorial_18"
+},
+"tutorial_17": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_17",
+  "proximo": "tutorial_19"
+},
+"tutorial_18": {
+  "autor": "TESOUREIRO",
+  "texto_chave": "TXT_TUTORIAL_18",
+  "proximo": "tutorial_20"
+},
+"tutorial_19": {
+  "autor": "SECRETARIA",
+  "texto_chave": "TXT_TUTORIAL_19",
+  "proximo": "fim"
+}
+}
 }

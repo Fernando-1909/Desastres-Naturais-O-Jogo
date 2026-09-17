@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d3bkii5byml4q" path="res://Jogo principal/Scripts/Scripts cenas/main_menu.gd" id="1_3sya1"]
 [ext_resource type="Texture2D" uid="uid://cijm3btff5nld" path="res://Menu Principal/Menu.png" id="2_3sya1"]
-[ext_resource type="Texture2D" uid="uid://bw8jopru0trut" path="res://Jogo principal/UI/Assets/logotemporaria.png" id="3_aujqx"]
+[ext_resource type="Texture2D" uid="uid://dm80vu2otac4b" path="res://Jogo principal/UI/Assets/logofinal.png" id="3_aujqx"]
 [ext_resource type="PackedScene" uid="uid://d3uu1eucewefv" path="res://Jogo principal/UI/menu_opcoes.tscn" id="4_1soyw"]
 [ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="4_og5ts"]
 
@@ -11,8 +11,16 @@
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aujqx"]
 texture = ExtResource("2_3sya1")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bhunq"]
-texture = ExtResource("4_og5ts")
+[sub_resource type="AtlasTexture" id="AtlasTexture_gxjfp"]
+atlas = ExtResource("4_og5ts")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_u2p42"]
+texture = SubResource("AtlasTexture_gxjfp")
+modulate_color = Color(0.74, 0.8526667, 1, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3ic7o"]
+texture = SubResource("AtlasTexture_gxjfp")
+modulate_color = Color(0.74, 0.8526667, 1, 1)
 
 [node name="MainMenu" type="Control" unique_id=1732916900]
 layout_mode = 3
@@ -60,7 +68,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 27
-theme_override_styles/normal = SubResource("StyleBoxTexture_bhunq")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_u2p42")
+theme_override_styles/hover = SubResource("StyleBoxTexture_3ic7o")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonIniciar" unique_id=1669360644]
 layout_mode = 1
@@ -83,6 +92,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 27
+theme_override_styles/pressed = SubResource("StyleBoxTexture_u2p42")
+theme_override_styles/hover = SubResource("StyleBoxTexture_3ic7o")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonOpcoes" unique_id=1088972481]
 layout_mode = 1
@@ -109,6 +120,8 @@ theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 27
+theme_override_styles/pressed = SubResource("StyleBoxTexture_u2p42")
+theme_override_styles/hover = SubResource("StyleBoxTexture_3ic7o")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonCreditos" unique_id=1212557116]
 layout_mode = 1
@@ -130,6 +143,8 @@ custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_styles/pressed = SubResource("StyleBoxTexture_u2p42")
+theme_override_styles/hover = SubResource("StyleBoxTexture_3ic7o")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonSair" unique_id=839943458]
 layout_mode = 1
