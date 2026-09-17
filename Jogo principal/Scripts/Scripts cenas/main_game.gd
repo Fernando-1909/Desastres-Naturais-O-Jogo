@@ -1192,7 +1192,12 @@ func _ativar_terrenos_zona_rio() -> void:
 	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
 		if zona is BuildingZone:
 			var tipo = str(zona.tipo_zona).to_lower()
-			if "rio" in tipo or zona.precisa_estacao_tratamento or zona.edificios_permitidos_contem("bomba"):
+			var permite_bomba = false
+			
+			if zona.has_method("edificios_permitidos_contem"):
+				permite_bomba = zona.edificios_permitidos_contem("bomba")
+				
+			if "rio" in tipo or zona.precisa_estacao_tratamento or permite_bomba:
 				zona.desbloquear_zona()
 				
 	# 2. Restaura as células no TileMap
