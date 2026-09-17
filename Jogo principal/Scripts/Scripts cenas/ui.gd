@@ -173,7 +173,7 @@ func _obter_range_por_popularidade() -> Vector2i:
 
 
 # Procura o botão em qualquer profundidade da árvore.
-@onready var button_missao_check: Button = \
+@onready var button_missao_check: TextureButton = \
 	find_child("ButtonMissaoCheck", true, false)
 
 
@@ -445,9 +445,8 @@ func _on_button_missao_concluir_pressed() -> void:
 	main_game.concluir_missao()
 
 
-func _on_button_missao_check_pressed() -> void:
+func _on_texture_button_pressed() -> void:
 	main_game.abrir_checagem_missao()
-
 
 func _on_missao_close_pressed() -> void:
 	main_game.fechar_checagem_missao()

@@ -43,10 +43,10 @@ const ALTURA_REFERENCIA := 648.0   # altura da resolução em que você desenhou
 const FONTE_BASE := 30              # tamanho de fonte atual do DialogueText/NameLabel nessa resolução
 
 # Margens atuais do MarginContainer (conforme Theme Overrides -> Constants)
-const MARGEM_ESQUERDA_BASE := 60
-const MARGEM_TOPO_BASE := 12
-const MARGEM_DIREITA_BASE := 40
-const MARGEM_BAIXO_BASE := 40
+const MARGEM_ESQUERDA_BASE := 59
+const MARGEM_TOPO_BASE := 14
+const MARGEM_DIREITA_BASE := 51
+const MARGEM_BAIXO_BASE := 50
 
 
 func _ready() -> void:

@@ -57,6 +57,12 @@ texture = ExtResource("3_p88rf")
 atlas = ExtResource("1_fmcfc")
 region = Rect2(0.6737709, 0.9998293, 49.728035, 37.566288)
 
+[sub_resource type="CanvasTexture" id="CanvasTexture_xvofd"]
+diffuse_texture = ExtResource("4_hdnfl")
+normal_texture = ExtResource("4_hdnfl")
+specular_texture = ExtResource("4_hdnfl")
+specular_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
+
 [node name="Ui" type="Control" unique_id=13768816]
 layout_mode = 3
 anchors_preset = 15
@@ -373,21 +379,37 @@ text = "Recusar"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonMissaoCheck" type="Button" parent="." unique_id=1002366362]
-visible = false
+[node name="ButtonMissaoCheck" type="TextureButton" parent="." unique_id=2037941975]
+custom_minimum_size = Vector2(150, 60)
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
+anchors_preset = -1
+anchor_top = 0.90700006
+anchor_right = 0.13000001
 anchor_bottom = 1.0
-offset_top = -53.0
-offset_right = 117.0
+offset_top = 20.263977
+offset_right = -109.76001
 grow_vertical = 0
-theme_override_font_sizes/font_size = 32
-text = "Missão"
+texture_normal = ExtResource("4_hdnfl")
+texture_pressed = SubResource("CanvasTexture_xvofd")
+stretch_mode = 0
+
+[node name="MissaoRichTextButton" type="RichTextLabel" parent="ButtonMissaoCheck" unique_id=1921811219]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -5.585
+offset_bottom = -5.584999
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 30
+text = "MISSÃO"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="PainelBotoes/Botoes/Pausa" to="." method="_on_pausa_pressed"]
 [connection signal="pressed" from="PainelTurnos/Turnos/PularTurno" to="." method="_on_pular_turno_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Aceitar" to="." method="_on_aceitar_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Recusar" to="." method="_on_recusar_pressed"]
-[connection signal="pressed" from="ButtonMissaoCheck" to="." method="_on_button_missao_check_pressed"]
+[connection signal="pressed" from="ButtonMissaoCheck" to="." method="_on_texture_button_pressed"]
