@@ -2,13 +2,17 @@
 
 [ext_resource type="Script" uid="uid://d3bkii5byml4q" path="res://Jogo principal/Scripts/Scripts cenas/main_menu.gd" id="1_3sya1"]
 [ext_resource type="Texture2D" uid="uid://cijm3btff5nld" path="res://Menu Principal/Menu.png" id="2_3sya1"]
-[ext_resource type="FontFile" uid="uid://3wnomst056rh" path="res://Menu Principal/ARCADECLASSIC.TTF" id="3_aujqx"]
+[ext_resource type="Texture2D" uid="uid://bw8jopru0trut" path="res://Jogo principal/UI/Assets/logotemporaria.png" id="3_aujqx"]
 [ext_resource type="PackedScene" uid="uid://d3uu1eucewefv" path="res://Jogo principal/UI/menu_opcoes.tscn" id="4_1soyw"]
+[ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="4_og5ts"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1soyw"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aujqx"]
 texture = ExtResource("2_3sya1")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bhunq"]
+texture = ExtResource("4_og5ts")
 
 [node name="MainMenu" type="Control" unique_id=1732916900]
 layout_mode = 3
@@ -29,32 +33,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_aujqx")
 
-[node name="LabelTítulo" type="Label" parent="." unique_id=1332066791]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -298.5
-offset_top = -268.0
-offset_right = 298.5
-offset_bottom = -169.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(1, 0.6515647, 0.42925546, 1)
-theme_override_colors/font_shadow_color = Color(0.0018410678, 0.0018410682, 0.0018410678, 0)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/line_spacing = 4
-theme_override_constants/shadow_offset_x = 10
-theme_override_constants/outline_size = 8
-theme_override_constants/shadow_outline_size = 6
-theme_override_fonts/font = ExtResource("3_aujqx")
-theme_override_font_sizes/font_size = 63
-text = "Desastres naturais"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="MenuPrincipal" type="VBoxContainer" parent="." unique_id=1295298932]
 layout_mode = 1
 anchors_preset = 8
@@ -62,81 +40,108 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -179.625
-offset_top = -152.25
-offset_right = 179.625
-offset_bottom = 152.25
+offset_left = -324.0
+offset_top = -303.0
+offset_right = 324.0
+offset_bottom = 303.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 25
+theme_override_constants/separation = 5
+
+[node name="TextureRect" type="TextureRect" parent="MenuPrincipal" unique_id=161540745]
+custom_minimum_size = Vector2(647.5, 185.5)
+layout_mode = 2
+texture = ExtResource("3_aujqx")
+expand_mode = 2
 
 [node name="ButtonIniciar" type="Button" parent="MenuPrincipal" unique_id=530335397]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 27
+theme_override_styles/normal = SubResource("StyleBoxTexture_bhunq")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonIniciar" unique_id=1669360644]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 50
 bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
 
 [node name="ButtonOpcoes" type="Button" parent="MenuPrincipal" unique_id=1953251558]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 27
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonOpcoes" unique_id=1615231279]
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonOpcoes" unique_id=1088972481]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 50
 bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
 
 [node name="ButtonCreditos" type="Button" parent="MenuPrincipal" unique_id=1725766212]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
 theme_override_colors/font_color = Color(0.6509804, 0.34117648, 0.10980392, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
 theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 27
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonCreditos" unique_id=1651313582]
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonCreditos" unique_id=1212557116]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 50
 bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
 
 [node name="ButtonSair" type="Button" parent="MenuPrincipal" unique_id=464936296]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonSair" unique_id=1784253004]
+[node name="RichTextLabel" type="RichTextLabel" parent="MenuPrincipal/ButtonSair" unique_id=839943458]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 50
 bbcode_enabled = true
 scroll_active = false
 vertical_alignment = 1
