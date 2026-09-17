@@ -130,6 +130,10 @@ func _on_recusar_missao_pressed() -> void:
 # qualquer profundidade da árvore, em vez de exigir que seja filho direto.
 @onready var button_missao_check: Button = find_child("ButtonMissaoCheck", true, false)
 
+# Os dois grupos de botões da caixa de missão (decisão vs. fechar).
+@onready var missao_hbox_decisao: HBoxContainer = $MissaoContainer/VBoxContainer/HBoxContainer
+@onready var missao_hbox_fechar: HBoxContainer = $MissaoContainer/VBoxContainer/HBoxContainer2
+
 
 func _process(_delta: float) -> void:
 	_update_dinheiro_label()
@@ -139,6 +143,7 @@ func _process(_delta: float) -> void:
 	_update_missao_info_label()
 	_update_missao_recompensa_label()
 	_update_button_missao_check()
+	_update_missao_botoes()
 	_update_populacao_label()
 	_update_desabrigados_label()
 
@@ -223,6 +228,22 @@ func _update_button_missao_check() -> void:
 		return
 	# O botão só aparece se existe uma missão ativa E ela já foi aceita
 	button_missao_check.visible = (Global.missao_escolhida != null and Global.missao_aceita)
+
+
+# Controla a visibilidade dos botões da caixa de missão TODO FRAME, em vez de
+# depender de cada função (aceitar/recusar/concluir/etc.) lembrar de ligar e
+# desligar o grupo certo — assim não fica um estado "preso" errado.
+func _update_missao_botoes() -> void:
+	var check_aberta = main_game != null and "_missao_check_aberta" in main_game and main_game._missao_check_aberta
+	
+	if missao_hbox_decisao:
+		# Aceitar/Recusar só fazem sentido enquanto a missão foi OFERECIDA e
+		# ainda não foi aceita (nunca durante checagem/confirmação de conclusão)
+		missao_hbox_decisao.visible = Global.missao_escolhida != null and not Global.missao_aceita and not check_aberta
+	
+	if missao_hbox_fechar:
+		# O botão de fechar só aparece durante a checagem/confirmação de conclusão
+		missao_hbox_fechar.visible = check_aberta
 
 
 func _on_button_missao_concluir_pressed() -> void:

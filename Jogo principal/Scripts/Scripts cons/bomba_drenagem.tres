@@ -9,6 +9,7 @@ id = "bomba_drenagem"
 nome = "Bomba de drenagem"
 icone = ExtResource("1_nwvbg")
 icones = Array[Texture2D]([ExtResource("1_nwvbg")])
+custo_base = 400.0
 descricao_curta = "aaa"
 texto_detalhes = "aaaaa"
 tiles_atlas_coords = Array[Vector2i]([Vector2i(2, 0)])

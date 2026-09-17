@@ -985,6 +985,8 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 
 
 func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
+	print("[DEBUG-MISSAO] _verificar_conclusao_construcao chamada com prédio id='", b_data.id, "' | missao_escolhida=", (Global.missao_escolhida.id if Global.missao_escolhida else "null"), " | missao_aceita=", Global.missao_aceita)
+	
 	if Global.missao_escolhida == null or not Global.missao_aceita:
 		return
 	
@@ -993,8 +995,10 @@ func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
 	
 	var alvo = str(Global.missao_escolhida.edificio_id_alvo).strip_edges().to_lower()
 	var predio_construido = str(b_data.id).strip_edges().to_lower()
+	print("[DEBUG-MISSAO] edificio_id_alvo='", alvo, "' | prédio construído='", predio_construido, "'")
 	
 	if alvo == "" or alvo != predio_construido:
+		print("[DEBUG-MISSAO] Não bateu — missão não concluída por essa construção.")
 		return
 	
 	var missao = Global.missao_escolhida
@@ -1023,14 +1027,17 @@ func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
 	
 	# Atualiza a interface
 	_fechar_container_missao()
+	_missao_check_aberta = true
+	print("[DEBUG-MISSAO] _missao_check_aberta setado para true | ultima_missao_concluida='", ultima_missao_concluida.id, "'")
 	if hud and hud.has_node("MissaoContainer"):
-		_missao_check_aberta = true
 		var missao_container = hud.get_node("MissaoContainer")
 		if missao_container.has_node("VBoxContainer/HBoxContainer"):
 			missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
 		if missao_container.has_node("VBoxContainer/HBoxContainer2"):
 			missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
 		missao_container.visible = true
+	else:
+		print("[DEBUG-MISSAO] hud ou 'MissaoContainer' não encontrado — container não pôde ser reaberto!")
 
 
 func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
@@ -1416,54 +1423,10 @@ func concluir_missao() -> void:
 		missao_container.visible = true
 
 
-func _verificar_missao_concluida_por_construcao(b_data: BuildingData) -> void:
-	if Global.missao_escolhida == null or not Global.missao_aceita:
-		print("[DEBUG-MISSAO] Sem missão ativa/aceita no momento (escolhida=", Global.missao_escolhida, " | aceita=", Global.missao_aceita, ") — nada a checar.")
-		return
-	if not ("edificio_id_alvo" in Global.missao_escolhida):
-		print("[DEBUG-MISSAO] A missão '", Global.missao_escolhida.id, "' não tem o campo 'edificio_id_alvo' no .tres.")
-		return
-	
-	var alvo = str(Global.missao_escolhida.edificio_id_alvo).strip_edges().to_lower()
-	var id_construido = str(b_data.id).strip_edges().to_lower()
-	print("[DEBUG-MISSAO] missão ativa='", Global.missao_escolhida.id, "' | edificio_id_alvo='", alvo, "' | id do prédio construído='", id_construido, "'")
-	
-	if alvo == "" or alvo != id_construido:
-		print("[DEBUG-MISSAO] Não bateu — 'edificio_id_alvo' da missão está vazio ou diferente do id do prédio. Missão NÃO foi concluída.")
-		return
-	
-	print("[DEBUG-MISSAO] Bateu! Concluindo a missão '", Global.missao_escolhida.id, "' automaticamente.")
-	
-	var missao = Global.missao_escolhida
-	
-	Global.popularidade += missao.popularidade
-	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
-		Global.populacao += missao.bonus_populacao
-		_atualizar_npcs_por_populacao()
-	
-	Global.missoes_concluidas.append(missao.id)
-	if missao.id in Global.turnos_sem_missao:
-		Global.turnos_sem_missao.erase(missao.id)
-	
-	print("[MISSÃO] '", missao.nome, "' concluída automaticamente ao construir '", b_data.nome, "'!")
-	
-	# Guarda a missão concluída pra tela de confirmação (ver hud.gd)
-	ultima_missao_concluida = missao
-	
-	Global.missao_escolhida = null
-	Global.missao_aceita = false
-	Global.missao_atual_turnos = 0
-	Global.chance_missao = 30
-	
-	_fechar_container_missao()
-	if hud and hud.has_node("MissaoContainer"):
-		_missao_check_aberta = true
-		var missao_container = hud.get_node("MissaoContainer")
-		if missao_container.has_node("MarginContainer/VBoxContainer/HBoxContainer"):
-			missao_container.get_node("MarginContainer/VBoxContainer/HBoxContainer").visible = false
-		if missao_container.has_node("MarginContainer/VBoxContainer/HBoxContainer2"):
-			missao_container.get_node("MarginContainer/VBoxContainer/HBoxContainer2").visible = true
-		missao_container.visible = true
+## NOTA: a checagem de missão concluída por construção mora em
+## _verificar_conclusao_construcao(), mais acima no arquivo. Havia uma
+## segunda versão duplicada dessa função aqui (nunca era chamada, só gerava
+## confusão) — removida.
 
 
 ## Abre a caixa de missão em modo só-consulta: mostra a informação da missão
@@ -1542,7 +1505,11 @@ func processar_missao_no_turno() -> void:
 		Global.missao_aceita = false
 		Global.missao_atual_turnos = 0
 	
-	escolher_missao_aleatoria()
+	# Não sorteia uma missão nova enquanto a tela de "Missão concluída!" ainda
+	# estiver aberta esperando o jogador fechar — senão ela é substituída na
+	# hora pelo popup da PRÓXIMA missão, e "Missão concluída!" nunca aparece.
+	if not _missao_check_aberta:
+		escolher_missao_aleatoria()
 	
 	_verificar_derrota()
 

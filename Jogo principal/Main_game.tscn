@@ -648,9 +648,9 @@ func _on_teste_troca_pressed() -> void:
 size = Vector2(97.25, 321)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_2cq4x"]
-vertices = PackedVector2Array(738, 314.52344, 738, 330, 375.0625, 330, 369.27344, 303.42188, 439.9922, 300.0078)
+vertices = PackedVector2Array(838.90625, 321.6328, 848.0625, 346.21094, 337, 392.0625, 337, 340.82813, 441.60938, 300.10156)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3, 4)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(440, 290, 748, 305, 748, 340, 367, 340, 357, 294)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(440, 290, 846, 312, 862, 355, 327, 403, 327, 334)])
 
 [node name="MainGame" type="Node2D" unique_id=873718037 node_paths=PackedStringArray("npc_container")]
 y_sort_enabled = true
@@ -674,7 +674,7 @@ tile_set = SubResource("TileSet_l2221")
 [node name="TileMapConstructions" type="TileMapLayer" parent="." unique_id=639958366]
 z_index = 1
 texture_filter = 1
-tile_map_data = PackedByteArray("AAAWAAgAAQAAAAAAAAAYAAMABQAAAAAAAAAcAAUABQAAAAAAAAAUAAQABQAAAAAAAAAQAA0ABQAAAAAAAAATAA4ABQAAAAAAAAAcAA0ABQAAAAAAAAAKAAkABQAAAAAAAAAKAAUABQAAAAAAAAAgAAQADwABAAAAAAAHAAQADwABAAAAAAAYAAwADwABAAAAAAAeAA8ABQAAAAAAAAANAA4ABQAAAAAAAAAfAAwABQAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAWAAgAAQAAAAAAAAAYAAMABQAAAAAAAAAcAAUABQAAAAAAAAAUAAQABQAAAAAAAAAQAA0ABQAAAAAAAAATAA4ABQAAAAAAAAAcAA0ABQAAAAAAAAAKAAUABQAAAAAAAAAgAAQADwABAAAAAAAHAAQADwABAAAAAAAYAAwADwABAAAAAAAeAA8ABQAAAAAAAAANAA4ABQAAAAAAAAAfAAwABQAAAAAAAAAKAAoABQAAAAAAAAA=")
 tile_set = SubResource("TileSet_3axm1")
 script = SubResource("GDScript_tkcjf")
 
