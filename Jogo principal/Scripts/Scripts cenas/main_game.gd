@@ -47,7 +47,7 @@ var dialogue_manager: Node = null
 
 @export_group("Progressão do Jogo")
 ## Turno em que a enchente começa automaticamente (sem precisar do botão de teste)
-@export var turno_inicio_enchente: int = 8
+@export var turno_inicio_enchente: int = 9
 ## Quantos turnos a enchente automática dura (turno_inicio_enchente até
 ## turno_inicio_enchente + duracao_enchente_turnos - 1)
 @export var duracao_enchente_turnos: int = 5
@@ -697,7 +697,7 @@ func _carregar_todas_as_missoes() -> void:
 	banco_missoes.clear()
 	
 	for m_data in banco_missoes_manual:
-		if m_data and m_data.id != "" and not m_data.id.to_lower() in MISSOES_REMOVIDAS:
+		if m_data and m_data.id != "":
 			banco_missoes[m_data.id.to_lower()] = m_data
 			print("[INFO] Missao (manual) registrada: ", m_data.id)
 	
@@ -714,11 +714,8 @@ func _carregar_todas_as_missoes() -> void:
 						var caminho_completo = pasta_missoes.path_join(nome_limpo)
 						var recurso = load(caminho_completo) as MissionData
 						if recurso and recurso.id != "":
-							if recurso.id.to_lower() in MISSOES_REMOVIDAS:
-								print("[INFO] Missao '", recurso.id, "' ignorada (está em MISSOES_REMOVIDAS).")
-							else:
-								banco_missoes[recurso.id.to_lower()] = recurso
-								print("[INFO] Missao (automatica) carregada: ", recurso.id)
+							banco_missoes[recurso.id.to_lower()] = recurso
+							print("[INFO] Missao (automatica) carregada: ", recurso.id)
 				nome_arquivo = dir.get_next()
 			dir.list_dir_end()
 	else:
@@ -987,6 +984,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 
 	if Global.dinheiro < custo_final:
 		print("[ERRO] Dinheiro insuficiente para comprar ", b_data.nome, " (Custo: ", custo_final, ")")
+		_mostrar_aviso_texto("Você não possui dinheiro o suficiente!")
 		return
 
 	# 3. Transacao
@@ -1118,8 +1116,6 @@ func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
 	
 	# Registra a conclusão
 	Global.missoes_concluidas.append(missao.id)
-	if missao.id in Global.turnos_sem_missao:
-		Global.turnos_sem_missao.erase(missao.id)
 	
 	print("[MISSÃO SUCESSO] '", missao.nome, "' concluída ao construir '", b_data.nome, "'!")
 	
@@ -1130,7 +1126,6 @@ func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
 	Global.missao_escolhida = null
 	Global.missao_aceita = false
 	Global.missao_atual_turnos = 0
-	Global.chance_missao = 30
 	
 	# Atualiza a interface
 	_fechar_container_missao()
@@ -1209,6 +1204,9 @@ func _ativar_terrenos_zona_rio() -> void:
 			elif tm is TileMap:
 				tm.set_cell(0, item["pos"], item["source_id"], item["atlas_coords"])
 		_tiles_ocultos_zona_rio.clear()
+	
+	# 3. Avisa o jogador que a Zona do Rio foi liberada (verde suave)
+	_mostrar_aviso_texto("Agora você pode construir bombas de água!", Color(0.519, 0.877, 0.572, 1.0))
 		
 		
 func _on_tile_clicado(argument) -> void:
@@ -1371,96 +1369,43 @@ const DIALOGO_INICIAL_POR_MISSAO := {
 	"missao3": "missao3_1",
 }
 
-# Missões que não fazem mais parte do jogo. Mesmo que o .tres ainda exista
-# na pasta por engano, ele nunca é carregado. O ideal ainda é apagar o
-# arquivo de verdade da pasta de missões, mas isso evita voltar por acidente.
-const MISSOES_REMOVIDAS := ["missao2"]
+# Turnos fixos das missões. Não existe mais sorteio.
+const TURNO_MISSAO := {
+	"missao1": 2,
+	"missao3": 5,
+	"missao2": 7,
+}
 
-func escolher_missao_aleatoria():
+func processar_missao_programada():
+	# As missões agora são escolhidas somente pelos turnos fixos definidos acima.
 	if Global.turno <= 0:
 		return null
-	
-	if Global.turno == 2:
-		if "missao1" not in Global.missoes_concluidas:
-			var m_data: MissionData = banco_missoes.get("missao1")
-			if m_data == null:
-				print("[AVISO] Missao 'missao1' nao encontrada no banco_missoes!")
-				return null
-			
-			Global.missao_escolhida = m_data
-			Global.missao_atual_turnos = 0
-			Global.missao_aceita = false
-			print("[INFO] Turno 2: Missao obrigatoria - ", m_data.nome)
 
-			# A primeira missão libera a Zona de Funções e faz os tiles
-			# de construção aparecerem imediatamente no turno 2.
+	for id_missao in TURNO_MISSAO.keys():
+		if Global.turno != TURNO_MISSAO[id_missao]:
+			continue
+
+		if id_missao in Global.missoes_concluidas:
+			return null
+
+		var m_data: MissionData = banco_missoes.get(id_missao)
+		if m_data == null:
+			print("[AVISO] Missao '", id_missao, "' nao encontrada no banco_missoes!")
+			return null
+
+		Global.missao_escolhida = m_data
+		Global.missao_atual_turnos = 0
+		Global.missao_aceita = false
+
+		print("[INFO] Turno ", Global.turno, ": Missao obrigatoria - ", m_data.nome)
+
+		# A primeira missão libera a Zona de Funções e os tiles de construção.
+		if id_missao == "missao1":
 			_ativar_terrenos_zona_funcoes()
-			
-			_iniciar_fluxo_da_missao(m_data)
-			return Global.missao_escolhida
-	
-	if Global.turno >= 4:
-		var missoes_disponiveis: Dictionary = {}
-		for chave in banco_missoes.keys():
-			if chave not in Global.missoes_concluidas:
-				missoes_disponiveis[chave] = banco_missoes[chave]
-		
-		if missoes_disponiveis.is_empty():
-			Global.missao_escolhida = null
-			return null
-		
-		for chave in missoes_disponiveis.keys():
-			if chave not in Global.turnos_sem_missao:
-				Global.turnos_sem_missao[chave] = 0
-		
-		var chance_atual = Global.chance_missao
-		var sorteio_aparecer = randi() % 100
-		
-		if sorteio_aparecer < chance_atual:
-			var chances = {}
-			for chave in missoes_disponiveis.keys():
-				var chance_individual = 30 + (Global.turnos_sem_missao[chave] * 15)
-				chances[chave] = min(chance_individual, 100)
-			
-			var total_chance = 0
-			for chance in chances.values():
-				total_chance += chance
-			
-			var sorteio_missao = randi() % total_chance
-			var acumulado = 0
-			var chave_escolhida = ""
-			
-			for chave in chances.keys():
-				acumulado += chances[chave]
-				if sorteio_missao < acumulado:
-					chave_escolhida = chave
-					break
-			
-			if chave_escolhida == "":
-				chave_escolhida = missoes_disponiveis.keys()[0]
-			
-			var m_data: MissionData = missoes_disponiveis[chave_escolhida]
-			Global.missao_escolhida = m_data
-			Global.missao_atual_turnos = 0
-			Global.missao_aceita = false
-			
-			Global.chance_missao = 30
-			Global.turnos_sem_missao[chave_escolhida] = 0
-			
-			for chave in missoes_disponiveis.keys():
-				if chave != chave_escolhida:
-					Global.turnos_sem_missao[chave] += 1
-			
-			_iniciar_fluxo_da_missao(m_data)
-			
-			return Global.missao_escolhida
-		else:
-			Global.chance_missao = min(Global.chance_missao + 15, 100)
-			for chave in missoes_disponiveis.keys():
-				Global.turnos_sem_missao[chave] += 1
-			Global.missao_escolhida = null
-			return null
-	
+
+		_iniciar_fluxo_da_missao(m_data)
+		return Global.missao_escolhida
+
 	return null
 
 
@@ -1496,8 +1441,6 @@ func recusar_missao() -> void:
 	print("Missão recusada: ", missao.nome, " — recursos mantidos, oportunidade perdida.")
 	
 	Global.missoes_concluidas.append(missao.id)
-	if missao.id in Global.turnos_sem_missao:
-		Global.turnos_sem_missao.erase(missao.id)
 	
 	_fechar_container_missao()
 	Global.jogo_pausado = false
@@ -1526,8 +1469,6 @@ func concluir_missao() -> void:
 		_atualizar_npcs_por_populacao()
 	
 	Global.missoes_concluidas.append(missao.id)
-	if missao.id in Global.turnos_sem_missao:
-		Global.turnos_sem_missao.erase(missao.id)
 	
 	print("Missão concluída: ", missao.nome)
 	print("Gasto -> Dinheiro: ", missao.custo)
@@ -1542,7 +1483,6 @@ func concluir_missao() -> void:
 	Global.missao_escolhida = null
 	Global.missao_aceita = false
 	Global.missao_atual_turnos = 0
-	Global.chance_missao = 30
 	
 	# Mostra a tela de confirmação com "Missão concluída: <nome>", em vez de
 	# simplesmente fechar o container sem feedback nenhum.
@@ -1671,7 +1611,7 @@ func processar_missao_no_turno() -> void:
 	# estiver aberta esperando o jogador fechar — senão ela é substituída na
 	# hora pelo popup da PRÓXIMA missão, e "Missão concluída!" nunca aparece.
 	if not _missao_check_aberta:
-		escolher_missao_aleatoria()
+		processar_missao_programada()
 	
 	_verificar_derrota()
 
@@ -2036,6 +1976,11 @@ var _alerta_enchente_em_andamento := false
 # primeira vez que precisamos dele (ver _obter_richtext_avisos).
 var _richtext_avisos: RichTextLabel = null
 
+# Tween ativo de um aviso de texto simples (ex: "dinheiro insuficiente"),
+# guardado pra poder cancelar um aviso anterior se outro for disparado antes
+# dele terminar (evita ficar empilhando fades).
+var _tween_aviso_texto: Tween = null
+
 ## duracao_customizada: se > 0, sobrescreve a duração padrão da cena de enchente
 ## (usado pela enchente automática, que dura duracao_enchente_turnos turnos).
 ## Deixe -1 (padrão) para usar a duração configurada na própria cena.
@@ -2293,6 +2238,31 @@ func _obter_richtext_avisos() -> RichTextLabel:
 		else:
 			_richtext_avisos = hud.find_child("Avisos", true, false) as RichTextLabel
 	return _richtext_avisos
+
+
+## Mostra uma mensagem curta no RichTextLabel de avisos: aparece com fade in
+## suave, fica visível por 'duracao' segundos e some com fade out — sem
+## piscar. Usado pra avisos rápidos, tipo "dinheiro insuficiente". Usa fonte
+## menor (27) que o padrão do label (38) — só pra esses avisos, nunca pro
+## alerta de enchente.
+func _mostrar_aviso_texto(texto: String, cor: Color = Color(1.0, 0.287, 0.227, 1.0), duracao: float = 1.5, fade_seg: float = 1.0) -> void:
+	var aviso: RichTextLabel = _obter_richtext_avisos()
+	if aviso == null:
+		print("[AVISO] Não encontrei o RichTextLabel de avisos pra mostrar: ", texto)
+		return
+	
+	if _tween_aviso_texto and _tween_aviso_texto.is_valid():
+		_tween_aviso_texto.kill()
+	
+	aviso.bbcode_enabled = true
+	aviso.text = "[center][font_size=27][color=#%s]%s[/color][/font_size][/center]" % [cor.to_html(false), texto]
+	aviso.visible = true
+	aviso.modulate.a = 0.0
+	
+	_tween_aviso_texto = create_tween()
+	_tween_aviso_texto.tween_property(aviso, "modulate:a", 1.0, fade_seg)
+	_tween_aviso_texto.tween_interval(duracao)
+	_tween_aviso_texto.tween_property(aviso, "modulate:a", 0.0, fade_seg)
 
 
 func avancar_turno_desastres() -> void:

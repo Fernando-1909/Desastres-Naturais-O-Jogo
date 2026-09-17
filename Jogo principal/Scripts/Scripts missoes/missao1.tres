@@ -6,7 +6,8 @@
 script = ExtResource("1")
 id = "missao1"
 nome = "Corpo de Bombeiros"
-info = "A cidade sofreu vários princípios de incêndio recentemente, e ainda não temos uma equipe preparada para apagar um fogo maior. Construa um Corpo de Bombeiros para proteger os moradores."
+info = "A cidade sofreu vários princípios de incêndio recentemente, e ainda não temos uma equipe preparada para apagar um fogo maior. Construa um Corpo de Bombeiros para proteger os moradores.
+Sua popularidade aumentará."
 custo = 400.0
 edificio_id_alvo = "bombeiros"
 popularidade = 20

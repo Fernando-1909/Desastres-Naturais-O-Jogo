@@ -7,7 +7,8 @@ script = ExtResource("1_3tnbp")
 id = "missao2"
 nome = "Construir Abrigo"
 info = "[b]Secretária:[/b] A chuva está aumentando! Precisamos de um Abrigo para acolher as famílias afetadas.
-[b]Tesoureiro:[/b] Construir e manter um abrigo vai pesar no nosso orçamento atual... Tem certeza?"
+[b]Tesoureiro:[/b] Construir e manter um abrigo vai pesar no nosso orçamento atual... Tem certeza?
+Sua popularidade aumentará!"
 custo = 250.0
 edificio_id_alvo = "abrigo"
 popularidade = 15
