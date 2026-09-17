@@ -82,40 +82,34 @@ TXT_MISSAO3_2,"É um projeto grande, e ainda não sabemos se vamos precisar dele
 TXT_MISSAO3_3,"Também não temos como garantir que não vá.","There's no guarantee it won't, either."
 
 # --- DIÁLOGOS DO TUTORIAL (APRESENTAÇÃO E FUNCIONAMENTO DO JOGO) ---
-TXT_TUTORIAL_1,"Olá! Esta é a equipe responsável por auxiliar na administração da cidade. A Secretaria acompanha os serviços públicos e o funcionamento da cidade.","Hello! This is the team responsible for assisting with city administration. The Secretariat oversees public services and the operation of the city."
+TXT_TUTORIAL_1,"Olá! Esta é a Secretaria da cidade. O trabalho envolve acompanhar os serviços públicos e auxiliar na administração.","Hello! This is the city's Secretariat. The work involves overseeing public services and assisting with administration."
 
-TXT_TUTORIAL_2,"O setor financeiro acompanha as receitas, despesas e recursos disponíveis para a administração da cidade.","The financial department monitors the city's revenue, expenses, and available resources."
+TXT_TUTORIAL_2,"E este é o setor financeiro. As receitas, despesas e o dinheiro disponível passam por este setor.","And this is the financial department. Revenue, expenses, and available money are handled by this department."
 
-TXT_TUTORIAL_3,"A administração da cidade envolve construção de edifícios, gerenciamento de recursos, expansão urbana e preparação para situações de emergência.","City administration involves building structures, managing resources, urban expansion, and preparing for emergencies."
+TXT_TUTORIAL_3,"A administração envolve construções, serviços e decisões que podem afetar o funcionamento da cidade.","Administration involves construction, services, and decisions that can affect how the city operates."
 
-TXT_TUTORIAL_4,"O dinheiro é um dos principais recursos da cidade. Construções, melhorias e serviços públicos exigem investimentos e precisam ser planejados de acordo com os recursos disponíveis.","Money is one of the city's main resources. Buildings, upgrades, and public services require investment and must be planned according to available resources."
+TXT_TUTORIAL_4,"O dinheiro disponível deve ser acompanhado com atenção. Construções e outros serviços exigem gastos, e os recursos não são ilimitados.","Available money must be monitored carefully. Construction and other services require spending, and resources are not unlimited."
 
-TXT_TUTORIAL_5,"Uma gestão financeira equilibrada permite manter os serviços funcionando e reservar recursos para situações inesperadas.","Balanced financial management makes it possible to keep services running and reserve resources for unexpected situations."
+TXT_TUTORIAL_5,"A cidade possui diferentes zonas destinadas à construção. Cada zona possui uma finalidade específica e limita os tipos de construção que podem ser realizados nela.","The city has different zones intended for construction. Each zone has a specific purpose and limits the types of buildings that can be placed there."
 
-TXT_TUTORIAL_6,"A construção de casas aumenta a capacidade de moradores da cidade, permitindo a chegada de uma população maior.","Building houses increases the city's resident capacity, allowing a larger population to live in the city."
+TXT_TUTORIAL_6,"Existem zonas residenciais, destinadas às casas e à habitação da população, e zonas destinadas a construções com diferentes funções para a cidade.","There are residential zones, intended for houses and population housing, as well as zones intended for buildings with different functions for the city."
 
-TXT_TUTORIAL_7,"Mais moradores também representam maior arrecadação de impostos. Dessa forma, a expansão residencial pode aumentar a renda disponível para novos investimentos.","More residents also generate greater tax revenue. In this way, residential expansion can increase the income available for new investments."
+TXT_TUTORIAL_7,"As casas permitem acomodar mais moradores. Conforme a cidade cresce, a quantidade de habitantes também pode aumentar.","Houses allow more residents to live in the city. As the city grows, the number of inhabitants can also increase."
 
-TXT_TUTORIAL_8,"O crescimento urbano precisa ser acompanhado por uma gestão equilibrada. Expansão, gastos, serviços públicos e segurança devem ser considerados em conjunto.","Urban growth must be accompanied by balanced management. Expansion, spending, public services, and safety must be considered together."
+TXT_TUTORIAL_8,"Uma população maior também pode representar uma maior arrecadação para a cidade.","A larger population can also mean greater revenue for the city."
 
-TXT_TUTORIAL_9,"A imagem da administração também possui importância. As decisões tomadas e as condições da cidade influenciam a percepção da população.","The administration's image is also important. Decisions made and the city's conditions influence how the population perceives the administration."
+TXT_TUTORIAL_9,"As construções levam um determinado tempo para serem concluídas. Por isso, algumas decisões precisam ser tomadas com antecedência.","Construction takes a certain amount of time to complete. Because of this, some decisions need to be made in advance."
 
-TXT_TUTORIAL_10,"Essa percepção é representada pelo nível de popularidade. Uma gestão eficiente pode manter a confiança da população, enquanto problemas e decisões inadequadas podem reduzir esse indicador.","This perception is represented by the popularity level. Efficient management can maintain the population's trust, while problems and poor decisions can reduce this indicator."
+TXT_TUTORIAL_10,"Em situações de risco, determinadas construções podem ser aceleradas. Essa alternativa, porém, possui um custo maior.","In situations of risk, certain constructions can be accelerated. However, this option comes at a higher cost."
 
-TXT_TUTORIAL_11,"A administração precisa considerar tanto os recursos financeiros quanto as condições de vida da população. Uma cidade com bons recursos financeiros também precisa manter serviços e estruturas adequados.","The administration must consider both financial resources and the population's living conditions. A city with strong financial resources must also maintain adequate services and infrastructure."
+TXT_TUTORIAL_11,"A cidade também possui um indicador de popularidade. As condições da cidade e as decisões da administração podem influenciar esse indicador.","The city also has a popularity indicator. The city's conditions and administrative decisions can affect this indicator."
 
-TXT_TUTORIAL_12,"A popularidade exige atenção constante. Caso o indicador chegue a 0%, ocorre um processo de impeachment e a administração é encerrada.","Popularity requires constant attention. If the indicator reaches 0%, an impeachment process occurs and the administration is terminated."
+TXT_TUTORIAL_12,"É importante acompanhar a popularidade durante a administração. Caso chegue a 0%, ocorre um processo de impeachment e a administração é encerrada.","It is important to monitor popularity during the administration. If it reaches 0%, an impeachment process occurs and the administration is terminated."
 
-TXT_TUTORIAL_13,"O objetivo da gestão é encontrar um equilíbrio entre crescimento, recursos, serviços públicos, segurança e qualidade de vida da população.","The goal of management is to find a balance between growth, resources, public services, safety, and the population's quality of life."
+TXT_TUTORIAL_13,"A Prefeitura é o principal centro administrativo da cidade e está diretamente ligada ao desenvolvimento urbano.","The City Hall is the city's main administrative center and is directly connected to urban development."
 
-TXT_TUTORIAL_14,"Com os princípios básicos de administração apresentados, é possível conhecer algumas das principais construções disponíveis na cidade.","With the basic principles of administration introduced, it is now possible to learn about some of the main buildings available in the city."
+TXT_TUTORIAL_14,"A evolução da Prefeitura pode liberar novas possibilidades para a cidade conforme novos níveis são alcançados.","Upgrading the City Hall can unlock new possibilities for the city as new levels are reached."
 
-TXT_TUTORIAL_15,"A Prefeitura é o centro administrativo da cidade. A construção possui papel importante no desenvolvimento urbano e na administração dos serviços.","The City Hall is the administrative center of the city. The building plays an important role in urban development and service management."
+TXT_TUTORIAL_15,"Essas são algumas das informações básicas para começar. O restante da administração será apresentado conforme a cidade se desenvolve.","These are some of the basic pieces of information needed to begin. The rest of the administration will be introduced as the city develops."
 
-TXT_TUTORIAL_16,"A evolução da Prefeitura permite ampliar as possibilidades de desenvolvimento da cidade, liberando novas construções e áreas conforme o nível da estrutura aumenta.","Upgrading the City Hall expands the city's development possibilities, unlocking new buildings and areas as the structure's level increases."
-
-TXT_TUTORIAL_17,"O Abrigo Comunitário oferece um local seguro para pessoas que precisam deixar suas casas ou áreas de risco durante situações de emergência.","The Community Shelter provides a safe place for people who need to leave their homes or areas at risk during emergencies."
-
-TXT_TUTORIAL_18,"A Estação de Bombeiros disponibiliza equipes de resgate para atuar em incêndios e outras situações de emergência, contribuindo para a proteção da população.","The Fire Station provides rescue teams to respond to fires and other emergencies, helping protect the population."
-
-TXT_TUTORIAL_19,"Uma boa administração depende do equilíbrio entre recursos, crescimento urbano, serviços públicos, prevenção de desastres e popularidade. A cidade está pronta para começar o desenvolvimento.","Good administration depends on balancing resources, urban growth, public services, disaster prevention, and popularity. The city is ready to begin its development."
+TXT_TUTORIAL_16,"Boa gestão!","Good management!"

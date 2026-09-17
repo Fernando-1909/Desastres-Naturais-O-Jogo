@@ -37,7 +37,7 @@ class_name Enchente
 ## Dano de infraestrutura no nível 1
 @export var dano_infraestrutura: float = 25.0
 ## Quanto o dano aumenta a cada nível acima do 1
-@export var aumento_dano_por_nivel: float = 30.0
+@export var aumento_dano_por_nivel: float = 0.0
 
 ## Quanto tempo (segundos) a faixa de dano fica visível depois de cada atualização de turno
 @export var duracao_visivel_segundos: float = 5.0
@@ -60,9 +60,14 @@ var area_tiles: Rect2i
 var mitigacao_atual: float = 0.0
 
 ## Emitido toda vez que a área de dano é (re)calculada — no início e a cada turno
-## que passa enquanto a enchente segue ativa — com o retângulo (em tiles) e o dano a aplicar.
-## Quem escuta esse sinal (ex: main_game.gd) decide como aplicar o dano nas construções.
-signal enchente_iniciada(area: Rect2i, dano: float)
+## que passa enquanto a enchente segue ativa — com o retângulo de dano em
+## coordenadas de PIXEL GLOBAIS (não em tiles) e o dano a aplicar. Emitir em
+## pixels evita qualquer divergência entre o "tile_size" configurado aqui e o
+## tamanho real das células do TileMap — quem escuta (main_game.gd) converte
+## a posição de cada construção pro mundo (do mesmo jeito que já faz pra
+## posicioná-la) e testa se ela cai dentro desse retângulo, garantindo que
+## TODAS as construções na área tomem dano, sem exceção.
+signal enchente_iniciada(area_pixels: Rect2, dano: float)
 ## Emitido quando a enchente sobe de nível
 signal enchente_subiu_nivel(nivel: int)
 ## Emitido quando a enchente termina (acabou a duração em turnos)
@@ -141,7 +146,11 @@ func _aplicar_turno_atual() -> void:
 	timer_visibilidade.start()
 	
 	print("[ENCHENTE] Nível ", nivel_atual, " (turno ", turnos_passados, "/", duracao_turnos, ") | Mitigação: ", int(mitigacao_atual * 100), "% | Área: ", area_dano.position, " tamanho: ", area_dano.size, " | Dano: ", dano_atual)
-	enchente_iniciada.emit(area_tiles, dano_atual)
+	
+	# Emite o retângulo em PIXELS GLOBAIS (não em tiles) — ver comentário no
+	# signal acima sobre por que isso evita construções "escapando" do dano.
+	var area_pixels := Rect2(area_dano.global_position, area_dano.size)
+	enchente_iniciada.emit(area_pixels, dano_atual)
 
 
 ## (Opcional) Sorteia posição/tamanho do AreaVisual em tiles, só usado se
