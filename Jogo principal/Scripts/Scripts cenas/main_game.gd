@@ -558,8 +558,12 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 
 	Global.casas_destruidas += 1
 
-	# Se a cidade já chegou a 0 de popularidade durante uma enchente e uma
-	# casa foi destruída, registra que a derrota veio da enchente.
+	# Cada construção destruída reduz 15 pontos de popularidade.
+	# O valor nunca fica abaixo de 0.
+	Global.popularidade = max(0, Global.popularidade - 15)
+
+	# Se esta destruição fez a popularidade chegar a 0 durante uma enchente,
+	# registra que a derrota veio da enchente.
 	if _enchente_ativa != null and Global.popularidade <= 0:
 		Global.enchentederrota = true
 
