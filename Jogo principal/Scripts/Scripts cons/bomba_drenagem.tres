@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="BuildingData" format=3 uid="uid://bv8ux8jaatqbv"]
 
 [ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="1_f3e88"]
-[ext_resource type="Texture2D" uid="uid://cvqob8ot47l5x" path="res://Jogo principal/tilesheets/casa.png" id="1_nwvbg"]
+[ext_resource type="Texture2D" uid="uid://2vd252cx2hv3" path="res://Jogo principal/tilesheets/Bomba.png" id="1_nwvbg"]
 
 [resource]
 script = ExtResource("1_f3e88")
@@ -12,7 +12,10 @@ icones = Array[Texture2D]([ExtResource("1_nwvbg")])
 custo_base = 400.0
 descricao_curta = "aaa"
 texto_detalhes = "aaaaa"
-tiles_atlas_coords = Array[Vector2i]([Vector2i(2, 0)])
+tiles_atlas_coords = Array[Vector2i]([Vector2i(0, 0)])
+source_id = 6
 under_construction_source_id = 3
 under_construction_tile_atlas_coords = Vector2i(0, 0)
+destroyed_source_id = 2
+destroyed_tile_atlas_coords = Vector2i(0, 0)
 metadata/_custom_type_script = "uid://bh8jua7ha1i6r"

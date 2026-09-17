@@ -126,6 +126,14 @@ var abrigo_ocupado: int = 0
 # ==============================================================================
 func _ready() -> void:
 	
+	await get_tree().process_frame # Aguarda o carregamento dos nós
+	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	print("--- TESTE DE CONFIGURAÇÃO DE ZONAS ---")
+	print("Quantidade de zonas encontradas no grupo: ", zonas.size())
+	for z in zonas:
+		var tipo = z.tipo_zona if "tipo_zona" in z else "SEM VARIAVEL TIPO_ZONA"
+		print("Nó: ", z.name, " | Posição Global: ", z.global_position, " | Tipo: ", tipo)
+	
 	# Executa a ocultação após todos os nós e zonas estarem totalmente carregados.
 	# A Zona de Funções começa fechada e só é liberada junto da primeira
 	# missão, que aparece obrigatoriamente no turno 2.
@@ -376,6 +384,91 @@ func tem_abrigo_construido() -> bool:
 func tem_estacao_bombeiros() -> bool:
 	return contar_estacoes_bombeiro_construidas() > 0
 
+
+# ==============================================================================
+# SISTEMA DE TEMPO DE RESGATE POR DISTÂNCIA DE ZONAS
+# ==============================================================================
+func atualizar_tempo_resgate_das_zonas() -> void:
+	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	var posicoes_origem: Array[Vector2] = []
+	var tm = tilemap_constructions if tilemap_constructions else tile_map
+
+	# 1. Pega a posição global de cada Estação de Bombeiros ativa no mapa
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio and predio.durabilidade_atual > 0 and predio.data:
+			var id_p = str(predio.data.id).to_lower().strip_edges()
+			var cat = str(predio.data.categoria).to_lower().strip_edges() if "categoria" in predio.data and predio.data.categoria != null else ""
+			if "bombeiro" in id_p or "bombeiro" in cat:
+				if tm:
+					posicoes_origem.append(tm.to_global(tm.map_to_local(pos)))
+
+	# 2. Fallback: Se ainda não houver bombeiros construídos, usa a posição das Zonas de Funções
+	if posicoes_origem.is_empty():
+		for zona in zonas:
+			if zona is BuildingZone:
+				var tipo = str(zona.tipo_zona).to_lower().strip_edges()
+				if "func" in tipo or "serv" in tipo or "bombeiro" in tipo or "abrigo" in tipo:
+					posicoes_origem.append(zona.global_position)
+
+	# 3. Define o limite de distância em pixels (Ex: 400.0px). Altere este valor para ajustar a tolerância.
+	var DISTANCIA_LIMITE_pixels: float = 400.0
+
+	# 4. Avalia CADA zona residencial individualmente
+	for z_res in zonas:
+		if z_res is BuildingZone:
+			var tipo = str(z_res.tipo_zona).to_lower().strip_edges()
+			if "residenc" in tipo or "casa" in tipo:
+				if posicoes_origem.is_empty():
+					z_res.tempo_resgate = 1
+					continue
+
+				var menor_distancia: float = INF
+				for pos_origem in posicoes_origem:
+					var dist = z_res.global_position.distance_to(pos_origem)
+					if dist < menor_distancia:
+						menor_distancia = dist
+
+				# Qualquer zona residencial além do limite de distância leva 2 turnos
+				if menor_distancia > DISTANCIA_LIMITE_pixels:
+					z_res.tempo_resgate = 2
+				else:
+					z_res.tempo_resgate = 1
+
+
+func obter_tempo_resgate_para_tile(pos_tile: Vector2i) -> int:
+	var tm = tilemap_constructions if tilemap_constructions else tile_map
+	
+	# Calcula a distância diretamente a partir da Posição Global do Tile no mapa
+	if tm:
+		var pos_global_tile = tm.to_global(tm.map_to_local(pos_tile))
+		var menor_distancia: float = INF
+
+		# Procura a estação de bombeiros mais próxima da casa atingida
+		for pos_p in construcoes_no_mapa.keys():
+			var predio: BuildingInstance = construcoes_no_mapa[pos_p]
+			if predio and predio.durabilidade_atual > 0 and predio.data:
+				var id_p = str(predio.data.id).to_lower().strip_edges()
+				var cat = str(predio.data.categoria).to_lower().strip_edges() if "categoria" in predio.data and predio.data.categoria != null else ""
+				if "bombeiro" in id_p or "bombeiro" in cat:
+					var pos_bombeiro = tm.to_global(tm.map_to_local(pos_p))
+					var dist = pos_global_tile.distance_to(pos_bombeiro)
+					if dist < menor_distancia:
+						menor_distancia = dist
+
+		# Raio de tolerância (em pixels) para o resgate de 1 turno
+		var RAIO_RESGATE_RAPIDO: float = 400.0
+
+		if menor_distancia != INF:
+			return 2 if menor_distancia > RAIO_RESGATE_RAPIDO else 1
+
+	# Fallback para o tempo registrado na zona
+	atualizar_tempo_resgate_das_zonas()
+	var zona = _obter_zona_no_tile(pos_tile)
+	if zona and "tempo_resgate" in zona:
+		return zona.tempo_resgate
+
+	return 1
 
 func pode_realizar_resgate() -> bool:
 	var abrigos_qtd = contar_abrigos_construidos()
@@ -652,10 +745,16 @@ func _instanciar_ponto_resgate(pos_tile: Vector2i, vitimas: int) -> void:
 	# Deslocamento Y para o ícone aparecer acima da casa
 	pos_global.y -= 25.0
 
+	var turnos = obter_tempo_resgate_para_tile(pos_tile)
+
 	var ponto = cena_ponto_resgate.instantiate()
 	add_child(ponto)
 	ponto.inicializar(pos_tile, pos_global, vitimas, self)
-	print("[RESGATE] Pop-in de emergência criado no tile: ", pos_tile)
+	
+	if "turnos_restantes" in ponto:
+		ponto.turnos_restantes = turnos
+		
+	print("[RESGATE] Pop-in de emergência criado no tile: ", pos_tile, " | Tempo de resgate: ", turnos, " turno(s)")
 
 
 # ==============================================================================

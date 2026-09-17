@@ -9,6 +9,8 @@ class_name BuildingZone
 		cor_da_zona = val
 		queue_redraw()
 
+@export var tempo_resgate: int = 1
+
 ## Exibe a área colorida dentro do Editor do Godot
 @export var mostrar_no_editor: bool = true:
 	set(val):

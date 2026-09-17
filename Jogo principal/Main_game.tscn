@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://cme0ok38tr0nm" path="res://Jogo principal/tilesheets/estacao_de_agua-aqua.png" id="15_0njb4"]
 [ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
 [ext_resource type="PackedScene" uid="uid://2c2r30wkgw3n" path="res://Jogo principal/UI/building_zone.tscn" id="15_tkcjf"]
+[ext_resource type="Texture2D" uid="uid://nkyfb0v45cp1" path="res://Jogo principal/tilesheets/Bomba-Aqua.png" id="16_0njb4"]
 [ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="16_fo8d0"]
 [ext_resource type="Texture2D" uid="uid://cm1dnhwjr2asx" path="res://Jogo principal/tilesheets/Estacao_de_bombeiros_level_1-aqua.png" id="16_kdkhr"]
 [ext_resource type="PackedScene" uid="uid://wsb5vaomuml2" path="res://Jogo principal/UI/menu_pausa.tscn" id="16_tkcjf"]
@@ -33,7 +34,9 @@
 [ext_resource type="Resource" uid="uid://cko2p2hekohms" path="res://Jogo principal/Scripts/Scripts cons/abrigo.tres" id="19_fj0mr"]
 [ext_resource type="PackedScene" uid="uid://l4ep5qwntoxq" path="res://Jogo principal/UI/dialogue_manager.tscn" id="20_fj0mr"]
 [ext_resource type="Resource" uid="uid://bvgdeedirk4kb" path="res://Jogo principal/Scripts/Scripts cons/estacao_tratamento.tres" id="22_gjpgg"]
+[ext_resource type="Texture2D" uid="uid://2vd252cx2hv3" path="res://Jogo principal/tilesheets/Bomba.png" id="22_kdkhr"]
 [ext_resource type="Resource" uid="uid://bv8ux8jaatqbv" path="res://Jogo principal/Scripts/Scripts cons/bomba_drenagem.tres" id="23_cuk6r"]
+[ext_resource type="Texture2D" uid="uid://bpcafexx7ie54" path="res://Jogo principal/tilesheets/casa_destruida_level_1-Aqua.png" id="23_ly8el"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sufiw"]
 texture = ExtResource("2_qg202")
@@ -542,6 +545,10 @@ texture = ExtResource("15_0njb4")
 texture_region_size = Vector2i(112, 64)
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kbhvu"]
+texture = ExtResource("16_0njb4")
+0:0/0 = 0
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4dk7i"]
 texture = ExtResource("16_kdkhr")
 texture_region_size = Vector2i(112, 64)
@@ -580,6 +587,14 @@ texture_region_size = Vector2i(32, 32)
 0:0/0/custom_data_0 = true
 0:0/0/custom_data_2 = "terreno_vazio"
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7v3xi"]
+texture = ExtResource("22_kdkhr")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f36nm"]
+texture = ExtResource("23_ly8el")
+texture_region_size = Vector2i(32, 32)
+
 [sub_resource type="TileSet" id="TileSet_3axm1"]
 tile_size = Vector2i(32, 32)
 custom_data_layer_0/name = "clicavel"
@@ -604,6 +619,9 @@ sources/18 = SubResource("TileSetAtlasSource_mv7vm")
 sources/19 = SubResource("TileSetAtlasSource_7vaf1")
 sources/20 = SubResource("TileSetAtlasSource_4dk7i")
 sources/21 = SubResource("TileSetAtlasSource_gqgav")
+sources/2 = SubResource("TileSetAtlasSource_kbhvu")
+sources/6 = SubResource("TileSetAtlasSource_7v3xi")
+sources/7 = SubResource("TileSetAtlasSource_f36nm")
 tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [1, Vector2i(0, 0)], [8, Vector2i(0, 0)], [2, Vector2i(0, 0)], [13, Vector2i(0, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [13, Vector2i(1, 0)], [7, Vector2i(0, 0)], [13, Vector2i(2, 0)], [8, Vector2i(0, 0)], [13, Vector2i(3, 0)], [9, Vector2i(0, 0)], [13, Vector2i(4, 0)], [10, Vector2i(0, 0)], [11, Vector2i(1, 0)], [12, Vector2i(0, 0)], [13, Vector2i(5, 0)], [13, Vector2i(0, 0)], [15, Vector2i(0, 0)], [14, Vector2i(0, 0)], [15, Vector2i(1, 0)]]
 
 [sub_resource type="GDScript" id="GDScript_tkcjf"]
@@ -853,6 +871,9 @@ visible = false
 [node name="Zona_Residencial" parent="." unique_id=514652450 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
+tempo_resgate = null
+tipo_zona = "residencial"
+id_grupo = "Residencial"
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -864,6 +885,8 @@ position = Vector2(0, 0.98049927)
 [node name="Zona_Residencial2" parent="." unique_id=782536297 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
+tempo_resgate = null
+id_grupo = "Residencial"
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -876,6 +899,8 @@ shape = SubResource("RectangleShape2D_pnfwx")
 [node name="Zona_Residencial3" parent="." unique_id=1143560931 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
+tempo_resgate = null
+id_grupo = "Residencial"
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -888,6 +913,7 @@ shape = SubResource("RectangleShape2D_sufiw")
 [node name="Zona_Teste" parent="." unique_id=1463022229 instance=ExtResource("15_tkcjf")]
 visible = false
 position = Vector2(47, 53)
+tempo_resgate = null
 nome_zona = "Zona Lazer"
 categorias_permitidas = Array[String](["Lazer"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_2cq4x")])
@@ -899,10 +925,12 @@ debug_color = Color(0.8032692, 0.35889444, 0.56552446, 0.41960785)
 
 [node name="Zona_Funções" parent="." unique_id=825916287 instance=ExtResource("15_tkcjf")]
 position = Vector2(13, 4)
+tempo_resgate = null
 nome_zona = "Zona Servicos"
+tipo_zona = "funcoes"
 categorias_permitidas = Array[String](["Funções"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr"), ExtResource("22_gjpgg")])
-limite_maximo_edificios = 3
+limite_maximo_edificios = 4
 
 [node name="CollisionShape2D" parent="Zona_Funções" index="0" unique_id=711131371]
 position = Vector2(369, 187)
@@ -910,10 +938,12 @@ debug_color = Color(0.98745674, 0.11128371, 0, 0.41960785)
 
 [node name="Zona_Funções2" parent="." unique_id=3339012 instance=ExtResource("15_tkcjf")]
 position = Vector2(547, 4)
+tempo_resgate = null
 nome_zona = "Zona Servicos"
+tipo_zona = "funcoes"
 categorias_permitidas = Array[String](["Funções"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr"), ExtResource("22_gjpgg")])
-limite_maximo_edificios = 3
+limite_maximo_edificios = 4
 
 [node name="CollisionShape2D" parent="Zona_Funções2" index="0" unique_id=711131371]
 position = Vector2(494, 173)
@@ -921,6 +951,7 @@ shape = SubResource("RectangleShape2D_okcf2")
 debug_color = Color(0.98745674, 0.11128371, 0, 0.41960785)
 
 [node name="Zona_Rio" parent="." unique_id=1505758871 instance=ExtResource("15_tkcjf")]
+tempo_resgate = null
 nome_zona = "Zona de drenagem"
 tipo_zona = "Ribeirinha"
 precisa_estacao_tratamento = true
@@ -934,6 +965,7 @@ shape = SubResource("RectangleShape2D_gjpgg")
 debug_color = Color(0, 0, 0, 0.41960785)
 
 [node name="Zona_Rio2" parent="." unique_id=1291481715 instance=ExtResource("15_tkcjf")]
+tempo_resgate = null
 nome_zona = "Zona de drenagem"
 tipo_zona = "Ribeirinha"
 precisa_estacao_tratamento = true
