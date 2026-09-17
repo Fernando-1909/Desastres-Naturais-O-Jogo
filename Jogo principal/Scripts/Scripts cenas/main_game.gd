@@ -2011,31 +2011,49 @@ func avancar_turno_desastres() -> void:
 	get_tree().call_group("pontos_resgate", "avancar_turno")
 
 
-func _on_enchente_iniciada(area: Rect2i, dano: float) -> void:
+func _on_enchente_iniciada(area_pixels: Rect2, dano: float) -> void:
 	var atingidos := 0
-	for x in range(area.position.x, area.position.x + area.size.x):
-		for y in range(area.position.y, area.position.y + area.size.y):
-			var pos := Vector2i(x, y)
-			if construcoes_no_mapa.has(pos) and construcoes_no_mapa[pos] != null:
-				var predio: BuildingInstance = construcoes_no_mapa[pos]
-				
-				var mult_dano: float = 1.0
-				if zona_por_tile.has(pos):
-					var zona: BuildingZone = zona_por_tile[pos]
-					mult_dano = zona.obter_multiplicador_dano()
-				else:
-					var zona = _obter_zona_no_tile(pos)
-					if zona:
-						mult_dano = zona.obter_multiplicador_dano()
-
-				var dano_final = dano * mult_dano
-				predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - dano_final)
-				Global.dano_total += dano_final
-				atingidos += 1
-				print("[ENCHENTE] Dano em ", pos, ": ", dano_final, " (Mult. Zona: x", mult_dano, ") | Vida: ", predio.durabilidade_atual)
-				_verificar_casa_destruida(predio)
-				
-				if tela_compras and tela_compras.visible and pos == _celula_selecionada:
-					_abrir_modo_upgrade_instancia(predio)
+	
+	# Percorre TODAS as construções do mapa (não só um recorte por tile) e
+	# testa a posição real de cada uma contra o retângulo de dano em pixels —
+	# usando a mesma conversão tile->mundo já usada pra posicionar prédios em
+	# outros lugares do código. Isso garante que toda construção que esteja
+	# de fato dentro da área alagada tome dano, sem exceção, independente de
+	# qualquer diferença entre o tamanho de tile configurado na Enchente e o
+	# tamanho real das células do TileMap.
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio == null:
+			continue
+		
+		var pos_global: Vector2
+		if tilemap_constructions:
+			pos_global = tilemap_constructions.to_global(tilemap_constructions.map_to_local(pos))
+		elif tile_map:
+			pos_global = tile_map.to_global(tile_map.map_to_local(pos))
+		else:
+			continue
+		
+		if not area_pixels.has_point(pos_global):
+			continue
+		
+		var mult_dano: float = 1.0
+		if zona_por_tile.has(pos):
+			var zona: BuildingZone = zona_por_tile[pos]
+			mult_dano = zona.obter_multiplicador_dano()
+		else:
+			var zona = _obter_zona_no_tile(pos)
+			if zona:
+				mult_dano = zona.obter_multiplicador_dano()
+		
+		var dano_final = dano * mult_dano
+		predio.durabilidade_atual = max(0.0, predio.durabilidade_atual - dano_final)
+		Global.dano_total += dano_final
+		atingidos += 1
+		print("[ENCHENTE] Dano em ", pos, ": ", dano_final, " (Mult. Zona: x", mult_dano, ") | Vida: ", predio.durabilidade_atual)
+		_verificar_casa_destruida(predio)
+		
+		if tela_compras and tela_compras.visible and pos == _celula_selecionada:
+			_abrir_modo_upgrade_instancia(predio)
 	
 	print("[ENCHENTE] Total de construções atingidas: ", atingidos, " / Dano base: ", dano)

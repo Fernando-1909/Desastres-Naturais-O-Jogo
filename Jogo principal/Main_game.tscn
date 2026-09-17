@@ -790,7 +790,6 @@ grow_horizontal = 0
 text = "Pausa"
 
 [node name="DesastreButton" type="Button" parent="." unique_id=1984064466]
-visible = false
 offset_left = 1047.0
 offset_top = 386.0
 offset_right = 1176.0
