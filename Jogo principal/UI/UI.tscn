@@ -2,7 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://5208k37kpkp7" path="res://Jogo principal/UI/Assets/allmenusprites.png" id="1_fmcfc"]
 [ext_resource type="Script" uid="uid://cmg5ypr4637en" path="res://Jogo principal/Scripts/Scripts cenas/ui.gd" id="1_xchpd"]
+[ext_resource type="Texture2D" uid="uid://b1wfg4gax3gf" path="res://Jogo principal/UI/Assets/allmenuspritesselected.png" id="3_cryjl"]
 [ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="3_p88rf"]
+[ext_resource type="Texture2D" uid="uid://dc572evvi068q" path="res://Jogo principal/UI/Assets/allmenuspriteshover.png" id="4_8v3q5"]
 [ext_resource type="Texture2D" uid="uid://ogf3vv3cfdd7" path="res://Jogo principal/UI/Assets/Rebecatrue2.png" id="4_hdnfl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hgtue"]
@@ -24,9 +26,25 @@ region = Rect2(108.070435, -0.020246983, 49.048096, 37.18001)
 atlas = ExtResource("1_fmcfc")
 region = Rect2(160.982, -0.0962491, 49.288025, 37.302822)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_7elu7"]
+atlas = ExtResource("3_cryjl")
+region = Rect2(160.99867, -0.028917074, 49.138397, 37.09949)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2hkha"]
+atlas = ExtResource("4_8v3q5")
+region = Rect2(161.0115, 0.015733719, 49.36177, 37.326424)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_gdrsp"]
 atlas = ExtResource("1_fmcfc")
 region = Rect2(54.85831, 0.012067795, 49.246243, 37.182175)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y184x"]
+atlas = ExtResource("3_cryjl")
+region = Rect2(54.991302, 0, 49.109283, 37.851387)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qw28h"]
+atlas = ExtResource("4_8v3q5")
+region = Rect2(54.80808, 0, 49.443043, 37.3515)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gp8g6"]
 atlas = ExtResource("1_fmcfc")
@@ -143,6 +161,7 @@ layout_mode = 2
 alignment = 2
 
 [node name="MenuH" type="TextureButton" parent="PainelBotoes/Botoes" unique_id=394040628]
+visible = false
 custom_minimum_size = Vector2(80, 60)
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_37yws")
@@ -152,6 +171,8 @@ stretch_mode = 0
 custom_minimum_size = Vector2(80, 60)
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_hgtue")
+texture_pressed = SubResource("AtlasTexture_7elu7")
+texture_hover = SubResource("AtlasTexture_2hkha")
 stretch_mode = 0
 
 [node name="PainelTurnos" type="PanelContainer" parent="." unique_id=394342575]
@@ -175,6 +196,8 @@ alignment = 2
 custom_minimum_size = Vector2(80, 60)
 layout_mode = 2
 texture_normal = SubResource("AtlasTexture_gdrsp")
+texture_pressed = SubResource("AtlasTexture_y184x")
+texture_hover = SubResource("AtlasTexture_qw28h")
 stretch_mode = 0
 
 [node name="Turno" type="NinePatchRect" parent="PainelTurnos/Turnos" unique_id=1396184424]
