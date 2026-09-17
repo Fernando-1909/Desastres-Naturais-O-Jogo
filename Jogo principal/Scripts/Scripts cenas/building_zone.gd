@@ -189,3 +189,20 @@ func tem_vaga_disponivel(total_construcoes_atuais: int) -> bool:
 
 func obter_multiplicador_dano() -> float:
 	return multiplicador_dano_enchente
+
+
+## Verifica se uma determinada palavra-chave/ID está entre os edifícios ou categorias permitidas da zona
+func edificios_permitidos_contem(termo: String) -> bool:
+	var termo_limpo = termo.to_lower().strip_edges()
+	
+	if "edificios_permitidos" in self and edificios_permitidos is Array:
+		for item in edificios_permitidos:
+			if termo_limpo in str(item).to_lower():
+				return true
+				
+	if "categorias_permitidas" in self and categorias_permitidas is Array:
+		for item in categorias_permitidas:
+			if termo_limpo in str(item).to_lower():
+				return true
+				
+	return false
