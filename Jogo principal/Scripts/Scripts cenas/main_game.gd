@@ -126,7 +126,10 @@ var abrigo_ocupado: int = 0
 # ==============================================================================
 func _ready() -> void:
 	
-	# Executa a ocultação após todos os nós e zonas estarem totalmente carregados
+	# Executa a ocultação após todos os nós e zonas estarem totalmente carregados.
+	# A Zona de Funções começa fechada e só é liberada junto da primeira
+	# missão, que aparece obrigatoriamente no turno 2.
+	_bloquear_zona_funcoes_ate_turno_2()
 	call_deferred("_ocultar_terrenos_zona_bloqueada")
 	
 	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
@@ -1383,6 +1386,10 @@ func escolher_missao_aleatoria():
 			Global.missao_atual_turnos = 0
 			Global.missao_aceita = false
 			print("[INFO] Turno 2: Missao obrigatoria - ", m_data.nome)
+
+			# A primeira missão libera a Zona de Funções e faz os tiles
+			# de construção aparecerem imediatamente no turno 2.
+			_ativar_terrenos_zona_funcoes()
 			
 			_iniciar_fluxo_da_missao(m_data)
 			return Global.missao_escolhida
@@ -1836,57 +1843,108 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 	print("[RECONSTRUÇÃO SUCESSO] Estrutura '", instancia.data.nome, "' reconstruída em ", pos_tile)
 
 
+func _bloquear_zona_funcoes_ate_turno_2() -> void:
+	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+		if zona is BuildingZone:
+			var tipo_zona := str(zona.tipo_zona).to_lower().strip_edges()
+			if (
+				tipo_zona == "funcoes"
+				or tipo_zona == "funcao"
+				or tipo_zona == "servicos"
+				or tipo_zona == "servico"
+				or "func" in tipo_zona
+				or "serv" in tipo_zona
+			):
+				zona.desbloqueada = false
+				zona.definir_visibilidade_terrenos(false)
+
+
 func _ocultar_terrenos_zona_bloqueada() -> void:
 	var tm: Object = tilemap_constructions if tilemap_constructions else tile_map
 	if not tm:
 		return
-		
+
 	var celulas = tm.get_used_cells() if tm is TileMapLayer else tm.get_used_cells(0)
-	
+
 	for pos in celulas:
-		# Ignora células que já possuem edifícios construídos
+		# Nunca esconde o tile de uma construção que já existe no mapa.
 		if construcoes_no_mapa.has(pos):
 			continue
-			
+
 		var zona = _obter_zona_no_tile(pos)
-		if zona and "desbloqueada" in zona and not zona.desbloqueada:
-			var src_id = tm.get_cell_source_id(pos) if tm is TileMapLayer else tm.get_cell_source_id(0, pos)
-			if src_id == -1:
-				continue
-				
-			var atlas_coords = tm.get_cell_atlas_coords(pos) if tm is TileMapLayer else tm.get_cell_atlas_coords(0, pos)
-			
-			var dados_tile = {
-				"pos": pos,
-				"source_id": src_id,
-				"atlas_coords": atlas_coords
-			}
-			
-			var tipo_zona = ""
-			if "tipo_zona" in zona and zona.tipo_zona != null:
-				tipo_zona = str(zona.tipo_zona).to_lower().strip_edges()
-			
-			if tipo_zona == "funcoes" or tipo_zona == "funcao" or tipo_zona == "servicos" or tipo_zona == "servico" or "func" in tipo_zona or "serv" in tipo_zona:
-				var ja_salvo = false
-				for item in _tiles_ocultos_zona_funcoes:
-					if item["pos"] == pos:
-						ja_salvo = true
-						break
-				if not ja_salvo:
-					_tiles_ocultos_zona_funcoes.append(dados_tile)
-			else:
-				var ja_salvo = false
-				for item in _tiles_ocultos_zona_rio:
-					if item["pos"] == pos:
-						ja_salvo = true
-						break
-				if not ja_salvo:
-					_tiles_ocultos_zona_rio.append(dados_tile)
-			
-			if tm is TileMapLayer:
-				tm.set_cell(pos, -1)
-			elif tm is TileMap:
-				tm.set_cell(0, pos, -1)
+		if zona == null:
+			continue
+
+		var tipo_zona := ""
+		if "tipo_zona" in zona and zona.tipo_zona != null:
+			tipo_zona = str(zona.tipo_zona).to_lower().strip_edges()
+
+		var eh_zona_funcoes: bool = (
+			tipo_zona == "funcoes"
+			or tipo_zona == "funcao"
+			or tipo_zona == "servicos"
+			or tipo_zona == "servico"
+			or "func" in tipo_zona
+			or "serv" in tipo_zona
+		)
+
+		var eh_zona_rio: bool = (
+			"rio" in tipo_zona
+			or "ribeir" in tipo_zona
+			or ("precisa_estacao_tratamento" in zona and zona.precisa_estacao_tratamento)
+		)
+
+		# A Zona de Funções tem uma regra especial: os tiles de construção
+		# ficam invisíveis desde o começo da partida e só reaparecem quando
+		# a primeira missão for criada, no turno 2.
+		# Isso é independente de desbloqueada_por_padrao.
+		var deve_ocultar: bool = false
+		if eh_zona_funcoes:
+			deve_ocultar = true
+		elif eh_zona_rio:
+			var zona_desbloqueada: bool = false
+			if "desbloqueada" in zona and zona.desbloqueada != null:
+				zona_desbloqueada = bool(zona.desbloqueada)
+			deve_ocultar = not zona_desbloqueada
+
+		if not deve_ocultar:
+			continue
+
+		var src_id = tm.get_cell_source_id(pos) if tm is TileMapLayer else tm.get_cell_source_id(0, pos)
+		if src_id == -1:
+			continue
+
+		var atlas_coords = tm.get_cell_atlas_coords(pos) if tm is TileMapLayer else tm.get_cell_atlas_coords(0, pos)
+
+		var dados_tile = {
+			"pos": pos,
+			"source_id": src_id,
+			"atlas_coords": atlas_coords
+		}
+
+		if eh_zona_funcoes:
+			var ja_salvo_funcoes := false
+			for item in _tiles_ocultos_zona_funcoes:
+				if item["pos"] == pos:
+					ja_salvo_funcoes = true
+					break
+			if not ja_salvo_funcoes:
+				_tiles_ocultos_zona_funcoes.append(dados_tile)
+		else:
+			var ja_salvo_rio := false
+			for item in _tiles_ocultos_zona_rio:
+				if item["pos"] == pos:
+					ja_salvo_rio = true
+					break
+			if not ja_salvo_rio:
+				_tiles_ocultos_zona_rio.append(dados_tile)
+
+		if tm is TileMapLayer:
+			tm.set_cell(pos, -1)
+		elif tm is TileMap:
+			tm.set_cell(0, pos, -1)
+
+	print("[ZONA FUNÇÕES] Tiles de construção ocultados até a primeira missão (turno 2).")
 
 
 func _restaurar_tile_grafico(pos_tile: Vector2i, instancia: BuildingInstance) -> void:

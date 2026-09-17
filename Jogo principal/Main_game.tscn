@@ -588,6 +588,8 @@ custom_data_layer_1/name = "categoria"
 custom_data_layer_1/type = 4
 custom_data_layer_2/name = "building_id"
 custom_data_layer_2/type = 4
+custom_data_layer_3/name = "visivel"
+custom_data_layer_3/type = 1
 sources/4 = SubResource("TileSetAtlasSource_fj0mr")
 sources/5 = SubResource("TileSetAtlasSource_gjpgg")
 sources/11 = SubResource("TileSetAtlasSource_bbp3t")
@@ -851,7 +853,6 @@ visible = false
 [node name="Zona_Residencial" parent="." unique_id=514652450 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
-edificio_requisito_id = null
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -863,7 +864,6 @@ position = Vector2(0, 0.98049927)
 [node name="Zona_Residencial2" parent="." unique_id=782536297 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
-edificio_requisito_id = null
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -876,7 +876,6 @@ shape = SubResource("RectangleShape2D_pnfwx")
 [node name="Zona_Residencial3" parent="." unique_id=1143560931 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
-edificio_requisito_id = null
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -890,7 +889,6 @@ shape = SubResource("RectangleShape2D_sufiw")
 visible = false
 position = Vector2(47, 53)
 nome_zona = "Zona Lazer"
-edificio_requisito_id = null
 categorias_permitidas = Array[String](["Lazer"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_2cq4x")])
 limite_maximo_edificios = 2
@@ -902,7 +900,6 @@ debug_color = Color(0.8032692, 0.35889444, 0.56552446, 0.41960785)
 [node name="Zona_Funções" parent="." unique_id=825916287 instance=ExtResource("15_tkcjf")]
 position = Vector2(13, 4)
 nome_zona = "Zona Servicos"
-edificio_requisito_id = null
 categorias_permitidas = Array[String](["Funções"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr"), ExtResource("22_gjpgg")])
 limite_maximo_edificios = 3
@@ -914,7 +911,6 @@ debug_color = Color(0.98745674, 0.11128371, 0, 0.41960785)
 [node name="Zona_Funções2" parent="." unique_id=3339012 instance=ExtResource("15_tkcjf")]
 position = Vector2(547, 4)
 nome_zona = "Zona Servicos"
-edificio_requisito_id = null
 categorias_permitidas = Array[String](["Funções"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr"), ExtResource("22_gjpgg")])
 limite_maximo_edificios = 3
@@ -927,7 +923,6 @@ debug_color = Color(0.98745674, 0.11128371, 0, 0.41960785)
 [node name="Zona_Rio" parent="." unique_id=1505758871 instance=ExtResource("15_tkcjf")]
 nome_zona = "Zona de drenagem"
 tipo_zona = "Ribeirinha"
-edificio_requisito_id = null
 precisa_estacao_tratamento = true
 categorias_permitidas = Array[String](["Infraestrutura"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("23_cuk6r")])
@@ -941,7 +936,6 @@ debug_color = Color(0, 0, 0, 0.41960785)
 [node name="Zona_Rio2" parent="." unique_id=1291481715 instance=ExtResource("15_tkcjf")]
 nome_zona = "Zona de drenagem"
 tipo_zona = "Ribeirinha"
-edificio_requisito_id = null
 precisa_estacao_tratamento = true
 categorias_permitidas = Array[String](["Infraestrutura"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("23_cuk6r")])
