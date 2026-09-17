@@ -43,7 +43,7 @@ func _atualizar_textos() -> void:
 
 
 func _on_iniciar_pressed() -> void:
-	get_tree().change_scene_to_file("res://Jogo principal/Main_game.tscn")
+	get_tree().change_scene_to_file("res://Jogo principal/tutorial.tscn")
 
 
 func _on_opcoes_pressed() -> void:

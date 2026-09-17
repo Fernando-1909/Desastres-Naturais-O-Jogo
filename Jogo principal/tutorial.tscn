@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://13kcgqxrxhi1"]
+
+[ext_resource type="Script" uid="uid://dm1ubylkgm4je" path="res://Jogo principal/Scripts/Scripts cenas/tutorial.gd" id="1_3dcgh"]
+[ext_resource type="PackedScene" uid="uid://l4ep5qwntoxq" path="res://Jogo principal/UI/dialogue_manager.tscn" id="2_e23xa"]
+
+[node name="Tutorial" type="Node2D" unique_id=1721329215]
+script = ExtResource("1_3dcgh")
+
+[node name="DialogueManager" parent="." unique_id=1420897856 instance=ExtResource("2_e23xa")]
+
+[node name="TutorialUI" type="CanvasLayer" parent="." unique_id=845331070]
+
+[node name="TutorialTile" type="TextureRect" parent="TutorialUI" unique_id=1709979302]
+visible = false
+offset_left = 811.0
+offset_top = 100.0
+offset_right = 1061.0
+offset_bottom = 350.0
+expand_mode = 1
+stretch_mode = 5

@@ -1458,11 +1458,16 @@ func _fechar_container_missao() -> void:
 		return
 	var missao_container = hud.get_node("MissaoContainer")
 	missao_container.visible = false
-	if missao_container.has_node("VBoxContainer/HBoxContainer"):
-		missao_container.get_node("VBoxContainer/HBoxContainer").visible = true
-	if missao_container.has_node("VBoxContainer/HBoxContainer2"):
-		missao_container.get_node("VBoxContainer/HBoxContainer2").visible = false
-
+	var hbox_decisao = missao_container.get_node_or_null(
+		"MarginContainer/VBoxContainer/HBoxContainer"
+	)
+	var hbox_fechar = missao_container.get_node_or_null(
+		"MarginContainer/VBoxContainer/HBoxContainer2"
+	)
+	if hbox_decisao:
+		hbox_decisao.visible = true
+	if hbox_fechar:
+		hbox_fechar.visible = false
 
 func _abrir_container_missao() -> void:
 	if hud and hud.has_node("MissaoContainer"):
