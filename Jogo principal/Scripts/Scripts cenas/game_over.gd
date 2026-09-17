@@ -45,3 +45,7 @@ func _avaliar_gestao() -> String:
 		return "[center][b]Gestão Instável[/b]\nA cidade sobreviveu, mas por pouco.[/center]"
 	else:
 		return "[center][b]Gestão em Crise[/b]\nA população perdeu a confiança na administração.[/center]"
+
+
+func _on_return_menu_pressed() -> void:
+		get_tree().change_scene_to_file("res://Menu Principal/main_menu.tscn")
