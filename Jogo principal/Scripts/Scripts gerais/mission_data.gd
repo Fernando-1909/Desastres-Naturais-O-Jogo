@@ -24,5 +24,9 @@ extends Resource
 ## missões que não têm um prédio específico associado.
 @export var edificio_id_alvo: String = ""
 
+@export_group("Progressão e Liberação")
+## IDs adicionais de edifícios liberados na loja assim que esta missão aparece no jogo
+@export var edificios_para_desbloquear: Array[String] = []
+
 @export_group("Recompensa (se aceitar e concluir)")
 @export var popularidade: int = 0                     # Popularidade ganha ao concluir
