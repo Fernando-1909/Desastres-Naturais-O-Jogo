@@ -752,6 +752,10 @@ text = "  X  "
 
 [node name="FreeCamera2D" parent="." unique_id=834210011 instance=ExtResource("9_botex")]
 visible = true
+limit_left = 169
+limit_top = 70
+limit_right = 1129
+limit_bottom = 614
 
 [node name="ButtonTesteCompra" type="Button" parent="." unique_id=1621438957]
 visible = false
