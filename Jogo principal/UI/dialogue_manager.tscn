@@ -58,6 +58,7 @@ theme_override_constants/separation = 4
 
 [node name="NomeLabel" type="RichTextLabel" parent="CaixaDialogo/ContainerDialogo/ContentHBox/TextVBox" unique_id=386681428]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="TextoDialogo" type="RichTextLabel" parent="CaixaDialogo/ContainerDialogo/ContentHBox/TextVBox" unique_id=218234370]
