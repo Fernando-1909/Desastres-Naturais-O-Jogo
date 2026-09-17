@@ -125,6 +125,9 @@ func _ready() -> void:
 	Global.popularidade = 40
 	Global.dinheiro = 1000
 	Global.populacao = 10
+	# Reseta os motivos de derrota ao iniciar uma nova partida.
+	Global.missaoderrota = false
+	Global.enchentederrota = false
 	
 	# Conecta o clique do botao diretamente a funcao toggle_pause
 	if button_teste_pausa and menu_pausa:
@@ -554,6 +557,12 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 		predio.resgate_pendente = true
 
 	Global.casas_destruidas += 1
+
+	# Se a cidade já chegou a 0 de popularidade durante uma enchente e uma
+	# casa foi destruída, registra que a derrota veio da enchente.
+	if _enchente_ativa != null and Global.popularidade <= 0:
+		Global.enchentederrota = true
+
 	_recalcular_recursos_resgate()
 
 	_aplicar_tile_destruido(predio)
@@ -1578,9 +1587,16 @@ func _on_dialogo_da_missao_finalizado(_ultimo_no_id: String) -> void:
 
 func processar_missao_no_turno() -> void:
 	if Global.missao_escolhida != null and Global.missao_aceita:
+		var popularidade_antes: int = Global.popularidade
 		var popularidade_perdida = Global.missao_escolhida.popularidade * 1.5
 		Global.popularidade -= popularidade_perdida
 		print("Missão '", Global.missao_escolhida.nome, "' falhou por não ter sido concluída a tempo! Popularidade perdida: -", popularidade_perdida)
+
+		# A missão só é marcada como causa da derrota se a penalidade dela
+		# for o que fez a popularidade chegar a 0 ou menos.
+		if popularidade_antes > 0 and Global.popularidade <= 0:
+			Global.missaoderrota = true
+			print(Global.missaoderrota)
 		
 		Global.missao_escolhida = null
 		Global.missao_aceita = false
@@ -1598,8 +1614,9 @@ func processar_missao_no_turno() -> void:
 ## Se a popularidade cair abaixo de 0, a população perdeu a confiança na
 ## gestão e o jogo termina ali — vai direto pra tela de derrota.
 func _verificar_derrota() -> void:
-	if Global.popularidade < 0:
-		print("[FIM DE JOGO] Popularidade abaixo de 0 (", Global.popularidade, "). Indo para tela de derrota.")
+	if Global.popularidade <= 0:
+		print("[FIM DE JOGO] Popularidade chegou a 0 ou menos (", Global.popularidade, "). Indo para tela de derrota.")
+		print("[FIM DE JOGO] missaoderrota=", Global.missaoderrota, " | enchentederrota=", Global.enchentederrota)
 		get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
 
 

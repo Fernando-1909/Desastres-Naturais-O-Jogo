@@ -4,6 +4,10 @@ extends Node
 var dinheiro: int
 var popularidade: int
 var populacao: int
+
+# Motivo da derrota por popularidade
+var missaoderrota: bool = false
+var enchentederrota: bool = false
 var pessoas_desabrigadas: int = 0   # NPCs que perderam a casa em um desastre (infraestrutura chegou a 0)
 var turno: int
 var renda: int             # Quantidade de "unidades" de renda geradas por turno (baseado na população)
