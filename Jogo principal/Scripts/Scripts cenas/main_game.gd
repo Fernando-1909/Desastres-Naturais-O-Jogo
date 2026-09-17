@@ -535,6 +535,9 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 
 	if "moradores_desabrigados" in predio:
 		predio.moradores_desabrigados = true
+	if "resgate_pendente" in predio:
+		predio.resgate_pendente = true
+
 	Global.casas_destruidas += 1
 	_recalcular_recursos_resgate()
 
@@ -730,7 +733,16 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 					if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
 						aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
 				return
-				
+
+			if _tem_resgate_pendente(pos_tile, predio_existente):
+				if cena_ponto_resgate:
+					var aviso_temp = cena_ponto_resgate.instantiate()
+					add_child(aviso_temp)
+					aviso_temp._mostrar_aviso("Não é possível reconstruir a casa antes de concluir o resgate dos moradores!")
+					if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+						aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
+				return
+
 			tela_compras.abrir_modo_reconstrucao(predio_existente, pos_tile)
 		else:
 			_abrir_modo_upgrade_instancia(predio_existente)
@@ -778,15 +790,6 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 
 	if zona_atual != null:
-		# Exibe aviso caso a zona já tenha atingido o limite máximo de construções
-		if not zona_atual.tem_vaga_disponivel(total_na_zona):
-			if cena_ponto_resgate:
-				var aviso_temp = cena_ponto_resgate.instantiate()
-				add_child(aviso_temp)
-				aviso_temp._mostrar_aviso("Esta zona já atingiu o limite máximo de construções!")
-				if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
-					aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
-			return
 		tela_compras.abrir_loja_com_zona(zona_atual, lista_opcoes, total_na_zona)
 	else:
 		tela_compras.abrir_modo_selecao(lista_opcoes)
@@ -1659,6 +1662,16 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 				aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
 		return
 
+	if _tem_resgate_pendente(pos_tile):
+		print("[RECONSTRUÇÃO BLOQUEADA] O resgate das pessoas desta casa ainda não foi concluído!")
+		if cena_ponto_resgate:
+			var aviso_temp = cena_ponto_resgate.instantiate()
+			add_child(aviso_temp)
+			aviso_temp._mostrar_aviso("Não é possível reconstruir a casa antes de concluir o resgate dos moradores!")
+			if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+				aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
+		return
+
 	if not construcoes_no_mapa.has(pos_tile):
 		print("[RECONSTRUÇÃO ERRO] Construção não encontrada na posição: ", pos_tile)
 		return
@@ -1680,6 +1693,8 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 	
 	if "moradores_desabrigados" in instancia:
 		instancia.moradores_desabrigados = false
+	if "resgate_pendente" in instancia:
+		instancia.resgate_pendente = false
 
 	# 3. Gerencia a População e a Desocupação do Abrigo
 	if instancia.data and "bonus_populacao" in instancia.data and instancia.data.bonus_populacao > 0:
@@ -2009,6 +2024,26 @@ func avancar_turno_desastres() -> void:
 
 	# Avança o tempo de todos os pontos de resgate ativos na cena
 	get_tree().call_group("pontos_resgate", "avancar_turno")
+
+
+func _tem_resgate_pendente(pos_tile: Vector2i, predio: BuildingInstance = null) -> bool:
+	if predio != null and "resgate_pendente" in predio and predio.resgate_pendente:
+		return true
+
+	var pontos = get_tree().get_nodes_in_group("pontos_resgate")
+	for ponto in pontos:
+		var p_tile = Vector2i(-999, -999)
+		if "pos_tile" in ponto:
+			p_tile = ponto.pos_tile
+		elif "posicao_tile" in ponto:
+			p_tile = ponto.posicao_tile
+		elif "tile_pos" in ponto:
+			p_tile = ponto.tile_pos
+
+		if p_tile == pos_tile:
+			return true
+
+	return false
 
 
 func _on_enchente_iniciada(area_pixels: Rect2, dano: float) -> void:
