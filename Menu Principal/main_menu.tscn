@@ -49,9 +49,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -324.0
-offset_top = -303.0
+offset_top = -250.5
 offset_right = 324.0
-offset_bottom = 303.0
+offset_bottom = 250.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 5
@@ -87,6 +87,7 @@ scroll_active = false
 vertical_alignment = 1
 
 [node name="ButtonOpcoes" type="Button" parent="MenuPrincipal" unique_id=1953251558]
+visible = false
 custom_minimum_size = Vector2(400, 100)
 layout_mode = 2
 size_flags_horizontal = 4
