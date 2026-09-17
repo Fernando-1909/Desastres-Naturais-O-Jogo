@@ -3,7 +3,7 @@ extends Camera2D
 var dragging: bool = false
 var last_drag_pos: Vector2 = Vector2.ZERO
 
-var zoom_min: float = 2.5
+var zoom_min: float = 1.8
 var zoom_max: float = 5.0
 var zoom_speed: float = 0.1
 
@@ -24,15 +24,24 @@ func _ready() -> void:
 	# Começa sempre no zoom mínimo
 	zoom = Vector2(zoom_min, zoom_min)
 
+	# Garante que o arrasto começa desativado
+	dragging = false
+
 	# Ajusta a posição de acordo com os limites
 	limitar_camera()
+
+
+func _process(_delta: float) -> void:
+	# Se o botão esquerdo não estiver pressionado,
+	# força o arrasto a ser desligado.
+	if dragging and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		dragging = false
 
 
 func _input(event: InputEvent) -> void:
 
 	if not enabled:
 		return
-
 
 	# ==========================================
 	# MOUSE
@@ -52,7 +61,6 @@ func _input(event: InputEvent) -> void:
 			else:
 				dragging = false
 
-
 		# ------------------------------------------
 		# ZOOM IN
 		# ------------------------------------------
@@ -67,7 +75,6 @@ func _input(event: InputEvent) -> void:
 			)
 
 			limitar_camera()
-
 
 		# ------------------------------------------
 		# ZOOM OUT
@@ -91,9 +98,10 @@ func _input(event: InputEvent) -> void:
 
 	if event is InputEventMouseMotion:
 
-		if dragging:
+		# Só permite mover a câmera se o botão
+		# esquerdo estiver realmente pressionado.
+		if dragging and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 
-			# Explicitamente Vector2
 			var movimento: Vector2 = event.position - last_drag_pos
 
 			# Move a câmera na direção contrária ao mouse
@@ -102,6 +110,12 @@ func _input(event: InputEvent) -> void:
 			last_drag_pos = event.position
 
 			limitar_camera()
+
+		elif dragging:
+
+			# Se o botão não estiver pressionado,
+			# cancela imediatamente o arrasto.
+			dragging = false
 
 
 	# ==========================================
