@@ -37,7 +37,7 @@ class_name Enchente
 @export var dano_infraestrutura: float = 25.0
 
 ## Quanto tempo (segundos) a faixa de dano fica visível depois de cada atualização de turno
-@export var duracao_visivel_segundos: float = 5.0
+@export var duracao_visivel_segundos: float = 3.5
 
 
 # Progresso da enchente ao longo dos turnos
