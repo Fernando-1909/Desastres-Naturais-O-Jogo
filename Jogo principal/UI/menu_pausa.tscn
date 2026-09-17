@@ -116,6 +116,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ButtonOpcoes" type="Button" parent="CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes" unique_id=1928695859]
+visible = false
 custom_minimum_size = Vector2(280, 55)
 layout_mode = 2
 offset_transform_scale = Vector2(0.9, 1.2)
