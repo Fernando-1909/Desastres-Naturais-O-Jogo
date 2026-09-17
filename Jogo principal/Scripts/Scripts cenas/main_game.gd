@@ -2029,6 +2029,13 @@ func _on_desastre_button_pressed() -> void:
 # ==============================================================================
 var _enchente_ativa: Node = null
 
+# Alerta de enchente (pausa o jogo e pisca "Alerta de enchente" por 5s antes
+# da enchente começar de fato). Evita disparar duas vezes no mesmo turno.
+var _alerta_enchente_em_andamento := false
+# Cache do RichTextLabel de avisos ("Avisos" no UI.tscn), resolvido na
+# primeira vez que precisamos dele (ver _obter_richtext_avisos).
+var _richtext_avisos: RichTextLabel = null
+
 ## duracao_customizada: se > 0, sobrescreve a duração padrão da cena de enchente
 ## (usado pela enchente automática, que dura duracao_enchente_turnos turnos).
 ## Deixe -1 (padrão) para usar a duração configurada na própria cena.
@@ -2220,9 +2227,72 @@ func _on_enchente_terminada() -> void:
 ## Verifica se é a hora de disparar a enchente automaticamente (turno_inicio_enchente),
 ## sem depender do botão de teste. Chamada uma vez por turno, antes de tudo o resto.
 func _verificar_inicio_automatico_de_enchente() -> void:
-	if Global.turno == turno_inicio_enchente and _enchente_ativa == null:
-		print("[ENCHENTE AUTOMÁTICA] Iniciando no turno ", Global.turno, " | duração: ", duracao_enchente_turnos, " turnos")
-		_iniciar_enchente(duracao_enchente_turnos)
+	if Global.turno == turno_inicio_enchente and _enchente_ativa == null and not _alerta_enchente_em_andamento:
+		_alerta_enchente_em_andamento = true
+		_mostrar_alerta_e_iniciar_enchente()
+
+
+## Pausa o jogo, mostra "Alerta de enchente" piscando lentamente em vermelho
+## no RichTextLabel de avisos por 5 segundos e, ao final, despausa e só então
+## inicia a enchente de verdade.
+func _mostrar_alerta_e_iniciar_enchente() -> void:
+	print("[ENCHENTE AUTOMÁTICA] Turno ", Global.turno, " — exibindo alerta antes de iniciar (duração: ", duracao_enchente_turnos, " turnos)")
+	
+	Global.jogo_pausado = true
+	get_tree().paused = true
+	
+	var aviso: RichTextLabel = _obter_richtext_avisos()
+	var tween: Tween = null
+	
+	if aviso:
+		aviso.bbcode_enabled = true
+		aviso.text = "[center][color=red]Alerta de enchente!!![/color][/center]"
+		aviso.modulate = Color.WHITE
+		aviso.visible = true
+		
+		# Pisca lentamente (fade in/out do alpha). TWEEN_PAUSE_PROCESS faz o
+		# tween continuar rodando mesmo com a árvore pausada.
+		tween = create_tween()
+		tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		tween.set_loops()
+		tween.tween_property(aviso, "modulate:a", 0.15, 0.6).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(aviso, "modulate:a", 1.0, 0.6).set_trans(Tween.TRANS_SINE)
+	else:
+		print("[AVISO] Não encontrei o RichTextLabel de avisos (procurei pela propriedade 'avisos' de ui.gd e pelo nó 'Avisos'). Ajuste em _obter_richtext_avisos().")
+	
+	# Espera 5 segundos reais, mesmo com o jogo pausado (create_timer com
+	# process_always=true, o padrão, continua rodando durante a pausa).
+	await get_tree().create_timer(5.0).timeout
+	
+	if tween and tween.is_valid():
+		tween.kill()
+	
+	if aviso:
+		aviso.visible = false
+		aviso.modulate = Color.WHITE
+	
+	Global.jogo_pausado = false
+	get_tree().paused = false
+	
+	_alerta_enchente_em_andamento = false
+	_iniciar_enchente(duracao_enchente_turnos)
+
+
+## Procura o RichTextLabel usado pros avisos em qualquer lugar da árvore do
+## HUD, pelo nome "RichTextAvisos". Se o nó tiver outro nome na sua cena,
+## troque o nome aqui.
+## Procura o RichTextLabel usado pros avisos ("Avisos" no UI.tscn, exposto
+## em ui.gd como "avisos"). Tenta primeiro pela propriedade @onready de
+## ui.gd; se não achar, cai pro nome do nó direto.
+func _obter_richtext_avisos() -> RichTextLabel:
+	if _richtext_avisos:
+		return _richtext_avisos
+	if hud:
+		if "avisos" in hud and hud.avisos is RichTextLabel:
+			_richtext_avisos = hud.avisos
+		else:
+			_richtext_avisos = hud.find_child("Avisos", true, false) as RichTextLabel
+	return _richtext_avisos
 
 
 func avancar_turno_desastres() -> void:

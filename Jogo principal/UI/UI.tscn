@@ -407,6 +407,28 @@ text = "MISSÃO"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Avisos" type="RichTextLabel" parent="." unique_id=139656456]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -149.5
+offset_top = -86.5
+offset_right = 149.5
+offset_bottom = 86.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 38
+bbcode_enabled = true
+text = "HJASFVASDHFJV"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="pressed" from="PainelBotoes/Botoes/Pausa" to="." method="_on_pausa_pressed"]
 [connection signal="pressed" from="PainelTurnos/Turnos/PularTurno" to="." method="_on_pular_turno_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]

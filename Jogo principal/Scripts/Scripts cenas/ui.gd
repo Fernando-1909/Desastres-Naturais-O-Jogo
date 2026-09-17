@@ -2,6 +2,7 @@ extends Control
 
 @onready var global = get_node("/root/Global")
 @onready var main_game = get_tree().current_scene
+@onready var avisos: RichTextLabel = $Avisos
 
 signal toggle_freecam
 

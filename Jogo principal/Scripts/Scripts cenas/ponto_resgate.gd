@@ -13,6 +13,7 @@ var main_game_ref: Node = null
 @onready var painel_aviso: Control = $CanvasLayer/PainelAviso
 @onready var label_aviso_texto: RichTextLabel = $CanvasLayer/PainelAviso/MarginContainer/VBoxContainer/LabelMensagem
 @onready var btn_fechar_aviso: TextureButton = $CanvasLayer/PainelAviso/ButtonFechar
+@onready var avisos: RichTextLabel = $Avisos
 
 
 func _ready() -> void:
