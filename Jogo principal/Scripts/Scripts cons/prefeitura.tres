@@ -18,4 +18,6 @@ durabilidade_maxima = 500.0
 tiles_atlas_coords = Array[Vector2i]([Vector2i(0, 0)])
 source_id = 1
 tile_vazio_atlas_coords = Vector2i(0, 0)
+flooded_source_id = 21
+flooded_tile_atlas_coords = Vector2i(0, 0)
 metadata/_custom_type_script = "uid://bh8jua7ha1i6r"

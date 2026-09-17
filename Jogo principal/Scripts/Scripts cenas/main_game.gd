@@ -571,6 +571,28 @@ func _verificar_casa_destruida(predio: BuildingInstance) -> void:
 	_atualizar_sistema_drenagem()
 
 
+func _aplicar_tile_alagado(predio: BuildingInstance) -> void:
+	if not predio or not predio.data:
+		return
+	
+	if predio.durabilidade_atual <= 0:
+		return
+
+	var b_data = predio.data
+	if b_data.has_method("tem_tile_alagado") and b_data.tem_tile_alagado():
+		var src_id = b_data.get_flooded_source_id() if b_data.has_method("get_flooded_source_id") else 0
+		var coords = b_data.flooded_tile_atlas_coords if "flooded_tile_atlas_coords" in b_data else Vector2i(-1, -1)
+		var pos_tile = predio.posicao_tile
+		
+		if coords != Vector2i(-1, -1):
+			if tilemap_constructions:
+				tilemap_constructions.set_cell(pos_tile, src_id, coords)
+			elif tile_map:
+				tile_map.set_cell(0, pos_tile, src_id, coords)
+				
+			print("[SISTEMA] Construção em ", pos_tile, " foi alterada para o sprite alagado (Source: ", src_id, ", Coords: ", coords, ")")
+
+
 func _aplicar_tile_destruido(predio: BuildingInstance) -> void:
 	if not predio or not predio.data:
 		return
@@ -1200,6 +1222,8 @@ func _registrar_predio_se_existir(pos: Vector2i, tile_data: TileData, atlas_coor
 		elif "atlas_coords" in b_data and b_data.atlas_coords == atlas_coords:
 			eh_tile_construido = true
 		elif "tile_atlas_coords" in b_data and b_data.tile_atlas_coords == atlas_coords:
+			eh_tile_construido = true
+		elif "flooded_tile_atlas_coords" in b_data and b_data.flooded_tile_atlas_coords == atlas_coords:
 			eh_tile_construido = true
 		elif building_id_custom != "":
 			eh_tile_construido = true
@@ -1832,6 +1856,8 @@ func _buscar_data_por_atlas_coords(coords: Vector2i) -> BuildingData:
 			return b_data
 		if "tile_atlas_coords" in b_data and b_data.tile_atlas_coords == coords:
 			return b_data
+		if "flooded_tile_atlas_coords" in b_data and b_data.flooded_tile_atlas_coords == coords:
+			return b_data
 	return null
 
 func _executar_fallback_por_string(id_str: String) -> void:
@@ -2025,6 +2051,13 @@ func _on_enchente_terminada() -> void:
 	if tilemap_base and tilemap_base.has_method("restaurar_mapa"):
 		tilemap_base.restaurar_mapa()
 	
+	# Restaura visualmente todas as construções intactas que não estejam em obra
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio and predio.durabilidade_atual > 0:
+			if not ("em_construcao" in predio and predio.em_construcao):
+				_restaurar_tile_grafico(pos, predio)
+	
 	_processar_retorno_abrigo_para_casas()
 
 
@@ -2074,13 +2107,6 @@ func _tem_resgate_pendente(pos_tile: Vector2i, predio: BuildingInstance = null) 
 func _on_enchente_iniciada(area_pixels: Rect2, dano: float) -> void:
 	var atingidos := 0
 	
-	# Percorre TODAS as construções do mapa (não só um recorte por tile) e
-	# testa a posição real de cada uma contra o retângulo de dano em pixels —
-	# usando a mesma conversão tile->mundo já usada pra posicionar prédios em
-	# outros lugares do código. Isso garante que toda construção que esteja
-	# de fato dentro da área alagada tome dano, sem exceção, independente de
-	# qualquer diferença entre o tamanho de tile configurado na Enchente e o
-	# tamanho real das células do TileMap.
 	for pos in construcoes_no_mapa.keys():
 		var predio: BuildingInstance = construcoes_no_mapa[pos]
 		if predio == null:
@@ -2111,7 +2137,11 @@ func _on_enchente_iniciada(area_pixels: Rect2, dano: float) -> void:
 		Global.dano_total += dano_final
 		atingidos += 1
 		print("[ENCHENTE] Dano em ", pos, ": ", dano_final, " (Mult. Zona: x", mult_dano, ") | Vida: ", predio.durabilidade_atual)
-		_verificar_casa_destruida(predio)
+		
+		if predio.durabilidade_atual <= 0:
+			_verificar_casa_destruida(predio)
+		else:
+			_aplicar_tile_alagado(predio)
 		
 		if tela_compras and tela_compras.visible and pos == _celula_selecionada:
 			_abrir_modo_upgrade_instancia(predio)

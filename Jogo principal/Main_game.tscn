@@ -17,11 +17,17 @@
 [ext_resource type="Texture2D" uid="uid://buxanp4637wr4" path="res://Jogo principal/tilesheets/estacao_de_agua.png" id="8_sufiw"]
 [ext_resource type="PackedScene" uid="uid://bono1ma1agif0" path="res://Jogo principal/UI/Freecam/Freecam.tscn" id="9_botex"]
 [ext_resource type="PackedScene" uid="uid://dfblr8ogepa0k" path="res://Jogo principal/UI/UI.tscn" id="10_bbp3t"]
+[ext_resource type="Texture2D" uid="uid://dvblyfhe0yex6" path="res://Jogo principal/tilesheets/Abrigo-aqua.png" id="12_5rmji"]
+[ext_resource type="Texture2D" uid="uid://beevp14ac6a41" path="res://Jogo principal/tilesheets/casa_level_1-aqua.png" id="13_q3sdw"]
+[ext_resource type="Texture2D" uid="uid://dqkgiat73pqmf" path="res://Jogo principal/tilesheets/Construcao-aqua.png" id="14_y72fv"]
+[ext_resource type="Texture2D" uid="uid://cme0ok38tr0nm" path="res://Jogo principal/tilesheets/estacao_de_agua-aqua.png" id="15_0njb4"]
 [ext_resource type="PackedScene" uid="uid://bpobe74w27jcc" path="res://Jogo principal/UI/tela_compras.tscn" id="15_61lwm"]
 [ext_resource type="PackedScene" uid="uid://2c2r30wkgw3n" path="res://Jogo principal/UI/building_zone.tscn" id="15_tkcjf"]
 [ext_resource type="Script" uid="uid://bh8jua7ha1i6r" path="res://Jogo principal/Scripts/Scripts gerais/building_data.gd" id="16_fo8d0"]
+[ext_resource type="Texture2D" uid="uid://cm1dnhwjr2asx" path="res://Jogo principal/tilesheets/Estacao_de_bombeiros_level_1-aqua.png" id="16_kdkhr"]
 [ext_resource type="PackedScene" uid="uid://wsb5vaomuml2" path="res://Jogo principal/UI/menu_pausa.tscn" id="16_tkcjf"]
 [ext_resource type="Resource" uid="uid://ywprn46r2bch" path="res://Jogo principal/Scripts/Scripts cons/casa_simples.tres" id="17_2cq4x"]
+[ext_resource type="Texture2D" uid="uid://bknu4shqbtohg" path="res://Jogo principal/tilesheets/Prefeitura_level_1-aqua.png" id="17_ly8el"]
 [ext_resource type="Resource" uid="uid://bp12r8pe5sp1t" path="res://Jogo principal/Scripts/Scripts cons/cons_lazer.tres" id="18_2cq4x"]
 [ext_resource type="Resource" uid="uid://dv7ernpw1cxgi" path="res://Jogo principal/Scripts/Scripts cons/bombeiros.tres" id="18_a6fgx"]
 [ext_resource type="Resource" uid="uid://cko2p2hekohms" path="res://Jogo principal/Scripts/Scripts cons/abrigo.tres" id="19_fj0mr"]
@@ -516,6 +522,36 @@ texture_region_size = Vector2i(112, 64)
 1:0/0/custom_data_1 = "Funções"
 1:0/0/custom_data_2 = "abrigo"
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lc4nt"]
+texture = ExtResource("12_5rmji")
+texture_region_size = Vector2i(112, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s6pm0"]
+texture = ExtResource("13_q3sdw")
+texture_region_size = Vector2i(80, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mv7vm"]
+texture = ExtResource("14_y72fv")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7vaf1"]
+texture = ExtResource("15_0njb4")
+texture_region_size = Vector2i(112, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4dk7i"]
+texture = ExtResource("16_kdkhr")
+texture_region_size = Vector2i(112, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gqgav"]
+texture = ExtResource("17_ly8el")
+texture_region_size = Vector2i(112, 64)
+0:0/0 = 0
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3brof"]
 texture = ExtResource("8_cuk6r")
 texture_region_size = Vector2i(32, 32)
@@ -560,7 +596,13 @@ sources/1 = SubResource("TileSetAtlasSource_tkcjf")
 sources/10 = SubResource("TileSetAtlasSource_4pjq3")
 sources/15 = SubResource("TileSetAtlasSource_qg202")
 sources/0 = SubResource("TileSetAtlasSource_rshtd")
-tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [1, Vector2i(0, 0)], [8, Vector2i(0, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [8, Vector2i(0, 0)], [7, Vector2i(0, 0)], [8, Vector2i(1, 0)], [9, Vector2i(0, 0)], [11, Vector2i(0, 0)], [10, Vector2i(0, 0)], [11, Vector2i(1, 0)], [13, Vector2i(0, 0)], [15, Vector2i(0, 0)], [14, Vector2i(0, 0)], [15, Vector2i(1, 0)]]
+sources/16 = SubResource("TileSetAtlasSource_lc4nt")
+sources/17 = SubResource("TileSetAtlasSource_s6pm0")
+sources/18 = SubResource("TileSetAtlasSource_mv7vm")
+sources/19 = SubResource("TileSetAtlasSource_7vaf1")
+sources/20 = SubResource("TileSetAtlasSource_4dk7i")
+sources/21 = SubResource("TileSetAtlasSource_gqgav")
+tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [1, Vector2i(0, 0)], [8, Vector2i(0, 0)], [2, Vector2i(0, 0)], [13, Vector2i(0, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [13, Vector2i(1, 0)], [7, Vector2i(0, 0)], [13, Vector2i(2, 0)], [8, Vector2i(0, 0)], [13, Vector2i(3, 0)], [9, Vector2i(0, 0)], [13, Vector2i(4, 0)], [10, Vector2i(0, 0)], [11, Vector2i(1, 0)], [12, Vector2i(0, 0)], [13, Vector2i(5, 0)], [13, Vector2i(0, 0)], [15, Vector2i(0, 0)], [14, Vector2i(0, 0)], [15, Vector2i(1, 0)]]
 
 [sub_resource type="GDScript" id="GDScript_tkcjf"]
 script/source = "extends TileMapLayer
@@ -809,7 +851,6 @@ visible = false
 [node name="Zona_Residencial" parent="." unique_id=514652450 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
-id_grupo = null
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -821,7 +862,6 @@ position = Vector2(0, 0.98049927)
 [node name="Zona_Residencial2" parent="." unique_id=782536297 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
-id_grupo = null
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -834,7 +874,6 @@ shape = SubResource("RectangleShape2D_pnfwx")
 [node name="Zona_Residencial3" parent="." unique_id=1143560931 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
-id_grupo = null
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -848,7 +887,6 @@ shape = SubResource("RectangleShape2D_sufiw")
 visible = false
 position = Vector2(47, 53)
 nome_zona = "Zona Lazer"
-id_grupo = null
 categorias_permitidas = Array[String](["Lazer"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_2cq4x")])
 limite_maximo_edificios = 2
@@ -860,7 +898,6 @@ debug_color = Color(0.8032692, 0.35889444, 0.56552446, 0.41960785)
 [node name="Zona_Funções" parent="." unique_id=825916287 instance=ExtResource("15_tkcjf")]
 position = Vector2(13, 4)
 nome_zona = "Zona Servicos"
-id_grupo = null
 categorias_permitidas = Array[String](["Funções"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr"), ExtResource("22_gjpgg")])
 limite_maximo_edificios = 3
@@ -872,7 +909,6 @@ debug_color = Color(0.98745674, 0.11128371, 0, 0.41960785)
 [node name="Zona_Funções2" parent="." unique_id=3339012 instance=ExtResource("15_tkcjf")]
 position = Vector2(547, 4)
 nome_zona = "Zona Servicos"
-id_grupo = null
 categorias_permitidas = Array[String](["Funções"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("18_a6fgx"), ExtResource("19_fj0mr"), ExtResource("22_gjpgg")])
 limite_maximo_edificios = 3
@@ -885,7 +921,6 @@ debug_color = Color(0.98745674, 0.11128371, 0, 0.41960785)
 [node name="Zona_Rio" parent="." unique_id=1505758871 instance=ExtResource("15_tkcjf")]
 nome_zona = "Zona de drenagem"
 tipo_zona = "Ribeirinha"
-id_grupo = null
 precisa_estacao_tratamento = true
 categorias_permitidas = Array[String](["Infraestrutura"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("23_cuk6r")])
@@ -899,7 +934,6 @@ debug_color = Color(0, 0, 0, 0.41960785)
 [node name="Zona_Rio2" parent="." unique_id=1291481715 instance=ExtResource("15_tkcjf")]
 nome_zona = "Zona de drenagem"
 tipo_zona = "Ribeirinha"
-id_grupo = null
 precisa_estacao_tratamento = true
 categorias_permitidas = Array[String](["Infraestrutura"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("23_cuk6r")])

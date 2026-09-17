@@ -55,6 +55,11 @@ extends Resource
 @export var destroyed_source_id: int = -1            # Se -1, reutiliza o source_id padrão
 @export var destroyed_tile_atlas_coords: Vector2i = Vector2i(-1, -1) # Posição (x, y) do tile destruído
 
+@export_subgroup("Tile Alagado")
+## Configurações para a versão alagada da construção
+@export var flooded_source_id: int = -1              # Se -1, reutiliza o source_id padrão
+@export var flooded_tile_atlas_coords: Vector2i = Vector2i(-1, -1) # Posição (x, y) do tile alagado
+
 
 ## Retorna true se o .tres tem pelo menos 1 imagem válida associada
 func tem_icones_validos() -> bool:
@@ -98,12 +103,20 @@ func tem_tile_destruido() -> bool:
 	return destroyed_tile_atlas_coords != Vector2i(-1, -1)
 
 
+func tem_tile_alagado() -> bool:
+	return flooded_tile_atlas_coords != Vector2i(-1, -1)
+
+
 func get_under_construction_source_id() -> int:
 	return under_construction_source_id if under_construction_source_id >= 0 else source_id
 
 
 func get_destroyed_source_id() -> int:
 	return destroyed_source_id if destroyed_source_id >= 0 else source_id
+
+
+func get_flooded_source_id() -> int:
+	return flooded_source_id if flooded_source_id >= 0 else source_id
 
 
 func get_atlas_coord_para_construir(indice: int = -1) -> Vector2i:
