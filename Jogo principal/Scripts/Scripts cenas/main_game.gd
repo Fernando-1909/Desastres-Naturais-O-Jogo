@@ -135,7 +135,7 @@ func _ready() -> void:
 	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
 	_carregar_todos_os_edificios()
 	_carregar_todas_as_missoes()
-	# variaveis de teste para testar no inicio
+	Global.turno = 0
 	Global.popularidade = 40
 	Global.dinheiro = 1000
 	Global.populacao = 10

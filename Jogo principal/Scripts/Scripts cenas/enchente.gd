@@ -32,6 +32,13 @@ class_name Enchente
 	Vector2(886.0, 497.0),  # Nível 5
 ]
 
+## Quantas vezes maior que a AreaDano o Sprite2D "Onda" deve ficar. A arte
+## da água não cobre um retângulo perfeito (tem partes recortadas/irregulares),
+## então em vez de esticar ela pra bater exatamente com o tamanho da área de
+## dano, ela fica sempre alguns tamanhos maior, ancorada pela ponta inferior
+## esquerda na ponta inferior esquerda da AreaDano.
+@export var onda_escala_multiplicador: float = 3.5
+
 ## Dano fixo de infraestrutura da enchente.
 ## O dano NÃO aumenta conforme o nível.
 @export var dano_infraestrutura: float = 25.0
@@ -69,6 +76,11 @@ signal enchente_terminada
 @onready var area_visual: ColorRect = get_node_or_null("AreaVisual")
 @onready var area_dano: ColorRect = get_node_or_null("AreaDano")
 @onready var timer_visibilidade: Timer = get_node_or_null("TimerDuracao")
+## Sprite2D com a arte da água ("Onda"), filho da AreaDano. Fica ancorado na
+## ponta inferior esquerda dela, sempre um pouco maior (ver
+## onda_escala_multiplicador acima) — ajustado toda vez que a área muda de
+## tamanho, em _atualizar_sprite_onda.
+@onready var onda_sprite: Sprite2D = get_node_or_null("AreaDano/Onda")
 
 
 func _ready() -> void:
@@ -87,6 +99,11 @@ func _ready() -> void:
 	
 	# AreaVisual é apenas o limite da área.
 	area_visual.visible = false
+	
+	# AreaDano continua existindo (é ela que a lógica de dano usa pra
+	# posição/tamanho), mas fica invisível — quem aparece na tela é o
+	# Sprite2D "Onda", com a arte da água, por cima dela.
+	area_dano.color.a = 0.0
 	
 	timer_visibilidade.wait_time = duracao_visivel_segundos
 	timer_visibilidade.one_shot = true
@@ -227,6 +244,47 @@ func _atualizar_tamanho_area_dano() -> void:
 	)
 	
 	area_dano.visible = true
+	
+	_atualizar_sprite_onda()
+
+
+## Mantém o Sprite2D "Onda" (arte da água) grudado na ponta INFERIOR
+## ESQUERDA da AreaDano, sempre alguns tamanhos maior que ela (ver
+## onda_escala_multiplicador) — a arte é irregular e não cobre um retângulo
+## perfeito, então em vez de esticar ela pra bater exatamente com o tamanho
+## da área de dano, só ancoramos ela pelo canto certo e deixamos ela maior.
+func _atualizar_sprite_onda() -> void:
+	if onda_sprite == null:
+		return
+	if onda_sprite.texture == null:
+		push_warning("Enchente: Sprite2D 'Onda' não tem textura definida!")
+		return
+	
+	var tex_size: Vector2 = onda_sprite.texture.get_size()
+	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
+		return
+	
+	# Tamanho alvo: N vezes o tamanho da AreaDano (não precisa bater 1:1)
+	var tamanho_alvo = area_dano.size * onda_escala_multiplicador
+	onda_sprite.scale = tamanho_alvo / tex_size
+	
+	var largura_real = tex_size.x * onda_sprite.scale.x
+	var altura_real = tex_size.y * onda_sprite.scale.y
+	
+	# Ponto de ancoragem: canto inferior esquerdo da AreaDano, em
+	# coordenadas locais dela (Onda é filho de AreaDano, então (0, size.y)
+	# é exatamente o canto inferior esquerdo dela).
+	var ponto_ancora = Vector2(0.0, area_dano.size.y)
+	
+	if onda_sprite.centered:
+		# Sprite2D centralizado: a "position" fica no centro da textura, então
+		# precisamos deslocar meio sprite pra cima e pra direita a partir do
+		# canto inferior esquerdo, pra esse canto cair exatamente na ancora.
+		onda_sprite.position = ponto_ancora + Vector2(largura_real / 2.0, -altura_real / 2.0)
+	else:
+		# Não centralizado: "position" já é o canto superior esquerdo da
+		# textura, então subimos a altura toda a partir do canto inferior.
+		onda_sprite.position = ponto_ancora - Vector2(0.0, altura_real)
 
 
 ## Retorna o tamanho configurado para o nível atual.
