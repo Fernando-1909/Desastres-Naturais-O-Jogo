@@ -62,6 +62,10 @@ var area_tiles: Rect2i
 # Reduz o TAMANHO e o DANO da enchente.
 var mitigacao_atual: float = 0.0
 
+# Indica que a enchente está ocorrendo. É usado pelos NPCs que entram na cena
+# depois que o sinal inicial já foi emitido.
+var enchente_ativa: bool = false
+
 
 ## Emitido toda vez que a área de dano é (re)calculada.
 signal enchente_iniciada(area_pixels: Rect2, dano: float)
@@ -84,6 +88,8 @@ signal enchente_terminada
 
 
 func _ready() -> void:
+	add_to_group("enchente")
+
 	# Checagem de segurança
 	if not area_visual or not area_dano or not timer_visibilidade:
 		if not area_visual:
@@ -112,6 +118,7 @@ func _ready() -> void:
 	_definir_area_fixa()
 	
 	Global.nivel_enchente = nivel_atual
+	enchente_ativa = true
 	_aplicar_turno_atual()
 
 
@@ -343,6 +350,7 @@ func _on_timer_visibilidade_terminado() -> void:
 
 func _encerrar_enchente() -> void:
 	print("Enchente terminou.")
+	enchente_ativa = false
 	
 	if area_dano:
 		area_dano.visible = false

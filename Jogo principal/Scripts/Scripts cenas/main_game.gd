@@ -2153,6 +2153,10 @@ func _atualizar_sistema_drenagem() -> void:
 
 func _on_enchente_terminada() -> void:
 	_enchente_ativa = null
+	
+	# A enchente acabou. Os NPCs voltam gradualmente:
+	# primeiro metade, depois a outra metade.
+	_reaparecer_npcs_aos_poucos()
 	print("[DESASTRE] Enchente finalizada. Verificando retorno de desabrigados para casas...")
 	
 	# Restaura o TileMapBase pro estado de antes da enchente
@@ -2167,6 +2171,27 @@ func _on_enchente_terminada() -> void:
 				_restaurar_tile_grafico(pos, predio)
 	
 	_processar_retorno_abrigo_para_casas()
+
+
+func _reaparecer_npcs_aos_poucos() -> void:
+	var npcs := get_tree().get_nodes_in_group("npcs")
+	
+	if npcs.is_empty():
+		return
+	
+	var metade: int = ceili(npcs.size() / 2.0)
+	
+	# Primeira metade.
+	for i in range(metade):
+		if is_instance_valid(npcs[i]) and npcs[i].has_method("mostrar_depois_da_enchente"):
+			npcs[i].mostrar_depois_da_enchente()
+	
+	# Segunda metade após 2 segundos.
+	await get_tree().create_timer(2.0).timeout
+	
+	for i in range(metade, npcs.size()):
+		if is_instance_valid(npcs[i]) and npcs[i].has_method("mostrar_depois_da_enchente"):
+			npcs[i].mostrar_depois_da_enchente()
 
 
 ## Verifica se é a hora de disparar a enchente automaticamente (turno_inicio_enchente),
@@ -2301,6 +2326,11 @@ func _tem_resgate_pendente(pos_tile: Vector2i, predio: BuildingInstance = null) 
 
 
 func _on_enchente_iniciada(area_pixels: Rect2, dano: float) -> void:
+	# A enchente começou: TODOS os NPCs desaparecem imediatamente.
+	# O controle é feito aqui no main_game porque este sinal é garantidamente
+	# recebido pelo nó que criou a enchente.
+	get_tree().call_group("npcs", "_esconder_durante_enchente")
+	
 	var atingidos := 0
 	
 	for pos in construcoes_no_mapa.keys():
