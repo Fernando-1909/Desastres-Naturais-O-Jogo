@@ -81,10 +81,11 @@ scroll_active = false
 horizontal_alignment = 1
 
 [node name="DefeatMessage" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1817242701]
+z_index = 1
 custom_minimum_size = Vector2(400, 343)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.1666, 0.22728999, 0.34, 1)
-theme_override_colors/font_shadow_color = Color(0.17390001, 0.27195, 0.37, 1)
+theme_override_colors/font_shadow_color = Color(0.1128, 0.1764, 0.24, 1)
 theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_x = -2
 theme_override_constants/shadow_offset_y = 3
@@ -96,8 +97,20 @@ fit_content = true
 scroll_active = false
 horizontal_alignment = 1
 
+[node name="ColorRect" type="ColorRect" parent="PanelContainer/MarginContainer/VBoxContainer/DefeatMessage" unique_id=1969825621]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.25490198)
+
 [node name="ReturnMenu" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1665082073]
-custom_minimum_size = Vector2(292, 86)
+custom_minimum_size = Vector2(300, 86)
 layout_mode = 2
 theme_override_styles/pressed = SubResource("StyleBoxTexture_f1t7y")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ntr7v")
