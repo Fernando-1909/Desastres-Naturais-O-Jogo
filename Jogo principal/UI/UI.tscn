@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dc572evvi068q" path="res://Jogo principal/UI/Assets/allmenuspriteshover.png" id="4_8v3q5"]
 [ext_resource type="Texture2D" uid="uid://ogf3vv3cfdd7" path="res://Jogo principal/UI/Assets/Rebecatrue2.png" id="4_hdnfl"]
 [ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="7_8v3q5"]
+[ext_resource type="FontFile" uid="uid://br5wb2vq7vbqx" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBoldItalic.ttf" id="7_y184x"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hgtue"]
 
@@ -301,9 +302,9 @@ size_flags_vertical = 4
 offset_transform_enabled = true
 offset_transform_position = Vector2(10, -6)
 theme_override_colors/selection_color = Color(1, 0.100000024, 0.11499977, 0.8)
-theme_override_colors/font_outline_color = Color(0.78039217, 0.3372549, 0.13333334, 1)
-theme_override_colors/font_shadow_color = Color(0.5411765, 0.27058825, 0, 1)
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_outline_color = Color(0.6, 0.2597, 0.10200001, 1)
+theme_override_colors/font_shadow_color = Color(0.99, 0.495, 0, 1)
+theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/normal_font_size = 30
 text = "Missão!"
 scroll_active = false
@@ -314,9 +315,12 @@ clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
-theme_override_constants/shadow_offset_y = 4
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/normal_font_size = 22
+theme_override_colors/font_outline_color = Color(0.15959999, 0.25073996, 0.42, 1)
+theme_override_colors/font_shadow_color = Color(0.1525, 0.173625, 0.25, 1)
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 6
+theme_override_fonts/normal_font = ExtResource("7_8v3q5")
+theme_override_font_sizes/normal_font_size = 19
 bbcode_enabled = true
 text = "Informação"
 fit_content = true
@@ -329,10 +333,11 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_colors/selection_color = Color(0.9843137, 1, 0.101960786, 0.8)
-theme_override_colors/font_outline_color = Color(0.5019608, 0.47843137, 0.1764706, 1)
-theme_override_colors/font_shadow_color = Color(0.3882353, 0.3647059, 0.24313726, 1)
-theme_override_constants/shadow_offset_y = 4
+theme_override_colors/font_outline_color = Color(0.29, 0.27743334, 0.101500005, 1)
+theme_override_colors/font_shadow_color = Color(0.32, 0.30026665, 0.2016, 1)
+theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 5
+theme_override_fonts/normal_font = ExtResource("7_y184x")
 theme_override_font_sizes/normal_font_size = 22
 bbcode_enabled = true
 text = "awawaaa
@@ -363,10 +368,10 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/selection_color = Color(0.101960786, 1, 0.21960784, 0.8)
-theme_override_colors/font_outline_color = Color(0, 0.4392157, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.09019608, 0.5882353, 0.09803922, 1)
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/selection_color = Color(1, 0.100000024, 0.11499977, 0.8)
+theme_override_colors/font_outline_color = Color(0.10200001, 0.6, 0.1269, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.99, 0.049499955, 1)
+theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/normal_font_size = 25
 text = "ACEITAR"
 horizontal_alignment = 1
@@ -389,16 +394,17 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_colors/selection_color = Color(1, 0.101960786, 0.101960786, 0.8)
-theme_override_colors/font_outline_color = Color(0.36862746, 0, 0, 1)
-theme_override_colors/font_shadow_color = Color(0.5882353, 0.09019608, 0.09019608, 1)
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/selection_color = Color(1, 0.100000024, 0.11499977, 0.8)
+theme_override_colors/font_outline_color = Color(0.6, 0.10200001, 0.10200001, 1)
+theme_override_colors/font_shadow_color = Color(0.99, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/normal_font_size = 25
 text = "Recusar"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ButtonMissaoCheck" type="TextureButton" parent="." unique_id=2037941975]
+visible = false
 custom_minimum_size = Vector2(150, 60)
 layout_mode = 1
 anchors_preset = -1
@@ -421,6 +427,7 @@ offset_top = -5.585
 offset_bottom = -5.584999
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4

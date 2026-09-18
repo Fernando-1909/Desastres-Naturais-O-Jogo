@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://847g2if2t1u7" path="res://Jogo principal/UI/Assets/HPBAROVER.png" id="5_qd2tu"]
 [ext_resource type="Script" uid="uid://rn5nqs7vbh4c" path="res://Jogo principal/Scripts/Scripts gerais/barra_infra.gd" id="7_qd2tu"]
 [ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="8_tg51a"]
+[ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="10_sdeec"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vcj6e"]
 texture = ExtResource("2_82b8b")
@@ -23,6 +24,22 @@ region = Rect2(0.8360543, 0.8427155, 49.34142, 37.357388)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_82tgc"]
 texture = ExtResource("2_82b8b")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_y184x"]
+texture = ExtResource("10_sdeec")
+modulate_color = Color(2.454227, 2.454227, 2.454227, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qw28h"]
+texture = ExtResource("10_sdeec")
+modulate_color = Color(1.5720325, 1.5720325, 1.5720325, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cln5s"]
+texture = ExtResource("10_sdeec")
+modulate_color = Color(2.454227, 2.454227, 2.454227, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7elu7"]
+texture = ExtResource("10_sdeec")
+modulate_color = Color(1.5720325, 1.5720325, 1.5720325, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_82tgc"]
 atlas = ExtResource("3_82tgc")
@@ -147,10 +164,12 @@ alignment = 1
 [node name="LabelGanhos" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=776694036]
 clip_contents = false
 layout_mode = 2
-theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 5
-theme_override_font_sizes/normal_font_size = 27
+theme_override_colors/font_outline_color = Color(0.15959999, 0.25073996, 0.42, 1)
+theme_override_colors/font_shadow_color = Color(0.1525, 0.173625, 0.25, 1)
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 6
+theme_override_fonts/normal_font = ExtResource("8_tg51a")
+theme_override_font_sizes/normal_font_size = 19
 bbcode_enabled = true
 fit_content = true
 horizontal_alignment = 1
@@ -215,9 +234,11 @@ horizontal_alignment = 1
 [node name="LabelNivel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaEsquerda" unique_id=976686083]
 clip_contents = false
 layout_mode = 2
-theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_y = 2
-theme_override_constants/outline_size = 5
+theme_override_colors/font_outline_color = Color(0.15959999, 0.25073996, 0.42, 1)
+theme_override_colors/font_shadow_color = Color(0.1525, 0.173625, 0.25, 1)
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 6
+theme_override_fonts/normal_font = ExtResource("8_tg51a")
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
@@ -271,6 +292,8 @@ fit_content = true
 [node name="ButtonComprar" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1258757112]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxTexture_y184x")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qw28h")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra/ButtonComprar" unique_id=373670690]
 clip_contents = false
@@ -311,6 +334,8 @@ autowrap_mode = 2
 [node name="ButtonAprimorar" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=2001975818]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxTexture_cln5s")
+theme_override_styles/hover = SubResource("StyleBoxTexture_7elu7")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonAprimorar" unique_id=713711944]
 clip_contents = false
@@ -318,20 +343,27 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -4.865
+offset_bottom = -4.864998
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 2
 theme_override_constants/outline_size = 5
-theme_override_font_sizes/normal_font_size = 27
+theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
+text = "APRIMORAR
+(2000)"
 scroll_active = false
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ButtonDetalhes" type="Button" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=678436348]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxTexture_cln5s")
+theme_override_styles/hover = SubResource("StyleBoxTexture_7elu7")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade/ButtonDetalhes" unique_id=2071852493]
 clip_contents = false
@@ -391,6 +423,10 @@ theme_override_constants/separation = 14
 [node name="LabelTituloDetalhes" type="RichTextLabel" parent="PainelDetalhes/MargemDetalhes/VBoxDetalhes" unique_id=688666758]
 clip_contents = false
 layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.15959999, 0.25073996, 0.42, 1)
+theme_override_colors/font_shadow_color = Color(0.1525, 0.173625, 0.25, 1)
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 6
 theme_override_fonts/normal_font = ExtResource("8_tg51a")
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true

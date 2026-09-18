@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://c4l4t7d6o137b"]
 
 [ext_resource type="Script" uid="uid://qnm5ipt2mixr" path="res://Jogo principal/Scripts/Scripts cenas/game_over.gd" id="1_nkevu"]
+[ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="2_xrhj0"]
+[ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="3_1257a"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bhunq"]
+texture = ExtResource("2_xrhj0")
 
 [node name="GameOver" type="Control" unique_id=2096070889]
 layout_mode = 3
@@ -11,97 +16,102 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nkevu")
 
-[node name="Agradecimento" type="RichTextLabel" parent="." unique_id=447127765]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=383862803]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -348.0
-offset_top = 41.0
-offset_right = 348.0
-offset_bottom = 125.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_bhunq")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=2119370582]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 70
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=202666385]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=649162322]
+layout_mode = 2
+
+[node name="Agradecimento" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=447127765]
+custom_minimum_size = Vector2(687.74, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_font_sizes/normal_font_size = 65
 bbcode_enabled = true
 text = "Obrigado por jogar!"
 fit_content = true
 scroll_active = false
 
-[node name="InfoVitoria" type="RichTextLabel" parent="." unique_id=1301131941]
-layout_mode = 0
-offset_left = 437.0
-offset_top = 100.0
-offset_right = 626.0
-offset_bottom = 145.0
+[node name="InfoVitoria" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1301131941]
+custom_minimum_size = Vector2(186.585, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/normal_font = ExtResource("3_1257a")
 theme_override_font_sizes/normal_font_size = 34
 bbcode_enabled = true
 text = "Parabéns!"
 fit_content = true
 scroll_active = false
 
-[node name="Informações" type="RichTextLabel" parent="." unique_id=2072544557]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 138.0
-offset_right = 595.0
-offset_bottom = 176.0
+[node name="Informações" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=2072544557]
+custom_minimum_size = Vector2(500, 30)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("3_1257a")
 bbcode_enabled = true
 text = "Informações da sua gameplay:"
+fit_content = true
 horizontal_alignment = 1
 
-[node name="InfoCivis" type="RichTextLabel" parent="." unique_id=499790118]
-layout_mode = 0
-offset_left = 54.0
-offset_top = 222.0
-offset_right = 205.0
-offset_bottom = 377.0
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=1795479418]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="InfoCivis" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=499790118]
+custom_minimum_size = Vector2(72.455, 50)
+layout_mode = 2
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
 text = "Civis"
 fit_content = true
 scroll_active = false
 
-[node name="InfoDesabrigados" type="RichTextLabel" parent="." unique_id=677635482]
-layout_mode = 0
-offset_left = 237.0
-offset_top = 230.0
-offset_right = 437.0
-offset_bottom = 347.0
+[node name="InfoDesabrigados" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=677635482]
+custom_minimum_size = Vector2(180, 50)
+layout_mode = 2
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
 text = "Desabrigados"
 fit_content = true
 
-[node name="InfoCasasDestruidas" type="RichTextLabel" parent="." unique_id=1060583803]
-layout_mode = 0
-offset_left = 908.0
-offset_top = 226.0
-offset_right = 1132.0
-offset_bottom = 340.0
+[node name="InfoCasasDestruidas" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1060583803]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
 text = "DestruidaS"
 fit_content = true
 scroll_active = false
 
-[node name="InfoDano" type="RichTextLabel" parent="." unique_id=1847545287]
-layout_mode = 0
-offset_left = 692.0
-offset_top = 229.0
-offset_right = 847.0
-offset_bottom = 351.0
+[node name="InfoDano" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1847545287]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
 text = "Dano"
 fit_content = true
 scroll_active = false
 
-[node name="InfoParabens" type="RichTextLabel" parent="." unique_id=1960898240]
-layout_mode = 0
-offset_left = 388.0
-offset_top = 411.0
-offset_right = 740.0
-offset_bottom = 518.0
+[node name="InfoParabens" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=1960898240]
+layout_mode = 2
 theme_override_font_sizes/normal_font_size = 37
 bbcode_enabled = true
 text = "Parabéns por salvar a cidade!!"
@@ -109,13 +119,9 @@ fit_content = true
 scroll_active = false
 horizontal_alignment = 1
 
-[node name="ReturnMenu" type="Button" parent="." unique_id=887416093]
-layout_mode = 0
-offset_left = 459.0
-offset_top = 555.0
-offset_right = 703.0
-offset_bottom = 631.0
+[node name="ReturnMenu" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=887416093]
+layout_mode = 2
 text = "Voltar para o 
 Menu Principal"
 
-[connection signal="pressed" from="ReturnMenu" to="." method="_on_return_menu_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer2/ReturnMenu" to="." method="_on_return_menu_pressed"]
