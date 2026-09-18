@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bo47qjur1rny" path="res://Jogo principal/UI/Assets/alerta.png" id="1_ivphi"]
 [ext_resource type="Script" uid="uid://cinfnqj11afwv" path="res://Jogo principal/Scripts/Scripts cenas/ponto_resgate.gd" id="1_xrdqk"]
 [ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="3_xrdqk"]
+[ext_resource type="FontFile" uid="uid://br5wb2vq7vbqx" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBoldItalic.ttf" id="4_5awop"]
 [ext_resource type="Texture2D" uid="uid://5208k37kpkp7" path="res://Jogo principal/UI/Assets/allmenusprites.png" id="4_id58r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g4v7s"]
@@ -60,10 +61,10 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_ivphi")
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/PainelAviso" unique_id=1981234221]
 layout_mode = 2
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 50
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 56
+theme_override_constants/margin_bottom = 22
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/PainelAviso/MarginContainer" unique_id=154883382]
 layout_mode = 2
@@ -71,7 +72,13 @@ layout_mode = 2
 [node name="LabelMensagem" type="RichTextLabel" parent="CanvasLayer/PainelAviso/MarginContainer/VBoxContainer" unique_id=780922802]
 clip_contents = false
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 24
+theme_override_colors/font_outline_color = Color(0.1666, 0.22728999, 0.34, 1)
+theme_override_colors/font_shadow_color = Color(0.17390001, 0.27195, 0.37, 1)
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = ExtResource("4_5awop")
+theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
 fit_content = true
 scroll_active = false

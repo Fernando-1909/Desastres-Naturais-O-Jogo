@@ -147,6 +147,9 @@ alignment = 1
 [node name="LabelGanhos" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaStats" unique_id=776694036]
 clip_contents = false
 layout_mode = 2
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 5
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
@@ -258,6 +261,9 @@ vertical_alignment = 1
 [node name="LabelBonusInfra" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerCompra" unique_id=1364742382]
 clip_contents = false
 layout_mode = 2
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 5
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
@@ -293,6 +299,11 @@ theme_override_constants/separation = 12
 [node name="LabelDisc" type="RichTextLabel" parent="PainelCentral/MargemInterna/ColunasGrid/ColunaDireita/ContainerUpgrade" unique_id=497312614]
 clip_contents = false
 layout_mode = 2
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 5
+theme_override_fonts/normal_font = ExtResource("8_tg51a")
+theme_override_font_sizes/normal_font_size = 19
 bbcode_enabled = true
 fit_content = true
 autowrap_mode = 2
@@ -310,6 +321,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 5
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 scroll_active = false
@@ -330,6 +344,9 @@ offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 5
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 scroll_active = false
@@ -345,7 +362,6 @@ icon = SubResource("AtlasTexture_82tgc")
 icon_alignment = 1
 
 [node name="PainelDetalhes" type="PanelContainer" parent="." unique_id=1988168018]
-visible = false
 custom_minimum_size = Vector2(380, 200)
 anchors_preset = 8
 anchor_left = 0.5
@@ -375,6 +391,7 @@ theme_override_constants/separation = 14
 [node name="LabelTituloDetalhes" type="RichTextLabel" parent="PainelDetalhes/MargemDetalhes/VBoxDetalhes" unique_id=688666758]
 clip_contents = false
 layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("8_tg51a")
 theme_override_font_sizes/normal_font_size = 27
 bbcode_enabled = true
 fit_content = true
