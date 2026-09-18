@@ -94,9 +94,17 @@ signal enchente_terminada
 # Tamanho inicial da AreaDano quando a onda é inicializada.
 var _tamanho_area_dano_inicial: Vector2 = Vector2.ZERO
 
+# Posição inicial da AreaDano quando a onda é inicializada.
+# Guardada pra podermos calcular a variação da posição junto com o tamanho
+# (a AreaDano cresce pra cima; a Onda precisa acompanhar).
+var _posicao_area_dano_inicial: Vector2 = Vector2.ZERO
+
 # Tamanho visual inicial da Onda, exatamente como configurado
 # no .tscn.
 var _tamanho_onda_inicial: Vector2 = Vector2.ZERO
+
+# Posição inicial da Onda, exatamente como configurado no .tscn.
+var _posicao_onda_inicial: Vector2 = Vector2.ZERO
 
 var _onda_tamanho_inicial_definido: bool = false
 
@@ -288,11 +296,12 @@ func _atualizar_tamanho_area_dano() -> void:
 		onda_sprite.play("default")
 
 
-# Mantém o AnimatedSprite2D "Onda" dimensionado de acordo
-# com o crescimento da AreaDano.
+# Mantém o AnimatedSprite2D "Onda" dimensionado e posicionado
+# de acordo com a AreaDano.
 #
-# IMPORTANTE:
-# Esta função NÃO altera a posição da Onda.
+# A Onda NÃO segue a câmera e NÃO usa global_position — apenas
+# acompanha localmente a AreaDano: cresce junto e sobe junto
+# (Y negativo), já que a AreaDano cresce pra cima.
 func _atualizar_sprite_onda() -> void:
 	if onda_sprite == null:
 		return
@@ -323,25 +332,29 @@ func _atualizar_sprite_onda() -> void:
 
 	# --------------------------------------------------------
 	# PRIMEIRA VEZ:
-	# Guarda exatamente o tamanho que a Onda já possui.
+	# Guarda exatamente o tamanho e a posição iniciais
+	# (tanto da AreaDano quanto da Onda).
 	# --------------------------------------------------------
 	if not _onda_tamanho_inicial_definido:
 		_tamanho_area_dano_inicial = area_dano.size
+		_posicao_area_dano_inicial = area_dano.position
 
 		_tamanho_onda_inicial = Vector2(
 			tex_size.x * onda_sprite.scale.x,
 			tex_size.y * onda_sprite.scale.y
 		)
+		_posicao_onda_inicial = onda_sprite.position
 
 		_onda_tamanho_inicial_definido = true
 
 	# --------------------------------------------------------
 	# Depois:
-	# Calcula quanto a AreaDano mudou.
+	# Calcula quanto a AreaDano mudou (tamanho E posição).
 	# --------------------------------------------------------
 	var variacao = area_dano.size - _tamanho_area_dano_inicial
+	var variacao_posicao = area_dano.position - _posicao_area_dano_inicial
 
-	# A Onda recebe exatamente a mesma variação.
+	# A Onda recebe exatamente a mesma variação de tamanho.
 	var novo_tamanho = _tamanho_onda_inicial + variacao
 
 	novo_tamanho.x = max(novo_tamanho.x, 1.0)
@@ -353,9 +366,14 @@ func _atualizar_sprite_onda() -> void:
 		novo_tamanho.y / tex_size.y
 	)
 
-	# NÃO alterar posição aqui.
-	# NÃO chamar câmera.
-	# NÃO usar global_position.
+	# Acompanha o crescimento da AreaDano: como ela cresce pra cima
+	# (Y diminui), a Onda sobe junto — sua posição Y fica mais
+	# negativa conforme a área cresce.
+	onda_sprite.position = _posicao_onda_inicial + variacao_posicao
+
+	# Garante que a Onda reapareça em cada novo turno (ela é
+	# escondida quando o TimerDuracao expira).
+	onda_sprite.visible = true
 
 
 # Retorna o tamanho configurado para o nível atual.
