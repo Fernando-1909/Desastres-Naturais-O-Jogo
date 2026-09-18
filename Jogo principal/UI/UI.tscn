@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="3_p88rf"]
 [ext_resource type="Texture2D" uid="uid://dc572evvi068q" path="res://Jogo principal/UI/Assets/allmenuspriteshover.png" id="4_8v3q5"]
 [ext_resource type="Texture2D" uid="uid://ogf3vv3cfdd7" path="res://Jogo principal/UI/Assets/Rebecatrue2.png" id="4_hdnfl"]
+[ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="7_8v3q5"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hgtue"]
 
@@ -95,6 +96,9 @@ offset_left = 45.0
 offset_top = -7.0
 offset_right = 265.00006
 offset_bottom = 53.0
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
 text = "999999999"
 vertical_alignment = 1
@@ -112,6 +116,9 @@ offset_left = 55.0
 offset_top = -7.0
 offset_right = 275.00006
 offset_bottom = 53.0
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
 text = "99999999"
 vertical_alignment = 1
@@ -130,6 +137,9 @@ offset_left = 45.0
 offset_top = -7.0
 offset_right = 265.00006
 offset_bottom = 53.0
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
 text = "999999999"
 vertical_alignment = 1
@@ -148,6 +158,9 @@ offset_left = 45.0
 offset_top = -7.0
 offset_right = 265.00006
 offset_bottom = 53.0
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
 text = "999999999"
 vertical_alignment = 1
@@ -219,6 +232,9 @@ offset_left = 150.0
 offset_top = -7.0
 offset_right = 370.0
 offset_bottom = 53.0
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
 text = "999"
 vertical_alignment = 1
@@ -230,6 +246,9 @@ offset_left = -15.0
 offset_top = -7.0
 offset_right = 205.0
 offset_bottom = 53.0
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
 text = "TURNO"
 horizontal_alignment = 1
@@ -402,12 +421,16 @@ offset_top = -5.585
 offset_bottom = -5.584999
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
 text = "MISSÃO"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Avisos" type="RichTextLabel" parent="." unique_id=139656456]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -423,6 +446,7 @@ grow_vertical = 2
 theme_override_colors/font_outline_color = Color(0.16100001, 0.26565, 0.46, 1)
 theme_override_colors/font_shadow_color = Color(0.1586, 0.17888, 0.26, 1)
 theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = ExtResource("7_8v3q5")
 theme_override_font_sizes/normal_font_size = 38
 bbcode_enabled = true
 text = "Você não possui dinheiro o suficiente!"
