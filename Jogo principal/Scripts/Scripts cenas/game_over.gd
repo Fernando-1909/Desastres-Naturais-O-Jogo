@@ -1,11 +1,11 @@
 extends Control
 @onready var game_over: Control = $"."
-@onready var informações: RichTextLabel = $Informações
-@onready var info_desabrigados: RichTextLabel = $InfoDesabrigados
-@onready var info_casas_destruidas: RichTextLabel = $InfoCasasDestruidas
-@onready var info_dano: RichTextLabel = $InfoDano
-@onready var info_parabens: RichTextLabel = $InfoParabens
-@onready var info_civis: RichTextLabel = $InfoCivis
+@onready var informações: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/Informações
+@onready var info_desabrigados: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/InfoDesabrigados
+@onready var info_casas_destruidas: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/InfoCasasDestruidas
+@onready var info_dano: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/InfoDano
+@onready var info_parabens: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/InfoParabens
+@onready var info_civis: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/InfoCivis
 
 
 func _ready() -> void:
