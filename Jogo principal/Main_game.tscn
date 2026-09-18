@@ -38,6 +38,7 @@
 [ext_resource type="Texture2D" uid="uid://2vd252cx2hv3" path="res://Jogo principal/tilesheets/Bomba.png" id="22_kdkhr"]
 [ext_resource type="Resource" uid="uid://bv8ux8jaatqbv" path="res://Jogo principal/Scripts/Scripts cons/bomba_drenagem.tres" id="23_cuk6r"]
 [ext_resource type="Texture2D" uid="uid://bpcafexx7ie54" path="res://Jogo principal/tilesheets/casa_destruida_level_1-Aqua.png" id="23_ly8el"]
+[ext_resource type="Texture2D" uid="uid://cvvmreyif6p5h" path="res://Jogo principal/tilesheets/prefeituras_levels.png" id="25_ly8el"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sufiw"]
 texture = ExtResource("2_qg202")
@@ -709,6 +710,16 @@ texture = ExtResource("22_kdkhr")
 texture = ExtResource("23_ly8el")
 texture_region_size = Vector2i(32, 32)
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ey102"]
+texture = ExtResource("25_ly8el")
+texture_region_size = Vector2i(112, 64)
+0:0/0 = 0
+0:0/0/custom_data_0 = true
+0:0/0/custom_data_2 = "prefeitura"
+1:0/0 = 0
+1:0/0/custom_data_0 = true
+1:0/0/custom_data_2 = "prefeitura"
+
 [sub_resource type="TileSet" id="TileSet_3axm1"]
 tile_size = Vector2i(32, 32)
 custom_data_layer_0/name = "clicavel"
@@ -736,6 +747,7 @@ sources/21 = SubResource("TileSetAtlasSource_gqgav")
 sources/2 = SubResource("TileSetAtlasSource_kbhvu")
 sources/6 = SubResource("TileSetAtlasSource_7v3xi")
 sources/7 = SubResource("TileSetAtlasSource_f36nm")
+sources/8 = SubResource("TileSetAtlasSource_ey102")
 tile_proxies/coords_level = [[0, Vector2i(0, 0)], [2, Vector2i(0, 0)], [1, Vector2i(0, 0)], [8, Vector2i(0, 0)], [2, Vector2i(0, 0)], [13, Vector2i(0, 0)], [4, Vector2i(0, 0)], [5, Vector2i(0, 0)], [6, Vector2i(0, 0)], [13, Vector2i(1, 0)], [7, Vector2i(0, 0)], [13, Vector2i(2, 0)], [8, Vector2i(0, 0)], [13, Vector2i(3, 0)], [9, Vector2i(0, 0)], [13, Vector2i(4, 0)], [10, Vector2i(0, 0)], [11, Vector2i(1, 0)], [12, Vector2i(0, 0)], [13, Vector2i(5, 0)], [13, Vector2i(0, 0)], [15, Vector2i(0, 0)], [14, Vector2i(0, 0)], [15, Vector2i(1, 0)]]
 
 [sub_resource type="GDScript" id="GDScript_tkcjf"]

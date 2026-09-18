@@ -111,6 +111,10 @@ func get_under_construction_source_id() -> int:
 	return under_construction_source_id if under_construction_source_id >= 0 else source_id
 
 
+func get_atlas_coord_por_nivel(nivel: int) -> Vector2i:
+	var indice: int = nivel - 1
+	return get_atlas_coord_para_construir(indice)
+
 func get_destroyed_source_id() -> int:
 	return destroyed_source_id if destroyed_source_id >= 0 else source_id
 
