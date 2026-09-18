@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://c4l4t7d6o137b"]
 
 [ext_resource type="Script" uid="uid://qnm5ipt2mixr" path="res://Jogo principal/Scripts/Scripts cenas/game_over.gd" id="1_nkevu"]
-[ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="2_xrhj0"]
+[ext_resource type="Texture2D" uid="uid://dsfy2c66dx7l0" path="res://Jogo principal/UI/Assets/Victory.png" id="2_t0pae"]
 [ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="3_1257a"]
 [ext_resource type="FontFile" uid="uid://br5wb2vq7vbqx" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBoldItalic.ttf" id="4_1257a"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bhunq"]
-texture = ExtResource("2_xrhj0")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_34hsl"]
+texture = ExtResource("2_t0pae")
 
 [node name="GameOver2" type="Control" unique_id=2096070889]
 layout_mode = 3
@@ -24,7 +24,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_bhunq")
+theme_override_styles/panel = SubResource("StyleBoxTexture_34hsl")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=2119370582]
 layout_mode = 2
