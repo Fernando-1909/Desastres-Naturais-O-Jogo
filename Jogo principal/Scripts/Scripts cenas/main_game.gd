@@ -529,7 +529,10 @@ func processar_resgate_ponto(qtd_vitimas: int) -> bool:
 	if alocar_equipe_bombeiro():
 		var resgatados = abrigar_pessoas(qtd_vitimas)
 		liberar_equipe_bombeiro()
-		return resgatados > 0
+		if resgatados > 0:
+			Global.popularidade += 5
+			print("[RESGATE SUCESSO] Resgate concluído! Popularidade +5. Nova popularidade: ", Global.popularidade)
+			return true
 
 	return false
 
@@ -622,6 +625,8 @@ func abrigar_pessoas(quantidade: int) -> int:
 			Global.pessoas_desabrigadas = max(0, Global.pessoas_desabrigadas - abrigadas)
 		if "total_civis_resgatados" in Global:
 			Global.total_civis_resgatados += abrigadas
+		if "popularidade" in Global:
+			Global.popularidade += 5
 			
 	_recalcular_recursos_resgate()
 	print("[ABRIGO] ", abrigadas, " pessoas abrigadas. Ocupação total: ", abrigo_ocupado, "/", total_capacidade_abrigo)

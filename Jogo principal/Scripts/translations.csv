@@ -55,6 +55,11 @@ PREDIO_ESTACAO_TRATAMENTO_NOME,"Estação de Tratamento","Treatment Plant"
 PREDIO_ESTACAO_TRATAMENTO_DESC,"Unidade central de infraestrutura hídrica para controle de enchentes na cidade.","Central water infrastructure facility for flood control in the city."
 PREDIO_ESTACAO_TRATAMENTO_DETALHES,"Habilita a [color=#FFD700]Zona do Rio[/color] e ativa o funcionamento de [color=#FFD700]100%[/color] das Bombas de Drenagem no mapa.","Unlocks the [color=#FFD700]River Zone[/color] and enables [color=#FFD700]100%[/color] of active Drainage Pumps on the map."
 
+# Bomba de Drenagem
+PREDIO_BOMBA_DRENAGEM_NOME,"Bomba de Drenagem","Drainage Pump"
+PREDIO_BOMBA_DRENAGEM_DESC,"Drena o excesso de água da chuva e reduz os impactos de enchentes na cidade.","Drains excess rainwater and reduces flood impacts in the city."
+PREDIO_BOMBA_DRENAGEM_DETALHES,"Reduz gradualmente o nível de alagamento da área e protege as construções ao redor contra danos.","Gradually reduces regional flood levels and protects surrounding structures from damage."
+
 # --- ABRIGO E SOCORRO ---
 # Abrigo Comunitário
 PREDIO_ABRIGO_NOME,"Abrigo Comunitário","Community Shelter"
@@ -94,7 +99,7 @@ TXT_TUTORIAL_3,"A administração envolve construções, serviços e decisões q
 
 TXT_TUTORIAL_4,"O dinheiro disponível deve ser acompanhado com atenção. Construções e outros serviços exigem gastos, e os recursos não são ilimitados.","Available money must be monitored carefully. Construction and other services require spending, and resources are not unlimited."
 
-TXT_TUTORIAL_5,"A cidade possui diferentes zonas destinadas à construção. Cada zona possui uma finalidade específica e limita os tipos de construção que podem ser realizados nela.","The city has different zones intended for construction. Each zone has a specific purpose and limits the types of buildings that can be placed there."
+TXT_TUTORIAL_5,"A cidade possui diferentes zonas destinadas à construção. Cada zona possui uma finalidade específica e limita os tipos de construção que podem ser realizados nela.","The city has different zones intended for construction. Each zone has a specific purpose and limits the types of building that can be placed there."
 
 TXT_TUTORIAL_6,"Existem zonas residenciais, destinadas às casas e à habitação da população, e zonas destinadas a construções com diferentes funções para a cidade.","There are residential zones, intended for houses and population housing, as well as zones intended for buildings with different functions for the city."
 
