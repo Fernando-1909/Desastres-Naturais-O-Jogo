@@ -17,19 +17,19 @@ func _montar_resumo() -> void:
 
 	# --- Pessoas desabrigadas ---
 	if info_desabrigados:
-		info_desabrigados.text = "[b]Pessoas desabrigadas:[/b] %s" % str(Global.pessoas_desabrigadas)
+		info_desabrigados.text = "%s" % str(Global.pessoas_desabrigadas)
 
 	# --- Casas destruídas ---
 	if info_casas_destruidas:
-		info_casas_destruidas.text = "[b]Construções destruídas:[/b] %s" % str(Global.casas_destruidas)
+		info_casas_destruidas.text = "%s" % str(Global.casas_destruidas)
 
 	# --- Dano total sofrido ---
 	if info_dano:
-		info_dano.text = "[b]Dano total sofrido:[/b] %s" % str(int(Global.dano_total))
+		info_dano.text = "%s" % str(int(Global.dano_total))
 
 	# --- Civis resgatados ---
 	if info_civis:
-		info_civis.text = "[b]Civis resgatados:[/b] %s" % str(Global.total_civis_resgatados)
+		info_civis.text = "%s" % str(Global.total_civis_resgatados)
 
 
 
