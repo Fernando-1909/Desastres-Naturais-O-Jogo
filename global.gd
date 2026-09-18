@@ -8,6 +8,14 @@ var populacao: int
 # Motivo da derrota por popularidade
 var missaoderrota: bool = false
 var enchentederrota: bool = false
+
+# Motivos específicos de derrota por falta/excesso de construções
+var muitascasas: bool = false          # 3 ou mais casas na zona_residencial1
+var semfuncoes: bool = false          # nenhuma construção com função
+var sembombeiros: bool = false       # nenhum corpo de bombeiros
+var sembomba: bool = false           # nenhuma bomba de drenagem
+var semtratamento: bool = false      # nenhuma estação de tratamento de água
+var semabrigo: bool = false          # nenhum abrigo
 var pessoas_desabrigadas: int = 0   # NPCs que perderam a casa em um desastre (infraestrutura chegou a 0)
 var turno: int
 var renda: int             # Quantidade de "unidades" de renda geradas por turno (baseado na população)

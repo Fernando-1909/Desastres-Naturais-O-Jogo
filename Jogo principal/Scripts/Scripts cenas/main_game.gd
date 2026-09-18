@@ -140,6 +140,11 @@ func _ready() -> void:
 	_bloquear_zona_funcoes_ate_turno_2()
 	call_deferred("_ocultar_terrenos_zona_bloqueada")
 	
+	# Reseta as missões concluídas para esta nova partida.
+	Global.missoes_concluidas.clear()
+	Global.missao_aceita = false
+	Global.missao_escolhida = null
+	
 	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
 	_carregar_todos_os_edificios()
 	_carregar_todas_as_missoes()
@@ -150,6 +155,12 @@ func _ready() -> void:
 	# Reseta os motivos de derrota ao iniciar uma nova partida.
 	Global.missaoderrota = false
 	Global.enchentederrota = false
+	Global.muitascasas = false
+	Global.semfuncoes = false
+	Global.sembombeiros = false
+	Global.sembomba = false
+	Global.semtratamento = false
+	Global.semabrigo = false
 	
 	# Conecta o clique do botao diretamente a funcao toggle_pause
 	if button_teste_pausa and menu_pausa:
@@ -1712,7 +1723,88 @@ func processar_missao_no_turno() -> void:
 	if not _missao_check_aberta:
 		processar_missao_programada()
 	
+	_atualizar_motivos_game_over()
 	_verificar_derrota()
+
+
+## Verifica somente as novas condições de Game Over.
+## Os sistemas existentes de missões, enchente e derrota permanecem intactos.
+func _atualizar_motivos_game_over() -> void:
+	# Muitas casas na Zona Residencial 1: 3 ou mais construções.
+	var casas_residencial1 := 0
+	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+		if zona == null:
+			continue
+		var nome_zona := str(zona.name).to_lower().strip_edges()
+		if "residencial1" in nome_zona or "zona_residencial1" in nome_zona:
+			casas_residencial1 = _contar_construcoes_na_zona(zona)
+			break
+	Global.muitascasas = casas_residencial1 >= 3
+
+	# Nenhuma construção com função.
+	var tem_funcao := false
+	for pos in construcoes_no_mapa.keys():
+		var predio = construcoes_no_mapa[pos]
+		if predio == null or predio.data == null:
+			continue
+
+		var categoria := ""
+		if "categoria" in predio.data and predio.data.categoria != null:
+			categoria = str(predio.data.categoria).to_lower().strip_edges()
+
+		var id_predio := ""
+		if "id" in predio.data and predio.data.id != null:
+			id_predio = str(predio.data.id).to_lower().strip_edges()
+
+		if "func" in categoria or "serv" in categoria:
+			tem_funcao = true
+			break
+
+		if (
+			"bombeiro" in id_predio
+			or "bomba" in id_predio
+			or "tratamento" in id_predio
+			or "abrigo" in id_predio
+			or id_predio == "hospital"
+			or id_predio == "escola"
+		):
+			tem_funcao = true
+			break
+
+	Global.semfuncoes = not tem_funcao
+
+	# Nenhum Corpo de Bombeiros.
+	Global.sembombeiros = contar_estacoes_bombeiro_construidas() == 0
+
+	# Nenhuma bomba.
+	var tem_bomba := false
+	for pos in construcoes_no_mapa.keys():
+		var predio = construcoes_no_mapa[pos]
+		if predio == null or predio.data == null:
+			continue
+		var id_predio := str(predio.data.id).to_lower().strip_edges() if "id" in predio.data and predio.data.id != null else ""
+		if "bomba" in id_predio and (not ("durabilidade_atual" in predio) or predio.durabilidade_atual > 0):
+			tem_bomba = true
+			break
+	Global.sembomba = not tem_bomba
+
+	# Nenhuma estação de tratamento de água.
+	var tem_tratamento := false
+	for pos in construcoes_no_mapa.keys():
+		var predio = construcoes_no_mapa[pos]
+		if predio == null or predio.data == null:
+			continue
+		var id_predio := str(predio.data.id).to_lower().strip_edges() if "id" in predio.data and predio.data.id != null else ""
+		if (
+			("tratamento" in id_predio or id_predio == "estacao_drenagem")
+			and (not ("durabilidade_atual" in predio) or predio.durabilidade_atual > 0)
+		):
+			tem_tratamento = true
+			break
+	Global.semtratamento = not tem_tratamento
+
+	# Nenhum abrigo.
+	Global.semabrigo = contar_abrigos_construidos() == 0
 
 
 ## Se a popularidade cair abaixo de 0, a população perdeu a confiança na

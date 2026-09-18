@@ -8,8 +8,19 @@ var min_wait_time: float = 1.0
 var max_wait_time: float = 3.0
 var is_waiting: bool = false
 
-# Fica invisível e parado enquanto a enchente estiver ativa.
+# ============================================================
+# ENCHENTE - HARD CODED
+# ============================================================
+
+# NPCs somem no turno 8, um turno antes da enchente (turno 9).
+const TURNO_SUMIR_NPCS: int = 9
+
+# A enchente dura 7 turnos a partir do turno 9.
+# Portanto termina no turno 16.
+const TURNO_VOLTA_NPCS: int = 14
+
 var escondido_enchente: bool = false
+var npcs_ja_voltaram: bool = false
 
 
 func _ready() -> void:
@@ -24,7 +35,6 @@ func _ready() -> void:
 	navigation_agent.avoidance_enabled = false
 	
 	# Colisão física: colide com construções, mas NÃO com outros NPCs.
-	# Camada 2 = "sou um NPC" | Máscara 1 = "só colido com a camada 1"
 	collision_layer = 2
 	collision_mask = 1
 	
@@ -34,12 +44,36 @@ func _ready() -> void:
 	# Nasce dentro da zona de navegação.
 	_posicionar_dentro_da_zona()
 	
-	# Conectar aos eventos da enchente.
-	_conectar_a_enchente()
-
-	# Começar movimento
+	# Verifica imediatamente o turno atual.
+	_verificar_turno_hardcoded()
+	
+	# Começar movimento somente se estiver visível.
 	if not escondido_enchente:
 		escolher_novo_destino()
+
+
+func _process(_delta: float) -> void:
+	# Controle HARD CODED pelo número do turno.
+	_verificar_turno_hardcoded()
+
+
+func _verificar_turno_hardcoded() -> void:
+	var turno_atual: int = Global.turno
+	
+	# ========================================================
+	# TURNO 8 -> NPCS SOMEM
+	# ========================================================
+	if turno_atual >= TURNO_SUMIR_NPCS and turno_atual < TURNO_VOLTA_NPCS:
+		if not escondido_enchente:
+			_esconder_durante_enchente()
+	
+	# ========================================================
+	# TURNO 16 -> NPCS VOLTAM
+	# ========================================================
+	elif turno_atual >= TURNO_VOLTA_NPCS:
+		if escondido_enchente and not npcs_ja_voltaram:
+			npcs_ja_voltaram = true
+			mostrar_depois_da_enchente()
 
 
 func _physics_process(_delta: float) -> void:
@@ -65,41 +99,10 @@ func _physics_process(_delta: float) -> void:
 	velocity = direction * speed
 	move_and_slide()
 	
-	# Se estiver se movimentando, toca "walk".
-	# Caso contrário, toca "default".
 	if velocity.length() > 0.1:
 		animated_sprite.play("walk")
 	else:
 		animated_sprite.play("default")
-
-
-func _conectar_a_enchente() -> void:
-	var enchente = get_tree().get_first_node_in_group("enchente")
-	
-	if enchente == null:
-		enchente = get_tree().current_scene.find_child("Enchente", true, false)
-
-	if enchente == null:
-		return
-
-	# Conecta ao início da enchente.
-	if enchente.has_signal("enchente_iniciada"):
-		if not enchente.enchente_iniciada.is_connected(_on_enchente_iniciada):
-			enchente.enchente_iniciada.connect(_on_enchente_iniciada)
-
-	# Conecta ao fim da enchente.
-	if enchente.has_signal("enchente_terminada"):
-		if not enchente.enchente_terminada.is_connected(_on_enchente_terminada):
-			enchente.enchente_terminada.connect(_on_enchente_terminada)
-
-	# Caso o NPC seja criado depois que a enchente já começou,
-	# verifica o estado atual diretamente.
-	if enchente.get("enchente_ativa") == true:
-		_esconder_durante_enchente()
-
-
-func _on_enchente_iniciada(_area: Rect2, _dano: float) -> void:
-	_esconder_durante_enchente()
 
 
 func _esconder_durante_enchente() -> void:
@@ -107,64 +110,29 @@ func _esconder_durante_enchente() -> void:
 	is_waiting = false
 	velocity = Vector2.ZERO
 	
-	# Torna o NPC invisível.
+	# Invisível
 	visible = false
 	
-	# Desativa colisões enquanto estiver escondido.
+	# Sem colisão
 	collision_layer = 0
 	collision_mask = 0
-
-
-func _on_enchente_terminada() -> void:
-	# Somente um NPC coordena o reaparecimento gradual,
-	# evitando que todos iniciem a mesma rotina ao mesmo tempo.
-	var npcs = get_tree().get_nodes_in_group("npcs")
-	
-	if npcs.is_empty():
-		return
-	
-	if npcs[0] != self:
-		return
-	
-	_reaparecer_npcs_aos_poucos(npcs)
-
-
-func _reaparecer_npcs_aos_poucos(npcs: Array) -> void:
-	var metade: int = ceili(npcs.size() / 2.0)
-
-	# Primeiro aparece metade dos NPCs.
-	for i in range(metade):
-		if is_instance_valid(npcs[i]):
-			if npcs[i].has_method("mostrar_depois_da_enchente"):
-				npcs[i].mostrar_depois_da_enchente()
-
-	# Espera 2 segundos antes de mostrar o restante.
-	await get_tree().create_timer(2.0).timeout
-
-	# Depois aparece a outra metade.
-	for i in range(metade, npcs.size()):
-		if is_instance_valid(npcs[i]):
-			if npcs[i].has_method("mostrar_depois_da_enchente"):
-				npcs[i].mostrar_depois_da_enchente()
 
 
 func mostrar_depois_da_enchente() -> void:
 	escondido_enchente = false
 	
-	# Torna o NPC visível novamente.
+	# Visível novamente
 	visible = true
 	
-	# Restaura as colisões originais.
+	# Restaura colisões
 	collision_layer = 2
 	collision_mask = 1
 	
-	# Escolhe um novo destino para voltar a andar.
+	# Escolhe novo destino
 	escolher_novo_destino()
 
 
-## Sorteia um ponto dentro do polígono da NavigationRegion2D (irmã do NPC,
-## filha do mesmo container) e usa ele como posição inicial — assim o NPC já
-## nasce dentro da zona andável, em vez de nascer na origem do container.
+## Sorteia um ponto dentro do polígono da NavigationRegion2D.
 func _posicionar_dentro_da_zona() -> void:
 	var navigation_region = get_parent().get_node_or_null("NavigationRegion2D")
 	
@@ -182,7 +150,6 @@ func _posicionar_dentro_da_zona() -> void:
 
 
 func escolher_novo_destino() -> void:
-	# Pega o polígono do NavigationRegion2D pai
 	var navigation_region = get_parent().get_node_or_null("NavigationRegion2D")
 	
 	if navigation_region and navigation_region.navigation_polygon:
@@ -190,24 +157,18 @@ func escolher_novo_destino() -> void:
 		var vertices = polygon.vertices
 		
 		if vertices.size() > 0:
-			# O ponto sorteado está em espaço LOCAL do NavigationRegion2D.
-			# Precisa converter para GLOBAL antes de usar como destino.
 			var random_point_local = ponto_aleatorio_no_poligono(vertices)
 			navigation_agent.target_position = navigation_region.to_global(random_point_local)
 
 
 func ponto_aleatorio_no_poligono(vertices: PackedVector2Array) -> Vector2:
-	# Método simples: escolhe um triângulo aleatório do polígono.
-	
 	if vertices.size() < 3:
 		return Vector2.ZERO
 	
-	# Escolhe três vértices aleatórios para formar um triângulo
 	var i = randi() % (vertices.size() - 2)
 	var j = i + 1 + randi() % (vertices.size() - i - 2)
 	var k = j + 1 + randi() % (vertices.size() - j - 1)
 	
-	# Ponto aleatório dentro do triângulo
 	var r1 = randf()
 	var r2 = randf()
 	
@@ -227,8 +188,7 @@ func comecar_espera() -> void:
 	
 	await get_tree().create_timer(wait_time).timeout
 	
-	# Se a enchente começou enquanto o NPC estava esperando,
-	# não volta a andar.
+	# Se estiver escondido, não volta a andar.
 	if escondido_enchente:
 		return
 
