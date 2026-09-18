@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bkti7orp2yjfg"]
 
 [ext_resource type="Script" uid="uid://brhrlq6y1gjkh" path="res://Jogo principal/Scripts/Scripts cenas/enchente.gd" id="1_7osat"]
-[ext_resource type="Texture2D" uid="uid://bbo4dye5ctw6g" path="res://Jogo principal/UI/Assets/Bgs-Tag.png" id="2_nnuw7"]
+[ext_resource type="Texture2D" uid="uid://j6uwmc6sa0wc" path="res://Jogo principal/UI/Assets/Bgs-Tag.png" id="2_nnuw7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dbswq"]
 atlas = ExtResource("2_nnuw7")
@@ -90,6 +90,6 @@ offset_bottom = 394.0
 color = Color(0.9, 0.2, 0.1, 0.45)
 
 [node name="Onda" type="AnimatedSprite2D" parent="." unique_id=2004431552]
-position = Vector2(188.5, 404)
+position = Vector2(169, 403.00003)
 scale = Vector2(0.7895834, 1.0518517)
 sprite_frames = SubResource("SpriteFrames_g4v7s")

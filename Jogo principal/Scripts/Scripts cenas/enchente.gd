@@ -1,29 +1,29 @@
 extends Node2D
 class_name Enchente
 
-## Quantos turnos a enchente dura no total, a partir do turno em que começou
+# Quantos turnos a enchente dura no total, a partir do turno em que começou
 @export var duracao_turnos: int = 7
 
-## A cada quantos turnos o nível da enchente sobe 1
+# A cada quantos turnos o nível da enchente sobe 1
 @export var turnos_por_nivel: int = 1
 
-## Se true, sorteia posição/tamanho do AreaVisual (em tiles) na largada.
-## Deixe false enquanto estiver testando o AreaVisual manualmente no editor.
+# Se true, sorteia posição/tamanho do AreaVisual (em tiles) na largada.
+# Deixe false enquanto estiver testando o AreaVisual manualmente no editor.
 @export var randomizar_area_grande: bool = false
 
-## Usado só se randomizar_area_grande = true
+# Usado só se randomizar_area_grande = true
 @export var largura_min_tiles: int = 3
 @export var largura_max_tiles: int = 6
 @export var altura_min_tiles: int = 3
-@export var altura_max_tiles: int = 6
+@export var altura_max_tiles: int = 3
 @export var mapa_min_tile: Vector2i = Vector2i.ZERO
 @export var mapa_max_tile: Vector2i = Vector2i(50, 50)
 
-## Tamanho de cada tile em pixels
+# Tamanho de cada tile em pixels
 @export var tile_size: Vector2 = Vector2(16, 16)
 
-## Tamanho (X = largura, Y = altura) da faixa de dano em cada nível.
-## A área continua aumentando conforme o nível da enchente.
+# Tamanho (X = largura, Y = altura) da faixa de dano em cada nível.
+# A área continua aumentando conforme o nível da enchente.
 @export var tamanhos_por_nivel: Array[Vector2] = [
 	Vector2(169.0, 146.0),  # Nível 1
 	Vector2(271.0, 222.0),  # Nível 2
@@ -32,20 +32,24 @@ class_name Enchente
 	Vector2(886.0, 497.0),  # Nível 5
 ]
 
-## Quantas vezes maior que a AreaDano o Sprite2D "Onda" deve ficar. A arte
-## da água não cobre um retângulo perfeito (tem partes recortadas/irregulares),
-## então em vez de esticar ela pra bater exatamente com o tamanho da área de
-## dano, ela fica sempre alguns tamanhos maior, ancorada pela ponta inferior
-## esquerda na ponta inferior esquerda da AreaDano.
+# Quantas vezes maior que a AreaDano a Onda deve ficar.
+# A arte da água não cobre um retângulo perfeito (tem partes
+# recortadas/irregulares), então ela fica sempre alguns
+# tamanhos maior.
 @export var onda_escala_multiplicador: float = 3.5
 
-## Dano fixo de infraestrutura da enchente.
-## O dano NÃO aumenta conforme o nível.
+# Limites da câmera/tela onde a onda deve permanecer.
+@export var limite_esquerda: float = 174.0
+@export var limite_direita: float = 1121.0
+@export var limite_cima: float = 79.0
+@export var limite_baixo: float = 609.0
+
+# Dano fixo de infraestrutura da enchente.
+# O dano NÃO aumenta conforme o nível.
 @export var dano_infraestrutura: float = 25.0
 
-## Quanto tempo (segundos) a faixa de dano fica visível depois de cada atualização de turno
+# Quanto tempo (segundos) a faixa de dano fica visível depois de cada atualização de turno
 @export var duracao_visivel_segundos: float = 3.5
-
 
 # Progresso da enchente ao longo dos turnos
 var turnos_passados: int = 0
@@ -62,33 +66,48 @@ var area_tiles: Rect2i
 # Reduz o TAMANHO e o DANO da enchente.
 var mitigacao_atual: float = 0.0
 
-# Indica que a enchente está ocorrendo. É usado pelos NPCs que entram na cena
-# depois que o sinal inicial já foi emitido.
+# Indica que a enchente está ocorrendo.
+# É usado pelos NPCs que entram na cena depois que o sinal inicial já foi emitido.
 var enchente_ativa: bool = false
 
-
-## Emitido toda vez que a área de dano é (re)calculada.
+# Emitido toda vez que a área de dano é (re)calculada.
 signal enchente_iniciada(area_pixels: Rect2, dano: float)
 
-## Emitido quando a enchente sobe de nível
+# Emitido quando a enchente sobe de nível
 signal enchente_subiu_nivel(nivel: int)
 
-## Emitido quando a enchente termina
+# Emitido quando a enchente termina
 signal enchente_terminada
-
 
 @onready var area_visual: ColorRect = get_node_or_null("AreaVisual")
 @onready var area_dano: ColorRect = get_node_or_null("AreaDano")
+
 @onready var timer_visibilidade: Timer = get_node_or_null("TimerDuracao")
-## Sprite2D com a arte da água ("Onda"), filho da AreaDano. Fica ancorado na
-## ponta inferior esquerda dela, sempre um pouco maior (ver
-## onda_escala_multiplicador acima) — ajustado toda vez que a área muda de
-## tamanho, em _atualizar_sprite_onda.
-@onready var onda_sprite: Sprite2D = get_node_or_null("AreaDano/Onda")
+
+# AnimatedSprite2D com a arte da água ("Onda").
+@onready var onda_sprite: AnimatedSprite2D = $Onda
+
+# ============================================================
+# CONTROLE DO TAMANHO DA ONDA
+# ============================================================
+
+# Tamanho inicial da AreaDano quando a onda é inicializada.
+var _tamanho_area_dano_inicial: Vector2 = Vector2.ZERO
+
+# Tamanho visual inicial da Onda, exatamente como configurado
+# no .tscn.
+var _tamanho_onda_inicial: Vector2 = Vector2.ZERO
+
+var _onda_tamanho_inicial_definido: bool = false
 
 
 func _ready() -> void:
 	add_to_group("enchente")
+
+	# A Onda NÃO acompanha câmera e NÃO recebe posição automática.
+	# Ela simplesmente fica onde foi colocada na cena.
+	if onda_sprite:
+		onda_sprite.centered = false
 
 	# Checagem de segurança
 	if not area_visual or not area_dano or not timer_visibilidade:
@@ -99,71 +118,81 @@ func _ready() -> void:
 		if not timer_visibilidade:
 			push_warning("Enchente: node 'TimerDuracao' (Timer) não encontrado na cena!")
 		return
-	
+
 	if randomizar_area_grande:
 		_gerar_area_grande_aleatoria()
-	
+
 	# AreaVisual é apenas o limite da área.
 	area_visual.visible = false
-	
+
 	# AreaDano continua existindo (é ela que a lógica de dano usa pra
 	# posição/tamanho), mas fica invisível — quem aparece na tela é o
-	# Sprite2D "Onda", com a arte da água, por cima dela.
+	# AnimatedSprite2D "Onda".
 	area_dano.color.a = 0.0
-	
+
 	timer_visibilidade.wait_time = duracao_visivel_segundos
 	timer_visibilidade.one_shot = true
 	timer_visibilidade.timeout.connect(_on_timer_visibilidade_terminado)
-	
+
 	_definir_area_fixa()
-	
+
 	Global.nivel_enchente = nivel_atual
 	enchente_ativa = true
+
 	_aplicar_turno_atual()
 
 
-## Define o quanto a enchente está sendo mitigada.
+func _process(_delta: float) -> void:
+	pass
+	# Não faz nada de propósito.
+	#
+	# A Onda não segue a câmera.
+	# A posição dela é definida somente pelo Transform
+	# do próprio AnimatedSprite2D na cena.
+
+
+# Define o quanto a enchente está sendo mitigada.
 func definir_mitigacao(valor: float) -> void:
 	mitigacao_atual = clamp(valor, 0.0, 1.0)
 
 
-## Chamado pelo main_game a cada turno.
+# Chamado pelo main_game a cada turno.
 func turno_passou() -> void:
 	turnos_passados += 1
-	
+
 	if turnos_passados >= duracao_turnos:
 		_encerrar_enchente()
 		return
-	
+
 	# A cada 'turnos_por_nivel' turnos completados, sobe 1 nível.
 	var novo_nivel = 1 + int(turnos_passados / turnos_por_nivel)
-	
+
 	if novo_nivel != nivel_atual:
 		nivel_atual = novo_nivel
 		Global.nivel_enchente = nivel_atual
-		
+
 		print("[ENCHENTE] Subiu para o nível ", nivel_atual)
 		enchente_subiu_nivel.emit(nivel_atual)
-	
+
 	_aplicar_turno_atual()
 
 
-## Recalcula a área de dano e aplica o dano.
-##
-## IMPORTANTE:
-## O dano é FIXO e não aumenta com o nível da enchente.
+# Recalcula a área de dano e aplica o dano.
+#
+# IMPORTANTE:
+# O dano é FIXO e não aumenta com o nível da enchente.
 func _aplicar_turno_atual() -> void:
 	_atualizar_tamanho_area_dano()
 	_converter_area_dano_para_tiles()
-	
+
 	# O dano da enchente é fixo.
 	# O nível NÃO aumenta mais o dano.
 	var dano_atual = dano_infraestrutura * (1.0 - mitigacao_atual)
-	
+
 	# Reinicia a visibilidade temporária da faixa de dano
 	timer_visibilidade.stop()
 	timer_visibilidade.start()
-	
+
 	print(
 		"[ENCHENTE] Nível ",
 		nivel_atual,
@@ -180,156 +209,191 @@ func _aplicar_turno_atual() -> void:
 		" | Dano: ",
 		dano_atual
 	)
-	
+
 	# Emite o retângulo em pixels globais.
 	var area_pixels := Rect2(
 		area_dano.global_position,
 		area_dano.size
 	)
-	
+
 	enchente_iniciada.emit(area_pixels, dano_atual)
 
 
-## Sorteia posição/tamanho do AreaVisual em tiles.
+# Sorteia posição/tamanho do AreaVisual em tiles.
 func _gerar_area_grande_aleatoria() -> void:
 	var largura = randi_range(largura_min_tiles, largura_max_tiles)
 	var altura = randi_range(altura_min_tiles, altura_max_tiles)
-	
+
 	var pos_x = randi_range(
 		mapa_min_tile.x,
 		max(mapa_min_tile.x, mapa_max_tile.x - largura)
 	)
-	
+
 	var pos_y = randi_range(
 		mapa_min_tile.y,
 		max(mapa_min_tile.y, mapa_max_tile.y - altura)
 	)
-	
+
 	area_visual.position = Vector2(pos_x, pos_y) * tile_size
 	area_visual.size = Vector2(largura, altura) * tile_size
 
 
-## Sorteia uma única vez a posição-base da faixa de dano.
+# Sorteia uma única vez a posição-base da faixa de dano.
 func _definir_area_fixa() -> void:
 	# Nível máximo que essa enchente consegue alcançar.
 	var nivel_maximo = 1 + int(
 		max(duracao_turnos - 1, 0) / float(turnos_por_nivel)
 	)
-	
+
 	var altura_maxima_possivel = _obter_tamanho_por_nivel(nivel_maximo).y
-	
+
 	# Guarda a borda inferior fixa.
 	var y_bottom_min = area_visual.position.y + altura_maxima_possivel
 	var y_bottom_max = area_visual.position.y + area_visual.size.y
-	
+
 	if y_bottom_min > y_bottom_max:
 		y_bottom_min = y_bottom_max
-	
+
 	_pos_fixa = Vector2(
 		area_visual.position.x,
 		randf_range(y_bottom_min, y_bottom_max)
 	)
 
 
-## Atualiza o tamanho da área conforme o nível.
-##
-## A área cresce conforme o nível, mas o dano permanece fixo.
+# Atualiza o tamanho da área conforme o nível.
+#
+# A área cresce conforme o nível, mas o dano permanece fixo.
 func _atualizar_tamanho_area_dano() -> void:
 	var tamanho_base = _obter_tamanho_por_nivel(nivel_atual)
-	
+
 	var largura = tamanho_base.x
 	var altura = tamanho_base.y * (1.0 - mitigacao_atual)
-	
+
 	area_dano.position = Vector2(
 		_pos_fixa.x,
 		_pos_fixa.y - altura
 	)
-	
+
 	area_dano.size = Vector2(
 		largura,
 		altura
 	)
-	
+
 	area_dano.visible = true
-	
+
 	_atualizar_sprite_onda()
 
+	# Começa a animação "default" da onda.
+	if onda_sprite:
+		onda_sprite.play("default")
 
-## Mantém o Sprite2D "Onda" (arte da água) grudado na ponta INFERIOR
-## ESQUERDA da AreaDano, sempre alguns tamanhos maior que ela (ver
-## onda_escala_multiplicador) — a arte é irregular e não cobre um retângulo
-## perfeito, então em vez de esticar ela pra bater exatamente com o tamanho
-## da área de dano, só ancoramos ela pelo canto certo e deixamos ela maior.
+
+# Mantém o AnimatedSprite2D "Onda" dimensionado de acordo
+# com o crescimento da AreaDano.
+#
+# IMPORTANTE:
+# Esta função NÃO altera a posição da Onda.
 func _atualizar_sprite_onda() -> void:
 	if onda_sprite == null:
 		return
-	if onda_sprite.texture == null:
-		push_warning("Enchente: Sprite2D 'Onda' não tem textura definida!")
+
+	if onda_sprite.sprite_frames == null:
+		push_warning("Enchente: AnimatedSprite2D 'Onda' não tem SpriteFrames!")
 		return
-	
-	var tex_size: Vector2 = onda_sprite.texture.get_size()
+
+	if not onda_sprite.sprite_frames.has_animation("default"):
+		push_warning("Enchente: AnimatedSprite2D 'Onda' não possui a animação 'default'!")
+		return
+
+	var frame_count := onda_sprite.sprite_frames.get_frame_count("default")
+
+	if frame_count <= 0:
+		return
+
+	var tex: Texture2D = onda_sprite.sprite_frames.get_frame_texture("default", 0)
+
+	if tex == null:
+		push_warning("Enchente: animação 'default' não possui textura no primeiro frame!")
+		return
+
+	var tex_size: Vector2 = tex.get_size()
+
 	if tex_size.x <= 0.0 or tex_size.y <= 0.0:
 		return
-	
-	# Tamanho alvo: N vezes o tamanho da AreaDano (não precisa bater 1:1)
-	var tamanho_alvo = area_dano.size * onda_escala_multiplicador
-	onda_sprite.scale = tamanho_alvo / tex_size
-	
-	var largura_real = tex_size.x * onda_sprite.scale.x
-	var altura_real = tex_size.y * onda_sprite.scale.y
-	
-	# Ponto de ancoragem: canto inferior esquerdo da AreaDano, em
-	# coordenadas locais dela (Onda é filho de AreaDano, então (0, size.y)
-	# é exatamente o canto inferior esquerdo dela).
-	var ponto_ancora = Vector2(0.0, area_dano.size.y)
-	
-	if onda_sprite.centered:
-		# Sprite2D centralizado: a "position" fica no centro da textura, então
-		# precisamos deslocar meio sprite pra cima e pra direita a partir do
-		# canto inferior esquerdo, pra esse canto cair exatamente na ancora.
-		onda_sprite.position = ponto_ancora + Vector2(largura_real / 2.0, -altura_real / 2.0)
-	else:
-		# Não centralizado: "position" já é o canto superior esquerdo da
-		# textura, então subimos a altura toda a partir do canto inferior.
-		onda_sprite.position = ponto_ancora - Vector2(0.0, altura_real)
+
+	# --------------------------------------------------------
+	# PRIMEIRA VEZ:
+	# Guarda exatamente o tamanho que a Onda já possui.
+	# --------------------------------------------------------
+	if not _onda_tamanho_inicial_definido:
+		_tamanho_area_dano_inicial = area_dano.size
+
+		_tamanho_onda_inicial = Vector2(
+			tex_size.x * onda_sprite.scale.x,
+			tex_size.y * onda_sprite.scale.y
+		)
+
+		_onda_tamanho_inicial_definido = true
+
+	# --------------------------------------------------------
+	# Depois:
+	# Calcula quanto a AreaDano mudou.
+	# --------------------------------------------------------
+	var variacao = area_dano.size - _tamanho_area_dano_inicial
+
+	# A Onda recebe exatamente a mesma variação.
+	var novo_tamanho = _tamanho_onda_inicial + variacao
+
+	novo_tamanho.x = max(novo_tamanho.x, 1.0)
+	novo_tamanho.y = max(novo_tamanho.y, 1.0)
+
+	# Converte o tamanho final para escala do AnimatedSprite2D.
+	onda_sprite.scale = Vector2(
+		novo_tamanho.x / tex_size.x,
+		novo_tamanho.y / tex_size.y
+	)
+
+	# NÃO alterar posição aqui.
+	# NÃO chamar câmera.
+	# NÃO usar global_position.
 
 
-## Retorna o tamanho configurado para o nível atual.
+# Retorna o tamanho configurado para o nível atual.
 func _obter_tamanho_por_nivel(nivel: int) -> Vector2:
 	if tamanhos_por_nivel.is_empty():
 		return area_visual.size
-	
+
 	var indice = clamp(
 		nivel - 1,
 		0,
 		tamanhos_por_nivel.size() - 1
 	)
-	
+
 	return tamanhos_por_nivel[indice]
 
 
-## Converte a área de dano para coordenadas de tile.
+# Converte a área de dano para coordenadas de tile.
 func _converter_area_dano_para_tiles() -> void:
 	var tile_inicio := Vector2i(
 		floori(area_dano.position.x / tile_size.x),
 		floori(area_dano.position.y / tile_size.y)
 	)
-	
+
 	var tile_fim := Vector2i(
 		ceili((area_dano.position.x + area_dano.size.x) / tile_size.x),
 		ceili((area_dano.position.y + area_dano.size.y) / tile_size.y)
 	)
-	
+
 	area_tiles = Rect2i(
 		tile_inicio,
 		tile_fim - tile_inicio
 	)
 
 
-## Retorna todas as coordenadas de tile afetadas.
+# Retorna todas as coordenadas de tile afetadas.
 func get_tiles_afetados() -> Array[Vector2i]:
 	var tiles: Array[Vector2i] = []
-	
+
 	for x in range(
 		area_tiles.position.x,
 		area_tiles.position.x + area_tiles.size.x
@@ -339,7 +403,7 @@ func get_tiles_afetados() -> Array[Vector2i]:
 			area_tiles.position.y + area_tiles.size.y
 		):
 			tiles.append(Vector2i(x, y))
-	
+
 	return tiles
 
 
@@ -347,14 +411,23 @@ func _on_timer_visibilidade_terminado() -> void:
 	if area_dano:
 		area_dano.visible = false
 
+	# Mantém exatamente a lógica original:
+	# a onda também desaparece quando o timer termina.
+	if onda_sprite:
+		onda_sprite.visible = false
+
 
 func _encerrar_enchente() -> void:
 	print("Enchente terminou.")
 	enchente_ativa = false
-	
+
 	if area_dano:
 		area_dano.visible = false
-	
+
+	if onda_sprite:
+		onda_sprite.visible = false
+		onda_sprite.stop()
+
 	Global.nivel_enchente = 0
 	enchente_terminada.emit()
 	queue_free()
