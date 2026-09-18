@@ -9,6 +9,11 @@ extends Node2D
 @onready var menu_pausa: MenuPausa = $MenuPausa
 @onready var sistema_drenagem: SistemaDrenagem = $SistemaDrenagem
 
+# TILEMAPS DE TERRENO (Troca durante a enchente)
+@onready var tilemapground: TileMapLayer = $TileMapGround
+@onready var tilemapground2: TileMapLayer = $TileMapGround2
+
+
 # Referência à cena de diálogos, já instanciada na árvore. Em vez de um
 # caminho fixo (que pode não bater com a posição real dela na sua cena),
 # procuramos automaticamente por qualquer node que tenha o método
@@ -125,6 +130,14 @@ var abrigo_ocupado: int = 0
 # CICLO DE VIDA (READY & INPUT)
 # ==============================================================================
 func _ready() -> void:
+	
+	# Define o estado inicial dos terrenos
+	if tilemapground:
+		tilemapground.visible = true
+	if tilemapground2:
+		tilemapground2.visible = false
+		
+	await get_tree().process_frame # Aguarda o carregamento dos nós
 	
 	await get_tree().process_frame # Aguarda o carregamento dos nós
 	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
@@ -2211,6 +2224,14 @@ func _iniciar_enchente(duracao_customizada: int = -1) -> void:
 	Global.enchente += 1
 	if "desastres" in Global and Global.desastres.has("enchente"):
 		Global.desastres["enchente"] += 1
+		
+	# Desativa o terreno padrão e ativa o terreno alagado
+	if tilemapground:
+		tilemapground.visible = false
+	if tilemapground2:
+		tilemapground2.visible = true
+		
+	print("[SISTEMA] Enchente iniciada: tilemapground desativado, ground2 ativado.")
 
 
 # ==============================================================================
@@ -2350,6 +2371,12 @@ func _atualizar_sistema_drenagem() -> void:
 func _on_enchente_terminada() -> void:
 	_enchente_ativa = null
 	
+	# Restaura o terreno padrão e oculta o terreno alagado
+	if tilemapground:
+		tilemapground.visible = true
+	if tilemapground2:
+		tilemapground2.visible = false
+		
 	# A enchente acabou. Os NPCs voltam gradualmente:
 	# primeiro metade, depois a outra metade.
 	_reaparecer_npcs_aos_poucos()
@@ -2526,6 +2553,14 @@ func _on_enchente_iniciada(area_pixels: Rect2, dano: float) -> void:
 	# O controle é feito aqui no main_game porque este sinal é garantidamente
 	# recebido pelo nó que criou a enchente.
 	get_tree().call_group("npcs", "_esconder_durante_enchente")
+	
+	# Desativa o terreno padrão e ativa o terreno alagado
+	if tilemapground:
+		tilemapground.visible = false
+	if tilemapground2:
+		tilemapground2.visible = true
+		
+	print("[SISTEMA] Enchente iniciada: tilemapground desativado, ground2 ativado.")
 	
 	var atingidos := 0
 	
