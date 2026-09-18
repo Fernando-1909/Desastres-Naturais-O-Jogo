@@ -1,11 +1,11 @@
 extends Control
 @onready var game_over: Control = $"."
-@onready var informações: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer/Informações
-@onready var info_desabrigados: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/InfoDesabrigados
-@onready var info_casas_destruidas: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/InfoCasasDestruidas
-@onready var info_dano: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/InfoDano
-@onready var info_parabens: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/InfoParabens
-@onready var info_civis: RichTextLabel = $PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer/InfoCivis
+@onready var informações: RichTextLabel = $TextureRect/MarginContainer/VBoxContainer2/VBoxContainer/Informações
+@onready var info_desabrigados: RichTextLabel = $TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HBoxDesabrigados/InfoDesabrigados
+@onready var info_casas_destruidas: RichTextLabel = $TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HboxCasas/InfoCasasDestruidas
+@onready var info_dano: RichTextLabel = $TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HboxDano/InfoDano
+@onready var info_parabens: RichTextLabel = $TextureRect/MarginContainer/VBoxContainer2/InfoParabens
+@onready var info_civis: RichTextLabel = $TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HboxCivis/InfoCivis
 
 
 func _ready() -> void:

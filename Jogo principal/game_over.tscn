@@ -4,9 +4,15 @@
 [ext_resource type="Texture2D" uid="uid://dsfy2c66dx7l0" path="res://Jogo principal/UI/Assets/Victory.png" id="2_t0pae"]
 [ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="3_1257a"]
 [ext_resource type="FontFile" uid="uid://br5wb2vq7vbqx" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBoldItalic.ttf" id="4_1257a"]
+[ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="5_34hsl"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_34hsl"]
-texture = ExtResource("2_t0pae")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1257a"]
+texture = ExtResource("5_34hsl")
+modulate_color = Color(2.454227, 2.454227, 2.454227, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_essrg"]
+texture = ExtResource("5_34hsl")
+modulate_color = Color(1.5720325, 1.5720325, 1.5720325, 1)
 
 [node name="GameOver2" type="Control" unique_id=2096070889]
 layout_mode = 3
@@ -17,31 +23,36 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nkevu")
 
-[node name="PanelContainer" type="PanelContainer" parent="." unique_id=383862803]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1758936547]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_34hsl")
+texture = ExtResource("2_t0pae")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=2119370582]
-layout_mode = 2
+[node name="MarginContainer" type="MarginContainer" parent="TextureRect" unique_id=2119370582]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 50
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 70
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=202666385]
+[node name="VBoxContainer2" type="VBoxContainer" parent="TextureRect/MarginContainer" unique_id=202666385]
 layout_mode = 2
 theme_override_constants/separation = 44
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=649162322]
+[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect/MarginContainer/VBoxContainer2" unique_id=649162322]
 layout_mode = 2
 theme_override_constants/separation = 32
 
-[node name="Agradecimento" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=447127765]
+[node name="Agradecimento" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=447127765]
 custom_minimum_size = Vector2(687.74, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -52,7 +63,7 @@ text = "Obrigado por jogar!"
 fit_content = true
 scroll_active = false
 
-[node name="InfoVitoria" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1301131941]
+[node name="InfoVitoria" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=1301131941]
 custom_minimum_size = Vector2(186.585, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -64,7 +75,7 @@ text = "Parabéns!"
 fit_content = true
 scroll_active = false
 
-[node name="Informações" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=2072544557]
+[node name="Informações" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/VBoxContainer" unique_id=2072544557]
 custom_minimum_size = Vector2(500, 30)
 layout_mode = 2
 theme_override_constants/shadow_offset_y = 3
@@ -75,61 +86,124 @@ text = "Informações da sua gameplay:"
 fit_content = true
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=1795479418]
+[node name="HBoxContainer" type="HBoxContainer" parent="TextureRect/MarginContainer/VBoxContainer2" unique_id=1795479418]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 60
 
-[node name="InfoCivis" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=499790118]
-custom_minimum_size = Vector2(72.455, 50)
+[node name="VBoxContainer" type="VBoxContainer" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=984777369]
+layout_mode = 2
+
+[node name="HboxCivis" type="HBoxContainer" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer" unique_id=152271981]
+layout_mode = 2
+
+[node name="TextoCivis" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HboxCivis" unique_id=1881354765]
 clip_contents = false
 layout_mode = 2
+theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/normal_font = ExtResource("4_1257a")
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
-text = "Civis"
+text = "Civis resgatados: "
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[node name="InfoDesabrigados" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=677635482]
-custom_minimum_size = Vector2(180, 50)
+[node name="InfoCivis" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HboxCivis" unique_id=499790118]
 clip_contents = false
 layout_mode = 2
+theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/normal_font = ExtResource("4_1257a")
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
-text = "Desabrigados"
+text = "0"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[node name="InfoCasasDestruidas" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1060583803]
-custom_minimum_size = Vector2(150, 0)
+[node name="HBoxDesabrigados" type="HBoxContainer" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer" unique_id=585033004]
+layout_mode = 2
+
+[node name="TextoDesabrigados" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HBoxDesabrigados" unique_id=1277197699]
 clip_contents = false
 layout_mode = 2
+theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/normal_font = ExtResource("4_1257a")
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
-text = "Casas Destruidas"
+text = "Pessoas desabrigadas: "
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[node name="InfoDano" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/HBoxContainer" unique_id=1847545287]
-custom_minimum_size = Vector2(60, 0)
+[node name="InfoDesabrigados" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HBoxDesabrigados" unique_id=677635482]
 clip_contents = false
 layout_mode = 2
+theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/normal_font = ExtResource("4_1257a")
 theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
-text = "Dano"
+text = "0"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[node name="InfoParabens" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=1960898240]
+[node name="HBoxCasas" type="HBoxContainer" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer" unique_id=170367769]
+layout_mode = 2
+
+[node name="TextoDestruidas" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HBoxCasas" unique_id=364169222]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = ExtResource("4_1257a")
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "Construções Destruídas: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="InfoCasasDestruidas" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HBoxCasas" unique_id=1060583803]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = ExtResource("4_1257a")
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "0"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="HBoxDano" type="HBoxContainer" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer" unique_id=370095906]
+layout_mode = 2
+
+[node name="TextoDano" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HBoxDano" unique_id=413141099]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = ExtResource("4_1257a")
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "Dano total sofrido: "
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="InfoDano" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer/VBoxContainer/HBoxDano" unique_id=1847545287]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = ExtResource("4_1257a")
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "0"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="InfoParabens" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2" unique_id=1960898240]
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 37
 bbcode_enabled = true
@@ -138,13 +212,15 @@ fit_content = true
 scroll_active = false
 horizontal_alignment = 1
 
-[node name="ReturnMenu" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer2" unique_id=887416093]
+[node name="ReturnMenu" type="Button" parent="TextureRect/MarginContainer/VBoxContainer2" unique_id=887416093]
 custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_styles/pressed = SubResource("StyleBoxTexture_1257a")
+theme_override_styles/hover = SubResource("StyleBoxTexture_essrg")
 
-[node name="RichTextVoltarMenu" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer2/ReturnMenu" unique_id=55215301]
+[node name="RichTextVoltarMenu" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/ReturnMenu" unique_id=55215301]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -153,6 +229,7 @@ offset_top = -5.0
 offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/normal_font = ExtResource("3_1257a")
 theme_override_font_sizes/normal_font_size = 30
@@ -160,4 +237,4 @@ text = "VOLTAR AO MENU"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer2/ReturnMenu" to="." method="_on_return_menu_pressed"]
+[connection signal="pressed" from="TextureRect/MarginContainer/VBoxContainer2/ReturnMenu" to="." method="_on_return_menu_pressed"]
