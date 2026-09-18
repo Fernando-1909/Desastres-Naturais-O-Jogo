@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b1qiuu7n7yi0o" path="res://Jogo principal/Scripts/Scripts cenas/derrota.gd" id="1_oc0lw"]
 [ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="2_f1t7y"]
+[ext_resource type="Texture2D" uid="uid://c1d8ujcrnyivu" path="res://Jogo principal/UI/Assets/Gameover.png" id="2_ohmwx"]
 [ext_resource type="FontFile" uid="uid://coi21ikrr11wj" path="res://Jogo principal/UI/Temas/fontes/upheavtt.ttf" id="3_ntr7v"]
 [ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="4_ohmwx"]
 [ext_resource type="FontFile" uid="uid://br5wb2vq7vbqx" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBoldItalic.ttf" id="5_asrj5"]
@@ -26,6 +27,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_oc0lw")
+
+[node name="Gameover" type="Sprite2D" parent="." unique_id=202738423]
+position = Vector2(677.5, 321.99997)
+scale = Vector2(2.8270833, 2.3925924)
+texture = ExtResource("2_ohmwx")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=1726865105]
 layout_mode = 1
