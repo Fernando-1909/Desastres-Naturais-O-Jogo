@@ -1279,9 +1279,14 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	
 	if Global.dinheiro >= custo:
 		Global.dinheiro -= custo
+		
+		# 1. Incrementa o nível
 		predio.nivel_atual += 1
 		
-		# Atualiza os sistemas dinâmicos afetados por nível
+		# 2. Atualiza o sprite no TileMap
+		_atualizar_sprite_upgrade(predio)
+		
+		# 3. Atualiza os sistemas dinâmicos afetados por nível
 		_recalcular_recursos_resgate()
 		_atualizar_sistema_drenagem()
 		_atualizar_npcs_por_populacao()
@@ -1289,6 +1294,40 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 		print("[INFO] ", predio.data.nome, " aprimorado para o nivel ", predio.nivel_atual)
 	else:
 		print("[ERRO] Dinheiro insuficiente para upgrade!")
+
+
+func obter_bonus_prefeitura() -> float:
+	for pos in construcoes_no_mapa.keys():
+		var inst: BuildingInstance = construcoes_no_mapa[pos]
+		if inst and inst.data:
+			var id_predio = str(inst.data.id).to_lower().strip_edges()
+			if id_predio == "prefeitura":
+				var nivel = inst.nivel_atual if "nivel_atual" in inst else 1
+				if nivel >= 2:
+					# Retorna 10% para o Nível 2 (+10% adicional por nível acima do 2, se aplicável)
+					return 0.10 * (nivel - 1)
+	return 0.0
+
+func _atualizar_sprite_upgrade(predio: BuildingInstance) -> void:
+	if not predio or not predio.data:
+		return
+	
+	var b_data = predio.data
+	var source_id = b_data.source_id if "source_id" in b_data else 0
+	var nova_coord_atlas: Vector2i = Vector2i.ZERO
+	
+	# Busca a coordenada no Atlas referente ao novo nível
+	if b_data.has_method("get_atlas_coord_por_nivel"):
+		nova_coord_atlas = b_data.get_atlas_coord_por_nivel(predio.nivel_atual)
+	elif b_data.has_method("get_atlas_coord_para_construir"):
+		nova_coord_atlas = b_data.get_atlas_coord_para_construir(predio.nivel_atual - 1)
+	
+	# Aplica no TileMapLayer ou TileMap
+	var tm: Object = tilemap_constructions if tilemap_constructions else tile_map
+	if tm is TileMapLayer:
+		tm.set_cell(predio.posicao_tile, source_id, nova_coord_atlas)
+	elif tm is TileMap:
+		tm.set_cell(0, predio.posicao_tile, source_id, nova_coord_atlas)
 
 
 func _ativar_terrenos_zona_funcoes() -> void:
@@ -1885,6 +1924,21 @@ func _abrir_tela_por_building_data(b_data: BuildingData) -> void:
 	else:
 		_abrir_modo_compra_para_dados(b_data)
 
+
+# ==============================================================================
+# BÔNUS DA PREFEITURA
+# ==============================================================================
+## Retorna 1.10 (+10%) se a Prefeitura estiver no nível 2 ou superior
+func obter_multiplicador_prefeitura() -> float:
+	for pos in construcoes_no_mapa.keys():
+		var inst: BuildingInstance = construcoes_no_mapa[pos]
+		if inst and inst.data:
+			var id_predio = str(inst.data.id).to_lower().strip_edges()
+			if id_predio == "prefeitura" and inst.nivel_atual >= 2:
+				return 1.10
+	return 1.0
+
+
 func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 	if not predio or not predio.data:
 		return
@@ -1893,7 +1947,6 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 	var idx = predio.variacao_index if "variacao_index" in predio else 0
 	var tex = b_data.get_icone_variacao(idx) if b_data.has_method("get_icone_variacao") else (b_data.icone if "icone" in b_data and b_data.icone else icone_temp)
 	
-	# Recalcula a capacidade atualizada dos abrigos e equipes
 	if has_method("_recalcular_recursos_resgate"):
 		_recalcular_recursos_resgate()
 	
@@ -1902,7 +1955,6 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 	
 	var texto_stats_custom = ""
 	
-	# Caso a construção seja um abrigo, exibe a contagem de vagas
 	if cat == "abrigo" or "abrigo" in id_predio or ("capacidade_abrigo" in b_data and b_data.capacidade_abrigo > 0):
 		var vagas_disponiveis = obter_vagas_abrigos_disponiveis() if has_method("obter_vagas_abrigos_disponiveis") else 0
 		var cap_total = total_capacidade_abrigo if "total_capacidade_abrigo" in self else 0
@@ -1917,10 +1969,14 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 		var n_max = b_data.nivel_maximo if "nivel_maximo" in b_data else 1
 		var pode_up = b_data.pode_aprimorar if "pode_aprimorar" in b_data else false
 		
+		# Aplica o bônus de 10% da Prefeitura sobre os ganhos base
+		var ganho_base = predio.get_ganhos_atuais() if predio.has_method("get_ganhos_atuais") else 0
+		var ganho_final = int(round(ganho_base * obter_multiplicador_prefeitura()))
+		
 		tela_compras.abrir_modo_upgrade(
 			b_data.nome if "nome" in b_data else "",
 			n_atual,
-			predio.get_ganhos_atuais() if predio.has_method("get_ganhos_atuais") else 0,
+			ganho_final,
 			predio.get_durabilidade_pct() if predio.has_method("get_durabilidade_pct") else 1.0,
 			predio.get_custo_upgrade() if predio.has_method("get_custo_upgrade") else 0,
 			tex,

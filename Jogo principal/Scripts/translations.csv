@@ -47,8 +47,8 @@ PREDIO_CASA_SIMPLES_DETALHES,"Gera [color=#FFD700]+10[/color] habitantes na cida
 
 # Prefeitura
 PREDIO_PREFEITURA_NOME,"Prefeitura","City Hall"
-PREDIO_PREFEITURA_DESC,"Sede administrativa da cidade. Libera novas áreas e projetos.","City administrative headquarters. Unlocks new areas and projects."
-PREDIO_PREFEITURA_DETALHES,"Sede administrativa. Aumenta a capacidade do território e libera novas áreas a cada [color=#FFD700]+1[/color] nível.","Administrative headquarters. Increases territory capacity and unlocks new areas every [color=#FFD700]+1[/color] level."
+PREDIO_PREFEITURA_DESC,"Centro administrativo da cidade.","City administrative center."
+PREDIO_PREFEITURA_DETALHES,"Aumentar o nível da Prefeitura para o Nível 2 concede um bônus geral de [color=#FFD700]+10%[/color] no ganho base de todas as construções da cidade.","Upgrading City Hall to Level 2 grants a [color=#FFD700]+10%[/color] global bonus to the base income of all city buildings."
 
 # Estação de Tratamento
 PREDIO_ESTACAO_TRATAMENTO_NOME,"Estação de Tratamento","Treatment Plant"

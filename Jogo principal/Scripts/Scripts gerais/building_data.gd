@@ -29,6 +29,7 @@ extends Resource
 @export var ganhos_base: float = 0.0                  
 @export var bonus_populacao: int = 0
 @export var multiplicador_custo_upgrade: float = 1.5
+@export var bonus_ganho_geral_pct: float = 0.0 # Ex: 0.10 para 10%
 
 @export_group("Serviços e Socorro")
 ## Quantidade de pessoas desabrigadas que esta construção pode acolher durante/após desastres
