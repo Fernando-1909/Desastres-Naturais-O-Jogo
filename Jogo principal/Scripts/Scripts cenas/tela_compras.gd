@@ -266,7 +266,7 @@ func _criar_divisor_categoria(nome_categoria: String) -> Control:
 	label.scroll_active = false
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.custom_minimum_size = Vector2(0, 30)
-	label.text = "[center]=== " + tr(nome_categoria).to_upper() + " ===[/center]"
+	label.text = "[center][b]=== " + tr(nome_categoria).to_upper() + " ===[/b][/center]"
 	return label
 
 
