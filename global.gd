@@ -45,6 +45,15 @@ var missoes_concluidas = []
 var chance_missao = 30
 var turnos_sem_missao = {}  # Dicionário para contar turnos sem cada missão
 var missao_atual_turnos = 0
+# Controle da obrigação de atividade por turno.
+# false = o jogador pode passar normalmente.
+# true  = o jogador passou o turno anterior sem gastar dinheiro e,
+#         portanto, precisa gastar dinheiro antes de passar novamente.
+var turno_ocioso: bool = false
+
+# Fica true assim que qualquer ação que debite dinheiro for concluída
+# no turno atual. É zerada quando o turno é encerrado.
+var gastou_dinheiro_este_turno: bool = false
 
 
 var jogo_pausado = false

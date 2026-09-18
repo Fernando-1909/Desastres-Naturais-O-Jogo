@@ -11,6 +11,7 @@ icone = ExtResource("1_exjwu")
 icones = Array[Texture2D]([ExtResource("1_exjwu")])
 eh_unica = true
 pode_aprimorar = false
+custo_base = 700.0
 descricao_curta = "PREDIO_ESTACAO_TRATAMENTO_DESC"
 texto_detalhes = "PREDIO_ESTACAO_TRATAMENTO_DETALHES"
 durabilidade_maxima = 500.0

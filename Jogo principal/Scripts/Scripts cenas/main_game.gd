@@ -162,8 +162,10 @@ func _ready() -> void:
 	_carregar_todos_os_edificios()
 	_carregar_todas_as_missoes()
 	Global.turno = 0
+	Global.turno_ocioso = false
+	Global.gastou_dinheiro_este_turno = false
 	Global.popularidade = 40
-	Global.dinheiro = 1000
+	Global.dinheiro = 500
 	Global.populacao = 10
 	# Reseta os motivos de derrota ao iniciar uma nova partida.
 	Global.missaoderrota = false
@@ -1117,6 +1119,8 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 
 	# 3. Transacao
 	Global.dinheiro -= custo_final
+	Global.gastou_dinheiro_este_turno = true
+	Global.turno_ocioso = false
 	
 	var precisa_construir = tempo_construcao > 0
 
@@ -1279,6 +1283,8 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	
 	if Global.dinheiro >= custo:
 		Global.dinheiro -= custo
+		Global.gastou_dinheiro_este_turno = true
+		Global.turno_ocioso = false
 		
 		# 1. Incrementa o nível
 		predio.nivel_atual += 1
@@ -1630,6 +1636,8 @@ func concluir_missao() -> void:
 		return
 	
 	Global.dinheiro -= missao.custo
+	Global.gastou_dinheiro_este_turno = true
+	Global.turno_ocioso = false
 	Global.popularidade += missao.popularidade
 	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
 		Global.populacao += missao.bonus_populacao
@@ -2021,6 +2029,8 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 	# 1. Deduz o Custo
 	if typeof(Global) != TYPE_NIL and "dinheiro" in Global:
 		Global.dinheiro -= custo
+		Global.gastou_dinheiro_este_turno = true
+		Global.turno_ocioso = false
 
 	# 2. Restaura a Durabilidade e o Estado da Estrutura
 	var instancia: BuildingInstance = construcoes_no_mapa[pos_tile]
@@ -2567,6 +2577,49 @@ func _mostrar_aviso_texto(texto: String, cor: Color = Color(1.0, 0.287, 0.227, 1
 	_tween_aviso_texto.tween_property(aviso, "modulate:a", 1.0, fade_seg)
 	_tween_aviso_texto.tween_interval(duracao)
 	_tween_aviso_texto.tween_property(aviso, "modulate:a", 0.0, fade_seg)
+
+
+# ============================================================
+# CHECAGEM DE TURNO OCIOSO
+# ============================================================
+
+func _existe_desastre_ativo() -> bool:
+	# Atualmente o desastre controlado pelo main_game é a enchente.
+	# O teste pelo nó ativo evita depender apenas do valor global.
+	return _enchente_ativa != null
+
+
+func pode_passar_turno() -> bool:
+	# Durante qualquer desastre ativo, a obrigação de construir é suspensa.
+	if _existe_desastre_ativo():
+		print("[TURNO OCIOSO] Regra suspensa: existe um desastre ativo.")
+		return true
+
+	# Se o jogador passou o turno anterior sem gastar dinheiro, agora
+	# ele é obrigado a gastar dinheiro antes de poder passar novamente.
+	if Global.turno_ocioso and not Global.gastou_dinheiro_este_turno:
+		print("[TURNO OCIOSO] Turno bloqueado: é necessário construir/gastar dinheiro antes de passar.")
+		return false
+
+	return true
+
+
+func registrar_gasto_turno() -> void:
+	# Chamado sempre que uma ação válida debita dinheiro do jogador.
+	Global.gastou_dinheiro_este_turno = true
+	Global.turno_ocioso = false
+
+
+func finalizar_checada_turno_ocioso() -> void:
+	# Se o jogador gastou dinheiro neste turno, ele cumpriu a obrigação.
+	if Global.gastou_dinheiro_este_turno:
+		Global.turno_ocioso = false
+	else:
+		# Se não gastou, este turno passa a ser o turno ocioso.
+		Global.turno_ocioso = true
+
+	# Começa limpo para o próximo turno.
+	Global.gastou_dinheiro_este_turno = false
 
 
 func avancar_turno_desastres() -> void:
