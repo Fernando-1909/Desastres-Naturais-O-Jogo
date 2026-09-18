@@ -38,8 +38,6 @@ region = Rect2(0.862627, 0.9241915, 49.59742, 36.62047)
 [node name="TelaCompras" type="CanvasLayer" unique_id=2141866857]
 process_mode = 3
 script = ExtResource("1_6tqbi")
-item_construcao_scene = null
-multiplicador_custo_reconstrucao = null
 
 [node name="OverlayFundo" type="ColorRect" parent="." unique_id=777114932]
 anchors_preset = 15
@@ -347,6 +345,7 @@ icon = SubResource("AtlasTexture_82tgc")
 icon_alignment = 1
 
 [node name="PainelDetalhes" type="PanelContainer" parent="." unique_id=1988168018]
+visible = false
 custom_minimum_size = Vector2(380, 200)
 anchors_preset = 8
 anchor_left = 0.5
