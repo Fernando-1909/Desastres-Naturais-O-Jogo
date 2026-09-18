@@ -2,9 +2,15 @@
 
 [ext_resource type="Script" uid="uid://dm1ubylkgm4je" path="res://Jogo principal/Scripts/Scripts cenas/tutorial.gd" id="1_3dcgh"]
 [ext_resource type="PackedScene" uid="uid://l4ep5qwntoxq" path="res://Jogo principal/UI/dialogue_manager.tscn" id="2_e23xa"]
+[ext_resource type="Texture2D" uid="uid://dsfy2c66dx7l0" path="res://Jogo principal/UI/Assets/Victory.png" id="2_ks8gi"]
 
 [node name="Tutorial" type="Node2D" unique_id=1721329215]
 script = ExtResource("1_3dcgh")
+
+[node name="Victory" type="Sprite2D" parent="." unique_id=724342637]
+position = Vector2(642.5, 320.99997)
+scale = Vector2(2.6979165, 2.4518518)
+texture = ExtResource("2_ks8gi")
 
 [node name="DialogueManager" parent="." unique_id=1420897856 instance=ExtResource("2_e23xa")]
 
