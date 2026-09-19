@@ -350,15 +350,19 @@ func contar_abrigos_construidos() -> int:
 	for pos in construcoes_no_mapa.keys():
 		var instancia: BuildingInstance = construcoes_no_mapa[pos]
 		if instancia and instancia.data and instancia.durabilidade_atual > 0:
-			var cat = str(instancia.data.categoria).to_lower().strip_edges() if "categoria" in instancia.data and instancia.data.categoria != null else ""
-			var id_predio = str(instancia.data.id).to_lower().strip_edges() if "id" in instancia.data and instancia.data.id != null else ""
+			var data = instancia.data
+			var id_predio = str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
 			
-			# Ignora explicitamente a prefeitura
-			if id_predio == "prefeitura" or "prefeitura" in cat:
+			if id_predio == "prefeitura":
 				continue
 
-			if cat == "abrigo" or "abrigo" in id_predio:
-				total_abrigos += 1
+			if data.has_method("eh_abrigo"):
+				if data.eh_abrigo():
+					total_abrigos += 1
+			else:
+				var cat = str(data.categoria).to_lower().strip_edges() if "categoria" in data and data.categoria != null else ""
+				if cat == "abrigo" or "abrigo" in id_predio:
+					total_abrigos += 1
 	return total_abrigos
 
 
@@ -367,11 +371,15 @@ func contar_estacoes_bombeiro_construidas() -> int:
 	for pos in construcoes_no_mapa.keys():
 		var instancia: BuildingInstance = construcoes_no_mapa[pos]
 		if instancia and instancia.data and instancia.durabilidade_atual > 0:
-			var cat = str(instancia.data.categoria).to_lower().strip_edges() if "categoria" in instancia.data and instancia.data.categoria != null else ""
-			var id_predio = str(instancia.data.id).to_lower().strip_edges() if "id" in instancia.data and instancia.data.id != null else ""
-			
-			if cat == "bombeiros" or "bombeiro" in id_predio:
-				total_bombeiros += 1
+			var data = instancia.data
+			if data.has_method("eh_bombeiros"):
+				if data.eh_bombeiros():
+					total_bombeiros += 1
+			else:
+				var cat = str(data.categoria).to_lower().strip_edges() if "categoria" in data and data.categoria != null else ""
+				var id_predio = str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
+				if cat == "bombeiros" or "bombeiro" in id_predio:
+					total_bombeiros += 1
 	return total_bombeiros
 
 
@@ -389,10 +397,9 @@ func _recalcular_recursos_resgate() -> void:
 			if instancia and instancia.data and instancia.durabilidade_atual > 0:
 				var data = instancia.data
 				var nivel = instancia.nivel_atual if "nivel_atual" in instancia else 1
-				var cat = str(data.categoria).to_lower().strip_edges() if "categoria" in data and data.categoria != null else ""
-				var id_predio = str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
-
-				if cat == "abrigo" or "abrigo" in id_predio:
+				
+				var eh_abrigo_valid = data.eh_abrigo() if data.has_method("eh_abrigo") else ("abrigo" in str(data.categoria).to_lower() or "abrigo" in str(data.id).to_lower())
+				if eh_abrigo_valid:
 					if "capacidade_abrigo" in data and data.capacidade_abrigo != null:
 						total_capacidade_abrigo += int(data.capacidade_abrigo) * nivel
 
@@ -403,10 +410,9 @@ func _recalcular_recursos_resgate() -> void:
 			if instancia and instancia.data and instancia.durabilidade_atual > 0:
 				var data = instancia.data
 				var nivel = instancia.nivel_atual if "nivel_atual" in instancia else 1
-				var cat = str(data.categoria).to_lower().strip_edges() if "categoria" in data and data.categoria != null else ""
-				var id_predio = str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
-
-				if cat == "bombeiros" or "bombeiro" in id_predio:
+				
+				var eh_bombeiros_valid = data.eh_bombeiros() if data.has_method("eh_bombeiros") else ("bombeiro" in str(data.categoria).to_lower() or "bombeiro" in str(data.id).to_lower())
+				if eh_bombeiros_valid:
 					if "equipes_resgate" in data and data.equipes_resgate != null:
 						total_equipes_resgate += int(data.equipes_resgate) * nivel
 
@@ -419,7 +425,6 @@ func _recalcular_recursos_resgate() -> void:
 			Global.pessoas_abrigadas = clamp(Global.pessoas_abrigadas, 0, total_capacidade_abrigo)
 			abrigo_ocupado = Global.pessoas_abrigadas
 
-	# Feedback do sistema no console
 	print("[SISTEMA RESGATE] Abrigos construídos: ", qtd_abrigos, 
 		  " | Capacidade Total: ", total_capacidade_abrigo, 
 		  " | Ocupação: ", abrigo_ocupado, "/", total_capacidade_abrigo, 
@@ -764,6 +769,23 @@ func _aplicar_tile_alagado(predio: BuildingInstance) -> void:
 				tile_map.set_cell(0, pos_tile, src_id, coords)
 				
 			print("[SISTEMA] Construção em ", pos_tile, " foi alterada para o sprite alagado (Source: ", src_id, ", Coords: ", coords, ")")
+
+
+## Percorre todas as construções do mapa e aplica o sprite alagado no início da enchente
+func _aplicar_alagamento_todas_construcoes() -> void:
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio and predio.durabilidade_atual > 0:
+			_aplicar_tile_alagado(predio)
+
+
+## Restaura o sprite normal de todas as construções intactas ao encerrar a enchente
+func _restaurar_sprites_todas_construcoes() -> void:
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio and predio.durabilidade_atual > 0 and not ("em_construcao" in predio and predio.em_construcao):
+			_restaurar_tile_grafico(pos, predio)
+
 
 
 func _aplicar_tile_destruido(predio: BuildingInstance) -> void:
@@ -1830,13 +1852,16 @@ func _atualizar_motivos_game_over() -> void:
 		if predio == null or predio.data == null:
 			continue
 
-		var categoria := ""
-		if "categoria" in predio.data and predio.data.categoria != null:
-			categoria = str(predio.data.categoria).to_lower().strip_edges()
+		if "durabilidade_atual" in predio and predio.durabilidade_atual <= 0:
+			continue
 
-		var id_predio := ""
-		if "id" in predio.data and predio.data.id != null:
-			id_predio = str(predio.data.id).to_lower().strip_edges()
+		var data = predio.data
+		if data.has_method("tem_funcao_especial") and data.tem_funcao_especial():
+			tem_funcao = true
+			break
+
+		var categoria := str(data.categoria).to_lower().strip_edges() if "categoria" in data and data.categoria != null else ""
+		var id_predio := str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
 
 		if "func" in categoria or "serv" in categoria:
 			tem_funcao = true
@@ -1858,14 +1883,22 @@ func _atualizar_motivos_game_over() -> void:
 	# Nenhum Corpo de Bombeiros.
 	Global.sembombeiros = contar_estacoes_bombeiro_construidas() == 0
 
-	# Nenhuma bomba.
+	# Nenhuma bomba de drenagem.
 	var tem_bomba := false
 	for pos in construcoes_no_mapa.keys():
 		var predio = construcoes_no_mapa[pos]
 		if predio == null or predio.data == null:
 			continue
-		var id_predio := str(predio.data.id).to_lower().strip_edges() if "id" in predio.data and predio.data.id != null else ""
-		if "bomba" in id_predio and (not ("durabilidade_atual" in predio) or predio.durabilidade_atual > 0):
+		if "durabilidade_atual" in predio and predio.durabilidade_atual <= 0:
+			continue
+
+		var data = predio.data
+		if data.has_method("eh_drenagem") and data.eh_drenagem():
+			tem_bomba = true
+			break
+
+		var id_predio := str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
+		if "bomba" in id_predio:
 			tem_bomba = true
 			break
 	Global.sembomba = not tem_bomba
@@ -1876,11 +1909,16 @@ func _atualizar_motivos_game_over() -> void:
 		var predio = construcoes_no_mapa[pos]
 		if predio == null or predio.data == null:
 			continue
-		var id_predio := str(predio.data.id).to_lower().strip_edges() if "id" in predio.data and predio.data.id != null else ""
-		if (
-			("tratamento" in id_predio or id_predio == "estacao_drenagem")
-			and (not ("durabilidade_atual" in predio) or predio.durabilidade_atual > 0)
-		):
+		if "durabilidade_atual" in predio and predio.durabilidade_atual <= 0:
+			continue
+
+		var data = predio.data
+		if data.has_method("eh_estacao_tratamento") and data.eh_estacao_tratamento():
+			tem_tratamento = true
+			break
+
+		var id_predio := str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
+		if ("tratamento" in id_predio or id_predio == "estacao_drenagem"):
 			tem_tratamento = true
 			break
 	Global.semtratamento = not tem_tratamento
@@ -2304,6 +2342,9 @@ func _iniciar_enchente(duracao_customizada: int = -1, dano_customizado: float = 
 	if tilemap_base and tilemap_base.has_method("alagar_mapa"):
 		tilemap_base.alagar_mapa()
 	
+	# Troca o visual de TODAS as construções para o sprite alagado
+	_aplicar_alagamento_todas_construcoes()
+	
 	# Se já existem Bombas de Drenagem construídas, a enchente já nasce mitigada
 	if enchente.has_method("definir_mitigacao"):
 		enchente.definir_mitigacao(_calcular_mitigacao_enchente())
@@ -2377,6 +2418,34 @@ func _spawnar_bomba_teste() -> void:
 	_atualizar_sistema_drenagem()
 	print("Bomba de teste adicionada na Zona do Rio | Tile: ", pos_tile)
 	print("Nova mitigação da enchente: ", _calcular_mitigacao_enchente() * 100.0, "%")
+
+
+# ==============================================================================
+# CÁLCULO DE MANUTENÇÃO DAS CONSTRUÇÕES COM BASE NO .TRES
+# ==============================================================================
+func calcular_custo_manutencao_construcoes() -> int:
+	var custo_total: int = 0
+	
+	for pos in construcoes_no_mapa.keys():
+		var instancia: BuildingInstance = construcoes_no_mapa[pos]
+		if instancia and instancia.data:
+			# Ignora construções em obra ou destruídas
+			if "em_construcao" in instancia and instancia.em_construcao:
+				continue
+			if "durabilidade_atual" in instancia and instancia.durabilidade_atual <= 0:
+				continue
+			
+			# Lê a variável configurada no recurso .tres (BuildingData)
+			var custo_manut: int = 0
+			if "custo_manutencao" in instancia.data and instancia.data.custo_manutencao != null:
+				custo_manut = instancia.data.custo_manutencao
+			
+			# Se o custo for 0 (ou não configurado), ignora o cálculo
+			if custo_manut > 0:
+				var nivel = instancia.nivel_atual if "nivel_atual" in instancia else 1
+				custo_total += custo_manut * nivel
+				
+	return custo_total
 
 
 func _calcular_mitigacao_enchente() -> float:
@@ -2701,6 +2770,9 @@ func avancar_turno_desastres() -> void:
 
 	# Avança o tempo de todos os pontos de resgate ativos na cena
 	get_tree().call_group("pontos_resgate", "avancar_turno")
+
+## Percorre as construções ativas no mapa e soma os custos configurados nos seus arquivos .tres
+
 
 
 func _tem_resgate_pendente(pos_tile: Vector2i, predio: BuildingInstance = null) -> bool:

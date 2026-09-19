@@ -1,9 +1,19 @@
 class_name BuildingData
 extends Resource
 
+enum TipoFuncao {
+	NENHUMA,
+	ABRIGO,
+	BOMBEIROS,
+	TRATAMENTO_AGUA,
+	DRENAGEM,
+	OUTRO
+}
+
 @export_group("Identificação Base")
 @export var id: String = ""                           # ex: "casa_simples", "prefeitura"
 @export var nome: String = ""                         # ex: "Casa Simples", "Prefeitura"
+@export var categoria: String = "residencial"         # ex: "residencial", "servico", "abrigo", "bombeiros"
 @export var icone: Texture2D                          # Ícone único (fallback)
 ## Coloque aqui a lista de PNGs que correspondem às variações deste prédio
 @export var icones: Array[Texture2D] = []             
@@ -30,14 +40,21 @@ extends Resource
 @export var bonus_populacao: int = 0
 @export var multiplicador_custo_upgrade: float = 1.5
 @export var bonus_ganho_geral_pct: float = 0.0 # Ex: 0.10 para 10%
+@export var custo_manutencao: int = 0
 
 @export_group("Serviços e Socorro")
+## Define o tipo principal de função/serviço deste prédio
+@export var tipo_funcao: TipoFuncao = TipoFuncao.NENHUMA
 ## Quantidade de pessoas desabrigadas que esta construção pode acolher durante/após desastres
 @export var capacidade_abrigo: int = 0
 ## Quantidade de equipes de bombeiros/resgate que esta construção disponibiliza no mapa
 @export var equipes_resgate: int = 0
 ## Quantidade máxima de bombas de drenagem disponibilizadas por esta construção
 @export var capacidade_bombas: int = 0
+## Poder/Eficiência de drenagem fornecido por esta estrutura
+@export var poder_drenagem: float = 0.0
+## Capacidade/Eficiência no tratamento da água
+@export var capacidade_tratamento: float = 0.0
 
 @export_group("Tiles no TileSet")
 ## Coloque aqui TODAS as coordenadas atlas que representam este prédio JÁ CONSTRUÍDO (variações)
@@ -61,6 +78,10 @@ extends Resource
 @export var flooded_source_id: int = -1              # Se -1, reutiliza o source_id padrão
 @export var flooded_tile_atlas_coords: Vector2i = Vector2i(-1, -1) # Posição (x, y) do tile alagado
 
+
+# ==============================================================================
+# MÉTODOS DE CONSULTA DE IMAGENS E ICONES
+# ==============================================================================
 
 ## Retorna true se o .tres tem pelo menos 1 imagem válida associada
 func tem_icones_validos() -> bool:
@@ -92,6 +113,59 @@ func get_icone_variacao(indice: int = 0) -> Texture2D:
 	return icone
 
 
+# ==============================================================================
+# MÉTODOS DE CONSULTA DE FUNÇÕES / SERVIÇOS
+# ==============================================================================
+
+## Retorna se o prédio possui qualquer função/serviço ativo ou especial
+func tem_funcao_especial() -> bool:
+	if tipo_funcao != TipoFuncao.NENHUMA:
+		return true
+	if capacidade_abrigo > 0 or equipes_resgate > 0 or capacidade_bombas > 0 or poder_drenagem > 0.0 or capacidade_tratamento > 0.0:
+		return true
+	var id_lower = id.to_lower()
+	var cat_lower = categoria.to_lower()
+	return ("bombeiro" in id_lower or "bomba" in id_lower or "tratamento" in id_lower or "abrigo" in id_lower or "bombeiro" in cat_lower or "abrigo" in cat_lower)
+
+
+## Checa se é um Abrigo (por Enum, atributos ou Nomes/IDs fallback)
+func eh_abrigo() -> bool:
+	if tipo_funcao == TipoFuncao.ABRIGO or capacidade_abrigo > 0:
+		return true
+	var id_lower = id.to_lower()
+	var cat_lower = categoria.to_lower()
+	return ("abrigo" in id_lower or "abrigo" in cat_lower) and id_lower != "prefeitura"
+
+
+## Checa se é um Corpo de Bombeiros / Estação de Resgate
+func eh_bombeiros() -> bool:
+	if tipo_funcao == TipoFuncao.BOMBEIROS or equipes_resgate > 0:
+		return true
+	var id_lower = id.to_lower()
+	var cat_lower = categoria.to_lower()
+	return "bombeiro" in id_lower or "bombeiro" in cat_lower
+
+
+## Checa se é uma Estação de Tratamento de Água
+func eh_estacao_tratamento() -> bool:
+	if tipo_funcao == TipoFuncao.TRATAMENTO_AGUA or capacidade_tratamento > 0.0:
+		return true
+	var id_lower = id.to_lower()
+	return "tratamento" in id_lower or id_lower == "estacao_drenagem"
+
+
+## Checa se é um sistema/bomba de Drenagem
+func eh_drenagem() -> bool:
+	if tipo_funcao == TipoFuncao.DRENAGEM or capacidade_bombas > 0 or poder_drenagem > 0.0:
+		return true
+	var id_lower = id.to_lower()
+	return "bomba" in id_lower or "drenagem" in id_lower
+
+
+# ==============================================================================
+# MÉTODOS DE CONSULTA DE TILES E ATLAS
+# ==============================================================================
+
 func tem_tile_vazio() -> bool:
 	return tile_vazio_atlas_coords != Vector2i(-1, -1)
 
@@ -115,6 +189,7 @@ func get_under_construction_source_id() -> int:
 func get_atlas_coord_por_nivel(nivel: int) -> Vector2i:
 	var indice: int = nivel - 1
 	return get_atlas_coord_para_construir(indice)
+
 
 func get_destroyed_source_id() -> int:
 	return destroyed_source_id if destroyed_source_id >= 0 else source_id

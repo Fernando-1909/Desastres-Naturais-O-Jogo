@@ -61,10 +61,6 @@ func _on_pular_turno_pressed() -> void:
 	# ========================================================
 	# CHECAGEM DE TURNO OCIOSO
 	# ========================================================
-	# Fora de desastres, o jogador pode passar 1 turno sem gastar.
-	# Se ele também tentar passar o turno seguinte sem gastar, o jogo
-	# bloqueia o avanço até que uma construção/ação que debite dinheiro
-	# seja realizada.
 	if main_game and main_game.has_method("pode_passar_turno"):
 		if not main_game.pode_passar_turno():
 			_mostrar_aviso_turno_ocioso()
@@ -73,8 +69,7 @@ func _on_pular_turno_pressed() -> void:
 	Global.turno += 1
 	print("Turno: ", Global.turno)
 	
-	# Se o jogador passou do último turno jogável,
-	# vai direto para Game Over.
+	# Se o jogador passou do último turno jogável, vai direto para Game Over.
 	if main_game and "turno_final" in main_game and Global.turno > main_game.turno_final:
 		print(
 			"[FIM DE JOGO] Turno ",
@@ -91,17 +86,17 @@ func _on_pular_turno_pressed() -> void:
 		return
 	
 	# ========================================================
-	# SISTEMA DE RENDA
+	# SISTEMA DE RENDA E MANUTENÇÃO (GANHOS - CUSTOS)
 	# ========================================================
 	
 	Global.renda = int(
 		Global.populacao / POPULACAO_POR_UNIDADE_RENDA
 	)
 	
+	var renda_total = 0
+	
 	if Global.renda > 0:
 		var faixa := _obter_range_por_popularidade()
-		
-		var renda_total = 0
 		
 		for i in range(Global.renda):
 			var valor_aleatorio = (
@@ -110,37 +105,35 @@ func _on_pular_turno_pressed() -> void:
 			)
 			
 			renda_total += valor_aleatorio
-		
-		Global.dinheiro += renda_total
-		
-		print(
-			"Renda coletada: ",
-			renda_total,
-			" dinheiro (população: ",
-			Global.populacao,
-			" | ",
-			Global.renda,
-			" unidades de renda)"
-		)
-		
-		print(
-			"Range usado: ",
-			faixa.x,
-			"-",
-			faixa.y,
-			" (Popularidade: ",
-			Global.popularidade,
-			")"
-		)
+
+	# 1. Calcula o custo total das construções ativas puxando do .tres no main_game
+	var custo_total = 0
+	if main_game and main_game.has_method("calcular_custo_manutencao_construcoes"):
+		custo_total = main_game.calcular_custo_manutencao_construcoes()
+
+	# 2. Calcula o saldo líquido (Ganhos - Custos) e atribui ao saldo Global
+	var saldo_turno = renda_total - custo_total
+	Global.dinheiro += saldo_turno
+
+	# 3. Confirmação no Output
+	print("--- BALANÇO FINANCEIRO DO TURNO ---")
+	print("Ganhos (Renda): ", renda_total)
+	print("Custos das Construções (.tres): ", custo_total)
+	print("Cálculo: Ganhos (", renda_total, ") - Custo (", custo_total, ") = ", saldo_turno)
+	print("Dinheiro Total Atual: ", Global.dinheiro)
+	print("-----------------------------------")
 	
+	# Processa o progresso de construções em andamento
+	if main_game and main_game.has_method("processar_construcoes_no_turno"):
+		main_game.processar_construcoes_no_turno()
+
 	# Avança qualquer desastre em curso
 	main_game.avancar_turno_desastres()
 	
 	# Processa o sistema de missões
 	main_game.processar_missao_no_turno()
 
-	# Atualiza o estado do turno ocioso somente depois de todas as
-	# consequências do turno terem sido processadas.
+	# Atualiza o estado do turno ocioso
 	if main_game and main_game.has_method("finalizar_checada_turno_ocioso"):
 		main_game.finalizar_checada_turno_ocioso()
 

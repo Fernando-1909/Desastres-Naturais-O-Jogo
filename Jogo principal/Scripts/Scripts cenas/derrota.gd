@@ -25,7 +25,7 @@ func _preencher_mensagem() -> void:
 		defeat_message.text = "[center]Sua gestão chegou ao fim[center]\n\nSem bombeiros, os cidadãos não puderam ser resgatados da enchente, e a população ficou furiosa com você.\n\nLembre-se: é importante em situações de crise tentar salvar os cidadãos desabrigados."
 
 	elif Global.mortebomba:
-		defeat_message.text = "mortebomba"
+		defeat_message.text = "Tente construir uma bomba de drenagem para mitigar os estragos da enchente."
 
 	elif Global.sembomba:
 		defeat_message.text = "[center]Sua gestão chegou ao fim[center]\n\nSem bombas para mitigar o dano das casas, elas foram inundadas muito mais rapidamente, tente construir uma na próxima!"
