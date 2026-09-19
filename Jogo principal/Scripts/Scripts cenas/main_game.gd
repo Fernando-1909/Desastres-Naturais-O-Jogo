@@ -2573,7 +2573,22 @@ func _verificar_bomba_antes_da_segunda_enchente() -> bool:
 	if Global.turno != turno_limite_bomba_para_segunda_enchente:
 		return false
 	
-	var qtd_bombas = contar_construcoes_por_categoria("bomba_drenagem")
+	# Conta diretamente as Bombas de Drenagem que realmente estão construídas no mapa.
+	# Não usamos apenas a categoria, pois o recurso da bomba pode ter uma categoria
+	# diferente; o ID é a identificação confiável usada pelo restante do projeto.
+	var qtd_bombas: int = 0
+	for pos in construcoes_no_mapa.keys():
+		var predio = construcoes_no_mapa[pos]
+		if predio == null or predio.data == null:
+			continue
+
+		var id_predio := ""
+		if "id" in predio.data and predio.data.id != null:
+			id_predio = str(predio.data.id).to_lower().strip_edges()
+
+		if id_predio == "bomba_drenagem" or "bomba" in id_predio:
+			qtd_bombas += 1
+
 	if qtd_bombas == 0:
 		print("[FIM DE JOGO] Turno ", Global.turno, ": nenhuma Bomba de Drenagem construída antes da segunda enchente. Derrota.")
 		if "enchentederrota" in Global:
