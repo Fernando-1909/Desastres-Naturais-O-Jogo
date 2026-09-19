@@ -8,6 +8,7 @@ var populacao: int
 # Motivo da derrota por popularidade
 var missaoderrota: bool = false
 var enchentederrota: bool = false
+var mortebomba: bool = false
 
 # Motivos específicos de derrota por falta/excesso de construções
 var muitascasas: bool = false          # 3 ou mais casas na zona_residencial1

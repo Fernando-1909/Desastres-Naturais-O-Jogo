@@ -192,6 +192,7 @@ func _ready() -> void:
 	# Reseta os motivos de derrota ao iniciar uma nova partida.
 	Global.missaoderrota = false
 	Global.enchentederrota = false
+	Global.mortebomba = false
 	Global.muitascasas = false
 	Global.semfuncoes = false
 	Global.sembombeiros = false
@@ -2591,8 +2592,8 @@ func _verificar_bomba_antes_da_segunda_enchente() -> bool:
 
 	if qtd_bombas == 0:
 		print("[FIM DE JOGO] Turno ", Global.turno, ": nenhuma Bomba de Drenagem construída antes da segunda enchente. Derrota.")
-		if "enchentederrota" in Global:
-			Global.enchentederrota = true
+		if "mortebomba" in Global:
+			Global.mortebomba = true
 		get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
 		return true
 	
