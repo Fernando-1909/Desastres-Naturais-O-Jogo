@@ -56,8 +56,25 @@ var dialogue_manager: Node = null
 ## Quantos turnos a enchente automática dura (turno_inicio_enchente até
 ## turno_inicio_enchente + duracao_enchente_turnos - 1)
 @export var duracao_enchente_turnos: int = 5
+## Dano de infraestrutura da PRIMEIRA enchente. Deve bater com o
+## dano_infraestrutura configurado na cena enchente.tscn — serve só como
+## referência pra calcular o dano da segunda enchente (mais abaixo).
+@export var dano_enchente_padrao: float = 25.0
 ## Último turno jogável. Ao entrar no turno seguinte (turno_final + 1), o jogo acaba.
-@export var turno_final: int = 15
+@export var turno_final: int = 25
+
+@export_group("Segunda Enchente (mais brutal)")
+## Turno em que a segunda enchente começa automaticamente
+@export var turno_inicio_enchente2: int = 18
+## Quantos turnos a segunda enchente dura (turno_inicio_enchente2 até
+## turno_inicio_enchente2 + duracao_enchente2_turnos - 1 → aqui, 18 a 22)
+@export var duracao_enchente2_turnos: int = 5
+## Quanto a segunda enchente multiplica o dano da primeira (1.25 = 25% a mais)
+@export var multiplicador_dano_enchente2: float = 1.25
+## Último turno pra ter construído pelo menos 1 Bomba de Drenagem antes da
+## segunda enchente. Se chegar nesse turno sem nenhuma bomba, o jogo termina
+## em derrota.
+@export var turno_limite_bomba_para_segunda_enchente: int = 20
 ## IDs de edifícios que começam bloqueados e só aparecem ao surgir a missão correspondente
 @export var edificios_bloqueados_inicialmente: Array[String] = ["abrigo","bombeiros", "estacao_tratamento", "estacao_drenagem"]
 
@@ -129,6 +146,13 @@ var abrigo_ocupado: int = 0
 # ==============================================================================
 # CICLO DE VIDA (READY & INPUT)
 # ==============================================================================
+func _obter_nos_do_grupo(nome_grupo: String) -> Array[Node]:
+	var arvore = get_tree()
+	if arvore == null:
+		return []
+	return arvore.get_nodes_in_group(nome_grupo)
+
+
 func _ready() -> void:
 	
 	# Define o estado inicial dos terrenos
@@ -140,7 +164,7 @@ func _ready() -> void:
 	await get_tree().process_frame # Aguarda o carregamento dos nós
 	
 	await get_tree().process_frame # Aguarda o carregamento dos nós
-	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	var zonas = _obter_nos_do_grupo("zonas_construcao")
 	print("--- TESTE DE CONFIGURAÇÃO DE ZONAS ---")
 	print("Quantidade de zonas encontradas no grupo: ", zonas.size())
 	for z in zonas:
@@ -162,8 +186,6 @@ func _ready() -> void:
 	_carregar_todos_os_edificios()
 	_carregar_todas_as_missoes()
 	Global.turno = 0
-	Global.turno_ocioso = false
-	Global.gastou_dinheiro_este_turno = false
 	Global.popularidade = 40
 	Global.dinheiro = 500
 	Global.populacao = 10
@@ -247,7 +269,7 @@ func _obter_zona_no_tile(pos_tile: Vector2i) -> Node:
 	elif tile_map:
 		pos_global = tile_map.to_global(tile_map.map_to_local(pos_tile))
 
-	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	var zonas = _obter_nos_do_grupo("zonas_construcao")
 	for no in zonas:
 		if no.has_method("contem_posicao_global") and no.contem_posicao_global(pos_global):
 			return no
@@ -415,7 +437,7 @@ func tem_estacao_bombeiros() -> bool:
 # SISTEMA DE TEMPO DE RESGATE POR DISTÂNCIA DE ZONAS
 # ==============================================================================
 func atualizar_tempo_resgate_das_zonas() -> void:
-	var zonas = get_tree().get_nodes_in_group("zonas_construcao")
+	var zonas = _obter_nos_do_grupo("zonas_construcao")
 	var posicoes_origem: Array[Vector2] = []
 	var tm = tilemap_constructions if tilemap_constructions else tile_map
 
@@ -1119,8 +1141,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 
 	# 3. Transacao
 	Global.dinheiro -= custo_final
-	Global.gastou_dinheiro_este_turno = true
-	Global.turno_ocioso = false
 	
 	var precisa_construir = tempo_construcao > 0
 
@@ -1283,8 +1303,6 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	
 	if Global.dinheiro >= custo:
 		Global.dinheiro -= custo
-		Global.gastou_dinheiro_este_turno = true
-		Global.turno_ocioso = false
 		
 		# 1. Incrementa o nível
 		predio.nivel_atual += 1
@@ -1338,7 +1356,7 @@ func _atualizar_sprite_upgrade(predio: BuildingInstance) -> void:
 
 func _ativar_terrenos_zona_funcoes() -> void:
 	# 1. Altera o estado do nó BuildingZone
-	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
 			var tipo = str(zona.tipo_zona).to_lower()
 			if "func" in tipo or "serv" in tipo:
@@ -1357,7 +1375,7 @@ func _ativar_terrenos_zona_funcoes() -> void:
 
 func _ativar_terrenos_zona_rio() -> void:
 	# 1. Altera o estado do nó BuildingZone
-	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
 			var tipo = str(zona.tipo_zona).to_lower()
 			var permite_bomba = false
@@ -1636,8 +1654,6 @@ func concluir_missao() -> void:
 		return
 	
 	Global.dinheiro -= missao.custo
-	Global.gastou_dinheiro_este_turno = true
-	Global.turno_ocioso = false
 	Global.popularidade += missao.popularidade
 	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
 		Global.populacao += missao.bonus_populacao
@@ -1797,7 +1813,7 @@ func processar_missao_no_turno() -> void:
 func _atualizar_motivos_game_over() -> void:
 	# Muitas casas na Zona Residencial 1: 3 ou mais construções.
 	var casas_residencial1 := 0
-	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona == null:
 			continue
 		var nome_zona := str(zona.name).to_lower().strip_edges()
@@ -2029,8 +2045,6 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 	# 1. Deduz o Custo
 	if typeof(Global) != TYPE_NIL and "dinheiro" in Global:
 		Global.dinheiro -= custo
-		Global.gastou_dinheiro_este_turno = true
-		Global.turno_ocioso = false
 
 	# 2. Restaura a Durabilidade e o Estado da Estrutura
 	var instancia: BuildingInstance = construcoes_no_mapa[pos_tile]
@@ -2064,7 +2078,7 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 
 
 func _bloquear_zona_funcoes_ate_turno_2() -> void:
-	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
 			var tipo_zona := str(zona.tipo_zona).to_lower().strip_edges()
 			if (
@@ -2247,6 +2261,10 @@ var _enchente_ativa: Node = null
 # Alerta de enchente (pausa o jogo e pisca "Alerta de enchente" por 5s antes
 # da enchente começar de fato). Evita disparar duas vezes no mesmo turno.
 var _alerta_enchente_em_andamento := false
+# Mesma coisa, mas pra segunda enchente (mais brutal).
+var _alerta_enchente2_em_andamento := false
+# Garante que a segunda enchente só dispare uma vez no jogo inteiro.
+var _segunda_enchente_ja_ocorreu := false
 # Cache do RichTextLabel de avisos ("Avisos" no UI.tscn), resolvido na
 # primeira vez que precisamos dele (ver _obter_richtext_avisos).
 var _richtext_avisos: RichTextLabel = null
@@ -2259,7 +2277,7 @@ var _tween_aviso_texto: Tween = null
 ## duracao_customizada: se > 0, sobrescreve a duração padrão da cena de enchente
 ## (usado pela enchente automática, que dura duracao_enchente_turnos turnos).
 ## Deixe -1 (padrão) para usar a duração configurada na própria cena.
-func _iniciar_enchente(duracao_customizada: int = -1) -> void:
+func _iniciar_enchente(duracao_customizada: int = -1, dano_customizado: float = -1.0) -> void:
 	if not cena_enchente:
 		print("[AVISO] Nenhuma cena de Enchente configurada em 'cena_enchente' (Inspector do main_game)!")
 		return
@@ -2271,6 +2289,8 @@ func _iniciar_enchente(duracao_customizada: int = -1) -> void:
 	var enchente = cena_enchente.instantiate()
 	if duracao_customizada > 0 and "duracao_turnos" in enchente:
 		enchente.duracao_turnos = duracao_customizada
+	if dano_customizado > 0.0 and "dano_infraestrutura" in enchente:
+		enchente.dano_infraestrutura = dano_customizado
 	add_child(enchente)
 	if enchente.has_signal("enchente_iniciada"):
 		enchente.enchente_iniciada.connect(_on_enchente_iniciada)
@@ -2325,7 +2345,7 @@ func _spawnar_bomba_teste() -> void:
 
 	# 2. Valida se a posição atual está dentro de uma zona permitida
 	var dentro_de_zona_valida: bool = false
-	for zona in get_tree().get_nodes_in_group("zonas_construcao"):
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
 			if zona.contem_posicao_global(pos_global) and zona.pode_construir(bomba_data):
 				dentro_de_zona_valida = true
@@ -2463,7 +2483,7 @@ func _on_enchente_terminada() -> void:
 
 
 func _reaparecer_npcs_aos_poucos() -> void:
-	var npcs := get_tree().get_nodes_in_group("npcs")
+	var npcs := _obter_nos_do_grupo("npcs")
 	
 	if npcs.is_empty():
 		return
@@ -2537,6 +2557,74 @@ func _mostrar_alerta_e_iniciar_enchente() -> void:
 	_iniciar_enchente(duracao_enchente_turnos)
 
 
+## Igual à primeira, mas pra segunda enchente (mais brutal). Dispara uma
+## única vez no jogo (_segunda_enchente_ja_ocorreu evita repetir).
+func _verificar_inicio_automatico_de_enchente2() -> void:
+	if Global.turno == turno_inicio_enchente2 and _enchente_ativa == null and not _alerta_enchente_em_andamento and not _alerta_enchente2_em_andamento and not _segunda_enchente_ja_ocorreu:
+		_alerta_enchente2_em_andamento = true
+		_segunda_enchente_ja_ocorreu = true
+		_mostrar_alerta_e_iniciar_enchente2()
+
+
+## Se o jogador chegar em 'turno_limite_bomba_para_segunda_enchente' sem ter
+## construído nenhuma Bomba de Drenagem, ele perde — a segunda enchente (mais
+## forte) já estará em andamento e a cidade não tem defesa nenhuma contra ela.
+func _verificar_bomba_antes_da_segunda_enchente() -> bool:
+	if Global.turno != turno_limite_bomba_para_segunda_enchente:
+		return false
+	
+	var qtd_bombas = contar_construcoes_por_categoria("bomba_drenagem")
+	if qtd_bombas == 0:
+		print("[FIM DE JOGO] Turno ", Global.turno, ": nenhuma Bomba de Drenagem construída antes da segunda enchente. Derrota.")
+		if "enchentederrota" in Global:
+			Global.enchentederrota = true
+		get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
+		return true
+	
+	return false
+
+
+## Igual a _mostrar_alerta_e_iniciar_enchente(), mas com um aviso diferente e
+## dano maior (dano_enchente_padrao * multiplicador_dano_enchente2).
+func _mostrar_alerta_e_iniciar_enchente2() -> void:
+	print("[ENCHENTE AUTOMÁTICA 2] Turno ", Global.turno, " — exibindo alerta antes de iniciar (duração: ", duracao_enchente2_turnos, " turnos)")
+	
+	Global.jogo_pausado = true
+	get_tree().paused = true
+	
+	var aviso: RichTextLabel = _obter_richtext_avisos()
+	var tween: Tween = null
+	
+	if aviso:
+		aviso.bbcode_enabled = true
+		aviso.text = "[center][color=red]Alerta de enchente!!! Essa é muito mais forte que a anterior![/color][/center]"
+		aviso.modulate = Color.WHITE
+		aviso.visible = true
+		
+		tween = create_tween()
+		tween.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		tween.set_loops()
+		tween.tween_property(aviso, "modulate:a", 0.15, 0.6).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(aviso, "modulate:a", 1.0, 0.6).set_trans(Tween.TRANS_SINE)
+	else:
+		print("[AVISO] Não encontrei o RichTextLabel de avisos (procurei pela propriedade 'avisos' de ui.gd e pelo nó 'Avisos'). Ajuste em _obter_richtext_avisos().")
+	
+	await get_tree().create_timer(5.0).timeout
+	
+	if tween and tween.is_valid():
+		tween.kill()
+	
+	if aviso:
+		aviso.visible = false
+		aviso.modulate = Color.WHITE
+	
+	Global.jogo_pausado = false
+	get_tree().paused = false
+	
+	_alerta_enchente2_em_andamento = false
+	_iniciar_enchente(duracao_enchente2_turnos, dano_enchente_padrao * multiplicador_dano_enchente2)
+
+
 ## Procura o RichTextLabel usado pros avisos em qualquer lugar da árvore do
 ## HUD, pelo nome "RichTextAvisos". Se o nó tiver outro nome na sua cena,
 ## troque o nome aqui.
@@ -2579,54 +2667,16 @@ func _mostrar_aviso_texto(texto: String, cor: Color = Color(1.0, 0.287, 0.227, 1
 	_tween_aviso_texto.tween_property(aviso, "modulate:a", 0.0, fade_seg)
 
 
-# ============================================================
-# CHECAGEM DE TURNO OCIOSO
-# ============================================================
-
-func _existe_desastre_ativo() -> bool:
-	# Atualmente o desastre controlado pelo main_game é a enchente.
-	# O teste pelo nó ativo evita depender apenas do valor global.
-	return _enchente_ativa != null
-
-
-func pode_passar_turno() -> bool:
-	# Durante qualquer desastre ativo, a obrigação de construir é suspensa.
-	if _existe_desastre_ativo():
-		print("[TURNO OCIOSO] Regra suspensa: existe um desastre ativo.")
-		return true
-
-	# Se o jogador passou o turno anterior sem gastar dinheiro, agora
-	# ele é obrigado a gastar dinheiro antes de poder passar novamente.
-	if Global.turno_ocioso and not Global.gastou_dinheiro_este_turno:
-		print("[TURNO OCIOSO] Turno bloqueado: é necessário construir/gastar dinheiro antes de passar.")
-		return false
-
-	return true
-
-
-func registrar_gasto_turno() -> void:
-	# Chamado sempre que uma ação válida debita dinheiro do jogador.
-	Global.gastou_dinheiro_este_turno = true
-	Global.turno_ocioso = false
-
-
-func finalizar_checada_turno_ocioso() -> void:
-	# Se o jogador gastou dinheiro neste turno, ele cumpriu a obrigação.
-	if Global.gastou_dinheiro_este_turno:
-		Global.turno_ocioso = false
-	else:
-		# Se não gastou, este turno passa a ser o turno ocioso.
-		Global.turno_ocioso = true
-
-	# Começa limpo para o próximo turno.
-	Global.gastou_dinheiro_este_turno = false
-
-
 func avancar_turno_desastres() -> void:
 	# Processa o progresso de todas as construções em andamento
 	processar_construcoes_no_turno()
 
 	_verificar_inicio_automatico_de_enchente()
+
+	if _verificar_bomba_antes_da_segunda_enchente():
+		return  # Jogo terminou em derrota — não continua processando mais nada deste turno
+
+	_verificar_inicio_automatico_de_enchente2()
 
 	if _enchente_ativa:
 		if _enchente_ativa.has_method("definir_mitigacao"):
@@ -2641,7 +2691,7 @@ func _tem_resgate_pendente(pos_tile: Vector2i, predio: BuildingInstance = null) 
 	if predio != null and "resgate_pendente" in predio and predio.resgate_pendente:
 		return true
 
-	var pontos = get_tree().get_nodes_in_group("pontos_resgate")
+	var pontos = _obter_nos_do_grupo("pontos_resgate")
 	for ponto in pontos:
 		var p_tile = Vector2i(-999, -999)
 		if "pos_tile" in ponto:
