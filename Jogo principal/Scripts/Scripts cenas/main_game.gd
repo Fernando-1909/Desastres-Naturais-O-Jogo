@@ -2613,7 +2613,7 @@ func _mostrar_alerta_e_iniciar_enchente2() -> void:
 	
 	if aviso:
 		aviso.bbcode_enabled = true
-		aviso.text = "[center][color=red]Alerta de enchente!!! Essa é muito mais forte que a anterior![/color][/center]"
+		aviso.text = "[center][color=red]Alerta de enchente!!! Nível perigoso![/color][/center]"
 		aviso.modulate = Color.WHITE
 		aviso.visible = true
 		
