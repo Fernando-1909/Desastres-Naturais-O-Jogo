@@ -39,6 +39,7 @@
 [ext_resource type="Resource" uid="uid://bv8ux8jaatqbv" path="res://Jogo principal/Scripts/Scripts cons/bomba_drenagem.tres" id="23_cuk6r"]
 [ext_resource type="Texture2D" uid="uid://bpcafexx7ie54" path="res://Jogo principal/tilesheets/casa_destruida_level_1-Aqua.png" id="23_ly8el"]
 [ext_resource type="Texture2D" uid="uid://cvvmreyif6p5h" path="res://Jogo principal/tilesheets/prefeituras_levels.png" id="25_ly8el"]
+[ext_resource type="Resource" uid="uid://d8wt5ewj5bjo" path="res://Jogo principal/Scripts/Scripts cons/prefeitura.tres" id="39_lc4nt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sufiw"]
 texture = ExtResource("2_qg202")
@@ -715,10 +716,10 @@ texture = ExtResource("25_ly8el")
 texture_region_size = Vector2i(112, 64)
 0:0/0 = 0
 0:0/0/custom_data_0 = true
+0:0/0/custom_data_1 = "Essencial"
 0:0/0/custom_data_2 = "prefeitura"
 1:0/0 = 0
 1:0/0/custom_data_0 = true
-1:0/0/custom_data_2 = "prefeitura"
 
 [sub_resource type="TileSet" id="TileSet_3axm1"]
 tile_size = Vector2i(32, 32)
@@ -855,6 +856,9 @@ size = Vector2(253.625, 80.5)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rshtd"]
 size = Vector2(76.8125, 163.25)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s6pm0"]
+size = Vector2(183.125, 78.75)
+
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_2cq4x"]
 vertices = PackedVector2Array(801.2422, 332.09375, 836.15625, 224.5625, 836.2031, 226.35156, 930.2578, 445.5625, 935.6094, 487.7578, 666.60156, 482.1875, 721.77344, 458.65625, 662.59375, 382.70313, 723.96094, 356.82813, 475.60938, 228.39063, 624.10156, 219.64844, 615.1719, 329.8672, 483.71094, 355.84375, 1063.2969, 218.36719, 1061.5938, 244.5625, 837.90625, 258.54688, 829.8125, 338.4375, 337, 392.6797, 337, 344.78125)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2), PackedInt32Array(3, 4, 5, 6), PackedInt32Array(6, 5, 7, 8), PackedInt32Array(9, 10, 11, 12), PackedInt32Array(2, 13, 14, 15), PackedInt32Array(0, 2, 15, 16), PackedInt32Array(0, 16, 8, 11), PackedInt32Array(11, 8, 7, 17, 12), PackedInt32Array(12, 17, 18)])
@@ -888,7 +892,7 @@ tile_set = SubResource("TileSet_l2221")
 [node name="TileMapConstructions" type="TileMapLayer" parent="." unique_id=639958366]
 z_index = 1
 texture_filter = 1
-tile_map_data = PackedByteArray("AAAWAAgAAQAAAAAAAAAcAAUABQAAAAAAAAAUAAQABQAAAAAAAAAKAAUABQAAAAAAAAAeAA8ABQAAAAAAAAANAA4ACwAAAAAAAAAKAAoABQAAAAAAAAAQAA4ABQAAAAAAAAAYAAQABQAAAAAAAAAgAAUABQAAAAAAAAAHAAUABQAAAAAAAAAPAAUABQAAAAAAAAATAA8ABQAAAAAAAAAbABAABQAAAAAAAAAhAA8ABQAAAAAAAAAHAAsABQAAAAAAAAAIAA4ABQAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAcAAUABQAAAAAAAAAUAAQABQAAAAAAAAAKAAUABQAAAAAAAAAeAA8ABQAAAAAAAAAKAAoABQAAAAAAAAAQAA4ABQAAAAAAAAAYAAQABQAAAAAAAAAgAAUABQAAAAAAAAAHAAUABQAAAAAAAAAPAAUABQAAAAAAAAATAA8ABQAAAAAAAAAbABAABQAAAAAAAAAhAA8ABQAAAAAAAAAHAAsABQAAAAAAAAAIAA4ABQAAAAAAAAAWAAgABQAAAAAAAAANAA4ABQAAAAAAAAA=")
 tile_set = SubResource("TileSet_3axm1")
 script = SubResource("GDScript_tkcjf")
 
@@ -1016,6 +1020,7 @@ position = Vector2(0, 0.98049927)
 [node name="Zona_Residencial2" parent="." unique_id=782536297 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
+tipo_zona = "residencial"
 id_grupo = "Residencial"
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
@@ -1029,6 +1034,7 @@ shape = SubResource("RectangleShape2D_pnfwx")
 [node name="Zona_Residencial3" parent="." unique_id=1143560931 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
+tipo_zona = "residencial"
 id_grupo = "Residencial"
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
@@ -1102,6 +1108,20 @@ position = Vector2(269, 415)
 shape = SubResource("RectangleShape2D_rshtd")
 debug_color = Color(0, 0, 0, 0.41960785)
 
+[node name="Zona_prefeitura" parent="." unique_id=631708196 instance=ExtResource("15_tkcjf")]
+cor_da_zona = Color(0.7044409, 0.20584252, 2.8878452e-07, 0.34901962)
+nome_zona = "Zona Prefeitura"
+tipo_zona = "prefeitura"
+id_grupo = "prefeitura"
+categorias_permitidas = Array[String](["prefeitura"])
+edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("39_lc4nt")])
+limite_maximo_edificios = 1
+
+[node name="CollisionShape2D" parent="Zona_prefeitura" index="0" unique_id=711131371]
+position = Vector2(722, 277)
+shape = SubResource("RectangleShape2D_s6pm0")
+debug_color = Color(1, 1, 1, 0.41960785)
+
 [node name="NpcContainer" type="Node2D" parent="." unique_id=507213809]
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="NpcContainer" unique_id=992927352]
@@ -1123,3 +1143,4 @@ visible = false
 [editable path="Zona_Funções2"]
 [editable path="Zona_Rio"]
 [editable path="Zona_Rio2"]
+[editable path="Zona_prefeitura"]

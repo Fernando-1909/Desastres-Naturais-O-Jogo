@@ -82,6 +82,9 @@ var dialogue_manager: Node = null
 var edificios_desbloqueados: Array[String] = []
 
 var _tiles_ocultos_zona_funcoes: Array[Dictionary] = []
+var _tiles_ocultos_zona_rio: Array[Dictionary] = []
+var _tiles_ocultos_zona_residencial: Array[Dictionary] = []
+
 
 @export_group("Resgate")
 @export var cena_ponto_resgate: PackedScene = preload("res://Jogo principal/UI/ponto_resgate.tscn")
@@ -125,7 +128,7 @@ var zona_por_tile: Dictionary = {}
 # Chave = BuildingZone | Valor = Array[Vector2i]
 var construcoes_por_zona: Dictionary = {}
 
-var _tiles_ocultos_zona_rio: Array[Dictionary] = []
+
 
 # Controle do lote/tile atualmente selecionado pelo clique do jogador
 var _celula_selecionada: Vector2i = Vector2i(-1, -1)
@@ -153,43 +156,44 @@ func _obter_nos_do_grupo(nome_grupo: String) -> Array[Node]:
 	return arvore.get_nodes_in_group(nome_grupo)
 
 
+# ==============================================================================
+# CICLO DE VIDA (READY & INPUT)
+# ==============================================================================
 func _ready() -> void:
-	
-	# Define o estado inicial dos terrenos
+	# Define o estado inicial visual dos terrenos
 	if tilemapground:
 		tilemapground.visible = true
 	if tilemapground2:
 		tilemapground2.visible = false
-		
-	await get_tree().process_frame # Aguarda o carregamento dos nós
-	
-	await get_tree().process_frame # Aguarda o carregamento dos nós
+
+	await get_tree().process_frame # Aguarda o carregamento dos nós do mapa
+
 	var zonas = _obter_nos_do_grupo("zonas_construcao")
 	print("--- TESTE DE CONFIGURAÇÃO DE ZONAS ---")
 	print("Quantidade de zonas encontradas no grupo: ", zonas.size())
 	for z in zonas:
 		var tipo = z.tipo_zona if "tipo_zona" in z else "SEM VARIAVEL TIPO_ZONA"
 		print("Nó: ", z.name, " | Posição Global: ", z.global_position, " | Tipo: ", tipo)
-	
-	# Executa a ocultação após todos os nós e zonas estarem totalmente carregados.
-	# A Zona de Funções começa fechada e só é liberada junto da primeira
-	# missão, que aparece obrigatoriamente no turno 2.
+
+	# Aplica os bloqueios lógicos de zonas e oculta visualmente os terrenos bloqueados
+	_bloquear_zonas_iniciais()
 	_bloquear_zona_funcoes_ate_turno_2()
 	call_deferred("_ocultar_terrenos_zona_bloqueada")
-	
-	# Reseta as missões concluídas para esta nova partida.
+
+	# Reseta o estado global de missões para uma nova partida
 	Global.missoes_concluidas.clear()
 	Global.missao_aceita = false
 	Global.missao_escolhida = null
-	
-	# 1. Carrega todos os .tres automaticamente da pasta e/ou array manual
+
+	# Carrega os recursos de prédios e missões
 	_carregar_todos_os_edificios()
 	_carregar_todas_as_missoes()
 	Global.turno = 0
 	Global.popularidade = 40
 	Global.dinheiro = 500
 	Global.populacao = 10
-	# Reseta os motivos de derrota ao iniciar uma nova partida.
+
+	# Reseta as variáveis de defeat/derrota
 	Global.missaoderrota = false
 	Global.enchentederrota = false
 	Global.mortebomba = false
@@ -199,47 +203,47 @@ func _ready() -> void:
 	Global.sembomba = false
 	Global.semtratamento = false
 	Global.semabrigo = false
-	
-	# Conecta o clique do botao diretamente a funcao toggle_pause
+
+	# Conexão de sinais de botões e interfaces com checagem prévia
 	if button_teste_pausa and menu_pausa:
-		button_teste_pausa.pressed.connect(menu_pausa.toggle_pause)
-	
-	# Conecta os botoes de teste para abrir a janela (Opcao manual)
+		if not button_teste_pausa.pressed.is_connected(menu_pausa.toggle_pause):
+			button_teste_pausa.pressed.connect(menu_pausa.toggle_pause)
+
 	if button_teste_compra:
-		button_teste_compra.pressed.connect(_on_testar_escola_pressed)
+		if not button_teste_compra.pressed.is_connected(_on_testar_escola_pressed):
+			button_teste_compra.pressed.connect(_on_testar_escola_pressed)
 	if button_teste_upgrade:
-		button_teste_upgrade.pressed.connect(_on_testar_hospital_pressed)
-	
-	# Conecta os sinais enviados pela TelaCompras
+		if not button_teste_upgrade.pressed.is_connected(_on_testar_hospital_pressed):
+			button_teste_upgrade.pressed.connect(_on_testar_hospital_pressed)
+
 	if tela_compras:
-		tela_compras.compra_confirmada.connect(_on_compra_confirmada)
-		tela_compras.aprimoramento_confirmado.connect(_on_aprimoramento_confirmado)
-	
-	if tela_compras and not tela_compras.reconstrucao_confirmada.is_connected(_on_reconstrucao_confirmada):
-		tela_compras.reconstrucao_confirmada.connect(_on_reconstrucao_confirmada)
-	
+		if not tela_compras.compra_confirmada.is_connected(_on_compra_confirmada):
+			tela_compras.compra_confirmada.connect(_on_compra_confirmada)
+		if not tela_compras.aprimoramento_confirmado.is_connected(_on_aprimoramento_confirmado):
+			tela_compras.aprimoramento_confirmado.connect(_on_aprimoramento_confirmado)
+		if not tela_compras.reconstrucao_confirmada.is_connected(_on_reconstrucao_confirmada):
+			tela_compras.reconstrucao_confirmada.connect(_on_reconstrucao_confirmada)
+
 	if freecam_camera:
 		freecam_camera.enabled = true
 
-	# Escaneia o mapa para registrar predios que ja vieram desenhados no editor
+	# Escaneia o mapa inicial e calcula sistemas
 	_escanear_mapa_inicial()
-	
 	_atualizar_sistema_drenagem()
-	
-	# Mapeia a capacidade de abrigo e equipes de bombeiros existentes no inicio
 	_recalcular_recursos_resgate()
-	
+
 	print("[DEBUG-NPC] _ready: cena_npc=", cena_npc, " | npc_container=", npc_container, " | populacao_inicial=", Global.populacao)
-	
-	# Sorteia os NPCs iniciais de acordo com a população inicial
+
 	_atualizar_npcs_por_populacao()
 
-	# Encontra o DialogueManager em qualquer lugar da cena (não depende de caminho fixo)
 	dialogue_manager = _encontrar_dialogue_manager()
 	if dialogue_manager:
 		print("[DEBUG-DIALOGO] DialogueManager encontrado em: ", dialogue_manager.get_path())
 	else:
 		print("[AVISO] DialogueManager não encontrado na cena! Diálogos de missão não vão tocar.")
+
+	# Inicia a missão da Prefeitura imediatamente no turno 0 ao carregar o jogo
+	processar_missao_programada()
 
 
 
@@ -439,6 +443,37 @@ func tem_estacao_bombeiros() -> bool:
 	return contar_estacoes_bombeiro_construidas() > 0
 
 
+func _tem_prefeitura_construida() -> bool:
+	for pos in construcoes_no_mapa.keys():
+		var predio = construcoes_no_mapa[pos]
+		if predio and predio.data and predio.durabilidade_atual > 0:
+			var id_p = str(predio.data.id).to_lower().strip_edges()
+			if id_p == "prefeitura":
+				return true
+	return false
+
+
+func _bloquear_zonas_iniciais() -> void:
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
+		if zona is BuildingZone:
+			var tipo_zona := str(zona.tipo_zona).to_lower().strip_edges()
+			
+			# Bloqueia Zona de Funções
+			if "func" in tipo_zona or "serv" in tipo_zona:
+				zona.desbloqueada = false
+				zona.definir_visibilidade_terrenos(false)
+			
+			# Bloqueia Zonas Residenciais até a prefeitura ser construída
+			elif "residenc" in tipo_zona or "casa" in tipo_zona or "bairro" in tipo_zona:
+				if not _tem_prefeitura_construida():
+					zona.desbloqueada = false
+					zona.definir_visibilidade_terrenos(false)
+			
+			# Garante que a Zona da Prefeitura esteja desbloqueada desde o início
+			elif "prefeitura" in tipo_zona:
+				zona.desbloqueada = true
+
+
 # ==============================================================================
 # SISTEMA DE TEMPO DE RESGATE POR DISTÂNCIA DE ZONAS
 # ==============================================================================
@@ -589,26 +624,29 @@ func processar_construcoes_no_turno() -> void:
 			if instancia.turnos_restantes <= 0:
 				instancia.em_construcao = false
 				
-				# Restaura visualmente no TileMap para o sprite final
+				# Restaura visualmente no TileMap para o sprite final do edifício
 				_restaurar_tile_grafico(pos, instancia)
 				
-				# Adiciona o bônus de população somente após a conclusão da obra
+				# Adiciona o bônus de população após a conclusão
 				if instancia.data and "bonus_populacao" in instancia.data and instancia.data.bonus_populacao > 0:
 					Global.populacao += instancia.data.bonus_populacao
 					_atualizar_npcs_por_populacao()
 					if _enchente_ativa == null and Global.pessoas_abrigadas > 0:
 						_processar_retorno_abrigo_para_casas()
 				
-				# Recalcula sistemas e valida missões após a conclusão
+				# Recalcula os recursos de abrigo/bombeiros e sistema de drenagem
 				_recalcular_recursos_resgate()
 				_atualizar_sistema_drenagem()
 
+				# Ativa novas zonas ou conclui missões com base no ID do prédio finalizado
 				if instancia.data:
 					var id_limpo = str(instancia.data.id).to_lower().strip_edges() if "id" in instancia.data and instancia.data.id != null else ""
 					if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
 						_ativar_terrenos_zona_rio()
 					elif id_limpo == "bombeiros" or id_limpo == "bombeiro":
 						_ativar_terrenos_zona_funcoes()
+					elif id_limpo == "prefeitura":
+						_ativar_terrenos_zona_residencial()
 
 					_verificar_conclusao_construcao(instancia.data)
 					
@@ -1043,7 +1081,7 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 func _obter_edificios_para_zona(zona: BuildingZone) -> Array[BuildingData]:
 	var lista: Array[BuildingData] = []
 	for b_data in banco_edificios.values():
-		if not _eh_edificio_permitido_na_loja(b_data):
+		if not _eh_edificio_permitido_na_loja(b_data, zona):
 			continue
 		
 		if zona != null:
@@ -1058,7 +1096,7 @@ func _obter_edificios_para_zona(zona: BuildingZone) -> Array[BuildingData]:
 # ==============================================================================
 # CARREGAMENTO DINÂMICO DE EDIFÍCIOS PARA A LOJA
 # ==============================================================================
-func _eh_edificio_permitido_na_loja(b_data: BuildingData) -> bool:
+func _eh_edificio_permitido_na_loja(b_data: BuildingData, zona: BuildingZone = null) -> bool:
 	if b_data == null:
 		return false
 	
@@ -1066,6 +1104,11 @@ func _eh_edificio_permitido_na_loja(b_data: BuildingData) -> bool:
 	var nome_arquivo = b_data.resource_path.get_file().to_lower().strip_edges()
 	
 	if id_limpo == "prefeitura" or nome_arquivo == "prefeitura.tres":
+		if zona != null:
+			var tipo_zona = str(zona.tipo_zona).to_lower().strip_edges() if "tipo_zona" in zona and zona.tipo_zona != null else ""
+			var nome_zona = str(zona.name).to_lower().strip_edges() if "name" in zona and zona.name != null else ""
+			if "prefeitura" in tipo_zona or "prefeitura" in nome_zona:
+				return true
 		return false
 
 	# Se o prédio está na lista de bloqueio inicial e ainda não foi liberado por uma missão, oculta da loja
@@ -1159,7 +1202,8 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 
 	if Global.dinheiro < custo_final:
 		print("[ERRO] Dinheiro insuficiente para comprar ", b_data.nome, " (Custo: ", custo_final, ")")
-		_mostrar_aviso_texto("Você não possui dinheiro o suficiente!")
+		if has_method("_mostrar_aviso_texto"):
+			_mostrar_aviso_texto("Você não possui dinheiro o suficiente!")
 		return
 
 	# 3. Transacao
@@ -1214,7 +1258,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 			var idx = min(variacao_index, b_data.tiles_atlas_coords.size() - 1)
 			novas_coords_atlas = b_data.tiles_atlas_coords[idx]
 
-	# 6. Fallback seguro para o source_id caso não tenha sido preenchido
+	# 6. Fallback seguro para o source_id
 	if source_id == -1:
 		if "source_id" in b_data and b_data.source_id >= 0:
 			source_id = b_data.source_id
@@ -1236,7 +1280,7 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 				else:
 					source_id = 0
 
-	# 7. Troca o tile no TileMap
+	# 7. Desenha o tile no TileMap
 	if novas_coords_atlas != Vector2i(-1, -1):
 		if tilemap_constructions:
 			tilemap_constructions.set_cell(_celula_selecionada, source_id, novas_coords_atlas)
@@ -1255,11 +1299,14 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	else:
 		print("[AVISO] Nenhuma coordenada de atlas encontrada no recurso para ", b_data.nome)
 	
+	# Desbloqueia novas zonas instantaneamente se a obra não tiver tempo de espera
 	if not precisa_construir:
 		if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
 			_ativar_terrenos_zona_rio()
 		elif id_limpo == "bombeiros" or id_limpo == "bombeiro":
 			_ativar_terrenos_zona_funcoes()
+		elif id_limpo == "prefeitura":
+			_ativar_terrenos_zona_residencial()
 
 	_atualizar_sistema_drenagem()
 
@@ -1375,6 +1422,28 @@ func _atualizar_sprite_upgrade(predio: BuildingInstance) -> void:
 		tm.set_cell(predio.posicao_tile, source_id, nova_coord_atlas)
 	elif tm is TileMap:
 		tm.set_cell(0, predio.posicao_tile, source_id, nova_coord_atlas)
+
+
+func _ativar_terrenos_zona_residencial() -> void:
+	# 1. Altera o estado do nó BuildingZone
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
+		if zona is BuildingZone:
+			var tipo = str(zona.tipo_zona).to_lower()
+			if "residenc" in tipo or "casa" in tipo or "bairro" in tipo:
+				zona.desbloquear_zona()
+
+	# 2. Restaura as células no TileMap
+	var tm = tilemap_constructions if tilemap_constructions else tile_map
+	if tm:
+		for item in _tiles_ocultos_zona_residencial:
+			if tm is TileMapLayer:
+				tm.set_cell(item["pos"], item["source_id"], item["atlas_coords"])
+			elif tm is TileMap:
+				tm.set_cell(0, item["pos"], item["source_id"], item["atlas_coords"])
+		_tiles_ocultos_zona_residencial.clear()
+	
+	_mostrar_aviso_texto("Prefeitura construída! Zonas residenciais liberadas.", Color(0.519, 0.877, 0.572, 1.0))
+
 
 
 func _ativar_terrenos_zona_funcoes() -> void:
@@ -1578,13 +1647,15 @@ func _processar_retorno_abrigo_para_casas() -> void:
 # conversa entre Secretária e Tesoureiro). Aqui mapeamos o id da missão
 # para o id do PRIMEIRO nó dessa sequência.
 const DIALOGO_INICIAL_POR_MISSAO := {
+	"missao_prefeitura": "missao_prefeitura_1",
 	"missao1": "missao1_1",
 	"missao2": "missao2_1",
 	"missao3": "missao3_1",
 }
 
-# Turnos fixos das missões. Não existe mais sorteio.
+# Definição dos turnos fixos para início de cada missão
 const TURNO_MISSAO := {
+	"missao_prefeitura": 0,
 	"missao1": 2,
 	"missao3": 5,
 	"missao2": 7,
@@ -1592,7 +1663,7 @@ const TURNO_MISSAO := {
 
 func processar_missao_programada():
 	# As missões agora são escolhidas somente pelos turnos fixos definidos acima.
-	if Global.turno <= 0:
+	if Global.turno < 0:
 		return null
 
 	for id_missao in TURNO_MISSAO.keys():
@@ -2140,7 +2211,7 @@ func _ocultar_terrenos_zona_bloqueada() -> void:
 	var celulas = tm.get_used_cells() if tm is TileMapLayer else tm.get_used_cells(0)
 
 	for pos in celulas:
-		# Nunca esconde o tile de uma construção que já existe no mapa.
+		# Nunca esconde o tile de uma construção já existente no mapa
 		if construcoes_no_mapa.has(pos):
 			continue
 
@@ -2167,10 +2238,12 @@ func _ocultar_terrenos_zona_bloqueada() -> void:
 			or ("precisa_estacao_tratamento" in zona and zona.precisa_estacao_tratamento)
 		)
 
-		# A Zona de Funções tem uma regra especial: os tiles de construção
-		# ficam invisíveis desde o começo da partida e só reaparecem quando
-		# a primeira missão for criada, no turno 2.
-		# Isso é independente de desbloqueada_por_padrao.
+		var eh_zona_residencial: bool = (
+			"residenc" in tipo_zona
+			or "casa" in tipo_zona
+			or "bairro" in tipo_zona
+		)
+
 		var deve_ocultar: bool = false
 		if eh_zona_funcoes:
 			deve_ocultar = true
@@ -2179,6 +2252,8 @@ func _ocultar_terrenos_zona_bloqueada() -> void:
 			if "desbloqueada" in zona and zona.desbloqueada != null:
 				zona_desbloqueada = bool(zona.desbloqueada)
 			deve_ocultar = not zona_desbloqueada
+		elif eh_zona_residencial:
+			deve_ocultar = not _tem_prefeitura_construida()
 
 		if not deve_ocultar:
 			continue
@@ -2195,6 +2270,7 @@ func _ocultar_terrenos_zona_bloqueada() -> void:
 			"atlas_coords": atlas_coords
 		}
 
+		# Guarda o tile no array correspondente para ser restaurado posteriormente
 		if eh_zona_funcoes:
 			var ja_salvo_funcoes := false
 			for item in _tiles_ocultos_zona_funcoes:
@@ -2203,7 +2279,7 @@ func _ocultar_terrenos_zona_bloqueada() -> void:
 					break
 			if not ja_salvo_funcoes:
 				_tiles_ocultos_zona_funcoes.append(dados_tile)
-		else:
+		elif eh_zona_rio:
 			var ja_salvo_rio := false
 			for item in _tiles_ocultos_zona_rio:
 				if item["pos"] == pos:
@@ -2211,13 +2287,22 @@ func _ocultar_terrenos_zona_bloqueada() -> void:
 					break
 			if not ja_salvo_rio:
 				_tiles_ocultos_zona_rio.append(dados_tile)
+		elif eh_zona_residencial:
+			var ja_salvo_res := false
+			for item in _tiles_ocultos_zona_residencial:
+				if item["pos"] == pos:
+					ja_salvo_res = true
+					break
+			if not ja_salvo_res:
+				_tiles_ocultos_zona_residencial.append(dados_tile)
 
+		# Remove visualmente o tile do TileMap
 		if tm is TileMapLayer:
 			tm.set_cell(pos, -1)
 		elif tm is TileMap:
 			tm.set_cell(0, pos, -1)
 
-	print("[ZONA FUNÇÕES] Tiles de construção ocultados até a primeira missão (turno 2).")
+	print("[ZONAS] Terrenos das zonas bloqueadas ocultados com sucesso.")
 
 
 func _restaurar_tile_grafico(pos_tile: Vector2i, instancia: BuildingInstance) -> void:

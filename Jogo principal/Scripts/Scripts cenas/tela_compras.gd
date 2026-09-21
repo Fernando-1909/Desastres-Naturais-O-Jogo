@@ -10,7 +10,7 @@ enum ModoTela { COMPRA, UPGRADE, RECONSTRUCAO }
 const CATEGORIAS_ACEITAS: Array[String] = [
 	"Residencial",
 	"Comercial",
-	"Industrial",
+	"Essencial",
 	"Funções",
 	"Infraestrutura",
 	"Lazer",

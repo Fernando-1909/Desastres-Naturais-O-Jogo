@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MissionData" format=3 uid="uid://dfbyg0dk37ip7"]
+
+[ext_resource type="Script" uid="uid://cjpjipeery1b5" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1_1i1be"]
+
+[resource]
+script = ExtResource("1_1i1be")
+id = "missao_prefeitura"
+nome = "MISSAO_PREFEITURA_NOME"
+info = "MISSAO_PREFEITURA_INFO"
+custo = 500.0
+edificio_id_alvo = "prefeitura"
+edificios_para_desbloquear = Array[String](["prefeitura"])
+metadata/_custom_type_script = "uid://cjpjipeery1b5"

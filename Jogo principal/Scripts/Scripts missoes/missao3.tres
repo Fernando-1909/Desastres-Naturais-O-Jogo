@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="MissionData" format=3 uid="uid://c4txgfvw3iaar"]
+[gd_resource type="Resource" script_class="MissionData" format=3 uid="uid://cgfdrmi10tsmb"]
 
 [ext_resource type="Script" uid="uid://cjpjipeery1b5" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1"]
 

@@ -7,6 +7,7 @@
 script = ExtResource("1_f3e88")
 id = "PREDIO_BOMBA_DRENAGEM_NOME"
 nome = "Bomba de drenagem"
+categoria = "Itens"
 icone = ExtResource("1_nwvbg")
 custo_base = 250.0
 descricao_curta = "PREDIO_BOMBA_DRENAGEM_DESC"
