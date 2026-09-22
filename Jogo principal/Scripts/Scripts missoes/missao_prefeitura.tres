@@ -10,4 +10,5 @@ info = "MISSAO_PREFEITURA_INFO"
 custo = 500.0
 edificio_id_alvo = "prefeitura"
 edificios_para_desbloquear = Array[String](["prefeitura"])
+popularidade = 20
 metadata/_custom_type_script = "uid://cjpjipeery1b5"
