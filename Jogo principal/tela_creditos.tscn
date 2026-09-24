@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://c56ve7106vuoj"]
+
+[ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="1_qjuxc"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hgtue"]
+texture = ExtResource("1_qjuxc")
+
+[node name="TelaCreditos" type="Control" unique_id=1177445874]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=498948658]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_hgtue")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=2110723331]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 60
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=1819793099]
+layout_mode = 2
+
+[node name="Creditos" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=392822206]
+custom_minimum_size = Vector2(300, 80)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 60
+text = "Créditos"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1435852218]
+layout_mode = 2
+
+[node name="Autor" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1234501144]
+custom_minimum_size = Vector2(300, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/paragraph_separation = 20
+theme_override_font_sizes/normal_font_size = 30
+text = "AUTOR 1
+AUTOR 2"
+scroll_active = false
+vertical_alignment = 1
+
+[node name="Função" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1732369574]
+custom_minimum_size = Vector2(300, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/paragraph_separation = 20
+theme_override_font_sizes/normal_font_size = 30
+text = "FUNÇÃO 1
+FUNÇÃO 2"
+vertical_alignment = 1
