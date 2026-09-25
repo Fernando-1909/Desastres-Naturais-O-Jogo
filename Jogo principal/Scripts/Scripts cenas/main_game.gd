@@ -76,7 +76,7 @@ var dialogue_manager: Node = null
 ## em derrota.
 @export var turno_limite_bomba_para_segunda_enchente: int = 20
 ## IDs de edifícios que começam bloqueados e só aparecem ao surgir a missão correspondente
-@export var edificios_bloqueados_inicialmente: Array[String] = ["abrigo","bombeiros", "estacao_tratamento", "estacao_drenagem"]
+@export var edificios_bloqueados_inicialmente: Array[String] = ["abrigo","bombeiros", "estacao_tratamento", "estacao_drenagem","prefeitrua" ]
 
 # Guarda os IDs dos edifícios que foram liberados durante a partida
 var edificios_desbloqueados: Array[String] = []
@@ -1063,7 +1063,17 @@ func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	var total_na_zona = _contar_construcoes_na_zona(zona_atual)
 
 	if zona_atual != null:
-		# BLOQUEIO DE ZONA CHEIA: Impede a abertura da loja e exibe o popup de aviso
+		# BLOQUEIO DE ZONA BLOQUEADA
+		if "desbloqueada" in zona_atual and not zona_atual.desbloqueada:
+			if cena_ponto_resgate:
+				var aviso_temp = cena_ponto_resgate.instantiate()
+				add_child(aviso_temp)
+				aviso_temp._mostrar_aviso("Esta zona residencial ainda não foi liberada!")
+				if "btn_fechar_aviso" in aviso_temp and aviso_temp.btn_fechar_aviso:
+					aviso_temp.btn_fechar_aviso.pressed.connect(aviso_temp.queue_free)
+			return
+
+		# BLOQUEIO DE ZONA CHEIA
 		if not zona_atual.tem_vaga_disponivel(total_na_zona):
 			if cena_ponto_resgate:
 				var aviso_temp = cena_ponto_resgate.instantiate()
@@ -1338,10 +1348,14 @@ func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
 	
 	# Registra a conclusão
 	Global.missoes_concluidas.append(missao.id)
+
+	# Se for a missão 4, desbloqueia as zonas residenciais 2 e 3
+	if missao.id == "missao4":
+		_ativar_terrenos_zona_residencial_expansao()
 	
-	print("[MISSÃO SUCESSO] '", missao.nome, "' concluída ao construir '", b_data.nome, "'!")
+	print("[MISSÃO SUCESSO] '", missao.nome, "' concluída ao construir/aprimorar '", b_data.nome, "'!")
 	
-	# Guarda a missão concluída pra tela de confirmação (ver hud.gd)
+	# Guarda a missão concluída pra tela de confirmação
 	ultima_missao_concluida = missao
 	
 	# Reseta os estados de missão
@@ -1384,6 +1398,14 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 		_recalcular_recursos_resgate()
 		_atualizar_sistema_drenagem()
 		_atualizar_npcs_por_populacao()
+
+		# 4. Ativa as mecânicas vinculadas ao upgrade e verifica missões ativas
+		if predio and predio.data:
+			var id_limpo = str(predio.data.id).to_lower().strip_edges()
+			if id_limpo == "prefeitura":
+				_ativar_terrenos_zona_residencial_expansao()
+				
+			_verificar_conclusao_construcao(predio.data)
 		
 		print("[INFO] ", predio.data.nome, " aprimorado para o nivel ", predio.nivel_atual)
 	else:
@@ -1425,26 +1447,55 @@ func _atualizar_sprite_upgrade(predio: BuildingInstance) -> void:
 
 
 func _ativar_terrenos_zona_residencial() -> void:
-	# 1. Altera o estado do nó BuildingZone
+	# 1. Altera o estado apenas da zona "Zona_Residencial"
 	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
-			var tipo = str(zona.tipo_zona).to_lower()
-			if "residenc" in tipo or "casa" in tipo or "bairro" in tipo:
+			var nome_zona := str(zona.name).strip_edges()
+			if nome_zona == "Zona_Residencial":
 				zona.desbloquear_zona()
 
-	# 2. Restaura as células no TileMap
+	# 2. Restaura no TileMap apenas os tiles pertencentes a zonas ativas/desbloqueadas
 	var tm = tilemap_constructions if tilemap_constructions else tile_map
 	if tm:
-		for item in _tiles_ocultos_zona_residencial:
-			if tm is TileMapLayer:
-				tm.set_cell(item["pos"], item["source_id"], item["atlas_coords"])
-			elif tm is TileMap:
-				tm.set_cell(0, item["pos"], item["source_id"], item["atlas_coords"])
-		_tiles_ocultos_zona_residencial.clear()
+		var i = _tiles_ocultos_zona_residencial.size() - 1
+		while i >= 0:
+			var item = _tiles_ocultos_zona_residencial[i]
+			var zona_do_tile = _obter_zona_no_tile(item["pos"])
+			if zona_do_tile and "desbloqueada" in zona_do_tile and zona_do_tile.desbloqueada:
+				if tm is TileMapLayer:
+					tm.set_cell(item["pos"], item["source_id"], item["atlas_coords"])
+				elif tm is TileMap:
+					tm.set_cell(0, item["pos"], item["source_id"], item["atlas_coords"])
+				_tiles_ocultos_zona_residencial.remove_at(i)
+			i -= 1
 	
-	_mostrar_aviso_texto("Prefeitura construída! Zonas residenciais liberadas.", Color(0.519, 0.877, 0.572, 1.0))
+	_mostrar_aviso_texto("Prefeitura construída! Zona Residencial 1 liberada.", Color(0.519, 0.877, 0.572, 1.0))
 
 
+func _ativar_terrenos_zona_residencial_expansao() -> void:
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
+		if zona is BuildingZone:
+			var nome_zona := str(zona.name).strip_edges()
+			if nome_zona == "Zona_Residencial2" or nome_zona == "Zona_Residencial3":
+				zona.desbloquear_zona()
+
+	# Restaura no TileMap os tiles pertencentes às zonas expandidas recém-liberadas
+	var tm = tilemap_constructions if tilemap_constructions else tile_map
+	if tm:
+		var i = _tiles_ocultos_zona_residencial.size() - 1
+		while i >= 0:
+			var item = _tiles_ocultos_zona_residencial[i]
+			var zona_do_tile = _obter_zona_no_tile(item["pos"])
+			if zona_do_tile and "desbloqueada" in zona_do_tile and zona_do_tile.desbloqueada:
+				if tm is TileMapLayer:
+					tm.set_cell(item["pos"], item["source_id"], item["atlas_coords"])
+				elif tm is TileMap:
+					tm.set_cell(0, item["pos"], item["source_id"], item["atlas_coords"])
+				_tiles_ocultos_zona_residencial.remove_at(i)
+			i -= 1
+
+	_mostrar_aviso_texto("Upgrade da Prefeitura concluído! Novas Zonas Residenciais liberadas.", Color(0.519, 0.877, 0.572, 1.0))
+	
 
 func _ativar_terrenos_zona_funcoes() -> void:
 	# 1. Altera o estado do nó BuildingZone
@@ -1647,10 +1698,11 @@ func _processar_retorno_abrigo_para_casas() -> void:
 # conversa entre Secretária e Tesoureiro). Aqui mapeamos o id da missão
 # para o id do PRIMEIRO nó dessa sequência.
 const DIALOGO_INICIAL_POR_MISSAO := {
-	"missao_prefeitura": "missao_prefeitura_1",
+	"missao_prefeitura": "prefeitura_1",
 	"missao1": "missao1_1",
 	"missao2": "missao2_1",
 	"missao3": "missao3_1",
+	"missao4": "missao4_1",
 }
 
 # Definição dos turnos fixos para início de cada missão
@@ -1659,37 +1711,38 @@ const TURNO_MISSAO := {
 	"missao1": 2,
 	"missao3": 5,
 	"missao2": 7,
+	"missao4": 4,
 }
 
 func processar_missao_programada():
-	# As missões agora são escolhidas somente pelos turnos fixos definidos acima.
 	if Global.turno < 0:
 		return null
 
 	for id_missao in TURNO_MISSAO.keys():
-		if Global.turno != TURNO_MISSAO[id_missao]:
+		# Se a missão já foi concluída, ignora
+		if id_missao in Global.missoes_concluidas:
 			continue
 
-		if id_missao in Global.missoes_concluidas:
-			return null
+		var turno_alvo = TURNO_MISSAO[id_missao]
+		
+		# Dispara a missão se atingiu/passou do turno programado e não há missão ativa
+		if Global.turno >= turno_alvo and Global.missao_escolhida == null:
+			var m_data: MissionData = banco_missoes.get(id_missao)
+			if m_data == null:
+				print("[AVISO] Missao '", id_missao, "' nao encontrada no banco_missoes!")
+				return null
 
-		var m_data: MissionData = banco_missoes.get(id_missao)
-		if m_data == null:
-			print("[AVISO] Missao '", id_missao, "' nao encontrada no banco_missoes!")
-			return null
+			Global.missao_escolhida = m_data
+			Global.missao_atual_turnos = 0
+			Global.missao_aceita = false
 
-		Global.missao_escolhida = m_data
-		Global.missao_atual_turnos = 0
-		Global.missao_aceita = false
+			print("[INFO] Turno ", Global.turno, ": Missao obrigatoria iniciada - ", m_data.nome)
 
-		print("[INFO] Turno ", Global.turno, ": Missao obrigatoria - ", m_data.nome)
+			if id_missao == "missao1":
+				_ativar_terrenos_zona_funcoes()
 
-		# A primeira missão libera a Zona de Funções e os tiles de construção.
-		if id_missao == "missao1":
-			_ativar_terrenos_zona_funcoes()
-
-		_iniciar_fluxo_da_missao(m_data)
-		return Global.missao_escolhida
+			_iniciar_fluxo_da_missao(m_data)
+			return Global.missao_escolhida
 
 	return null
 
@@ -1821,6 +1874,7 @@ func desbloquear_edificio(id_edificio: String) -> void:
 
 
 func _fechar_container_missao() -> void:
+	_missao_check_aberta = false # Reseta a trava para permitir o sorteio/chamada de novas missões
 	if not hud or not hud.has_node("MissaoContainer"):
 		return
 	var missao_container = hud.get_node("MissaoContainer")
@@ -2102,6 +2156,10 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 		var n_atual = predio.nivel_atual if "nivel_atual" in predio else 1
 		var n_max = b_data.nivel_maximo if "nivel_maximo" in b_data else 1
 		var pode_up = b_data.pode_aprimorar if "pode_aprimorar" in b_data else false
+		
+		# Bloqueia a opção de upgrade caso o prédio exija uma missão que ainda não chegou
+		if pode_up and edificios_bloqueados_inicialmente.has(id_predio):
+			pode_up = edificios_desbloqueados.has(id_predio)
 		
 		# Aplica o bônus de 10% da Prefeitura sobre os ganhos base
 		var ganho_base = predio.get_ganhos_atuais() if predio.has_method("get_ganhos_atuais") else 0

@@ -103,6 +103,13 @@ TXT_MISSAO3_1,"Os especialistas da Defesa Civil avisam que a cidade não tem nen
 TXT_MISSAO3_2,"É um projeto grande, e ainda não sabemos se vamos precisar dele tão cedo. Prevenir custa caro, e não temos como garantir que essa chuva forte vá mesmo acontecer.","It's a big project, and we don't even know if we'll need it anytime soon. Prevention is expensive, and there's no guarantee this storm will actually happen."
 TXT_MISSAO3_3,"Também não temos como garantir que não vá.","There's no guarantee it won't, either."
 
+# Missão 4 - Upgrade da Prefeitura
+MISSAO4_NOME,"Aprimoramento da Prefeitura","City Hall Upgrade"
+MISSAO4_INFO,"Aprimore a Prefeitura para o Nível 2 para expandir a capacidade administrativa e aumentar a receita geral da cidade em 10%.","Upgrade the City Hall to Level 2 to expand administrative capacity and increase overall city revenue by 10%."
+TXT_MISSAO4_1,"Prefeito, nossa cidade cresceu e a estrutura atual da Prefeitura já não dá conta de gerenciar todas as demandas da população. Precisamos aprimorar nossas instalações!","Mayor, our city has grown and the current City Hall structure can no longer handle all the population's demands. We need to upgrade our facilities!"
+TXT_MISSAO4_2,"Um aprimoramento desse porte exige um investimento alto dos cofres públicos. Será que não deveríamos guardar esse dinheiro para emergências imediatas?","An upgrade of this scale requires a high investment from public funds. Shouldn't we save this money for immediate emergencies?"
+TXT_MISSAO4_3,"Com a Prefeitura no Nível 2, otimizamos a arrecadação e garantimos um bônus de 10% no ganho de todas as construções da cidade. O investimento se pagará rapidamente!","With City Hall at Level 2, we optimize collection and secure a 10% bonus to income from all city buildings. The investment will pay for itself quickly!"
+
 # --- DIÁLOGOS DO TUTORIAL (APRESENTAÇÃO E FUNCIONAMENTO DO JOGO) ---
 TXT_TUTORIAL_1,"Olá! Esta é a Secretaria da cidade. O trabalho envolve acompanhar os serviços públicos e auxiliar na administração.","Hello! This is the city's Secretariat. The work involves overseeing public services and assisting with administration."
 TXT_TUTORIAL_2,"E este é o setor financeiro. As receitas, despesas e o dinheiro disponível passam por este setor.","And this is the financial department. Revenue, expenses, and available money are handled by this department."

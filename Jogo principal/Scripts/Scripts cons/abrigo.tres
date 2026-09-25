@@ -7,6 +7,7 @@
 script = ExtResource("1_5gxyu")
 id = "abrigo"
 nome = "PREDIO_ABRIGO_NOME"
+categoria = "Funções"
 icone = ExtResource("1_8ftva")
 custo_base = 350.0
 descricao_curta = "PREDIO_ABRIGO_DESC"

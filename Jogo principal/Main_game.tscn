@@ -1008,7 +1008,7 @@ visible = false
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
 tipo_zona = "residencial"
-id_grupo = "Residencial"
+id_grupo = "res_1"
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -1020,8 +1020,9 @@ position = Vector2(0, 0.98049927)
 [node name="Zona_Residencial2" parent="." unique_id=782536297 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
+nome_zona = "Zona Residencial2"
 tipo_zona = "residencial"
-id_grupo = "Residencial"
+id_grupo = "res_2"
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -1034,8 +1035,9 @@ shape = SubResource("RectangleShape2D_pnfwx")
 [node name="Zona_Residencial3" parent="." unique_id=1143560931 instance=ExtResource("15_tkcjf")]
 position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
+nome_zona = "Zona Residencial3"
 tipo_zona = "residencial"
-id_grupo = "Residencial"
+id_grupo = "res_3"
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -1120,7 +1122,7 @@ limite_maximo_edificios = 1
 [node name="CollisionShape2D" parent="Zona_prefeitura" index="0" unique_id=711131371]
 position = Vector2(722, 277)
 shape = SubResource("RectangleShape2D_s6pm0")
-debug_color = Color(1, 1, 1, 0.41960785)
+debug_color = Color(1, 1, 0.99215686, 0.70980394)
 
 [node name="NpcContainer" type="Node2D" parent="." unique_id=507213809]
 
