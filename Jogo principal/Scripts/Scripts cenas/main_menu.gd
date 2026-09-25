@@ -53,6 +53,7 @@ func _on_opcoes_pressed() -> void:
 
 func _on_creditos_pressed() -> void:
 	print("Créditos pressionado")
+	get_tree().change_scene_to_file("res://Jogo principal/tela_creditos.tscn")
 
 
 func _on_sair_pressed() -> void:

@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://c56ve7106vuoj"]
 
+[ext_resource type="Script" uid="uid://nsrr6elki41p" path="res://Jogo principal/Scripts/Scripts cenas/tela_creditos.gd" id="1_ig8we"]
 [ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="1_qjuxc"]
+[ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="2_bf12c"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hgtue"]
 texture = ExtResource("1_qjuxc")
@@ -12,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_ig8we")
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=498948658]
 layout_mode = 1
@@ -71,3 +74,29 @@ PROGRAMADOR, GAME DESIGNER
 PROGRAMADOR, GAME DESIGNER
 ARTISTA E ILUSTRADORA"
 horizontal_alignment = 2
+
+[node name="VoltarMenu" type="TextureButton" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=843961520]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture_normal = ExtResource("2_bf12c")
+stretch_mode = 0
+
+[node name="TextoBotao" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/VoltarMenu" unique_id=1698181646]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/shadow_offset_y = 4
+theme_override_font_sizes/normal_font_size = 22
+text = "VOLTAR AO MENU"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/VoltarMenu" to="." method="_on_voltar_menu_pressed"]
