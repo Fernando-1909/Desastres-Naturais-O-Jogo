@@ -8,7 +8,23 @@ extends Node2D
 const TILES := {
 	"prefeitura": "res://Jogo principal/tilesheets/Prefeituras.png",
 	"casa": "res://Jogo principal/tilesheets/casa_level_1.png",
-	"terreno_construcao": "res://Jogo principal/tilesheets/Terreno_construcao.png"
+	"terreno_construcao": "res://Jogo principal/tilesheets/Terreno_construcao.png",
+
+	# Imagem de alerta de desastre (arquivo próprio, não é spritesheet)
+	"alerta": "res://Jogo principal/UI/Assets/alerta.png",
+
+	# ---------------------------------------------------------------
+	# ATENÇÃO: allmenusprites.png é um SPRITESHEET (várias imagens numa
+	# imagem só). As coordenadas abaixo (Rect2(x, y, largura, altura)) são
+	# PLACEHOLDER — preciso que você me diga o retângulo real de cada ícone
+	# dentro do arquivo (ou me mande o .png que eu descubro certinho).
+	# Até ajustar, essas 5 entradas vão mostrar o pedaço ERRADO da imagem.
+	# ---------------------------------------------------------------
+	"icone_populacao": {"path": "res://Jogo principal/UI/Assets/allmenusprites.png", "region": Rect2(0, 0, 32, 32)},
+	"icone_desabrigados": {"path": "res://Jogo principal/UI/Assets/allmenusprites.png", "region": Rect2(32, 0, 32, 32)},
+	"icone_dinheiro": {"path": "res://Jogo principal/UI/Assets/allmenusprites.png", "region": Rect2(64, 0, 32, 32)},
+	"icone_popularidade": {"path": "res://Jogo principal/UI/Assets/allmenusprites.png", "region": Rect2(96, 0, 32, 32)},
+	"icone_pular_turno": {"path": "res://Jogo principal/UI/Assets/allmenusprites.png", "region": Rect2(128, 0, 32, 32)},
 }
 
 
@@ -35,8 +51,17 @@ const TUTORIAL_IMAGES := {
 	"tutorial_13": "prefeitura",
 	"tutorial_14": "prefeitura",
 
-	"tutorial_15": "",
-	"tutorial_16": ""
+	"tutorial_15": "alerta",
+	"tutorial_16": "alerta",
+
+	"tutorial_17": "icone_populacao",
+	"tutorial_18": "icone_desabrigados",
+	"tutorial_19": "icone_dinheiro",
+	"tutorial_20": "icone_popularidade",
+	"tutorial_21": "icone_pular_turno",
+
+	"tutorial_22": "",
+	"tutorial_23": ""
 }
 
 
@@ -103,13 +128,26 @@ func atualizar_imagem(dialogo_id: String) -> void:
 		tutorial_tile.texture = null
 		return
 
-	var textura = load(TILES[tile_id])
+	var entrada = TILES[tile_id]
+	var textura: Texture2D = null
+
+	if entrada is String:
+		# Imagem inteira (arquivo próprio)
+		textura = load(entrada)
+	elif entrada is Dictionary:
+		# Recorte de um spritesheet (AtlasTexture)
+		var base: Texture2D = load(entrada["path"])
+		if base:
+			var atlas := AtlasTexture.new()
+			atlas.atlas = base
+			atlas.region = entrada["region"]
+			textura = atlas
 
 	if textura:
 		tutorial_tile.texture = textura
 		tutorial_tile.show()
 	else:
-		push_warning("Não foi possível carregar a imagem: " + TILES[tile_id])
+		push_warning("Não foi possível carregar a imagem: " + tile_id)
 		tutorial_tile.hide()
 		tutorial_tile.texture = null
 

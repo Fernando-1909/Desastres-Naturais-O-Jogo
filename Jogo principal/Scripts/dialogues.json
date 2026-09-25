@@ -140,8 +140,43 @@
 	  "proximo": "tutorial_16"
 	},
 	"tutorial_16": {
-	  "autor": "SECRETARIA",
+	  "autor": "TESOUREIRO",
 	  "texto_chave": "TXT_TUTORIAL_16",
+	  "proximo": "tutorial_17"
+	},
+	"tutorial_17": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_TUTORIAL_17",
+	  "proximo": "tutorial_18"
+	},
+	"tutorial_18": {
+	  "autor": "TESOUREIRO",
+	  "texto_chave": "TXT_TUTORIAL_18",
+	  "proximo": "tutorial_19"
+	},
+	"tutorial_19": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_TUTORIAL_19",
+	  "proximo": "tutorial_20"
+	},
+	"tutorial_20": {
+	  "autor": "TESOUREIRO",
+	  "texto_chave": "TXT_TUTORIAL_20",
+	  "proximo": "tutorial_21"
+	},
+	"tutorial_21": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_TUTORIAL_21",
+	  "proximo": "tutorial_22"
+	},
+	"tutorial_22": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_TUTORIAL_22",
+	  "proximo": "tutorial_23"
+	},
+	"tutorial_23": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "TXT_TUTORIAL_23",
 	  "proximo": "fim"
 	}
   }
