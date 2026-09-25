@@ -48,4 +48,8 @@ func _avaliar_gestao() -> String:
 
 
 func _on_return_menu_pressed() -> void:
-		get_tree().change_scene_to_file("res://Menu Principal/main_menu.tscn")
+	get_tree().change_scene_to_file("res://Menu Principal/main_menu.tscn")
+
+
+func _on_creditos_pressed() -> void:
+	get_tree().change_scene_to_file("res://Jogo principal/tela_creditos.tscn")

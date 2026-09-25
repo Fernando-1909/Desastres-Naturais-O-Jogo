@@ -41,7 +41,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_bhunq")
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=506668357]
 layout_mode = 2
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = 50
+theme_override_constants/margin_top = 30
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
@@ -59,13 +59,13 @@ theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/normal_font = ExtResource("3_ntr7v")
 theme_override_font_sizes/normal_font_size = 50
 bbcode_enabled = true
-text = "Fim de jogo!"
+text = "Fim de jogo"
 fit_content = true
 scroll_active = false
 horizontal_alignment = 1
 
 [node name="Agradecimento" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1475967336]
-custom_minimum_size = Vector2(192, 46)
+custom_minimum_size = Vector2(192, 55)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.1666, 0.22728999, 0.34, 1)
 theme_override_colors/font_shadow_color = Color(0.17390001, 0.27195, 0.37, 1)
@@ -75,7 +75,7 @@ theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/normal_font = ExtResource("4_ohmwx")
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
-text = "Obrigado por jogar!"
+text = "Você perdeu!"
 fit_content = true
 scroll_active = false
 horizontal_alignment = 1
@@ -83,6 +83,7 @@ horizontal_alignment = 1
 [node name="DefeatMessage" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1817242701]
 z_index = 1
 custom_minimum_size = Vector2(400, 343)
+clip_contents = false
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0.1666, 0.22728999, 0.34, 1)
 theme_override_colors/font_shadow_color = Color(0.1128, 0.1764, 0.24, 1)
@@ -104,18 +105,24 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 10.0
+offset_top = -9.0
 offset_right = -10.0
+offset_bottom = 57.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.25490198)
 
-[node name="ReturnMenu" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1665082073]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=995205973]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="Reiniciar" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1736722591]
 custom_minimum_size = Vector2(300, 86)
 layout_mode = 2
 theme_override_styles/pressed = SubResource("StyleBoxTexture_f1t7y")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ntr7v")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/ReturnMenu" unique_id=453680425]
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Reiniciar" unique_id=871411492]
 clip_contents = false
 layout_mode = 1
 anchors_preset = 15
@@ -128,14 +135,47 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0.1666, 0.22728999, 0.34, 1)
 theme_override_colors/font_shadow_color = Color(0.17390001, 0.27195, 0.37, 1)
-theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_x = -2
-theme_override_constants/shadow_offset_y = 3
-theme_override_fonts/normal_font = ExtResource("4_ohmwx")
-theme_override_font_sizes/normal_font_size = 20
-text = "VOLTAR PARA O MENU PRINCIPAL"
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_fonts/normal_font = ExtResource("3_ntr7v")
+theme_override_font_sizes/normal_font_size = 30
+text = "REINICIAR"
 scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/ReturnMenu" to="." method="_on_return_menu_pressed"]
+[node name="ReturnMenu" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1665082073]
+custom_minimum_size = Vector2(300, 86)
+layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxTexture_f1t7y")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ntr7v")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ReturnMenu" unique_id=453680425]
+clip_contents = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -7.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0.1666, 0.22728999, 0.34, 1)
+theme_override_colors/font_shadow_color = Color(0.17390001, 0.27195, 0.37, 1)
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 4
+theme_override_constants/outline_size = 6
+theme_override_fonts/normal_font = ExtResource("3_ntr7v")
+theme_override_font_sizes/normal_font_size = 30
+text = "VOLTAR
+AO MENU"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/Reiniciar" to="." method="_on_reiniciar_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ReturnMenu" to="." method="_on_return_menu_pressed"]

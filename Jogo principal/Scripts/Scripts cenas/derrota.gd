@@ -44,6 +44,8 @@ func _preencher_mensagem() -> void:
 		defeat_message.text = "[center]Sua gestão chegou ao fim[/center]\n\nUma missão não foi concluída a tempo e a popularidade da cidade chegou a 0. A população perdeu a confiança na gestão e começou a deixar o município.\n\nLembre-se: fique atento às missões e tome decisões que mantenham a confiança da população."
 
 
-
 func _on_return_menu_pressed() -> void:
 	get_tree().change_scene_to_file("res://Menu Principal/main_menu.tscn")
+
+func _on_reiniciar_pressed() -> void:
+		get_tree().change_scene_to_file("res://Jogo principal/tutorial.tscn")

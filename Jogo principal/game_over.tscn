@@ -5,6 +5,7 @@
 [ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="3_1257a"]
 [ext_resource type="FontFile" uid="uid://br5wb2vq7vbqx" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBoldItalic.ttf" id="4_1257a"]
 [ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="5_34hsl"]
+[ext_resource type="FontFile" uid="uid://coi21ikrr11wj" path="res://Jogo principal/UI/Temas/fontes/upheavtt.ttf" id="6_essrg"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1257a"]
 texture = ExtResource("5_34hsl")
@@ -212,7 +213,11 @@ fit_content = true
 scroll_active = false
 horizontal_alignment = 1
 
-[node name="ReturnMenu" type="Button" parent="TextureRect/MarginContainer/VBoxContainer2" unique_id=887416093]
+[node name="HBoxContainer2" type="HBoxContainer" parent="TextureRect/MarginContainer/VBoxContainer2" unique_id=1665356566]
+layout_mode = 2
+alignment = 1
+
+[node name="ReturnMenu" type="Button" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer2" unique_id=887416093]
 custom_minimum_size = Vector2(300, 100)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -220,7 +225,7 @@ size_flags_vertical = 4
 theme_override_styles/pressed = SubResource("StyleBoxTexture_1257a")
 theme_override_styles/hover = SubResource("StyleBoxTexture_essrg")
 
-[node name="RichTextVoltarMenu" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/ReturnMenu" unique_id=55215301]
+[node name="RichTextVoltarMenu" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer2/ReturnMenu" unique_id=55215301]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -231,10 +236,37 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_constants/shadow_offset_y = 3
-theme_override_fonts/normal_font = ExtResource("3_1257a")
-theme_override_font_sizes/normal_font_size = 30
-text = "VOLTAR AO MENU"
+theme_override_fonts/normal_font = ExtResource("6_essrg")
+theme_override_font_sizes/normal_font_size = 36
+text = "VOLTAR
+AO MENU"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="pressed" from="TextureRect/MarginContainer/VBoxContainer2/ReturnMenu" to="." method="_on_return_menu_pressed"]
+[node name="Creditos" type="Button" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer2" unique_id=1028956008]
+custom_minimum_size = Vector2(300, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/pressed = SubResource("StyleBoxTexture_1257a")
+theme_override_styles/hover = SubResource("StyleBoxTexture_essrg")
+
+[node name="RichTextVoltarMenu" type="RichTextLabel" parent="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer2/Creditos" unique_id=137534861]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/normal_font = ExtResource("6_essrg")
+theme_override_font_sizes/normal_font_size = 36
+text = "CREDITOS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer2/ReturnMenu" to="." method="_on_return_menu_pressed"]
+[connection signal="pressed" from="TextureRect/MarginContainer/VBoxContainer2/HBoxContainer2/Creditos" to="." method="_on_creditos_pressed"]
