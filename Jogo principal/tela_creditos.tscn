@@ -24,16 +24,16 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_hgtue")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer" unique_id=2110723331]
 layout_mode = 2
-theme_override_constants/margin_left = 30
+theme_override_constants/margin_left = 50
 theme_override_constants/margin_top = 25
-theme_override_constants/margin_right = 30
+theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 60
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer" unique_id=1819793099]
 layout_mode = 2
 
 [node name="Creditos" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=392822206]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(300, 130)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 60
 text = "Créditos"
@@ -42,24 +42,32 @@ vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer" unique_id=1435852218]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="Autor" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1234501144]
 custom_minimum_size = Vector2(300, 70)
+clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/paragraph_separation = 20
+theme_override_constants/shadow_offset_y = 4
 theme_override_font_sizes/normal_font_size = 30
-text = "AUTOR 1
-AUTOR 2"
+text = "BRUNO EDUARDO
+JOSÉ INÁCIO
+FERNANDO MACEDO
+MENI RAMOS"
 scroll_active = false
-vertical_alignment = 1
 
 [node name="Função" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1732369574]
 custom_minimum_size = Vector2(300, 70)
+clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/paragraph_separation = 20
+theme_override_constants/shadow_offset_y = 4
 theme_override_font_sizes/normal_font_size = 30
-text = "FUNÇÃO 1
-FUNÇÃO 2"
-vertical_alignment = 1
+text = "UI/UX DeSIGNER, PROGRAMADOR
+PROGRAMADOR, GAME DESIGNER
+PROGRAMADOR, GAME DESIGNER
+ARTISTA E ILUSTRADORA"
+horizontal_alignment = 2
