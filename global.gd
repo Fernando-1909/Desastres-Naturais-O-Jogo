@@ -22,6 +22,9 @@ var turno: int
 var renda: int             # Quantidade de "unidades" de renda geradas por turno (baseado na população)
 var idioma_atual: String = "pt"
 
+var prefeitura_construida: bool = false
+var zonas_compradas: Array[String] = [] # Armazena IDs como ["zona_residencial_1"]
+
 #Variáveis Resgate
 var pessoas_abrigadas: int = 0
 var capacidade_total_abrigo: int = 0
@@ -84,3 +87,10 @@ func alterar_idioma(codigo_lang: String) -> void:
 	TranslationServer.set_locale(codigo_lang)
 	idioma_alterado.emit(codigo_lang)
 	print("Idioma do jogo alterado para: ", codigo_lang)
+
+
+func comprar_zona(id_zona: String) -> void:
+	if not zonas_compradas.has(id_zona):
+		zonas_compradas.append(id_zona)
+		# Emite sinal para atualizar as zonas da cena
+		get_tree().call_group("zonas_construcao", "atualizar_estado_zona")

@@ -7,6 +7,7 @@
 script = ExtResource("1_bgghn")
 id = "bombeiros"
 nome = "PREDIO_BOMBEIROS_NOME"
+categoria = "Funções"
 icone = ExtResource("1_0arqj")
 eh_unica = true
 custo_base = 300.0

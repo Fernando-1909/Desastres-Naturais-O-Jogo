@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MissionData" format=3 uid="uid://bjfwjpej3iqv"]
+
+[ext_resource type="Script" uid="uid://cjpjipeery1b5" path="res://Jogo principal/Scripts/Scripts gerais/mission_data.gd" id="1_v4myt"]
+
+[resource]
+script = ExtResource("1_v4myt")
+id = "missao4"
+nome = "MISSAO4_NOME"
+info = "MISSAO4_INFO"
+edificio_id_alvo = "prefeitura"
+popularidade = 20
+metadata/_custom_type_script = "uid://cjpjipeery1b5"
