@@ -2718,10 +2718,19 @@ func _reaparecer_npcs_aos_poucos() -> void:
 
 ## Verifica se é a hora de disparar a enchente automaticamente (turno_inicio_enchente),
 ## sem depender do botão de teste. Chamada uma vez por turno, antes de tudo o resto.
-func _verificar_inicio_automatico_de_enchente() -> void:
+func _verificar_inicio_automatico_de_enchente() -> bool:
 	if Global.turno == turno_inicio_enchente and _enchente_ativa == null and not _alerta_enchente_em_andamento:
+		if contar_construcoes_por_categoria("prefeitura") == 0:
+			print("[FIM DE JOGO] Turno ", Global.turno, ": nenhuma Prefeitura construída antes do primeiro desastre. Derrota.")
+			if "semprefeitura" in Global:
+				Global.semprefeitura = true
+			get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
+			return true
+		
 		_alerta_enchente_em_andamento = true
 		_mostrar_alerta_e_iniciar_enchente()
+	
+	return false
 
 
 ## Pausa o jogo, mostra "Alerta de enchente" piscando lentamente em vermelho
@@ -2899,7 +2908,8 @@ func avancar_turno_desastres() -> void:
 	# Processa o progresso de todas as construções em andamento
 	processar_construcoes_no_turno()
 
-	_verificar_inicio_automatico_de_enchente()
+	if _verificar_inicio_automatico_de_enchente():
+		return  # Jogo terminou em derrota (sem Prefeitura) — não continua processando mais nada deste turno
 
 	if _verificar_bomba_antes_da_segunda_enchente():
 		return  # Jogo terminou em derrota — não continua processando mais nada deste turno

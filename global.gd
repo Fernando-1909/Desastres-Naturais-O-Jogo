@@ -2,13 +2,16 @@ extends Node
 
 # Variáveis gerais
 var dinheiro: int
-var popularidade: int
+var popularidade: int = 0:
+	set(value):
+		popularidade = min(value, 100)
 var populacao: int
 
 # Motivo da derrota por popularidade
 var missaoderrota: bool = false
 var enchentederrota: bool = false
 var mortebomba: bool = false
+var semprefeitura: bool = false
 
 # Motivos específicos de derrota por falta/excesso de construções
 var muitascasas: bool = false          # 3 ou mais casas na zona_residencial1
