@@ -36,6 +36,9 @@ func _preencher_mensagem() -> void:
 	elif Global.semabrigo:
 		defeat_message.text = "[center]Sua gestão chegou ao fim[center]\n\nAbrigos, são essenciais para qualquer cidade, eles servem para abrigar a população de desastres, são essenciais para proteger a população e garantir a segurança de todos!"
 
+	elif Global.semprefeitura:
+		defeat_message.text = "[center]Sua gestão chegou ao fim[center]\n\nSem uma Prefeitura de pé, não havia ninguém pra coordenar a resposta ao desastre. A cidade ficou à deriva assim que a primeira enchente chegou.\n\nLembre-se: a Prefeitura é a base de toda a administração — construa ela antes de qualquer outra coisa."
+
 	# Motivos antigos de derrota continuam funcionando como fallback.
 	elif Global.enchentederrota:
 		defeat_message.text = "[center]Sua gestão chegou ao fim[/center]\n\nAs enchentes destruíram casas demais enquanto a popularidade da cidade estava em 0. A população perdeu a confiança na gestão e o município não conseguiu se recuperar.\n\nLembre-se: durante uma enchente, proteja as áreas residenciais e mantenha a cidade preparada para reduzir as perdas."
