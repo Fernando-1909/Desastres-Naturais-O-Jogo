@@ -1709,7 +1709,7 @@ const DIALOGO_INICIAL_POR_MISSAO := {
 const TURNO_MISSAO := {
 	"missao_prefeitura": 0,
 	"missao1": 2,
-	"missao3": 5,
+	"missao3": 16,
 	"missao2": 7,
 	"missao4": 4,
 }
