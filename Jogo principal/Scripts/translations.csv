@@ -1,143 +1,137 @@
 keys,pt,en
 # --- UI & MENUS ---
-MENU_JOGAR,"Iniciar Jogo","Start Game"
-MENU_OPCOES,"Opções","Options"
-MENU_CREDITOS,"Créditos","Credits"
-MENU_PAUSA,"Jogo Pausado","Game Paused"
-MENU_CONTINUAR,"Continuar","Resume"
-MENU_IDIOMA,"Idioma","Language"
-MENU_VOLTAR,"Voltar","Back"
-MENU_SAIR,"Sair do Jogo","Quit Game"
-BTN_PT,"Português","Portuguese"
-BTN_EN,"English","English"
+MENU_JOGAR,Iniciar Jogo,Start Game
+MENU_OPCOES,Opções,Options
+MENU_CREDITOS,Créditos,Credits
+MENU_PAUSA,Jogo Pausado,Game Paused
+MENU_CONTINUAR,Continuar,Resume
+MENU_IDIOMA,Idioma,Language
+MENU_VOLTAR,Voltar,Back
+MENU_SAIR,Sair do Jogo,Quit Game
+BTN_PT,Português,Portuguese
+BTN_EN,English,English
 
 # --- RECURSOS E HUD ---
-HUD_DINHEIRO,"Dinheiro","Money"
-HUD_MADEIRA,"Madeira","Wood"
-HUD_PEDRA,"Pedra","Stone"
-HUD_POPULARIDADE,"Popularidade","Popularity"
+HUD_DINHEIRO,Dinheiro,Money
+HUD_MADEIRA,Madeira,Wood
+HUD_PEDRA,Pedra,Stone
+HUD_POPULARIDADE,Popularidade,Popularity
 
 # --- INTERFACE DE COMPRAS E UPGRADES ---
-UI_COMPRAR,"COMPRAR","BUY"
-UI_APRIMORAR,"APRIMORAR","UPGRADE"
-UI_NIVEL_MAXIMO,"NÍVEL MÁXIMO","MAX LEVEL"
-UI_DETALHES,"DETALHES","DETAILS"
-UI_NIVEL,"NÍVEL","LEVEL"
-UI_GANHOS,"GANHOS","EARNINGS"
-UI_EQUIPES_RESGATE,"Equipes Livres","Available Teams"
-UI_CATALOGO_TITULO,"Construções Disponíveis","Available Buildings"
+UI_COMPRAR,COMPRAR,BUY
+UI_APRIMORAR,APRIMORAR,UPGRADE
+UI_NIVEL_MAXIMO,NÍVEL MÁXIMO,MAX LEVEL
+UI_DETALHES,DETALHES,DETAILS
+UI_NIVEL,NÍVEL,LEVEL
+UI_GANHOS,GANHOS,EARNINGS
+UI_EQUIPES_RESGATE,Equipes Livres,Available Teams
+UI_CATALOGO_TITULO,Construções Disponíveis,Available Buildings
 
 # --- CATEGORIAS DE EDIFÍCIOS (building_data) ---
-CAT_RESIDENCIAL,"Residencial","Residential"
-CAT_COMERCIAL,"Comercial","Commercial"
-CAT_INDUSTRIAL,"Industrial","Industrial"
-CAT_SERVICOS,"Serviços Públicos","Public Services"
-CAT_INFRAESTRUTURA,"Infraestrutura","Infrastructure"
-CAT_LAZER,"Lazer e Cultura","Leisure & Culture"
-CAT_SEGURANCA,"Segurança","Security"
-CAT_SAUDE,"Saúde","Health"
-CAT_EDUCACAO,"Educação","Education"
-CAT_ENERGIA,"Energia","Energy"
+CAT_RESIDENCIAL,Residencial,Residential
+CAT_COMERCIAL,Comercial,Commercial
+CAT_INDUSTRIAL,Industrial,Industrial
+CAT_SERVICOS,Serviços Públicos,Public Services
+CAT_INFRAESTRUTURA,Infraestrutura,Infrastructure
+CAT_LAZER,Lazer e Cultura,Leisure & Culture
+CAT_SEGURANCA,Segurança,Security
+CAT_SAUDE,Saúde,Health
+CAT_EDUCACAO,Educação,Education
+CAT_ENERGIA,Energia,Energy
 
 # --- EDIFÍCIOS & LOJA (building_data) ---
 # Casa Residencial Simples
-PREDIO_CASA_SIMPLES_NOME,"Casa Residencial","Residential House"
-PREDIO_CASA_SIMPLES_DESC,"Aumenta a capacidade de moradores e a receita de impostos.","Increases resident capacity and tax revenue."
-PREDIO_CASA_SIMPLES_DETALHES,"Gera [color=#FFD700]+10[/color] habitantes na cidade e arrecada impostos continuamente por morador.","Generates [color=#FFD700]+10[/color] citizens in the city and continuously collects tax per resident."
+PREDIO_CASA_SIMPLES_NOME,Casa Residencial,Residential House
+PREDIO_CASA_SIMPLES_DESC,Aumenta a capacidade de moradores e a receita de impostos.,Increases resident capacity and tax revenue.
+PREDIO_CASA_SIMPLES_DETALHES,Gera [color=#FFD700]+10[/color] habitantes na cidade e arrecada impostos continuamente por morador.,Generates [color=#FFD700]+10[/color] citizens in the city and continuously collects tax per resident.
 
 # Prefeitura
-PREDIO_PREFEITURA_NOME,"Prefeitura","City Hall"
-PREDIO_PREFEITURA_DESC,"Centro administrativo da cidade.","City administrative center."
-PREDIO_PREFEITURA_DETALHES,"Aumentar o nível da Prefeitura para o Nível 2 concede um bônus geral de [color=#FFD700]+10%[/color] no ganho base de todas as construções da cidade.","Upgrading City Hall to Level 2 grants a [color=#FFD700]+10%[/color] global bonus to the base income of all city buildings."
+PREDIO_PREFEITURA_NOME,Prefeitura,City Hall
+PREDIO_PREFEITURA_DESC,Centro administrativo da cidade.,City administrative center.
+PREDIO_PREFEITURA_DETALHES,Aumentar o nível da Prefeitura para o Nível 2 concede um bônus geral de [color=#FFD700]+10%[/color] no ganho base de todas as construções da cidade.,Upgrading City Hall to Level 2 grants a [color=#FFD700]+10%[/color] global bonus to the base income of all city buildings.
 
 # Estação de Tratamento
-PREDIO_ESTACAO_TRATAMENTO_NOME,"Estação de Tratamento","Treatment Plant"
-PREDIO_ESTACAO_TRATAMENTO_DESC,"Unidade central de infraestrutura hídrica para controle de enchentes na cidade.","Central water infrastructure facility for flood control in the city."
-PREDIO_ESTACAO_TRATAMENTO_DETALHES,"Habilita a [color=#FFD700]Zona do Rio[/color] e ativa o funcionamento de [color=#FFD700]100%[/color] das Bombas de Drenagem no mapa.","Unlocks the [color=#FFD700]River Zone[/color] and enables [color=#FFD700]100%[/color] of active Drainage Pumps on the map."
+PREDIO_ESTACAO_TRATAMENTO_NOME,Estação de Tratamento,Treatment Plant
+PREDIO_ESTACAO_TRATAMENTO_DESC,Unidade central de infraestrutura hídrica para controle de enchentes na cidade.,Central water infrastructure facility for flood control in the city.
+PREDIO_ESTACAO_TRATAMENTO_DETALHES,Habilita a [color=#FFD700]Zona do Rio[/color] e ativa o funcionamento de [color=#FFD700]100%[/color] das Bombas de Drenagem no mapa.,Unlocks the [color=#FFD700]River Zone[/color] and enables [color=#FFD700]100%[/color] of active Drainage Pumps on the map.
 
 # Bomba de Drenagem
-PREDIO_BOMBA_DRENAGEM_NOME,"Bomba de Drenagem","Drainage Pump"
-PREDIO_BOMBA_DRENAGEM_DESC,"Drena o excesso de água da chuva e reduz os impactos de enchentes na cidade.","Drains excess rainwater and reduces flood impacts in the city."
-PREDIO_BOMBA_DRENAGEM_DETALHES,"Reduz gradualmente o nível de alagamento da área e protege as construções ao redor contra danos.","Gradually reduces regional flood levels and protects surrounding structures from damage."
+PREDIO_BOMBA_DRENAGEM_NOME,Bomba de Drenagem,Drainage Pump
+PREDIO_BOMBA_DRENAGEM_DESC,Drena o excesso de água da chuva e reduz os impactos de enchentes na cidade.,Drains excess rainwater and reduces flood impacts in the city.
+PREDIO_BOMBA_DRENAGEM_DETALHES,Reduz gradualmente o nível de alagamento da área e protege as construções ao redor contra danos.,Gradually reduces regional flood levels and protects surrounding structures from damage.
 
 # --- ABRIGO E SOCORRO ---
 # Abrigo Comunitário
-PREDIO_ABRIGO_NOME,"Abrigo Comunitário","Community Shelter"
-PREDIO_ABRIGO_DESC,"Acolhe cidadãos desabrigados durante e após desastres.","Houses displaced citizens during and after disasters."
-PREDIO_ABRIGO_DETALHES,"Cada unidade acolhe até [color=#FFD700]20[/color] cidadãos desabrigados e evita a perda de popularidade durante enchentes.","Each facility houses up to [color=#FFD700]20[/color] displaced citizens and prevents popularity loss during floods."
+PREDIO_ABRIGO_NOME,Abrigo Comunitário,Community Shelter
+PREDIO_ABRIGO_DESC,Acolhe cidadãos desabrigados durante e após desastres.,Houses displaced citizens during and after disasters.
+PREDIO_ABRIGO_DETALHES,Cada unidade acolhe até [color=#FFD700]20[/color] cidadãos desabrigados e evita a perda de popularidade durante enchentes.,Each facility houses up to [color=#FFD700]20[/color] displaced citizens and prevents popularity loss during floods.
 
 # Estação de Bombeiros
-PREDIO_BOMBEIROS_NOME,"Estação de Bombeiros","Fire Station"
-PREDIO_BOMBEIROS_DESC,"Disponibiliza equipes de resgate para salvar vítimas de emergências.","Provides rescue teams to save victims from emergencies."
-PREDIO_BOMBEIROS_DETALHES,"Habilita [color=#FFD700]2[/color] equipes de resgate ativas para socorrer vítimas durante enchentes.","Unlocks [color=#FFD700]2[/color] active rescue teams to save victims during floods."
+PREDIO_BOMBEIROS_NOME,Estação de Bombeiros,Fire Station
+PREDIO_BOMBEIROS_DESC,Disponibiliza equipes de resgate para salvar vítimas de emergências.,Provides rescue teams to save victims from emergencies.
+PREDIO_BOMBEIROS_DETALHES,Habilita [color=#FFD700]2[/color] equipes de resgate ativas para socorrer vítimas durante enchentes.,Unlocks [color=#FFD700]2[/color] active rescue teams to save victims during floods.
 
 # --- MISSÕES E DIÁLOGOS DAS MISSÕES ---
-SECRETARIA,"Secretária","Secretary"
-TESOUREIRO,"Tesoureiro","Treasurer"
+SECRETARIA,Secretária,Secretary
+TESOUREIRO,Tesoureiro,Treasurer
 
 # Missão Tutorial - Prefeitura
-MISSAO_PREFEITURA_NOME,"Construção da Prefeitura","City Hall Construction"
-MISSAO_PREFEITURA_INFO,"Construa a Prefeitura para estabelecer o centro administrativo e liberar a expansão das zonas residenciais na cidade.","Build the City Hall to establish the administrative center and unlock residential zone expansion in the city."
-TXT_PREFEITURA_1,"Prefeito, para começarmos a organizar a cidade e liberar a expansão residencial, precisamos fundar nossa Prefeitura!","Mayor, to start organizing the city and unlock residential expansion, we need to establish our City Hall!"
-TXT_PREFEITURA_2,"Isso exigirá um investimento inicial do município, mas sem o centro administrativo não poderemos gerenciar novos loteamentos.","This will require an initial investment, but without an administrative center we won't be able to manage new developments."
-TXT_PREFEITURA_3,"Aprovar essa obra é essencial para dar o pontapé inicial no crescimento da nossa cidade.","Approving this project is essential to kickstart our city's growth."
+MISSAO_PREFEITURA_NOME,Construção da Prefeitura,City Hall Construction
+MISSAO_PREFEITURA_INFO,Construa a Prefeitura para estabelecer o centro administrativo e liberar a expansão das zonas residenciais na cidade.,Build the City Hall to establish the administrative center and unlock residential zone expansion in the city.
+TXT_PREFEITURA_1,"Para organizar a cidade e liberar a expansão residencial, precisamos fundar a Prefeitura.","To organize the city and unlock residential expansion, we need to establish the City Hall."
+TXT_PREFEITURA_2,"Isso exige um investimento inicial, mas sem o centro administrativo não podemos gerenciar novos loteamentos.","This requires an initial investment, but without the administrative center we cannot manage new residential areas."
+TXT_PREFEITURA_3,Aprovar essa obra é essencial para dar o pontapé inicial no crescimento da nossa cidade.,Approving this project is essential to kickstart our city's growth.
 
 # Missão 1 - Corpo de Bombeiros
-MISSAO1_NOME,"Corpo de Bombeiros","Fire Department"
-MISSAO1_INFO,"Construa uma Estação de Bombeiros para disponibilizar equipes de resgate e proteger a cidade contra emergências.","Build a Fire Station to provide rescue teams and protect the city from emergencies."
-TXT_MISSAO1_1,"Tivemos três princípios de incêndio essa semana, e o mais próximo que temos de ajuda são vizinhos com baldes. Um dia desses não vai dar pra apagar a tempo.","We had three near-fires this week, and the closest thing we have to help is neighbors with buckets. One of these days we won't put it out in time."
-TXT_MISSAO1_2,"Ninguém aqui quer ver a cidade pegando fogo, mas um corpo de bombeiros completo é caro, e mal começamos a nos organizar financeiramente. Se guardarmos esse valor, temos fôlego pra imprevistos maiores.","Nobody here wants to see the city on fire, but a full fire department is expensive, and we've barely started organizing our finances. If we save that money, we'll have room for bigger emergencies."
-TXT_MISSAO1_3,"E se o imprevisto maior for justamente um incêndio que dava pra ter evitado?","And what if the bigger emergency is exactly a fire we could have prevented?"
+MISSAO1_NOME,Corpo de Bombeiros,Fire Department
+MISSAO1_INFO,Construa uma Estação de Bombeiros para disponibilizar equipes de resgate e proteger a cidade contra emergências.,Build a Fire Station to provide rescue teams and protect the city from emergencies.
+TXT_MISSAO1_1,"Tivemos três princípios de incêndio esta semana. Sem uma equipe preparada, um deles pode sair do controle.","We had three near-fires this week. Without a prepared team, one could get out of control."
+TXT_MISSAO1_2,"Um corpo de bombeiros completo é caro, e ainda estamos organizando as finanças. Talvez seja melhor guardar esse valor.","A full fire department is expensive, and we're still organizing our finances. It may be better to save this money."
+TXT_MISSAO1_3,E se o próximo incêndio for justamente um que poderíamos ter evitado?,What if the next fire is one we could have prevented?
 
 # Missão 2 - Abrigo Comunitário
-MISSAO2_NOME,"Abrigo Comunitário","Community Shelter"
-MISSAO2_INFO,"Construa um Abrigo Comunitário para acolher famílias e cidadãos desabrigados durante situações de emergência.","Build a Community Shelter to house displaced citizens and families during emergency situations."
-TXT_MISSAO2_1,"As previsões do tempo indicam chuvas fortes. Se tivermos famílias desabrigadas pelas enchentes, não temos para onde levá-las. Precisamos erguer um Abrigo Comunitário urgentemente.","Weather forecasts indicate heavy rain ahead. If families are displaced by floods, we have nowhere to take them. We urgently need to build a Community Shelter."
-TXT_MISSAO2_2,"Construir e manter uma estrutura desse porte consome recursos que poderiam ir para a receita da cidade agora. Não é melhor esperar para ver o tamanho do impacto?","Building and maintaining a facility of this size consumes resources that could go into city revenue right now. Isn't it better to wait and see the extent of the impact?"
-TXT_MISSAO2_3,"Esperar a água subir para pensar em abrigo é deixar os cidadãos desamparados na hora que mais precisarem.","Waiting for the water to rise before thinking about shelter is leaving citizens helpless when they need it most."
+MISSAO2_NOME,Abrigo Comunitário,Community Shelter
+MISSAO2_INFO,Construa um Abrigo Comunitário para acolher famílias e cidadãos desabrigados durante situações de emergência.,Build a Community Shelter to house displaced citizens and families during emergency situations.
+TXT_MISSAO2_1,"As previsões indicam chuvas fortes. Se houver famílias desabrigadas, precisamos de um local para acolhê-las.","Forecasts indicate heavy rain. If families are displaced, we need a place to shelter them."
+TXT_MISSAO2_2,Construir e manter um abrigo consome recursos. Talvez seja melhor esperar para avaliar o impacto das chuvas.,Building and maintaining a shelter costs resources. Perhaps we should wait and assess the impact of the rain.
+TXT_MISSAO2_3,Esperar a água subir para pensar em abrigo pode deixar os cidadãos desamparados.,Waiting for the water to rise before preparing a shelter could leave citizens without support.
 
 # Missão 3 - Estação de Tratamento
-MISSAO3_NOME,"Estação de Tratamento","Treatment Plant"
-MISSAO3_INFO,"Construa uma Estação de Tratamento para habilitar a Zona do Rio e permitir o funcionamento das bombas de drenagem.","Build a Treatment Plant to unlock the River Zone and enable the operation of drainage pumps."
-TXT_MISSAO3_1,"Os especialistas da Defesa Civil avisam que a cidade não tem nenhum sistema pra lidar com um temporal forte — se isso acontecer, não vamos ter como reagir a tempo. Uma Estação de Tratamento resolveria isso antes que vire um problema de verdade.","Civil Defense specialists warn the city has no system to handle a major storm — if it happens, we won't be able to react in time. A Treatment Plant would solve that before it becomes a real problem."
-TXT_MISSAO3_2,"É um projeto grande, e ainda não sabemos se vamos precisar dele tão cedo. Prevenir custa caro, e não temos como garantir que essa chuva forte vá mesmo acontecer.","It's a big project, and we don't even know if we'll need it anytime soon. Prevention is expensive, and there's no guarantee this storm will actually happen."
-TXT_MISSAO3_3,"Também não temos como garantir que não vá.","There's no guarantee it won't, either."
+MISSAO3_NOME,Estação de Tratamento,Treatment Plant
+MISSAO3_INFO,Construa uma Estação de Tratamento para habilitar a Zona do Rio e permitir o funcionamento das bombas de drenagem.,Build a Treatment Plant to unlock the River Zone and enable the operation of drainage pumps.
+TXT_MISSAO3_1,A Defesa Civil alerta que não temos estrutura para um temporal forte. Uma Estação de Tratamento ajudaria a prevenir problemas.,Civil Defense warns that we lack the structure for a major storm. A Treatment Plant would help prevent problems.
+TXT_MISSAO3_2,É um projeto grande e ainda não sabemos quando será necessário. Prevenir também tem um custo alto.,"It's a large project, and we don't know when it will be needed. Prevention also comes at a high cost."
+TXT_MISSAO3_3,Também não temos como garantir que a chuva forte não aconteça.,We also can't guarantee that the heavy rain won't happen.
 
 # Missão 4 - Upgrade da Prefeitura
-MISSAO4_NOME,"Aprimoramento da Prefeitura","City Hall Upgrade"
-MISSAO4_INFO,"Aprimore a Prefeitura para o Nível 2 para expandir a capacidade administrativa e aumentar a receita geral da cidade em 10%.","Upgrade the City Hall to Level 2 to expand administrative capacity and increase overall city revenue by 10%."
-TXT_MISSAO4_1,"Prefeito, nossa cidade cresceu e a estrutura atual da Prefeitura já não dá conta de gerenciar todas as demandas da população. Precisamos aprimorar nossas instalações!","Mayor, our city has grown and the current City Hall structure can no longer handle all the population's demands. We need to upgrade our facilities!"
-TXT_MISSAO4_2,"Um aprimoramento desse porte exige um investimento alto dos cofres públicos. Será que não deveríamos guardar esse dinheiro para emergências imediatas?","An upgrade of this scale requires a high investment from public funds. Shouldn't we save this money for immediate emergencies?"
-TXT_MISSAO4_3,"Com a Prefeitura no Nível 2, otimizamos a arrecadação e garantimos um bônus de 10% no ganho de todas as construções da cidade. O investimento se pagará rapidamente!","With City Hall at Level 2, we optimize collection and secure a 10% bonus to income from all city buildings. The investment will pay for itself quickly!"
+MISSAO4_NOME,Aprimoramento da Prefeitura,City Hall Upgrade
+MISSAO4_INFO,Aprimore a Prefeitura para o Nível 2 para expandir a capacidade administrativa e aumentar a receita geral da cidade em 10%.,Upgrade the City Hall to Level 2 to expand administrative capacity and increase overall city revenue by 10%.
+TXT_MISSAO4_1,A cidade cresceu e a Prefeitura já não atende todas as demandas. Precisamos aprimorar nossas instalações.,"The city has grown, and the City Hall can no longer handle every demand. We need to upgrade our facilities."
+TXT_MISSAO4_2,Esse aprimoramento exige um investimento alto. Será que não deveríamos guardar o dinheiro para emergências?,This upgrade requires a large investment. Shouldn't we save the money for emergencies?
+TXT_MISSAO4_3,"Com a Prefeitura no Nível 2, a receita das construções aumenta em 10%. O investimento pode se pagar rapidamente.","With City Hall at Level 2, building income increases by 10%. The investment could pay for itself quickly."
 
-TXT_MISSAO1_2_PARTE1,"Ninguém aqui quer ver a cidade pegando fogo, mas um corpo de bombeiros completo é caro, e mal começamos a nos organizar financeiramente.","Nobody here wants to see the city on fire, but a full fire department is expensive, and we've barely started organizing our finances."
-TXT_MISSAO1_2_PARTE2,"Se guardarmos esse valor, temos fôlego pra imprevistos maiores.","If we save that money, we'll have room for bigger emergencies."
-TXT_MISSAO2_1_PARTE1,"As previsões do tempo indicam chuvas fortes. Se tivermos famílias desabrigadas pelas enchentes, não temos para onde levá-las.","Weather forecasts indicate heavy rain ahead. If families are displaced by floods, we have nowhere to take them."
-TXT_MISSAO2_1_PARTE2,"Precisamos erguer um Abrigo Comunitário urgentemente.","We urgently need to build a Community Shelter."
-TXT_MISSAO3_1_PARTE1,"Os especialistas da Defesa Civil avisam que a cidade não tem nenhum sistema pra lidar com um temporal forte — se isso acontecer, não vamos ter como reagir a tempo.","Civil Defense specialists warn the city has no system to handle a major storm — if it happens, we won't be able to react in time."
-TXT_MISSAO3_1_PARTE2,"Uma Estação de Tratamento resolveria isso antes que vire um problema de verdade.","A Treatment Plant would solve this before it becomes a real problem."
 
 # --- DIÁLOGOS DO TUTORIAL (APRESENTAÇÃO E FUNCIONAMENTO DO JOGO) ---
-TXT_TUTORIAL_1,"Olá! Esta é a Secretaria da cidade. O trabalho envolve acompanhar os serviços públicos e auxiliar na administração.","Hello! This is the city's Secretariat. The work involves overseeing public services and assisting with administration."
+TXT_TUTORIAL_1,Olá! Esta é a Secretaria da cidade. O trabalho envolve acompanhar os serviços públicos e auxiliar na administração.,Hello! This is the city's Secretariat. The work involves overseeing public services and assisting with administration.
 TXT_TUTORIAL_2,"E este é o setor financeiro. As receitas, despesas e o dinheiro disponível passam por este setor.","And this is the financial department. Revenue, expenses, and available money are handled by this department."
 TXT_TUTORIAL_3,"A administração envolve construções, serviços e decisões que podem afetar o funcionamento da cidade.","Administration involves construction, services, and decisions that can affect how the city operates."
 TXT_TUTORIAL_4,"O dinheiro disponível deve ser acompanhado com atenção. Construções e outros serviços exigem gastos, e os recursos não são ilimitados.","Available money must be monitored carefully. Construction and other services require spending, and resources are not unlimited."
-TXT_TUTORIAL_5,"A cidade possui diferentes zonas destinadas à construção. Cada zona possui uma finalidade específica e limita os tipos de construção que podem ser realizados nela.","The city has different zones intended for construction. Each zone has a specific purpose and limits the types of building that can be placed there."
+TXT_TUTORIAL_5,A cidade possui diferentes zonas destinadas à construção. Cada zona possui uma finalidade específica e limita os tipos de construção que podem ser realizados nela.,The city has different zones intended for construction. Each zone has a specific purpose and limits the types of building that can be placed there.
 TXT_TUTORIAL_6,"Existem zonas residenciais, destinadas às casas e à habitação da população, e zonas destinadas a construções com diferentes funções para a cidade.","There are residential zones, intended for houses and population housing, as well as zones intended for buildings with different functions for the city."
 TXT_TUTORIAL_7,"As casas permitem acomodar mais moradores. Conforme a cidade cresce, a quantidade de habitantes também pode aumentar.","Houses allow more residents to live in the city. As the city grows, the number of inhabitants can also increase."
-TXT_TUTORIAL_8,"Uma população maior também pode representar uma maior arrecadação para a cidade.","A larger population can also mean greater revenue for the city."
+TXT_TUTORIAL_8,Uma população maior também pode representar uma maior arrecadação para a cidade.,A larger population can also mean greater revenue for the city.
 TXT_TUTORIAL_9,"As construções levam um determinado tempo para serem concluídas. Por isso, algumas decisões precisam ser tomadas com antecedência.","Construction takes a certain amount of time to complete. Because of this, some decisions need to be made in advance."
 TXT_TUTORIAL_10,"Em situações de risco, determinadas construções podem ser aceleradas. Essa alternativa, porém, possui um custo maior.","In situations of risk, certain constructions can be accelerated. However, this option comes at a higher cost."
-TXT_TUTORIAL_11,"A cidade também possui um indicador de popularidade. As condições da cidade e as decisões da administração podem influenciar esse indicador.","The city also has a popularity indicator. The city's conditions and administrative decisions can affect this indicator."
+TXT_TUTORIAL_11,A cidade também possui um indicador de popularidade. As condições da cidade e as decisões da administração podem influenciar esse indicador.,The city also has a popularity indicator. The city's conditions and administrative decisions can affect this indicator.
 TXT_TUTORIAL_12,"É importante acompanhar a popularidade durante a administração. Caso chegue a 0%, ocorre um processo de impeachment e a administração é encerrada.","It is important to monitor popularity during the administration. If it reaches 0%, an impeachment process occurs and the administration is terminated."
-TXT_TUTORIAL_13,"A Prefeitura é o principal centro administrativo da cidade e está diretamente ligada ao desenvolvimento urbano.","The City Hall is the city's main administrative center and is directly connected to urban development."
-TXT_TUTORIAL_14,"A evolução da Prefeitura pode liberar novas possibilidades para a cidade conforme novos níveis são alcançados.","Upgrading the City Hall can unlock new possibilities for the city as new levels are reached."
+TXT_TUTORIAL_13,A Prefeitura é o principal centro administrativo da cidade e está diretamente ligada ao desenvolvimento urbano.,The City Hall is the city's main administrative center and is directly connected to urban development.
+TXT_TUTORIAL_14,A evolução da Prefeitura pode liberar novas possibilidades para a cidade conforme novos níveis são alcançados.,Upgrading the City Hall can unlock new possibilities for the city as new levels are reached.
 TXT_TUTORIAL_15,"Preste atenção neste símbolo de alerta — ele aparece quando um desastre está prestes a atingir a cidade, como uma enchente.","Pay attention to this alert symbol — it appears whenever a disaster is about to hit the city, like a flood."
 TXT_TUTORIAL_16,"Desastres podem causar prejuízos sérios. Uma boa gestão inclui se preparar com antecedência, e não só reagir depois que o problema já aconteceu.","Disasters can cause serious damage. Good management includes preparing in advance, not just reacting after the problem has already happened."
-TXT_TUTORIAL_17,"Aqui no topo você acompanha a população da cidade — o número total de moradores que vivem aqui atualmente.","Up here you can track the city's population — the total number of residents currently living here."
+TXT_TUTORIAL_17,Aqui no topo você acompanha a população da cidade — o número total de moradores que vivem aqui atualmente.,Up here you can track the city's population — the total number of residents currently living here.
 TXT_TUTORIAL_18,"Este outro número mostra os desabrigados: pessoas que perderam a casa, geralmente por causa de um desastre. Vale a pena resolver isso rápido.","This other number shows the homeless: people who lost their homes, usually because of a disaster. It's worth resolving that quickly."
-TXT_TUTORIAL_19,"Aqui fica o dinheiro disponível no momento — acompanhe sempre antes de decidir gastar com uma nova construção.","This is the money currently available — always check it before deciding to spend on a new construction."
-TXT_TUTORIAL_20,"E aqui está a popularidade que já mencionamos. Fique de olho nela sempre que tomar uma decisão importante.","And here's the popularity we mentioned earlier. Keep an eye on it whenever you make an important decision."
+TXT_TUTORIAL_19,Aqui fica o dinheiro disponível no momento — acompanhe sempre antes de decidir gastar com uma nova construção.,This is the money currently available — always check it before deciding to spend on a new construction.
+TXT_TUTORIAL_20,E aqui está a popularidade que já mencionamos. Fique de olho nela sempre que tomar uma decisão importante.,And here's the popularity we mentioned earlier. Keep an eye on it whenever you make an important decision.
 TXT_TUTORIAL_21,"Por fim, este botão avança o turno. Use-o quando terminar suas ações e quiser seguir para o próximo momento da gestão.","Finally, this button advances the turn. Use it once you're done with your actions and want to move on to the next part of the administration."
-TXT_TUTORIAL_22,"Essas são algumas das informações básicas para começar. O restante da administração será apresentado conforme a cidade se desenvolve.","These are some of the basic pieces of information needed to begin. The rest of the administration will be introduced as the city develops."
-TXT_TUTORIAL_23,"Boa gestão!","Good management!"
+TXT_TUTORIAL_22,Essas são algumas das informações básicas para começar. O restante da administração será apresentado conforme a cidade se desenvolve.,These are some of the basic pieces of information needed to begin. The rest of the administration will be introduced as the city develops.
+TXT_TUTORIAL_23,Boa gestão!,Good management!

@@ -1710,8 +1710,8 @@ const TURNO_MISSAO := {
 	"missao_prefeitura": 0,
 	"missao1": 2,
 	"missao3": 16,
-	"missao2": 7,
-	"missao4": 4,
+	"missao2": 6,
+	"missao4": 14,
 }
 
 func processar_missao_programada():

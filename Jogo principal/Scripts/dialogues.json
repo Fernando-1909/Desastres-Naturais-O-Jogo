@@ -22,8 +22,8 @@
 	},
 	"missao1_2": {
 	  "autor": "TESOUREIRO",
-	  "texto_chave": "TXT_MISSAO1_2_PARTE1",
-	  "proximo": "missao1_2_parte2"
+	  "texto_chave": "TXT_MISSAO1_2",
+	  "proximo": "missao1_3"
 	},
 	"missao1_3": {
 	  "autor": "SECRETARIA",
@@ -32,8 +32,8 @@
 	},
 	"missao2_1": {
 	  "autor": "SECRETARIA",
-	  "texto_chave": "TXT_MISSAO2_1_PARTE1",
-	  "proximo": "missao2_1_parte2"
+	  "texto_chave": "TXT_MISSAO2_1",
+	  "proximo": "missao2_2"
 	},
 	"missao2_2": {
 	  "autor": "TESOUREIRO",
@@ -47,8 +47,8 @@
 	},
 	"missao3_1": {
 	  "autor": "SECRETARIA",
-	  "texto_chave": "TXT_MISSAO3_1_PARTE1",
-	  "proximo": "missao3_1_parte2"
+	  "texto_chave": "TXT_MISSAO3_1",
+	  "proximo": "missao3_2"
 	},
 	"missao3_2": {
 	  "autor": "TESOUREIRO",
@@ -174,21 +174,6 @@
 	  "autor": "SECRETARIA",
 	  "texto_chave": "TXT_TUTORIAL_23",
 	  "proximo": "fim"
-	},
-	"missao1_2_parte2": {
-	  "autor": "TESOUREIRO",
-	  "texto_chave": "TXT_MISSAO1_2_PARTE2",
-	  "proximo": "missao1_3"
-	},
-	"missao2_1_parte2": {
-	  "autor": "SECRETARIA",
-	  "texto_chave": "TXT_MISSAO2_1_PARTE2",
-	  "proximo": "missao2_2"
-	},
-	"missao3_1_parte2": {
-	  "autor": "SECRETARIA",
-	  "texto_chave": "TXT_MISSAO3_1_PARTE2",
-	  "proximo": "missao3_2"
 	},
 	"missao4_1": {
 	  "autor": "SECRETARIA",
