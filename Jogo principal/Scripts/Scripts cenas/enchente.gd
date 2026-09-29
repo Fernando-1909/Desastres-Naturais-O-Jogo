@@ -48,7 +48,8 @@ class_name Enchente
 # O dano NÃO aumenta conforme o nível.
 @export var dano_infraestrutura: float = 25.0
 
-# Quanto tempo (segundos) a faixa de dano fica visível depois de cada atualização de turno
+# Mantido por compatibilidade com versões anteriores.
+# A onda agora permanece visível durante todo o turno.
 @export var duracao_visivel_segundos: float = 3.5
 
 # Progresso da enchente ao longo dos turnos
@@ -133,6 +134,11 @@ func _ready() -> void:
 	# AreaVisual é apenas o limite da área.
 	area_visual.visible = false
 
+	# Os elementos visuais da enchente nunca devem bloquear cliques.
+	# ColorRect pode capturar o mouse mesmo quando está transparente.
+	area_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	area_dano.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
 	# AreaDano continua existindo (é ela que a lógica de dano usa pra
 	# posição/tamanho), mas fica invisível — quem aparece na tela é o
 	# AnimatedSprite2D "Onda".
@@ -197,9 +203,12 @@ func _aplicar_turno_atual() -> void:
 	# O nível NÃO aumenta mais o dano.
 	var dano_atual = dano_infraestrutura * (1.0 - mitigacao_atual)
 
-	# Reinicia a visibilidade temporária da faixa de dano
-	timer_visibilidade.stop()
-	timer_visibilidade.start()
+	# A onda permanece visível durante todo o turno.
+	# No próximo turno esta função é chamada novamente, atualizando
+	# o tamanho da onda conforme o novo nível.
+	if onda_sprite:
+		onda_sprite.visible = true
+		onda_sprite.play("default")
 
 	print(
 		"[ENCHENTE] Nível ",
@@ -426,13 +435,9 @@ func get_tiles_afetados() -> Array[Vector2i]:
 
 
 func _on_timer_visibilidade_terminado() -> void:
-	if area_dano:
-		area_dano.visible = false
-
-	# Mantém exatamente a lógica original:
-	# a onda também desaparece quando o timer termina.
-	if onda_sprite:
-		onda_sprite.visible = false
+	# Mantido apenas por compatibilidade com a cena antiga.
+	# A visibilidade da onda não é mais controlada por tempo.
+	pass
 
 
 func _encerrar_enchente() -> void:
