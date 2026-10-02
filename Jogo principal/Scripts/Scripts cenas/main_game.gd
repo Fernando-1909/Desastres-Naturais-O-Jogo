@@ -2058,6 +2058,9 @@ func _verificar_derrota() -> void:
 	if Global.popularidade <= 0:
 		print("[FIM DE JOGO] Popularidade chegou a 0 ou menos (", Global.popularidade, "). Indo para tela de derrota.")
 		print("[FIM DE JOGO] missaoderrota=", Global.missaoderrota, " | enchentederrota=", Global.enchentederrota)
+		if "jogo_pausado" in Global:
+			Global.jogo_pausado = false
+		get_tree().paused = false
 		get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
 
 
@@ -2724,8 +2727,11 @@ func _verificar_inicio_automatico_de_enchente() -> bool:
 			print("[FIM DE JOGO] Turno ", Global.turno, ": nenhuma Prefeitura construída antes do primeiro desastre. Derrota.")
 			if "semprefeitura" in Global:
 				Global.semprefeitura = true
-			get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
-			return true
+			if "jogo_pausado" in Global:
+				Global.jogo_pausado = false
+		get_tree().paused = false
+		get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
+		return true
 		
 		_alerta_enchente_em_andamento = true
 		_mostrar_alerta_e_iniciar_enchente()
@@ -2815,6 +2821,9 @@ func _verificar_bomba_antes_da_segunda_enchente() -> bool:
 		print("[FIM DE JOGO] Turno ", Global.turno, ": nenhuma Bomba de Drenagem construída antes da segunda enchente. Derrota.")
 		if "mortebomba" in Global:
 			Global.mortebomba = true
+		if "jogo_pausado" in Global:
+			Global.jogo_pausado = false
+		get_tree().paused = false
 		get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
 		return true
 	
