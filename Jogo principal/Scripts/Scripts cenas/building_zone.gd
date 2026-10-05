@@ -41,7 +41,10 @@ class_name BuildingZone
 ## Custo para desbloquear esta zona durante a partida
 @export var custo_desbloqueio: int = 1000
 ## Multiplicador de renda/impostos dos prédios construídos aqui
-@export var multiplicador_receita: float = 1.0
+@export_range(0.0, 10.0, 0.05) var multiplicador_receita: float = 1.0
+## Multiplicador do custo de construção dos prédios construídos aqui
+## (ex: 0.8 = 20% mais barato, 1.3 = 30% mais caro)
+@export_range(0.01, 10.0, 0.05) var multiplicador_custo: float = 1.0
 
 @export_group("Regras de Construção")
 ## Categorias permitidas (ex: "Residencial", "Comercial"). Deixe vazio para todas.
@@ -191,6 +194,20 @@ func tem_vaga_disponivel(total_construcoes_atuais: int) -> bool:
 
 func obter_multiplicador_dano() -> float:
 	return multiplicador_dano_enchente
+
+
+func obter_multiplicador_custo() -> float:
+	# 0 (ou negativo) não faz sentido como multiplicador de custo — trata como
+	# "sem multiplicador" em vez de deixar tudo de graça por engano.
+	if multiplicador_custo <= 0.0:
+		return 1.0
+	return multiplicador_custo
+
+
+func obter_multiplicador_receita() -> float:
+	if multiplicador_receita <= 0.0:
+		return 1.0
+	return multiplicador_receita
 
 
 ## Verifica se uma determinada palavra-chave/ID está entre os edifícios ou categorias permitidas da zona

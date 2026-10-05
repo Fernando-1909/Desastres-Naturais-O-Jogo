@@ -1010,6 +1010,8 @@ position = Vector2(535, 482)
 scale = Vector2(1, 1.0198666)
 tipo_zona = "residencial"
 id_grupo = "res_1"
+multiplicador_receita = 0.8
+multiplicador_custo = 0.8
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
@@ -1019,7 +1021,7 @@ multiplicador_dano_enchente = 1.5
 position = Vector2(0, 0.98049927)
 
 [node name="Zona_Residencial2" parent="." unique_id=782536297 instance=ExtResource("15_tkcjf")]
-position = Vector2(535, 482)
+position = Vector2(336, 335)
 scale = Vector2(1, 1.0198666)
 nome_zona = "Zona Residencial2"
 tipo_zona = "residencial"
@@ -1030,22 +1032,24 @@ limite_maximo_edificios = 4
 multiplicador_dano_enchente = 1.5
 
 [node name="CollisionShape2D" parent="Zona_Residencial2" index="0" unique_id=711131371]
-position = Vector2(-195, -145.11702)
+position = Vector2(0, -0.9805145)
 shape = SubResource("RectangleShape2D_pnfwx")
 
 [node name="Zona_Residencial3" parent="." unique_id=1143560931 instance=ExtResource("15_tkcjf")]
-position = Vector2(535, 482)
+position = Vector2(796, 155.00002)
 scale = Vector2(1, 1.0198666)
 nome_zona = "Zona Residencial3"
 tipo_zona = "residencial"
 id_grupo = "res_3"
+multiplicador_receita = 2.0
+multiplicador_custo = 2.01
 categorias_permitidas = Array[String](["Residencial"])
 edificios_permitidos = Array[ExtResource("16_fo8d0")]([ExtResource("17_2cq4x")])
 limite_maximo_edificios = 4
 multiplicador_dano_enchente = 1.5
 
 [node name="CollisionShape2D" parent="Zona_Residencial3" index="0" unique_id=711131371]
-position = Vector2(238, -320.63016)
+position = Vector2(1, 0.98046875)
 shape = SubResource("RectangleShape2D_sufiw")
 
 [node name="Zona_Teste" parent="." unique_id=1463022229 instance=ExtResource("15_tkcjf")]

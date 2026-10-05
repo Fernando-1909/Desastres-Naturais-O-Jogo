@@ -89,9 +89,10 @@ func _on_pular_turno_pressed() -> void:
 	# SISTEMA DE RENDA E MANUTENÇÃO (GANHOS - CUSTOS)
 	# ========================================================
 	
-	Global.renda = int(
-		Global.populacao / POPULACAO_POR_UNIDADE_RENDA
-	)
+	if main_game and main_game.has_method("calcular_renda_com_multiplicadores_de_zona"):
+		Global.renda = main_game.calcular_renda_com_multiplicadores_de_zona()
+	else:
+		Global.renda = int(Global.populacao / POPULACAO_POR_UNIDADE_RENDA)
 	
 	var renda_total = 0
 	

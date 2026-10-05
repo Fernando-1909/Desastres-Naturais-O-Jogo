@@ -430,9 +430,9 @@ func _recalcular_recursos_resgate() -> void:
 			abrigo_ocupado = Global.pessoas_abrigadas
 
 	print("[SISTEMA RESGATE] Abrigos construídos: ", qtd_abrigos, 
-		  " | Capacidade Total: ", total_capacidade_abrigo, 
-		  " | Ocupação: ", abrigo_ocupado, "/", total_capacidade_abrigo, 
-		  " | Vagas Livres: ", obter_vagas_abrigos_disponiveis())
+		" | Capacidade Total: ", total_capacidade_abrigo, 
+		" | Ocupação: ", abrigo_ocupado, "/", total_capacidade_abrigo, 
+		" | Vagas Livres: ", obter_vagas_abrigos_disponiveis())
 
 
 func tem_abrigo_construido() -> bool:
@@ -585,8 +585,8 @@ func pode_realizar_resgate() -> bool:
 func _simular_emergencia(qtd_vitimas: int) -> void:
 	print("\n--- [ALERTA] Emergência Ocorreu! Vítimas a resgatar: ", qtd_vitimas, " ---")
 	print("[STATUS MAPA] Abrigos construídos: ", contar_abrigos_construidos(), 
-		  " | Vagas Totais: ", total_capacidade_abrigo, 
-		  " | Estações Bombeiro: ", contar_estacoes_bombeiro_construidas())
+		" | Vagas Totais: ", total_capacidade_abrigo, 
+		" | Estações Bombeiro: ", contar_estacoes_bombeiro_construidas())
 
 	if not pode_realizar_resgate():
 		print("[RESGATE CANCELADO] O resgate não pôde ser iniciado por falta de pré-requisitos.")
@@ -1202,8 +1202,20 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 			return
 
 	# 2. Validacao e Calculo Dinamico de Custo e Tempo de Construcao
-	var custo_final: int = b_data.custo_base if "custo_base" in b_data else 0
+	# O custo base vem do BuildingData e o multiplicador vem da zona onde
+	# o prédio está sendo construído. Assim, alterar a zona no Inspector
+	# altera de fato o preço da construção.
+	var custo_base: float = float(b_data.custo_base) if "custo_base" in b_data else 0.0
+	var multiplicador_custo_zona: float = 1.0
+	if zona_atual and zona_atual.has_method("obter_multiplicador_custo"):
+		multiplicador_custo_zona = zona_atual.obter_multiplicador_custo()
+
+	var custo_final: int = int(round(custo_base * multiplicador_custo_zona))
 	var tempo_construcao: int = b_data.tempo_construcao_turnos if "tempo_construcao_turnos" in b_data else 0
+
+	print("[ZONA] Construindo ", b_data.nome, " | Custo base: $", custo_base,
+		" | Mult. custo zona: x", multiplicador_custo_zona,
+		" | Custo final: $", custo_final)
 
 	# Regra especial: Bomba de drenagem durante a enchente ativa
 	if (id_limpo == "bomba_drenagem" or "bomba" in id_limpo) and _enchente_ativa != null:
@@ -1383,7 +1395,7 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	if not construcoes_no_mapa.has(_celula_selecionada): return
 	
 	var predio: BuildingInstance = construcoes_no_mapa[_celula_selecionada]
-	var custo = predio.get_custo_upgrade()
+	var custo = calcular_custo_upgrade_com_zona(predio)
 	
 	if Global.dinheiro >= custo:
 		Global.dinheiro -= custo
@@ -2164,16 +2176,18 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 		if pode_up and edificios_bloqueados_inicialmente.has(id_predio):
 			pode_up = edificios_desbloqueados.has(id_predio)
 		
-		# Aplica o bônus de 10% da Prefeitura sobre os ganhos base
+		# Aplica o bônus da zona e o bônus de 10% da Prefeitura sobre os ganhos base.
 		var ganho_base = predio.get_ganhos_atuais() if predio.has_method("get_ganhos_atuais") else 0
-		var ganho_final = int(round(ganho_base * obter_multiplicador_prefeitura()))
+		var multiplicador_receita_zona := _obter_multiplicador_receita_zona(_celula_selecionada)
+		var ganho_final = int(round(ganho_base * multiplicador_receita_zona * obter_multiplicador_prefeitura()))
+		var custo_upgrade_zona = calcular_custo_upgrade_com_zona(predio)
 		
 		tela_compras.abrir_modo_upgrade(
 			b_data.nome if "nome" in b_data else "",
 			n_atual,
 			ganho_final,
 			predio.get_durabilidade_pct() if predio.has_method("get_durabilidade_pct") else 1.0,
-			predio.get_custo_upgrade() if predio.has_method("get_custo_upgrade") else 0,
+			custo_upgrade_zona,
 			tex,
 			b_data.descricao_curta if "descricao_curta" in b_data else "",
 			b_data.texto_detalhes if "texto_detalhes" in b_data else "",
@@ -2564,6 +2578,68 @@ func _spawnar_bomba_teste() -> void:
 	_atualizar_sistema_drenagem()
 	print("Bomba de teste adicionada na Zona do Rio | Tile: ", pos_tile)
 	print("Nova mitigação da enchente: ", _calcular_mitigacao_enchente() * 100.0, "%")
+
+
+# ==============================================================================
+# MULTIPLICADORES DAS ZONAS
+# ==============================================================================
+func _obter_multiplicador_custo_zona(pos_tile: Vector2i) -> float:
+	var zona = zona_por_tile.get(pos_tile, null)
+	if zona == null:
+		zona = _obter_zona_no_tile(pos_tile)
+	if zona and zona.has_method("obter_multiplicador_custo"):
+		return zona.obter_multiplicador_custo()
+	return 1.0
+
+
+func _obter_multiplicador_receita_zona(pos_tile: Vector2i) -> float:
+	var zona = zona_por_tile.get(pos_tile, null)
+	if zona == null:
+		zona = _obter_zona_no_tile(pos_tile)
+	if zona and zona.has_method("obter_multiplicador_receita"):
+		return zona.obter_multiplicador_receita()
+	return 1.0
+
+
+func calcular_custo_upgrade_com_zona(predio: BuildingInstance) -> int:
+	if predio == null or not predio.data:
+		return 0
+	var custo_base = predio.get_custo_upgrade() if predio.has_method("get_custo_upgrade") else 0.0
+	var multiplicador = _obter_multiplicador_custo_zona(predio.posicao_tile)
+	return int(round(float(custo_base) * multiplicador))
+
+
+func calcular_renda_com_multiplicadores_de_zona() -> int:
+	# A renda original é baseada na população. Para que as zonas residenciais
+	# realmente alterem o dinheiro gerado, a população proveniente de cada casa
+	# é ponderada pelo multiplicador de receita da zona onde ela está.
+	var populacao_residencial_base: float = 0.0
+	var populacao_residencial_ponderada: float = 0.0
+
+	for pos in construcoes_no_mapa.keys():
+		var predio: BuildingInstance = construcoes_no_mapa[pos]
+		if predio == null or predio.data == null:
+			continue
+		if "em_construcao" in predio and predio.em_construcao:
+			continue
+		if "durabilidade_atual" in predio and predio.durabilidade_atual <= 0:
+			continue
+
+		var categoria = str(predio.data.categoria).to_lower().strip_edges()
+		var moradores = float(predio.data.bonus_populacao) if "bonus_populacao" in predio else 0.0
+		if moradores <= 0.0 or categoria != "residencial":
+			continue
+
+		populacao_residencial_base += moradores
+		populacao_residencial_ponderada += moradores * _obter_multiplicador_receita_zona(pos)
+
+	# Mantém população que não veio de casas sem alteração.
+	var populacao_outras_fontes = max(0.0, float(Global.populacao) - populacao_residencial_base)
+	var populacao_efetiva = populacao_outras_fontes + populacao_residencial_ponderada
+
+	# Cada 10 habitantes correspondem a 1 unidade de renda,
+	# igual à regra original do jogo.
+	return int(populacao_efetiva / 10.0)
 
 
 # ==============================================================================

@@ -11,5 +11,5 @@ script = ExtResource("1_3lyrg")
 edificios_permitidos = Array[ExtResource("2_0k6d3")]([null])
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=711131371]
-position = Vector2(504, 406.5)
+position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_g4v7s")
