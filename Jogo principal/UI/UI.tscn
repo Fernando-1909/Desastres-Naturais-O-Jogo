@@ -229,9 +229,9 @@ texture = SubResource("AtlasTexture_gp8g6")
 [node name="Numero" type="RichTextLabel" parent="PainelTurnos/Turnos/Turno" unique_id=809114242]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 0
-offset_left = 150.0
+offset_left = 160.0
 offset_top = -7.0
-offset_right = 370.0
+offset_right = 380.00027
 offset_bottom = 53.0
 theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
@@ -243,15 +243,15 @@ vertical_alignment = 1
 [node name="TurnoTexto" type="RichTextLabel" parent="PainelTurnos/Turnos/Turno" unique_id=1610462845]
 custom_minimum_size = Vector2(220, 60)
 layout_mode = 0
-offset_left = -15.0
+offset_left = -10.0
 offset_top = -7.0
-offset_right = 205.0
+offset_right = 210.0
 offset_bottom = 53.0
 theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/normal_font_size = 30
-text = "TURNO"
+theme_override_font_sizes/normal_font_size = 28
+text = "Semana"
 horizontal_alignment = 1
 vertical_alignment = 1
 
