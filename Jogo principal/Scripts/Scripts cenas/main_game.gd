@@ -2805,9 +2805,9 @@ func _verificar_inicio_automatico_de_enchente() -> bool:
 				Global.semprefeitura = true
 			if "jogo_pausado" in Global:
 				Global.jogo_pausado = false
-		get_tree().paused = false
-		get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
-		return true
+			get_tree().paused = false
+			get_tree().change_scene_to_file("res://Jogo principal/derrota.tscn")
+			return true
 		
 		_alerta_enchente_em_andamento = true
 		_mostrar_alerta_e_iniciar_enchente()
@@ -2874,7 +2874,8 @@ func _verificar_inicio_automatico_de_enchente2() -> void:
 ## construído nenhuma Bomba de Drenagem, ele perde — a segunda enchente (mais
 ## forte) já estará em andamento e a cidade não tem defesa nenhuma contra ela.
 func _verificar_bomba_antes_da_segunda_enchente() -> bool:
-	if Global.turno != turno_limite_bomba_para_segunda_enchente:
+	# A derrota por falta de Bomba de Drenagem acontece EXCLUSIVAMENTE no turno 20.
+	if Global.turno != 20:
 		return false
 	
 	# Conta diretamente as Bombas de Drenagem que realmente estão construídas no mapa.
