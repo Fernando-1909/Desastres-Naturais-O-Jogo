@@ -24,6 +24,7 @@ var pessoas_desabrigadas: int = 0   # NPCs que perderam a casa em um desastre (i
 var turno: int
 var renda: int             # Quantidade de "unidades" de renda geradas por turno (baseado na população)
 var idioma_atual: String = "pt"
+var gastos_totais_obras: int = 0
 
 var prefeitura_construida: bool = false
 var zonas_compradas: Array[String] = [] # Armazena IDs como ["zona_residencial_1"]

@@ -84,6 +84,13 @@ unique_name_in_owner = true
 wait_time = 0.1
 one_shot = true
 
+[node name="BotaoPular" type="Button" parent="CaixaDialogo" unique_id=1407988859]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = ">>"
+
 [node name="ChoicesContainer" type="VBoxContainer" parent="." unique_id=564451377]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)

@@ -39,6 +39,7 @@
 [ext_resource type="Resource" uid="uid://bv8ux8jaatqbv" path="res://Jogo principal/Scripts/Scripts cons/bomba_drenagem.tres" id="23_cuk6r"]
 [ext_resource type="Texture2D" uid="uid://bpcafexx7ie54" path="res://Jogo principal/tilesheets/casa_destruida_level_1-Aqua.png" id="23_ly8el"]
 [ext_resource type="Texture2D" uid="uid://cvvmreyif6p5h" path="res://Jogo principal/tilesheets/prefeituras_levels.png" id="25_ly8el"]
+[ext_resource type="PackedScene" uid="uid://caelpiibc8573" path="res://Jogo principal/UI/tela_financas.tscn" id="28_s6pm0"]
 [ext_resource type="Resource" uid="uid://d8wt5ewj5bjo" path="res://Jogo principal/Scripts/Scripts cons/prefeitura.tres" id="39_lc4nt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sufiw"]
@@ -947,6 +948,9 @@ layout_direction = 3
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "  X  "
+
+[node name="TelaFinancas" parent="CanvasLayer" unique_id=1726936955 instance=ExtResource("28_s6pm0")]
+visible = false
 
 [node name="FreeCamera2D" parent="." unique_id=834210011 instance=ExtResource("9_botex")]
 visible = true

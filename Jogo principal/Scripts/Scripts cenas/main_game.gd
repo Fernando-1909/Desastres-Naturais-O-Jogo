@@ -8,6 +8,7 @@ extends Node2D
 @onready var hud = $CanvasLayer/Ui
 @onready var menu_pausa: MenuPausa = $MenuPausa
 @onready var sistema_drenagem: SistemaDrenagem = $SistemaDrenagem
+@onready var tela_financas: Control = $CanvasLayer/TelaFinancas
 
 # TILEMAPS DE TERRENO (Troca durante a enchente)
 @onready var tilemapground: TileMapLayer = $TileMapGround
@@ -946,6 +947,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		
 	if event is InputEventKey and event.pressed and not event.echo:
+		# Tecla F para abrir ou fechar a tela de finanças
+		if event.keycode == KEY_F:
+			_alternar_tela_financas()
+			return
+
 		# Tecla E para testar uma emergência no sistema de resgate
 		if event.keycode == KEY_E:
 			_simular_emergencia(3)
@@ -973,6 +979,24 @@ func _unhandled_input(event: InputEvent) -> void:
 				var pos_local = tile_map.get_local_mouse_position()
 				var pos_tile: Vector2i = tile_map.local_to_map(pos_local)
 				_processar_clique_no_tile(pos_tile)
+
+
+## Alterna entre abrir e fechar a tela de finanças ao pressionar a tecla F
+func _alternar_tela_financas() -> void:
+	if not tela_financas:
+		print("[AVISO] Nenhuma tela de finanças atribuída no nó $CanvasLayer/TelaFinancas!")
+		return
+		
+	if tela_financas.visible:
+		if tela_financas.has_method("fechar_tela"):
+			tela_financas.fechar_tela()
+		else:
+			tela_financas.visible = false
+	else:
+		if tela_financas.has_method("abrir_tela"):
+			tela_financas.abrir_tela(self)
+		else:
+			tela_financas.visible = true
 
 
 # ==============================================================================
@@ -1202,9 +1226,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 			return
 
 	# 2. Validacao e Calculo Dinamico de Custo e Tempo de Construcao
-	# O custo base vem do BuildingData e o multiplicador vem da zona onde
-	# o prédio está sendo construído. Assim, alterar a zona no Inspector
-	# altera de fato o preço da construção.
 	var custo_base: float = float(b_data.custo_base) if "custo_base" in b_data else 0.0
 	var multiplicador_custo_zona: float = 1.0
 	if zona_atual and zona_atual.has_method("obter_multiplicador_custo"):
@@ -1228,8 +1249,10 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 			_mostrar_aviso_texto("Você não possui dinheiro o suficiente!")
 		return
 
-	# 3. Transacao
+	# 3. Transacao e Registro Acumulado do Gasto em Obras
 	Global.dinheiro -= custo_final
+	if "gastos_totais_obras" in Global:
+		Global.gastos_totais_obras += custo_final
 	
 	var precisa_construir = tempo_construcao > 0
 
@@ -1406,6 +1429,8 @@ func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
 	
 	if Global.dinheiro >= custo:
 		Global.dinheiro -= custo
+		if "gastos_totais_obras" in Global:
+			Global.gastos_totais_obras += custo
 		
 		# 1. Incrementa o nível
 		predio.nivel_atual += 1
@@ -1951,26 +1976,58 @@ func _atualizar_texto_missao_hud() -> void:
 	if missao_exibir == null:
 		return
 		
-	# Puxa o texto traduzido diretamente do CSV registrado no Godot via tr()
-	var nome_traduzido: String = tr(missao_exibir.nome)
-	var desc_traduzida: String = tr(missao_exibir.info)
+	# Limpa possíveis espaços e busca a tradução no CSV via tr()
+	var chave_nome: String = str(missao_exibir.nome).strip_edges()
+	var chave_info: String = str(missao_exibir.info).strip_edges()
+	
+	var nome_traduzido: String = tr(chave_nome)
+	var desc_traduzida: String = tr(chave_info)
 	
 	var missao_container = hud.get_node("MissaoContainer")
 	
-	# Busca os nós de texto dentro do container da UI
-	var label_nome = missao_container.find_child("*Nome*", true, false)
-	var label_info = missao_container.find_child("*Info*", true, false)
-	
-	# Aplica o texto traduzido diretamente nos nós
-	if label_nome and label_nome is Label:
-		label_nome.text = nome_traduzido
-	elif label_nome and label_nome is RichTextLabel:
-		label_nome.text = nome_traduzido
+	# 1. Busca o nó de texto do NOME/TÍTULO (testa variações comuns de nome de nó)
+	var label_nome: Node = null
+	var padroes_nome = ["*Nome*", "*Titulo*", "*Title*", "*Header*", "*Name*"]
+	for padrao in padroes_nome:
+		var no_encontrado = missao_container.find_child(padrao, true, false)
+		if no_encontrado and (no_encontrado is Label or no_encontrado is RichTextLabel):
+			label_nome = no_encontrado
+			break
+
+	# 2. Busca o nó de texto da DESCRIÇÃO/INFO
+	var label_info: Node = null
+	var padroes_info = ["*Info*", "*Desc*", "*Detalhe*"]
+	for padrao in padroes_info:
+		var no_encontrado = missao_container.find_child(padrao, true, false)
+		if no_encontrado and (no_encontrado is Label or no_encontrado is RichTextLabel):
+			label_info = no_encontrado
+			break
+
+	# 3. Fallback: Se não encontrou pelo nome do nó, varre recursivamente as Labels da interface
+	if label_nome == null or label_info == null:
+		var todas_labels: Array[Node] = []
+		_coletar_labels(missao_container, todas_labels)
+		if todas_labels.size() > 0 and label_nome == null:
+			label_nome = todas_labels[0]
+		if todas_labels.size() > 1 and label_info == null:
+			label_info = todas_labels[1]
+
+	# 4. Aplica os textos traduzidos diretamente nos nós encontrados
+	if label_nome:
+		if label_nome is Label or label_nome is RichTextLabel:
+			label_nome.text = nome_traduzido
 		
-	if label_info and label_info is Label:
-		label_info.text = desc_traduzida
-	elif label_info and label_info is RichTextLabel:
-		label_info.text = desc_traduzida
+	if label_info:
+		if label_info is Label or label_info is RichTextLabel:
+			label_info.text = desc_traduzida
+
+
+## Função auxiliar para localizar e coletar todos os nós de texto dentro do contêiner
+func _coletar_labels(no: Node, lista: Array[Node]) -> void:
+	for filho in no.get_children():
+		if filho is Label or filho is RichTextLabel:
+			lista.append(filho)
+		_coletar_labels(filho, lista)
 
 
 ## Toca primeiro o diálogo da missão (Secretária/Tesoureiro) na cena
@@ -2304,9 +2361,11 @@ func _on_reconstrucao_confirmada(pos_tile: Vector2i, custo: int) -> void:
 		print("[RECONSTRUÇÃO BLOQUEADA] Dinheiro insuficiente! Necessário: $", custo)
 		return
 
-	# 1. Deduz o Custo
+	# 1. Deduz o Custo e Registra o Gasto em Obras
 	if typeof(Global) != TYPE_NIL and "dinheiro" in Global:
 		Global.dinheiro -= custo
+		if "gastos_totais_obras" in Global:
+			Global.gastos_totais_obras += custo
 
 	# 2. Restaura a Durabilidade e o Estado da Estrutura
 	var instancia: BuildingInstance = construcoes_no_mapa[pos_tile]

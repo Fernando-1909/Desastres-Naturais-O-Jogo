@@ -25,6 +25,7 @@ signal dialogo_finalizado(ultimo_no_id: String)
 @onready var choices_container: VBoxContainer = %ChoicesContainer
 @onready var timer: Timer = %Timing
 @onready var margin_container: MarginContainer = %ContainerDialogo  # marque como Unique Name na cena
+@onready var botao_pular: Button = %BotaoPular
 
 @export var estilo_padrao: StyleBoxTexture      # StyleBox pra 16:9 ou mais estreito
 @export var estilo_widescreen: StyleBoxTexture  # StyleBox pra telas mais largas que 16:9
@@ -65,6 +66,10 @@ func _ready() -> void:
 	
 	if not dialogue_box.gui_input.is_connected(_on_dialogue_box_gui_input):
 		dialogue_box.gui_input.connect(_on_dialogue_box_gui_input)
+
+	# Conecta o clique do botão de pular
+	if botao_pular and not botao_pular.pressed.is_connected(_on_botao_pular_pressed):
+		botao_pular.pressed.connect(_on_botao_pular_pressed)
 	
 	# Script da mudança de estilo conforme o ratio
 	estilo_padrao = StyleBoxTexture.new()
@@ -144,6 +149,9 @@ func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String) -> 
 	dialogue_box.visible = true
 	choices_container.hide()
 	
+	if botao_pular:
+		botao_pular.visible = true
+	
 	get_tree().paused = true
 	show_current_line()
 
@@ -165,6 +173,9 @@ func show_current_line() -> void:
 	var autor_id = dados_fala.get("autor", "")
 	
 	atualizar_autor_e_portrait(autor_id)
+	
+	if botao_pular:
+		botao_pular.visible = true
 	
 	var texto_chave = dados_fala.get("texto_chave", "")
 	dialogue_text.text = tr(texto_chave)
@@ -223,6 +234,9 @@ func advance_dialogue() -> void:
 
 
 func mostrar_menu_escolhas(opcoes: Array) -> void:
+	if botao_pular:
+		botao_pular.visible = false
+
 	for child in choices_container.get_children():
 		child.queue_free()
 		
@@ -262,6 +276,41 @@ func _on_opcao_selecionada(proximo_id: String) -> void:
 		current_node_id = proximo_id
 		show_current_line()
 
+
+func _on_botao_pular_pressed() -> void:
+	pular_dialogo()
+
+
+## Avança automaticamente todo o fluxo de diálogos até encontrar uma escolha
+## de respostas ou até chegar ao fim do diálogo atual.
+func pular_dialogo() -> void:
+	if not is_dialogue_active:
+		return
+		
+	if timer and not timer.is_stopped():
+		timer.stop()
+		
+	while is_dialogue_active:
+		var blocos = dialogue_data.get("dialogos", {})
+		if not blocos.has(current_node_id):
+			end_dialogue()
+			break
+			
+		var dados_fala = blocos[current_node_id]
+		
+		# Se a fala atual tiver menu de escolhas, interrompe o 'pular' e exibe as escolhas
+		if dados_fala.has("escolhas") and not dados_fala["escolhas"].is_empty():
+			show_current_line()
+			dialogue_text.visible_characters = -1
+			mostrar_menu_escolhas(dados_fala["escolhas"])
+			break
+			
+		var proximo_id = dados_fala.get("proximo", "fim")
+		if proximo_id == "fim" or proximo_id == "":
+			end_dialogue()
+			break
+		else:
+			current_node_id = proximo_id
 
 func end_dialogue() -> void:
 	var ultimo_no := current_node_id
