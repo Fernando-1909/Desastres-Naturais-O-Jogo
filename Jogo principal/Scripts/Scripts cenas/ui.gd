@@ -3,6 +3,8 @@ extends Control
 @onready var global = get_node("/root/Global")
 @onready var main_game = get_tree().current_scene
 @onready var avisos: RichTextLabel = $Avisos
+@onready var botao_turno: TextureButton = $PainelTurnos/Turnos/PularTurno
+@export var tempo_ocioso: float = 15.0
 
 signal toggle_freecam
 
@@ -10,12 +12,26 @@ var freecam: Camera2D
 var scene_camera: Camera2D
 var freecam_active := false
 var botoes_bloqueaveis = []
+var turno_idle_timer: Timer
+var _tween_atencao: Tween
 
 # Quantas pessoas de população equivalem a 1 "unidade" de renda por turno.
 const POPULACAO_POR_UNIDADE_RENDA := 10
 
 
 func _ready() -> void:
+	
+	#Botao Animado
+	turno_idle_timer = Timer.new()
+	turno_idle_timer.name = "TurnoIdleTimer"
+	turno_idle_timer.one_shot = true
+	turno_idle_timer.wait_time = tempo_ocioso
+	turno_idle_timer.timeout.connect(_chamar_atencao_turno)
+	add_child(turno_idle_timer)
+	turno_idle_timer.start()
+	botao_turno.resized.connect(_atualizar_pivot)
+	_atualizar_pivot()
+	
 	await get_tree().create_timer(0.5).timeout
 	_setup()
 
@@ -27,6 +43,31 @@ func _ready() -> void:
 		$ButtonPausa
 	]
 
+
+func _input(event: InputEvent) -> void:
+	if (event is InputEventMouseButton or event is InputEventKey) and event.is_pressed():
+		_parar_atencao_turno()
+		turno_idle_timer.start()
+
+#Botao Animado
+func _atualizar_pivot() -> void:
+	botao_turno.pivot_offset = botao_turno.size / 2
+
+#Botao Animado
+func _chamar_atencao_turno() -> void:
+	_parar_atencao_turno()
+	_tween_atencao = create_tween().set_loops().set_trans(Tween.TRANS_SINE)
+	_tween_atencao.tween_property(botao_turno, "modulate", Color(1.4, 1.4, 1.4), 0.6)
+	_tween_atencao.parallel().tween_property(botao_turno, "scale", Vector2(1.06, 1.06), 0.6)
+	_tween_atencao.tween_property(botao_turno, "modulate", Color.WHITE, 0.6)
+	_tween_atencao.parallel().tween_property(botao_turno, "scale", Vector2.ONE, 0.6)
+
+#Botao Animado
+func _parar_atencao_turno() -> void:
+	if _tween_atencao:
+		_tween_atencao.kill()
+	botao_turno.modulate = Color.WHITE
+	botao_turno.scale = Vector2.ONE
 
 func atualizar_botoes():
 	var desabilitar = Global.jogo_pausado
