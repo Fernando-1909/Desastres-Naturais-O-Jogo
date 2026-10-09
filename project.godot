@@ -74,7 +74,7 @@ pointing/emulate_touch_from_mouse=true
 
 [internationalization]
 
-locale/translations=PackedStringArray("res://Jogo principal/Scripts/translations.en.translation", "res://Jogo principal/Scripts/translations.pt.translation")
+locale/translations=PackedStringArray("res://Jogo principal/Scripts/translations.en.translation", "res://Jogo principal/Scripts/translations.pt.translation", "res://Jogo principal/Scripts/translations.csv")
 
 [physics]
 

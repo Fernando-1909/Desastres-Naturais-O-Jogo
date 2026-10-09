@@ -1358,33 +1358,40 @@ func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
 		Global.populacao += missao.bonus_populacao
 		_atualizar_npcs_por_populacao()
 	
-	# Registra a conclusão
-	Global.missoes_concluidas.append(missao.id)
+	# Registra a conclusão evitando duplicatas
+	if not Global.missoes_concluidas.has(missao.id):
+		Global.missoes_concluidas.append(missao.id)
 
 	# Se for a missão 4, desbloqueia as zonas residenciais 2 e 3
 	if missao.id == "missao4":
 		_ativar_terrenos_zona_residencial_expansao()
 	
-	print("[MISSÃO SUCESSO] '", missao.nome, "' concluída ao construir/aprimorar '", b_data.nome, "'!")
+	print("[MISSÃO SUCESSO] '", tr(missao.nome), "' concluída ao construir/aprimorar '", b_data.nome, "'!")
 	
-	# Guarda a missão concluída pra tela de confirmação
 	ultima_missao_concluida = missao
 	
-	# Reseta os estados de missão
 	Global.missao_escolhida = null
 	Global.missao_aceita = false
 	Global.missao_atual_turnos = 0
 	
-	# Atualiza a interface
 	_fechar_container_missao()
 	_missao_check_aberta = true
+	_atualizar_texto_missao_hud()
 	print("[DEBUG-MISSAO] _missao_check_aberta setado para true | ultima_missao_concluida='", ultima_missao_concluida.id, "'")
 	if hud and hud.has_node("MissaoContainer"):
 		var missao_container = hud.get_node("MissaoContainer")
-		if missao_container.has_node("VBoxContainer/HBoxContainer"):
-			missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
-		if missao_container.has_node("VBoxContainer/HBoxContainer2"):
-			missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+		var hbox_decisao = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer")
+		if not hbox_decisao:
+			hbox_decisao = missao_container.get_node_or_null("VBoxContainer/HBoxContainer")
+		if hbox_decisao:
+			hbox_decisao.visible = false
+			
+		var hbox_fechar = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer2")
+		if not hbox_fechar:
+			hbox_fechar = missao_container.get_node_or_null("VBoxContainer/HBoxContainer2")
+		if hbox_fechar:
+			hbox_fechar.visible = true
+			
 		missao_container.visible = true
 	else:
 		print("[DEBUG-MISSAO] hud ou 'MissaoContainer' não encontrado — container não pôde ser reaberto!")
@@ -1721,8 +1728,8 @@ const DIALOGO_INICIAL_POR_MISSAO := {
 const TURNO_MISSAO := {
 	"missao_prefeitura": 0,
 	"missao1": 2,
-	"missao3": 16,
 	"missao2": 6,
+	"missao3": 16,
 	"missao4": 14,
 }
 
@@ -1744,11 +1751,12 @@ func processar_missao_programada():
 				print("[AVISO] Missao '", id_missao, "' nao encontrada no banco_missoes!")
 				return null
 
+			ultima_missao_concluida = null
 			Global.missao_escolhida = m_data
 			Global.missao_atual_turnos = 0
 			Global.missao_aceita = false
 
-			print("[INFO] Turno ", Global.turno, ": Missao obrigatoria iniciada - ", m_data.nome)
+			print("[INFO] Turno ", Global.turno, ": Missao obrigatoria iniciada - ", tr(m_data.nome))
 
 			if id_missao == "missao1":
 				_ativar_terrenos_zona_funcoes()
@@ -1775,8 +1783,9 @@ func aceitar_missao() -> void:
 		print("Nenhuma missão ativa!")
 		return
 	
+	ultima_missao_concluida = null
 	Global.missao_aceita = true
-	print("Missão aceita: ", Global.missao_escolhida.nome, " — conclua antes de passar o turno, ou ela falhará!")
+	print("Missão aceita: ", tr(Global.missao_escolhida.nome), " — conclua antes de passar o turno, ou ela falhará!")
 	
 	_fechar_container_missao()
 	Global.jogo_pausado = false
@@ -1788,15 +1797,17 @@ func recusar_missao() -> void:
 		return
 	
 	var missao = Global.missao_escolhida
-	print("Missão recusada: ", missao.nome, " — recursos mantidos, oportunidade perdida.")
+	print("Missão recusada: ", tr(missao.nome), " — recursos mantidos, oportunidade perdida.")
 	
-	Global.missoes_concluidas.append(missao.id)
+	if not Global.missoes_concluidas.has(missao.id):
+		Global.missoes_concluidas.append(missao.id)
 	
 	_fechar_container_missao()
 	Global.jogo_pausado = false
 	
 	Global.missao_escolhida = null
 	Global.missao_atual_turnos = 0
+	ultima_missao_concluida = null
 
 
 func concluir_missao() -> void:
@@ -1820,14 +1831,14 @@ func concluir_missao() -> void:
 	
 	Global.missoes_concluidas.append(missao.id)
 	
-	print("Missão concluída: ", missao.nome)
+	print("Missão concluída: ", tr(missao.nome))
 	print("Gasto -> Dinheiro: ", missao.custo)
 	print("Popularidade: +", missao.popularidade)
 	if "bonus_populacao" in missao and missao.bonus_populacao > 0:
 		print("População: +", missao.bonus_populacao)
 	print("Restante -> Dinheiro: ", Global.dinheiro)
 	
-	# Guarda a missão concluída pra tela de confirmação (ver hud.gd)
+	# Guarda a missão concluída pra tela de confirmação
 	ultima_missao_concluida = missao
 	
 	Global.missao_escolhida = null
@@ -1839,11 +1850,20 @@ func concluir_missao() -> void:
 	_fechar_container_missao()
 	if hud and hud.has_node("MissaoContainer"):
 		_missao_check_aberta = true
+		_atualizar_texto_missao_hud()
 		var missao_container = hud.get_node("MissaoContainer")
-		if missao_container.has_node("VBoxContainer/HBoxContainer"):
-			missao_container.get_node("VBoxContainer/HBoxContainer").visible = false
-		if missao_container.has_node("VBoxContainer/HBoxContainer2"):
-			missao_container.get_node("VBoxContainer/HBoxContainer2").visible = true
+		var hbox_decisao = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer")
+		if not hbox_decisao:
+			hbox_decisao = missao_container.get_node_or_null("VBoxContainer/HBoxContainer")
+		if hbox_decisao:
+			hbox_decisao.visible = false
+			
+		var hbox_fechar = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer2")
+		if not hbox_fechar:
+			hbox_fechar = missao_container.get_node_or_null("VBoxContainer/HBoxContainer2")
+		if hbox_fechar:
+			hbox_fechar.visible = true
+			
 		missao_container.visible = true
 
 
@@ -1862,19 +1882,34 @@ func abrir_checagem_missao() -> void:
 	if not hud or not hud.has_node("MissaoContainer"):
 		return
 	
+	# Garante que a checagem exiba a missão atual e limpa a referência da missão anterior
+	ultima_missao_concluida = null
 	_missao_check_aberta = true
+	_atualizar_texto_missao_hud()
 	
 	var missao_container = hud.get_node("MissaoContainer")
-	if missao_container.has_node("MarginContainer/VBoxContainer/HBoxContainer"):
-		missao_container.get_node("MarginContainer/VBoxContainer/HBoxContainer").visible = false
-	if missao_container.has_node("MarginContainer/VBoxContainer/HBoxContainer2"):
-		missao_container.get_node("MarginContainer/VBoxContainer/HBoxContainer2").visible = true
+	var hbox_decisao = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer")
+	if not hbox_decisao:
+		hbox_decisao = missao_container.get_node_or_null("VBoxContainer/HBoxContainer")
+	if hbox_decisao:
+		hbox_decisao.visible = false
+
+	var hbox_fechar = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer2")
+	if not hbox_fechar:
+		hbox_fechar = missao_container.get_node_or_null("VBoxContainer/HBoxContainer2")
+	if hbox_fechar:
+		hbox_fechar.visible = true
+		
 	missao_container.visible = true
 
 
-func fechar_checagem_missao() -> void:
-	_missao_check_aberta = false
-	_fechar_container_missao()
+func _abrir_container_missao() -> void:
+	if hud and hud.has_node("MissaoContainer"):
+		if Global.missao_escolhida != null:
+			ultima_missao_concluida = null
+		_atualizar_texto_missao_hud()
+		hud.get_node("MissaoContainer").visible = true
+		Global.jogo_pausado = true
 
 
 func desbloquear_edificio(id_edificio: String) -> void:
@@ -1883,7 +1918,8 @@ func desbloquear_edificio(id_edificio: String) -> void:
 		edificios_desbloqueados.append(id_limpo)
 		print("[PROGRESSÃO] Edifício liberado para construção: ", id_limpo)
 
-
+func fechar_checagem_missao() -> void:
+	_fechar_container_missao()
 
 func _fechar_container_missao() -> void:
 	_missao_check_aberta = false # Reseta a trava para permitir o sorteio/chamada de novas missões
@@ -1902,10 +1938,39 @@ func _fechar_container_missao() -> void:
 	if hbox_fechar:
 		hbox_fechar.visible = false
 
-func _abrir_container_missao() -> void:
-	if hud and hud.has_node("MissaoContainer"):
-		hud.get_node("MissaoContainer").visible = true
-		Global.jogo_pausado = true
+func _atualizar_texto_missao_hud() -> void:
+	if not hud or not hud.has_node("MissaoContainer"):
+		return
+		
+	var missao_exibir: MissionData = null
+	if Global.missao_escolhida != null:
+		missao_exibir = Global.missao_escolhida
+	elif _missao_check_aberta and ultima_missao_concluida != null:
+		missao_exibir = ultima_missao_concluida
+		
+	if missao_exibir == null:
+		return
+		
+	# Puxa o texto traduzido diretamente do CSV registrado no Godot via tr()
+	var nome_traduzido: String = tr(missao_exibir.nome)
+	var desc_traduzida: String = tr(missao_exibir.info)
+	
+	var missao_container = hud.get_node("MissaoContainer")
+	
+	# Busca os nós de texto dentro do container da UI
+	var label_nome = missao_container.find_child("*Nome*", true, false)
+	var label_info = missao_container.find_child("*Info*", true, false)
+	
+	# Aplica o texto traduzido diretamente nos nós
+	if label_nome and label_nome is Label:
+		label_nome.text = nome_traduzido
+	elif label_nome and label_nome is RichTextLabel:
+		label_nome.text = nome_traduzido
+		
+	if label_info and label_info is Label:
+		label_info.text = desc_traduzida
+	elif label_info and label_info is RichTextLabel:
+		label_info.text = desc_traduzida
 
 
 ## Toca primeiro o diálogo da missão (Secretária/Tesoureiro) na cena
@@ -1913,6 +1978,8 @@ func _abrir_container_missao() -> void:
 ## (MissaoContainer) aparece. Se não houver DialogueManager configurado ou a
 ## missão não tiver diálogo mapeado, cai direto na caixa de missão de sempre.
 func _iniciar_fluxo_da_missao(missao: MissionData) -> void:
+	ultima_missao_concluida = null
+	
 	# Libera o prédio alvo assim que a missão APARECE (sem precisar aceitar)
 	if missao:
 		if "edificio_id_alvo" in missao and missao.edificio_id_alvo != "":
@@ -1943,24 +2010,34 @@ func _on_dialogo_da_missao_finalizado(_ultimo_no_id: String) -> void:
 
 func processar_missao_no_turno() -> void:
 	if Global.missao_escolhida != null and Global.missao_aceita:
-		var popularidade_antes: int = Global.popularidade
-		var popularidade_perdida = Global.missao_escolhida.popularidade * 1.5
-		Global.popularidade -= popularidade_perdida
-		print("Missão '", Global.missao_escolhida.nome, "' falhou por não ter sido concluída a tempo! Popularidade perdida: -", popularidade_perdida)
-
-		# A missão só é marcada como causa da derrota se a penalidade dela
-		# for o que fez a popularidade chegar a 0 ou menos.
-		if popularidade_antes > 0 and Global.popularidade <= 0:
-			Global.missaoderrota = true
-			print(Global.missaoderrota)
+		Global.missao_atual_turnos += 1
 		
-		Global.missao_escolhida = null
-		Global.missao_aceita = false
-		Global.missao_atual_turnos = 0
+		# Define o limite de turnos da missão (usa duracao_turnos / limite_turnos ou padrão de 1 turno)
+		var duracao_limite: int = 1
+		if "duracao_turnos" in Global.missao_escolhida and Global.missao_escolhida.duracao_turnos > 0:
+			duracao_limite = Global.missao_escolhida.duracao_turnos
+		elif "limite_turnos" in Global.missao_escolhida and Global.missao_escolhida.limite_turnos > 0:
+			duracao_limite = Global.missao_escolhida.limite_turnos
+
+		# Só falha se a quantidade de turnos transcorridos atingir/ultrapassar o limite
+		if Global.missao_atual_turnos >= duracao_limite:
+			var popularidade_antes: int = Global.popularidade
+			var popularidade_perdida = Global.missao_escolhida.popularidade * 1.5
+			Global.popularidade -= popularidade_perdida
+			print("Missão '", Global.missao_escolhida.nome, "' falhou por não ter sido concluída a tempo! Popularidade perdida: -", popularidade_perdida)
+
+			if popularidade_antes > 0 and Global.popularidade <= 0:
+				Global.missaoderrota = true
+				print(Global.missaoderrota)
+			
+			# REGISTRO OBRIGATÓRIO: Garante que a missão falhada não fique em loop infinito
+			if not Global.missoes_concluidas.has(Global.missao_escolhida.id):
+				Global.missoes_concluidas.append(Global.missao_escolhida.id)
+			
+			Global.missao_escolhida = null
+			Global.missao_aceita = false
+			Global.missao_atual_turnos = 0
 	
-	# Não sorteia uma missão nova enquanto a tela de "Missão concluída!" ainda
-	# estiver aberta esperando o jogador fechar — senão ela é substituída na
-	# hora pelo popup da PRÓXIMA missão, e "Missão concluída!" nunca aparece.
 	if not _missao_check_aberta:
 		processar_missao_programada()
 	

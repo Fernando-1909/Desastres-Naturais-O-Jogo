@@ -7,6 +7,7 @@ script = ExtResource("1_v4myt")
 id = "missao4"
 nome = "MISSAO4_NOME"
 info = "MISSAO4_INFO"
+custo = 1500.0
 edificio_id_alvo = "prefeitura"
 popularidade = 20
 metadata/_custom_type_script = "uid://cjpjipeery1b5"
