@@ -21,6 +21,11 @@ extends Node2D
 # iniciar_dialogo_da_missao (ver _encontrar_dialogue_manager, chamado no _ready).
 var dialogue_manager: Node = null
 
+# Guarda as setas de indicação ativas por zona
+# Chave: Node (BuildingZone) | Valor: IndicadorSeta
+var _setas_indicadoras: Dictionary = {}
+const IndicadorSetaScript = preload("res://Jogo principal/Scripts/Scripts gerais/indicador_seta.gd")
+
 # REFERENCIA A TELA DE COMPRAS E AO TILEMAP (Suporta TileMapLayer e TileMap)
 @onready var tela_compras: TelaCompras = $TelaCompras
 @onready var tilemap_constructions: TileMapLayer = $TileMapConstructions
@@ -347,6 +352,117 @@ func contar_construcoes(categoria: String = "") -> int:
 	return contar_construcoes_por_categoria(categoria)
 
 
+
+# ==============================================================================
+# SISTEMA DE SETAS INDICADORAS DE NOVAS ZONAS
+# ==============================================================================
+
+## Procura o primeiro tile de terreno vazio disponível pertencente a uma zona
+func _obter_primeiro_tile_vazio_da_zona(zona: Node) -> Vector2i:
+	var tm = tilemap_constructions if tilemap_constructions else tile_map
+	if not tm or not zona:
+		return Vector2i(-1, -1)
+	
+	# Se a zona já estiver totalmente cheia, não retorna terreno vago
+	if zona is BuildingZone:
+		var total_na_zona = _contar_construcoes_na_zona(zona)
+		if not zona.tem_vaga_disponivel(total_na_zona):
+			return Vector2i(-1, -1)
+
+	var celulas: Array[Vector2i] = []
+	if tm is TileMapLayer:
+		celulas = (tm as TileMapLayer).get_used_cells()
+	elif tm is TileMap:
+		celulas = (tm as TileMap).get_used_cells(0)
+
+	for pos in celulas:
+		var pos_global = tm.to_global(tm.map_to_local(pos))
+		if zona.has_method("contem_posicao_global") and zona.contem_posicao_global(pos_global):
+			if not construcoes_no_mapa.has(pos) or construcoes_no_mapa[pos] == null:
+				return pos
+
+	# Fallback: Se não achou nos celulas mas a zona tem vaga, usa o tile do próprio nó da Zona
+	var pos_zona_map = tm.local_to_map(tm.to_local(zona.global_position))
+	if not construcoes_no_mapa.has(pos_zona_map) or construcoes_no_mapa[pos_zona_map] == null:
+		return pos_zona_map
+
+	return Vector2i(-1, -1)
+
+
+## Cria e posiciona uma seta flutuante sobre o primeiro tile livre da zona recém-liberada
+func _adicionar_seta_indicadora_na_zona(zona: Node) -> void:
+	if not zona or _setas_indicadoras.has(zona):
+		return
+
+	var tile_vazio = _obter_primeiro_tile_vazio_da_zona(zona)
+	if tile_vazio == Vector2i(-1, -1):
+		return
+
+	var tm = tilemap_constructions if tilemap_constructions else tile_map
+	var pos_global = tm.to_global(tm.map_to_local(tile_vazio))
+
+	var seta = IndicadorSetaScript.new()
+	add_child(seta)
+	seta.inicializar(tile_vazio, pos_global, zona)
+	
+	_setas_indicadoras[zona] = seta
+	print("[INDICADOR] Seta criada para a zona: ", zona.name, " no tile ", tile_vazio)
+
+## Reativa/atualiza a seta na zona livre referente a um novo edifício desbloqueado por missão
+func _atualizar_seta_para_novo_edificio(id_edificio: String) -> void:
+	var id_limpo = id_edificio.to_lower().strip_edges()
+	if id_limpo == "":
+		return
+
+	var b_data = _buscar_data_por_id(id_limpo)
+	var zonas = _obter_nos_do_grupo("zonas_construcao")
+
+	for zona in zonas:
+		if zona is BuildingZone:
+			var zona_desbloqueada = zona.desbloqueada if "desbloqueada" in zona else false
+			if not zona_desbloqueada:
+				continue
+
+			var e_compativel = false
+			if b_data != null and zona.has_method("pode_construir"):
+				e_compativel = zona.pode_construir(b_data)
+
+			# Fallback se a checagem com b_data não identificar a compatibilidade da zona
+			if not e_compativel:
+				var tipo_zona = str(zona.tipo_zona).to_lower().strip_edges() if "tipo_zona" in zona else ""
+				if ("func" in tipo_zona or "serv" in tipo_zona) and (id_limpo == "abrigo" or id_limpo == "bombeiros" or "bombeiro" in id_limpo or "abrigo" in id_limpo):
+					e_compativel = true
+				elif ("rio" in tipo_zona) and ("tratamento" in id_limpo or "bomba" in id_limpo or "drenagem" in id_limpo):
+					e_compativel = true
+				elif ("residenc" in tipo_zona or "casa" in tipo_zona) and ("casa" in id_limpo or "residencial" in id_limpo):
+					e_compativel = true
+
+			if e_compativel:
+				_adicionar_seta_indicadora_na_zona(zona)
+
+
+## Adiciona a seta indicadora na Zona da Prefeitura logo no início do jogo
+func _adicionar_seta_zona_prefeitura_inicial() -> void:
+	if _tem_prefeitura_construida():
+		return
+
+	for zona in _obter_nos_do_grupo("zonas_construcao"):
+		if zona is BuildingZone:
+			var tipo_zona := str(zona.tipo_zona).to_lower().strip_edges()
+			var nome_zona := str(zona.name).to_lower().strip_edges()
+			if "prefeitura" in tipo_zona or "prefeitura" in nome_zona:
+				if "desbloqueada" in zona and zona.desbloqueada:
+					_adicionar_seta_indicadora_na_zona(zona)
+
+## Remove a seta indicadora da zona com efeito de fade-out ao ser clicada
+func _remover_seta_da_zona(zona: Node) -> void:
+	if zona and _setas_indicadoras.has(zona):
+		var seta = _setas_indicadoras[zona]
+		if is_instance_valid(seta):
+			seta.desaparecer()
+		_setas_indicadoras.erase(zona)
+
+
 # ==============================================================================
 # SISTEMA DE ABRIGOS E BOMBEIROS (RESGATE)
 # ==============================================================================
@@ -644,8 +760,6 @@ func processar_construcoes_no_turno() -> void:
 					var id_limpo = str(instancia.data.id).to_lower().strip_edges() if "id" in instancia.data and instancia.data.id != null else ""
 					if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
 						_ativar_terrenos_zona_rio()
-					elif id_limpo == "bombeiros" or id_limpo == "bombeiro":
-						_ativar_terrenos_zona_funcoes()
 					elif id_limpo == "prefeitura":
 						_ativar_terrenos_zona_residencial()
 
@@ -1005,7 +1119,12 @@ func _alternar_tela_financas() -> void:
 func _processar_clique_no_tile(pos_tile: Vector2i) -> void:
 	if not tela_compras: return
 	_celula_selecionada = pos_tile
-
+	
+	# Verifica se o clique ocorreu em uma zona que possui seta indicadora ativa
+	var zona_clicada = _obter_zona_no_tile(pos_tile)
+	if zona_clicada:
+		_remover_seta_da_zona(zona_clicada)
+	
 	# 1. Se já existe uma construção salva na memória -> Verifica estado e durabilidade
 	if construcoes_no_mapa.has(pos_tile) and construcoes_no_mapa[pos_tile] != null:
 		var predio_existente: BuildingInstance = construcoes_no_mapa[pos_tile]
@@ -1348,8 +1467,6 @@ func _on_compra_confirmada(nome_ou_id_edificio: String, variacao_index: int = 0)
 	if not precisa_construir:
 		if id_limpo == "estacao_tratamento" or id_limpo == "estacao_drenagem":
 			_ativar_terrenos_zona_rio()
-		elif id_limpo == "bombeiros" or id_limpo == "bombeiro":
-			_ativar_terrenos_zona_funcoes()
 		elif id_limpo == "prefeitura":
 			_ativar_terrenos_zona_residencial()
 
@@ -1491,14 +1608,15 @@ func _atualizar_sprite_upgrade(predio: BuildingInstance) -> void:
 
 
 func _ativar_terrenos_zona_residencial() -> void:
-	# 1. Altera o estado apenas da zona "Zona_Residencial"
+	var zonas_liberadas: Array[Node] = []
 	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
 			var nome_zona := str(zona.name).strip_edges()
 			if nome_zona == "Zona_Residencial":
 				zona.desbloquear_zona()
+				zonas_liberadas.append(zona)
 
-	# 2. Restaura no TileMap apenas os tiles pertencentes a zonas ativas/desbloqueadas
+	# 1. Restaura PRIMEIRO os tiles no TileMap
 	var tm = tilemap_constructions if tilemap_constructions else tile_map
 	if tm:
 		var i = _tiles_ocultos_zona_residencial.size() - 1
@@ -1512,18 +1630,24 @@ func _ativar_terrenos_zona_residencial() -> void:
 					tm.set_cell(0, item["pos"], item["source_id"], item["atlas_coords"])
 				_tiles_ocultos_zona_residencial.remove_at(i)
 			i -= 1
+
+	# 2. Adiciona as setas SOMENTE APÓS restaurar os terrenos
+	for zona in zonas_liberadas:
+		_adicionar_seta_indicadora_na_zona(zona)
 	
 	_mostrar_aviso_texto("Prefeitura construída! Zona Residencial 1 liberada.", Color(0.519, 0.877, 0.572, 1.0))
 
 
 func _ativar_terrenos_zona_residencial_expansao() -> void:
+	var zonas_liberadas: Array[Node] = []
 	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
 			var nome_zona := str(zona.name).strip_edges()
 			if nome_zona == "Zona_Residencial2" or nome_zona == "Zona_Residencial3":
 				zona.desbloquear_zona()
+				zonas_liberadas.append(zona)
 
-	# Restaura no TileMap os tiles pertencentes às zonas expandidas recém-liberadas
+	# 1. Restaura PRIMEIRO os tiles
 	var tm = tilemap_constructions if tilemap_constructions else tile_map
 	if tm:
 		var i = _tiles_ocultos_zona_residencial.size() - 1
@@ -1538,18 +1662,23 @@ func _ativar_terrenos_zona_residencial_expansao() -> void:
 				_tiles_ocultos_zona_residencial.remove_at(i)
 			i -= 1
 
+	# 2. Adiciona as setas DEPOIS
+	for zona in zonas_liberadas:
+		_adicionar_seta_indicadora_na_zona(zona)
+
 	_mostrar_aviso_texto("Upgrade da Prefeitura concluído! Novas Zonas Residenciais liberadas.", Color(0.519, 0.877, 0.572, 1.0))
 	
 
 func _ativar_terrenos_zona_funcoes() -> void:
-	# 1. Altera o estado do nó BuildingZone
+	var zonas_liberadas: Array[Node] = []
 	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
 			var tipo = str(zona.tipo_zona).to_lower()
 			if "func" in tipo or "serv" in tipo:
 				zona.desbloquear_zona()
+				zonas_liberadas.append(zona)
 
-	# 2. Restaura as células no TileMap
+	# 1. Restaura PRIMEIRO os tiles
 	var tm = tilemap_constructions if tilemap_constructions else tile_map
 	if tm:
 		for item in _tiles_ocultos_zona_funcoes:
@@ -1559,9 +1688,13 @@ func _ativar_terrenos_zona_funcoes() -> void:
 				tm.set_cell(0, item["pos"], item["source_id"], item["atlas_coords"])
 		_tiles_ocultos_zona_funcoes.clear()
 
+	# 2. Adiciona as setas DEPOIS
+	for zona in zonas_liberadas:
+		_adicionar_seta_indicadora_na_zona(zona)
+
 
 func _ativar_terrenos_zona_rio() -> void:
-	# 1. Altera o estado do nó BuildingZone
+	var zonas_liberadas: Array[Node] = []
 	for zona in _obter_nos_do_grupo("zonas_construcao"):
 		if zona is BuildingZone:
 			var tipo = str(zona.tipo_zona).to_lower()
@@ -1572,8 +1705,9 @@ func _ativar_terrenos_zona_rio() -> void:
 				
 			if "rio" in tipo or zona.precisa_estacao_tratamento or permite_bomba:
 				zona.desbloquear_zona()
+				zonas_liberadas.append(zona)
 				
-	# 2. Restaura as células no TileMap
+	# 1. Restaura PRIMEIRO os tiles
 	var tm = tilemap_constructions if tilemap_constructions else tile_map
 	if tm:
 		for item in _tiles_ocultos_zona_rio:
@@ -1583,7 +1717,10 @@ func _ativar_terrenos_zona_rio() -> void:
 				tm.set_cell(0, item["pos"], item["source_id"], item["atlas_coords"])
 		_tiles_ocultos_zona_rio.clear()
 	
-	# 3. Avisa o jogador que a Zona do Rio foi liberada (verde suave)
+	# 2. Adiciona as setas DEPOIS
+	for zona in zonas_liberadas:
+		_adicionar_seta_indicadora_na_zona(zona)
+
 	_mostrar_aviso_texto("Agora você pode construir bombas de água!", Color(0.519, 0.877, 0.572, 1.0))
 		
 		
@@ -1942,6 +2079,7 @@ func desbloquear_edificio(id_edificio: String) -> void:
 	if id_limpo != "" and not edificios_desbloqueados.has(id_limpo):
 		edificios_desbloqueados.append(id_limpo)
 		print("[PROGRESSÃO] Edifício liberado para construção: ", id_limpo)
+		_atualizar_seta_para_novo_edificio(id_limpo)
 
 func fechar_checagem_missao() -> void:
 	_fechar_container_missao()
@@ -2514,6 +2652,9 @@ func _ocultar_terrenos_zona_bloqueada() -> void:
 			tm.set_cell(0, pos, -1)
 
 	print("[ZONAS] Terrenos das zonas bloqueadas ocultados com sucesso.")
+	
+	# Exibe a seta indicadora sobre a Zona da Prefeitura inicial
+	_adicionar_seta_zona_prefeitura_inicial()
 
 
 func _restaurar_tile_grafico(pos_tile: Vector2i, instancia: BuildingInstance) -> void:

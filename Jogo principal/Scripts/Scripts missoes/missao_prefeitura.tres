@@ -5,9 +5,9 @@
 [resource]
 script = ExtResource("1_1i1be")
 id = "missao_prefeitura"
-nome = "MISSAO_PREFEITURA_NOME"
+nome = "Construção da Prefeitura"
 info = "MISSAO_PREFEITURA_INFO"
-custo = 500.0
+custo = 250.0
 edificio_id_alvo = "prefeitura"
 edificios_para_desbloquear = Array[String](["prefeitura"])
 popularidade = 20

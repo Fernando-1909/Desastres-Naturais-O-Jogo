@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1")
 id = "missao1"
-nome = "MISSAO1_NOME"
+nome = "Corpo de Bombeiros"
 info = "MISSAO1_INFO"
 custo = 300.0
 edificio_id_alvo = "bombeiros"

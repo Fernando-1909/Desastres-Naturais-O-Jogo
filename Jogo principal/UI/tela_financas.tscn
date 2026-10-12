@@ -169,6 +169,30 @@ text = "$ 0"
 fit_content = true
 autowrap_mode = 0
 
+[node name="Label7" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=2109847123]
+layout_mode = 2
+text = "Avaliação da Gestão:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="StatusDesempenhoValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=2109847124]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+bbcode_enabled = true
+text = "[b][color=#4CAF50]EXCELENTE (100/100)[/color][/b]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="ResumoDesempenhoLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox" unique_id=2109847125]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=13][color=#dddddd]Sua gestão está impecável! Cofres saudáveis, alta aprovação popular e cidade segura.[/color][/font_size]"
+fit_content = true
+autowrap_mode = 2
+
 [node name="VSeparator" type="VSeparator" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox" unique_id=2057876336]
 layout_mode = 2
 
