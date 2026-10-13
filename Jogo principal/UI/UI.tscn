@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ogf3vv3cfdd7" path="res://Jogo principal/UI/Assets/Rebecatrue2.png" id="4_hdnfl"]
 [ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="7_8v3q5"]
 [ext_resource type="FontFile" uid="uid://br5wb2vq7vbqx" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBoldItalic.ttf" id="7_y184x"]
+[ext_resource type="PackedScene" uid="uid://caelpiibc8573" path="res://Jogo principal/UI/tela_financas.tscn" id="9_qw28h"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hgtue"]
 
@@ -89,6 +90,16 @@ custom_minimum_size = Vector2(220, 60)
 layout_mode = 2
 texture = SubResource("CompressedTexture2D_t6wq4")
 region_rect = Rect2(-0.14517975, 125.93373, 140.50888, 37.529434)
+
+[node name="ButtonFinancas" type="Button" parent="PainelExibição/Exibição/Dinheiro" unique_id=169518881]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="Numero" type="RichTextLabel" parent="PainelExibição/Exibição/Dinheiro" unique_id=1864070031]
 custom_minimum_size = Vector2(220, 60)
@@ -463,9 +474,16 @@ scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="TelaFinancas" parent="." unique_id=1726936955 instance=ExtResource("9_qw28h")]
+visible = false
+layout_mode = 1
+
+[connection signal="pressed" from="PainelExibição/Exibição/Dinheiro/ButtonFinancas" to="." method="_on_button_financas_pressed"]
 [connection signal="pressed" from="PainelBotoes/Botoes/Pausa" to="." method="_on_pausa_pressed"]
 [connection signal="pressed" from="PainelTurnos/Turnos/PularTurno" to="." method="_on_pular_turno_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Aceitar" to="." method="_on_aceitar_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Recusar" to="." method="_on_recusar_pressed"]
 [connection signal="pressed" from="ButtonMissaoCheck" to="." method="_on_texture_button_pressed"]
+
+[editable path="TelaFinancas"]

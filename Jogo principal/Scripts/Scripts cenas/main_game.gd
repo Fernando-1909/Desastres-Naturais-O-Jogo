@@ -8,7 +8,7 @@ extends Node2D
 @onready var hud = $CanvasLayer/Ui
 @onready var menu_pausa: MenuPausa = $MenuPausa
 @onready var sistema_drenagem: SistemaDrenagem = $SistemaDrenagem
-@onready var tela_financas: Control = $CanvasLayer/TelaFinancas
+@onready var tela_financas: Control = $CanvasLayer/Ui/TelaFinancas
 
 # TILEMAPS DE TERRENO (Troca durante a enchente)
 @onready var tilemapground: TileMapLayer = $TileMapGround

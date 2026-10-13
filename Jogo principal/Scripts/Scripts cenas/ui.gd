@@ -4,6 +4,7 @@ extends Control
 @onready var main_game = get_tree().current_scene
 @onready var avisos: RichTextLabel = $Avisos
 @onready var botao_turno: TextureButton = $PainelTurnos/Turnos/PularTurno
+@onready var menufinancas = $TelaFinancas
 @export var tempo_ocioso: float = 15.0
 
 signal toggle_freecam
@@ -553,3 +554,7 @@ func _on_aceitar_pressed() -> void:
 
 func _on_recusar_pressed() -> void:
 	main_game.recusar_missao()
+
+
+func _on_button_financas_pressed() -> void:
+	menufinancas.visible = !menufinancas.visible
