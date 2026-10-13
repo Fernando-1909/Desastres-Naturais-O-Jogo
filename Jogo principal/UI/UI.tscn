@@ -99,7 +99,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
 
 [node name="Numero" type="RichTextLabel" parent="PainelExibição/Exibição/Dinheiro" unique_id=1864070031]
 custom_minimum_size = Vector2(220, 60)
@@ -108,6 +107,7 @@ offset_left = 45.0
 offset_top = -7.0
 offset_right = 265.00006
 offset_bottom = 53.0
+mouse_filter = 2
 theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
