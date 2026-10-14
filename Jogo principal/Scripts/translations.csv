@@ -16,6 +16,7 @@ HUD_DINHEIRO,Dinheiro,Money
 HUD_MADEIRA,Madeira,Wood
 HUD_PEDRA,Pedra,Stone
 HUD_POPULARIDADE,Popularidade,Popularity
+HUD_POPULACAO,População,Population
 
 # --- INTERFACE DE COMPRAS E UPGRADES ---
 UI_COMPRAR,COMPRAR,BUY

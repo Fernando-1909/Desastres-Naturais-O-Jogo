@@ -454,14 +454,53 @@ func _adicionar_seta_zona_prefeitura_inicial() -> void:
 				if "desbloqueada" in zona and zona.desbloqueada:
 					_adicionar_seta_indicadora_na_zona(zona)
 
-## Remove a seta indicadora da zona com efeito de fade-out ao ser clicada
+## Remove a seta indicadora da zona clicada e de qualquer outra zona do mesmo tipo com efeito de fade-out
 func _remover_seta_da_zona(zona: Node) -> void:
-	if zona and _setas_indicadoras.has(zona):
-		var seta = _setas_indicadoras[zona]
-		if is_instance_valid(seta):
-			seta.desaparecer()
-		_setas_indicadoras.erase(zona)
+	if not zona:
+		return
 
+	var zonas_para_remover: Array[Node] = []
+
+	# Busca todas as zonas com setas ativas que pertencem ao mesmo tipo/categoria
+	for z in _setas_indicadoras.keys():
+		if _sao_zonas_do_mesmo_tipo(zona, z):
+			zonas_para_remover.append(z)
+
+	# Aplica o efeito de desaparecer e remove do dicionário
+	for z in zonas_para_remover:
+		if _setas_indicadoras.has(z):
+			var seta = _setas_indicadoras[z]
+			if is_instance_valid(seta):
+				seta.desaparecer()
+			_setas_indicadoras.erase(z)
+
+
+## Verifica se duas zonas pertencem ao mesmo tipo ou categoria lógica
+func _sao_zonas_do_mesmo_tipo(zona_a: Node, zona_b: Node) -> bool:
+	if zona_a == zona_b:
+		return true
+	if not zona_a or not zona_b:
+		return false
+
+	var tipo_a: String = str(zona_a.tipo_zona).to_lower().strip_edges() if "tipo_zona" in zona_a else ""
+	var tipo_b: String = str(zona_b.tipo_zona).to_lower().strip_edges() if "tipo_zona" in zona_b else ""
+
+	if tipo_a == "" or tipo_b == "":
+		return false
+
+	# Comparação direta de igualdade
+	if tipo_a == tipo_b:
+		return true
+
+	# Checagens por grupo/categoria de zona (Funções/Serviços, Residencial ou Rio)
+	if ("func" in tipo_a or "serv" in tipo_a) and ("func" in tipo_b or "serv" in tipo_b):
+		return true
+	if ("residenc" in tipo_a or "casa" in tipo_a or "bairro" in tipo_a) and ("residenc" in tipo_b or "casa" in tipo_b or "bairro" in tipo_b):
+		return true
+	if ("rio" in tipo_a or "ribeir" in tipo_a) and ("rio" in tipo_b or "ribeir" in tipo_b):
+		return true
+
+	return false
 
 # ==============================================================================
 # SISTEMA DE ABRIGOS E BOMBEIROS (RESGATE)

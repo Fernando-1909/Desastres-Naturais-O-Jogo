@@ -189,6 +189,31 @@
 	  "autor": "SECRETARIA",
 	  "texto_chave": "TXT_MISSAO4_3",
 	  "proximo": "fim"
+	},
+	"dica_deficit_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Prefeito(a), nossas contas estão no vermelho este mês. Que tal expandirmos a Zona Residencial para arrecadar mais tributos dos moradores?",
+	  "proximo": "fim"
+	},
+	"dica_sem_tratamento_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Prefeito(a), as bombas de drenagem estão prontas, mas sem a Estação de Tratamento a água contaminada vai continuar danificando as estruturas da orla!",
+	  "proximo": "fim"
+	},
+	"dica_bombeiros_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "A população das zonas mais distantes está preocupada com o tempo que os bombeiros levam para chegar lá em uma emergência.",
+	  "proximo": "fim"
+	},
+	"dica_abrigos_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Precisamos construir abrigos de emergência logo. Se uma tempestade atingir a cidade agora, não teremos para onde levar as famílias!",
+	  "proximo": "fim"
+	},
+	"dica_expansao_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Manter os serviços públicos e bairros residenciais bem estruturados garante alta aprovação popular para o seu mandato.",
+	  "proximo": "fim"
 	}
   }
 }

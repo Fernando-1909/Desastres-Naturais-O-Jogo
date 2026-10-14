@@ -266,6 +266,74 @@ text = "Semana"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="BotaoGabinete" type="TextureButton" parent="." unique_id=808080801]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = -145.0
+offset_right = 75.0
+offset_bottom = -85.0
+grow_vertical = 0
+texture_normal = ExtResource("4_hdnfl")
+stretch_mode = 0
+
+[node name="BadgeNovidade" type="ColorRect" parent="BotaoGabinete" unique_id=808080802]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -12.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 12.0
+grow_horizontal = 0
+color = Color(0.9, 0.2, 0.2, 1)
+
+[node name="PainelAbaDicas" type="PanelContainer" parent="." unique_id=808080803]
+visible = false
+custom_minimum_size = Vector2(240, 310)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = -470.0
+offset_right = 255.0
+offset_bottom = -160.0
+grow_vertical = 0
+
+[node name="MargemAba" type="MarginContainer" parent="PainelAbaDicas" unique_id=808080804]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxDicas" type="VBoxContainer" parent="PainelAbaDicas/MargemAba" unique_id=808080805]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TituloAba" type="RichTextLabel" parent="PainelAbaDicas/MargemAba/VBoxDicas" unique_id=808080806]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+bbcode_enabled = true
+text = "[b]Conselhos do Gabinete[/b]"
+fit_content = true
+
+[node name="ScrollAba" type="ScrollContainer" parent="PainelAbaDicas/MargemAba/VBoxDicas" unique_id=808080807]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ListaTopicosVBox" type="VBoxContainer" parent="PainelAbaDicas/MargemAba/VBoxDicas/ScrollAba" unique_id=808080808]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
 [node name="MissaoContainer" type="PanelContainer" parent="." unique_id=398981937]
 visible = false
 custom_minimum_size = Vector2(500, 300)
@@ -481,6 +549,7 @@ layout_mode = 1
 [connection signal="pressed" from="PainelExibição/Exibição/Dinheiro/ButtonFinancas" to="." method="_on_button_financas_pressed"]
 [connection signal="pressed" from="PainelBotoes/Botoes/Pausa" to="." method="_on_pausa_pressed"]
 [connection signal="pressed" from="PainelTurnos/Turnos/PularTurno" to="." method="_on_pular_turno_pressed"]
+[connection signal="pressed" from="BotaoGabinete" to="." method="_on_botao_gabinete_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Aceitar" to="." method="_on_aceitar_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Recusar" to="." method="_on_recusar_pressed"]

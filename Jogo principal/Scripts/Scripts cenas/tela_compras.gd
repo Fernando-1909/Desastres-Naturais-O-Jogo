@@ -149,12 +149,19 @@ func abrir_modo_reconstrucao(instancia: BuildingInstance, pos_tile: Vector2i, pc
 	if label_descricao: 
 		label_descricao.text = tr("Esta estrutura foi severamente danificada por um desastre. Realize a reconstrução para restaurar sua integridade e recuperar os serviços oferecidos à cidade.")
 	
+	# Exibe 'População Restabelecida' apenas se a estrutura possuir habitantes
 	var pop = b_data.bonus_populacao if "bonus_populacao" in b_data else 0
 	if label_bonus_pop: 
-		label_bonus_pop.text = tr("População Restabelecida") + ": +" + str(pop)
+		if pop > 0:
+			label_bonus_pop.text = tr("População Restabelecida") + ": +" + str(pop)
+			label_bonus_pop.visible = true
+		else:
+			label_bonus_pop.text = ""
+			label_bonus_pop.visible = false
 	
 	if label_bonus_infra:
 		label_bonus_infra.text = tr("Restaura durabilidade para 100%")
+		label_bonus_infra.visible = true
 
 	_definir_texto_botao(button_comprar, tr("Reconstruir") + " ($" + str(_custo_reconstrucao_atual) + ")")
 
@@ -325,7 +332,18 @@ func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String,
 	if icone: icone.texture = tex
 
 	if label_descricao: label_descricao.text = tr(descricao)
-	if label_bonus_pop: label_bonus_pop.text = tr("HUD_POPULARIDADE") + ": +" + str(bonus_pop)
+	
+	# Exibe 'População' apenas se houver bônus populacional (> 0)
+	if label_bonus_pop: 
+		if bonus_pop > 0:
+			var txt_pop = tr("HUD_POPULACAO")
+			if txt_pop == "HUD_POPULACAO":
+				txt_pop = "Population" if lang == "en" else "População"
+			label_bonus_pop.text = txt_pop + ": +" + str(bonus_pop)
+			label_bonus_pop.visible = true
+		else:
+			label_bonus_pop.text = ""
+			label_bonus_pop.visible = false
 	
 	if label_bonus_infra:
 		var texto_extra = ""
@@ -341,6 +359,7 @@ func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String,
 			texto_extra += txt_eq + ": +" + str(equipes_resgate) + " "
 		label_bonus_infra.bbcode_enabled = true
 		label_bonus_infra.text = texto_extra
+		label_bonus_infra.visible = (texto_extra != "")
 
 	var txt_comprar = tr("UI_COMPRAR")
 	if txt_comprar == "UI_COMPRAR":

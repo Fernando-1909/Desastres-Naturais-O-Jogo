@@ -7,8 +7,18 @@ extends Control
 @onready var menufinancas = $TelaFinancas
 @export var tempo_ocioso: float = 15.0
 
+
+# Referências ao Sistema do Gabinete de Dicas
+@onready var botao_gabinete: TextureButton = get_node_or_null("BotaoGabinete")
+@onready var badge_novidade: ColorRect = get_node_or_null("BotaoGabinete/BadgeNovidade")
+@onready var painel_aba_dicas: PanelContainer = get_node_or_null("PainelAbaDicas")
+@onready var lista_topicos_vbox: VBoxContainer = get_node_or_null("PainelAbaDicas/MargemAba/VBoxDicas/ScrollAba/ListaTopicosVBox")
+
+var gerenciador_dicas: GerenciadorDicas = null
+
 signal toggle_freecam
 
+var _tween_aba_dicas: Tween
 var freecam: Camera2D
 var scene_camera: Camera2D
 var freecam_active := false
@@ -33,6 +43,12 @@ func _ready() -> void:
 	botao_turno.resized.connect(_atualizar_pivot)
 	_atualizar_pivot()
 	
+	# Instancia e conecta o gerenciador de dicas
+	gerenciador_dicas = GerenciadorDicas.new()
+	add_child(gerenciador_dicas)
+	gerenciador_dicas.lista_dicas_atualizada.connect(_atualizar_interface_dicas)
+	gerenciador_dicas.nova_dica_disponivel.connect(_on_nova_dica_recebida)
+
 	await get_tree().create_timer(0.5).timeout
 	_setup()
 
@@ -175,6 +191,10 @@ func _on_pular_turno_pressed() -> void:
 	
 	# Processa o sistema de missões
 	main_game.processar_missao_no_turno()
+
+	# Reavalia as condições da cidade no gerenciador de dicas
+	if gerenciador_dicas:
+		gerenciador_dicas.avaliar_condicoes_cidade(main_game)
 
 	# Atualiza o estado do turno ocioso
 	if main_game and main_game.has_method("finalizar_checada_turno_ocioso"):
@@ -558,3 +578,85 @@ func _on_recusar_pressed() -> void:
 
 func _on_button_financas_pressed() -> void:
 	menufinancas.visible = !menufinancas.visible
+
+
+
+# ============================================================
+# EVENTOS DO SISTEMA DE DICAS DO GABINETE
+# ============================================================
+
+## Abre e fecha a aba lateral de conselhos com efeito animado de deslize e opacidade
+func _on_botao_gabinete_pressed() -> void:
+	if painel_aba_dicas == null:
+		return
+
+	# Interrompe qualquer animação em andamento para evitar conflitos de clique rápido
+	if _tween_aba_dicas and _tween_aba_dicas.is_running():
+		_tween_aba_dicas.kill()
+
+	_tween_aba_dicas = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC)
+
+	# Se a aba já estiver aberta e visível, executa a animação de FECHAR
+	if painel_aba_dicas.visible and painel_aba_dicas.modulate.a > 0.1:
+		_tween_aba_dicas.set_ease(Tween.EASE_IN)
+		_tween_aba_dicas.tween_property(painel_aba_dicas, "position:x", -260.0, 0.25)
+		_tween_aba_dicas.tween_property(painel_aba_dicas, "modulate:a", 0.0, 0.2)
+		_tween_aba_dicas.chain().tween_callback(func():
+			painel_aba_dicas.visible = false
+		)
+	else:
+		# Animação de ABRIR
+		_atualizar_interface_dicas()
+		painel_aba_dicas.visible = true
+		painel_aba_dicas.position.x = -260.0
+		painel_aba_dicas.modulate.a = 0.0
+
+		_tween_aba_dicas.set_ease(Tween.EASE_OUT)
+		_tween_aba_dicas.tween_property(painel_aba_dicas, "position:x", 15.0, 0.3)
+		_tween_aba_dicas.tween_property(painel_aba_dicas, "modulate:a", 1.0, 0.25)
+
+
+## Ativa a bolinha/badge de novidade
+func _on_nova_dica_recebida(_id_dica: String) -> void:
+	if badge_novidade:
+		badge_novidade.visible = true
+
+
+## Gera e atualiza a lista de botões de tópicos dentro da aba
+func _atualizar_interface_dicas() -> void:
+	if badge_novidade and gerenciador_dicas:
+		badge_novidade.visible = gerenciador_dicas.tem_dica_nao_lida()
+
+	if lista_topicos_vbox == null or gerenciador_dicas == null:
+		return
+
+	for child in lista_topicos_vbox.get_children():
+		child.queue_free()
+
+	var lista = gerenciador_dicas.obter_dicas_filtradas()
+	for dica in lista:
+		var btn = Button.new()
+		btn.custom_minimum_size = Vector2(0, 35)
+		btn.focus_mode = Control.FOCUS_NONE
+
+		var icone = "🟡 " if dica["categoria"] == GerenciadorDicas.CategoriaDica.ALERTA else "🟢 "
+		var titulo = tr(dica["titulo_chave"])
+		btn.text = icone + titulo
+
+		var no_dialogo = dica["no_dialogo"]
+		var id_dica = dica["id"]
+		btn.pressed.connect(_on_topico_dica_clicado.bind(id_dica, no_dialogo))
+
+		lista_topicos_vbox.add_child(btn)
+
+
+## Marca o tópico como lido e chama a conversa com a secretária no DialogueManager
+func _on_topico_dica_clicado(id_dica: String, no_dialogo: String) -> void:
+	if gerenciador_dicas:
+		gerenciador_dicas.marcar_como_lida(id_dica)
+
+	if main_game and "dialogue_manager" in main_game and main_game.dialogue_manager:
+		if main_game.dialogue_manager.has_method("iniciar_dialogo_dica"):
+			main_game.dialogue_manager.iniciar_dialogo_dica(no_dialogo)
+		elif main_game.dialogue_manager.has_method("iniciar_dialogo_da_missao"):
+			main_game.dialogue_manager.iniciar_dialogo_da_missao(no_dialogo)

@@ -169,13 +169,25 @@ text = "$ 0"
 fit_content = true
 autowrap_mode = 0
 
-[node name="Label7" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=2109847123]
+[node name="MargemResumo" type="MarginContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox" unique_id=2109847126]
+layout_mode = 2
+theme_override_constants/margin_top = 18
+
+[node name="VBoxAvaliacao" type="VBoxContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo" unique_id=2109847127]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HBoxAvaliacao" type="HBoxContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo/VBoxAvaliacao" unique_id=2109847128]
+layout_mode = 2
+
+[node name="Label7" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo/VBoxAvaliacao/HBoxAvaliacao" unique_id=2109847123]
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
 text = "Avaliação da Gestão:"
 fit_content = true
 autowrap_mode = 0
 
-[node name="StatusDesempenhoValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=2109847124]
+[node name="StatusDesempenhoValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo/VBoxAvaliacao/HBoxAvaliacao" unique_id=2109847124]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -184,7 +196,7 @@ text = "[b][color=#4CAF50]EXCELENTE (100/100)[/color][/b]"
 fit_content = true
 autowrap_mode = 0
 
-[node name="ResumoDesempenhoLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox" unique_id=2109847125]
+[node name="ResumoDesempenhoLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo/VBoxAvaliacao" unique_id=2109847125]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
@@ -208,6 +220,7 @@ text = "[font_size=18][b]Histórico de Dicas[/b][/font_size]"
 fit_content = true
 
 [node name="PainelDica" type="PanelContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox" unique_id=577279642]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 3
@@ -219,13 +232,19 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="TextoDicaLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox/PainelDica/MargemDica" unique_id=1092727710]
+[node name="ScrollDicas" type="ScrollContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox/PainelDica/MargemDica" unique_id=301928374]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="TextoDicaLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox/PainelDica/MargemDica/ScrollDicas" unique_id=1092727710]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "Nenhuma dica no histórico."
+fit_content = true
 autowrap_mode = 2
 
 [node name="CheckBoxDicas" type="CheckBox" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox" unique_id=1430865541]

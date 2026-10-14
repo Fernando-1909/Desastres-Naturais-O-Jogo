@@ -22,10 +22,13 @@ extends Control
 @onready var gasto_obras_valor: Node = %GastoObrasValor if has_node("%GastoObrasValor") else null
 @onready var danos_valor: Node = %DanosValor if has_node("%DanosValor") else null
 
-# Novos Indicadores de Desempenho
+# Indicadores de Desempenho
 @onready var status_desempenho_valor: Node = %StatusDesempenhoValor if has_node("%StatusDesempenhoValor") else null
 @onready var resumo_desempenho_label: Node = %ResumoDesempenhoLabel if has_node("%ResumoDesempenhoLabel") else null
 
+# Painel e Histórico de Dicas
+@onready var painel_dica: PanelContainer = %PainelDica if has_node("%PainelDica") else null
+@onready var scroll_dicas: ScrollContainer = %ScrollDicas if has_node("%ScrollDicas") else null
 @onready var coluna_dicas_v_box: VBoxContainer = %ColunaDicasVBox if has_node("%ColunaDicasVBox") else null
 @onready var texto_dica_label: Node = %TextoDicaLabel if has_node("%TextoDicaLabel") else null
 @onready var check_box_dicas: CheckBox = %CheckBoxDicas if has_node("%CheckBoxDicas") else null
@@ -35,7 +38,8 @@ extends Control
 
 var _historico_dicas: Array[String] = []
 var _dicas_habilitadas: bool = true
-
+var _dica_nova_recebida: bool = false
+var _tween_brilho_dica: Tween = null
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -50,6 +54,7 @@ func _ready() -> void:
 	if check_box_dicas and not check_box_dicas.toggled.is_connected(_on_check_box_dicas_toggled):
 		check_box_dicas.toggled.connect(_on_check_box_dicas_toggled)
 
+	_conectar_eventos_mouse_dicas()
 	_atualizar_visibilidade_dicas()
 
 
@@ -61,10 +66,16 @@ func abrir_tela(main_game: Node2D) -> void:
 	_atualizar_valores_financeiros(main_game)
 	_atualizar_historico_dicas(main_game)
 	
+	if _dica_nova_recebida:
+		_iniciar_efeito_brilho_dica()
+		
+	get_tree().paused = true
 	visible = true
 
 
 func fechar_tela() -> void:
+	_remover_status_nova_dica()
+	get_tree().paused = false
 	visible = false
 
 
@@ -268,6 +279,7 @@ func _atualizar_historico_dicas(main_game: Node2D) -> void:
 
 	if _historico_dicas.is_empty() or not _historico_dicas[0].contains(nova_dica):
 		_historico_dicas.push_front(entrada_formatada)
+		_dica_nova_recebida = true
 
 	_exibir_historico_dicas()
 
@@ -283,10 +295,65 @@ func _exibir_historico_dicas() -> void:
 	var texto_completo = ""
 	for i in range(_historico_dicas.size()):
 		texto_completo += _historico_dicas[i]
+
 		if i < _historico_dicas.size() - 1:
-			texto_completo += "\n\n[color=#444444]----------------------------------------[/color]\n\n"
+			texto_completo += "\n\n[color=#3d3d3d]──────────────────────────────────────────────────────────[/color]\n\n"
 
 	_definir_texto_no(texto_dica_label, texto_completo)
+
+
+func _iniciar_efeito_brilho_dica() -> void:
+	if not painel_dica:
+		return
+		
+	if _tween_brilho_dica and _tween_brilho_dica.is_valid():
+		_tween_brilho_dica.kill()
+		
+	painel_dica.self_modulate = Color(1.0, 1.0, 1.0, 1.0)
+	
+	_tween_brilho_dica = create_tween().set_loops()
+	_tween_brilho_dica.set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_tween_brilho_dica.tween_property(painel_dica, "self_modulate", Color(1.18, 1.18, 1.0, 1.0), 0.8).set_trans(Tween.TRANS_SINE)
+	_tween_brilho_dica.tween_property(painel_dica, "self_modulate", Color(1.0, 1.0, 1.0, 1.0), 0.8).set_trans(Tween.TRANS_SINE)
+
+func _remover_status_nova_dica() -> void:
+	if _dica_nova_recebida:
+		_dica_nova_recebida = false
+		if _tween_brilho_dica and _tween_brilho_dica.is_valid():
+			_tween_brilho_dica.kill()
+			_tween_brilho_dica = null
+		if painel_dica:
+			painel_dica.self_modulate = Color(1.0, 1.0, 1.0, 1.0)
+		_exibir_historico_dicas()
+
+
+func _on_painel_dica_mouse_entered() -> void:
+	_remover_status_nova_dica()
+
+
+func _conectar_eventos_mouse_dicas() -> void:
+	if painel_dica and not painel_dica.mouse_entered.is_connected(_on_painel_dica_mouse_entered):
+		painel_dica.mouse_entered.connect(_on_painel_dica_mouse_entered)
+	if scroll_dicas and not scroll_dicas.mouse_entered.is_connected(_on_painel_dica_mouse_entered):
+		scroll_dicas.mouse_entered.connect(_on_painel_dica_mouse_entered)
+
+
+func _resolver_falhas_de_nos() -> void:
+	if not saldo_valor: saldo_valor = find_child("*Saldo*", true, false)
+	if not receita_valor: receita_valor = find_child("*Receita*", true, false)
+	if not despesa_valor: despesa_valor = find_child("*Despesa*", true, false)
+	if not balanco_valor: balanco_valor = find_child("*Balanco*", true, false)
+	if not gasto_obras_valor: gasto_obras_valor = find_child("*Obras*", true, false)
+	if not danos_valor: danos_valor = find_child("*Dano*", true, false)
+	if not status_desempenho_valor: status_desempenho_valor = find_child("*StatusDesempenho*", true, false)
+	if not resumo_desempenho_label: resumo_desempenho_label = find_child("*ResumoDesempenho*", true, false)
+	if not texto_dica_label: texto_dica_label = find_child("*Dica*", true, false)
+	if not coluna_dicas_v_box: coluna_dicas_v_box = find_child("*ColunaDicas*", true, false) as VBoxContainer
+	if not painel_dica: painel_dica = find_child("*PainelDica*", true, false) as PanelContainer
+	if not scroll_dicas: scroll_dicas = find_child("*ScrollDicas*", true, false) as ScrollContainer
+	if not botao_fechar: botao_fechar = find_child("*Fechar*", true, false) as Button
+	if not botao_ok: botao_ok = find_child("*Ok*", true, false) as Button
+	if not check_box_dicas: check_box_dicas = find_child("*Check*", true, false) as CheckBox
 
 
 func _on_check_box_dicas_toggled(toggled_on: bool) -> void:
@@ -305,20 +372,3 @@ func _definir_texto_no(no: Node, texto: String) -> void:
 		return
 	if no is Label or no is RichTextLabel or "text" in no:
 		no.text = texto
-
-
-## Busca os nós automaticamente por padrão de nome se não foram marcados com Unique Name (%)
-func _resolver_falhas_de_nos() -> void:
-	if not saldo_valor: saldo_valor = find_child("*Saldo*", true, false)
-	if not receita_valor: receita_valor = find_child("*Receita*", true, false)
-	if not despesa_valor: despesa_valor = find_child("*Despesa*", true, false)
-	if not balanco_valor: balanco_valor = find_child("*Balanco*", true, false)
-	if not gasto_obras_valor: gasto_obras_valor = find_child("*Obras*", true, false)
-	if not danos_valor: danos_valor = find_child("*Dano*", true, false)
-	if not status_desempenho_valor: status_desempenho_valor = find_child("*StatusDesempenho*", true, false)
-	if not resumo_desempenho_label: resumo_desempenho_label = find_child("*ResumoDesempenho*", true, false)
-	if not texto_dica_label: texto_dica_label = find_child("*Dica*", true, false)
-	if not coluna_dicas_v_box: coluna_dicas_v_box = find_child("*ColunaDicas*", true, false) as VBoxContainer
-	if not botao_fechar: botao_fechar = find_child("*Fechar*", true, false) as Button
-	if not botao_ok: botao_ok = find_child("*Ok*", true, false) as Button
-	if not check_box_dicas: check_box_dicas = find_child("*Check*", true, false) as CheckBox
