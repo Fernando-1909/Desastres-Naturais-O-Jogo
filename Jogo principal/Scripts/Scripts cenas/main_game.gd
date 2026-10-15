@@ -25,6 +25,8 @@ var dialogue_manager: Node = null
 # Chave: Node (BuildingZone) | Valor: IndicadorSeta
 var _setas_indicadoras: Dictionary = {}
 const IndicadorSetaScript = preload("res://Jogo principal/Scripts/Scripts gerais/indicador_seta.gd")
+const PONTO_RESGATE_SCENE = preload("res://Jogo principal/UI/ponto_resgate.tscn")
+var _popup_missao_instance: Node = null
 
 # REFERENCIA A TELA DE COMPRAS E AO TILEMAP (Suporta TileMapLayer e TileMap)
 @onready var tela_compras: TelaCompras = $TelaCompras
@@ -1555,25 +1557,8 @@ func _verificar_conclusao_construcao(b_data: BuildingData) -> void:
 	
 	_fechar_container_missao()
 	_missao_check_aberta = true
-	_atualizar_texto_missao_hud()
-	print("[DEBUG-MISSAO] _missao_check_aberta setado para true | ultima_missao_concluida='", ultima_missao_concluida.id, "'")
-	if hud and hud.has_node("MissaoContainer"):
-		var missao_container = hud.get_node("MissaoContainer")
-		var hbox_decisao = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer")
-		if not hbox_decisao:
-			hbox_decisao = missao_container.get_node_or_null("VBoxContainer/HBoxContainer")
-		if hbox_decisao:
-			hbox_decisao.visible = false
-			
-		var hbox_fechar = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer2")
-		if not hbox_fechar:
-			hbox_fechar = missao_container.get_node_or_null("VBoxContainer/HBoxContainer2")
-		if hbox_fechar:
-			hbox_fechar.visible = true
-			
-		missao_container.visible = true
-	else:
-		print("[DEBUG-MISSAO] hud ou 'MissaoContainer' não encontrado — container não pôde ser reaberto!")
+	print("[DEBUG-MISSAO] Exibindo popup de missão concluída: '", ultima_missao_concluida.id, "'")
+	_mostrar_popup_missao_concluida(missao)
 
 
 func _on_aprimoramento_confirmado(nome_ou_id_edificio: String) -> void:
@@ -2046,26 +2031,58 @@ func concluir_missao() -> void:
 	Global.missao_aceita = false
 	Global.missao_atual_turnos = 0
 	
-	# Mostra a tela de confirmação com "Missão concluída: <nome>", em vez de
-	# simplesmente fechar o container sem feedback nenhum.
+	# A conclusão é exibida pelo popup visual de ponto_resgate, sem reabrir o menu de missões.
 	_fechar_container_missao()
-	if hud and hud.has_node("MissaoContainer"):
-		_missao_check_aberta = true
-		_atualizar_texto_missao_hud()
-		var missao_container = hud.get_node("MissaoContainer")
-		var hbox_decisao = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer")
-		if not hbox_decisao:
-			hbox_decisao = missao_container.get_node_or_null("VBoxContainer/HBoxContainer")
-		if hbox_decisao:
-			hbox_decisao.visible = false
-			
-		var hbox_fechar = missao_container.get_node_or_null("MarginContainer/VBoxContainer/HBoxContainer2")
-		if not hbox_fechar:
-			hbox_fechar = missao_container.get_node_or_null("VBoxContainer/HBoxContainer2")
-		if hbox_fechar:
-			hbox_fechar.visible = true
-			
-		missao_container.visible = true
+	_missao_check_aberta = true
+	_mostrar_popup_missao_concluida(missao)
+
+
+func _mostrar_popup_missao_concluida(missao: MissionData) -> void:
+	if missao == null:
+		return
+
+	if _popup_missao_instance == null or not is_instance_valid(_popup_missao_instance):
+		_popup_missao_instance = PONTO_RESGATE_SCENE.instantiate()
+		add_child(_popup_missao_instance)
+
+		# Mantém somente o painel do popup; a instância não representa um ponto de resgate no mapa.
+		_popup_missao_instance.remove_from_group("pontos_resgate")
+		if _popup_missao_instance is Area2D:
+			(_popup_missao_instance as Area2D).input_pickable = false
+		var colisao = _popup_missao_instance.get_node_or_null("CollisionShape2D")
+		if colisao:
+			colisao.set_deferred("disabled", true)
+		var sprite = _popup_missao_instance.get_node_or_null("Sprite2D")
+		if sprite:
+			sprite.visible = false
+		var label_status = _popup_missao_instance.get_node_or_null("LabelStatus")
+		if label_status:
+			label_status.visible = false
+
+		var camada: CanvasLayer = _popup_missao_instance.get_node_or_null("CanvasLayer")
+		if camada:
+			# Acima do texto verde de conclusão que aparece na interface principal.
+			camada.layer = 100
+
+		var botao_fechar: TextureButton = _popup_missao_instance.get_node_or_null("CanvasLayer/PainelAviso/ButtonFechar")
+		if botao_fechar and not botao_fechar.pressed.is_connected(_ao_fechar_popup_missao):
+			botao_fechar.pressed.connect(_ao_fechar_popup_missao)
+
+	var painel: Control = _popup_missao_instance.get_node_or_null("CanvasLayer/PainelAviso")
+	var texto: RichTextLabel = _popup_missao_instance.get_node_or_null("CanvasLayer/PainelAviso/MarginContainer/VBoxContainer/LabelMensagem")
+	if texto:
+		texto.bbcode_enabled = true
+		var mensagem := "[center]Missão concluída!\n\n" + tr(missao.nome)
+		mensagem += "\n\nPopularidade: +" + str(missao.popularidade)
+		if "bonus_populacao" in missao and missao.bonus_populacao > 0:
+			mensagem += "\nPopulação: +" + str(missao.bonus_populacao)
+		texto.text = mensagem + "[/center]"
+	if painel:
+		painel.visible = true
+
+
+func _ao_fechar_popup_missao() -> void:
+	_missao_check_aberta = false
 
 
 ## NOTA: a checagem de missão concluída por construção mora em
