@@ -165,6 +165,11 @@ func _on_pular_turno_pressed() -> void:
 			
 			renda_total += valor_aleatorio
 
+	# Durante uma enchente, a renda das construções é reduzida em 90%.
+	# Fora de um desastre ativo, a renda permanece exatamente como antes.
+	if main_game and "_enchente_ativa" in main_game and main_game._enchente_ativa != null:
+		renda_total = int(round(renda_total * 0.10))
+
 	# 1. Calcula o custo total das construções ativas puxando do .tres no main_game
 	var custo_total = 0
 	if main_game and main_game.has_method("calcular_custo_manutencao_construcoes"):
