@@ -3,10 +3,8 @@ extends CanvasLayer
 # --- MAPEAMENTO DE AUTORES E PORTRAITS ---
 const PORTRAIT_MAP: Dictionary = {
 	"SISTEMA": "res://Jogo principal/UI/Assets/Portraits/rean_portrait.jpeg",
-	#"DEFESA_CIVIL": "res://assets/portraits/defesa_civil.png",
-	#"ENGENHEIRO_VIRTUAL": "res://assets/portraits/engenheiro.png"
-	#"SECRETARIA": "res://assets/portraits/secretaria.png",
-	#"TESOUREIRO": "res://assets/portraits/tesoureiro.png"
+	"SECRETARIA": "res://Jogo principal/UI/Assets/Rebecatrue2.png",
+	"TESOUREIRO": "res://Jogo principal/UI/Assets/Rebecatrue3.png"
 }
 
 var loaded_portraits: Dictionary = {}
@@ -17,14 +15,16 @@ var loaded_portraits: Dictionary = {}
 ## a hora certa de continuar o fluxo.
 signal dialogo_finalizado(ultimo_no_id: String)
 
-# --- REFERÊNCIAS AOS NÓS (Usando Nomes Únicos %) ---
+# --- REFERÊNCIAS AOS NÓS ---
 @onready var dialogue_box: PanelContainer = %CaixaDialogo
 @onready var dialogue_text: RichTextLabel = %TextoDialogo
 @onready var portrait: TextureRect = %PortraitDialogo
+@onready var portrait_frame: Control = get_node_or_null("%PortraitFrame")
 @onready var author_label: RichTextLabel = %NomeLabel
+@onready var painel_nome: Control = get_node_or_null("%PainelNome")
 @onready var choices_container: VBoxContainer = %ChoicesContainer
 @onready var timer: Timer = %Timing
-@onready var margin_container: MarginContainer = %ContainerDialogo  # marque como Unique Name na cena
+@onready var margin_container: MarginContainer = %ContainerDialogo
 @onready var botao_pular: Button = %BotaoPular
 
 @export var estilo_padrao: StyleBoxTexture      # StyleBox pra 16:9 ou mais estreito
@@ -41,21 +41,22 @@ const NOME_STYLE := "panel"  # nome do slot de estilo
 
 # --- CONSTANTES DE ESCALA (AJUSTE PROS VALORES REAIS DO SEU PROJETO) ---
 const ALTURA_REFERENCIA := 648.0   # altura da resolução em que você desenhou o layout original
-const FONTE_BASE := 30              # tamanho de fonte atual do DialogueText/NameLabel nessa resolução
+const FONTE_BASE := 24              # tamanho de fonte atual do DialogueText/NameLabel nessa resolução
 
 # Margens atuais do MarginContainer (conforme Theme Overrides -> Constants)
-const MARGEM_ESQUERDA_BASE := 59
-const MARGEM_TOPO_BASE := 14
-const MARGEM_DIREITA_BASE := 51
-const MARGEM_BAIXO_BASE := 50
+const MARGEM_ESQUERDA_BASE := 45
+const MARGEM_TOPO_BASE := 20
+const MARGEM_DIREITA_BASE := 45
+const MARGEM_BAIXO_BASE := 20
 
 
 func _ready() -> void:
-	# Garante que o sistema de diálogo continue recebendo inputs mesmo com o jogo pausado
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	visible = false  # começa totalmente desativado — só liga quando uma missão chamar
+	visible = false  
 	dialogue_box.visible = false
+	if painel_nome:
+		painel_nome.visible = false
 	choices_container.visible = false
 	dialogue_text.text = ""
 	
@@ -67,17 +68,15 @@ func _ready() -> void:
 	if not dialogue_box.gui_input.is_connected(_on_dialogue_box_gui_input):
 		dialogue_box.gui_input.connect(_on_dialogue_box_gui_input)
 
-	# Conecta o clique do botão de pular
 	if botao_pular and not botao_pular.pressed.is_connected(_on_botao_pular_pressed):
 		botao_pular.pressed.connect(_on_botao_pular_pressed)
 	
-	# Script da mudança de estilo conforme o ratio
 	estilo_padrao = StyleBoxTexture.new()
 	estilo_padrao.texture = load("res://Jogo principal/UI/Assets/Rebecatrue3.png")
-	estilo_padrao.expand_margin_top = 20
+	
 	estilo_widescreen = StyleBoxTexture.new()
 	estilo_widescreen.texture = load("res://Jogo principal/UI/Assets/Rebecatrue4.png")
-	estilo_widescreen.expand_margin_top = 20
+	
 	get_viewport().size_changed.connect(_atualizar_estilo_caixa)
 	_atualizar_estilo_caixa()
 
@@ -128,7 +127,7 @@ func _on_dialogue_box_gui_input(event: InputEvent) -> void:
 
 # --- FUNÇÕES DE NAVEGAÇÃO E CARREGAMENTO ---
 
-func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String) -> void:
+func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String, pausar_jogo: bool = true) -> void:
 	if not FileAccess.file_exists(caminho_arquivo):
 		printerr("Erro: Arquivo não encontrado: ", caminho_arquivo)
 		return
@@ -145,14 +144,18 @@ func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String) -> 
 	dialogue_data = dados
 	current_node_id = no_inicial
 	is_dialogue_active = true
-	visible = true  # reativa a cena inteira (estava totalmente desligada)
+	visible = true  
 	dialogue_box.visible = true
+	if painel_nome:
+		painel_nome.visible = true
 	choices_container.hide()
 	
 	if botao_pular:
 		botao_pular.visible = true
 	
-	get_tree().paused = true
+	if pausar_jogo:
+		get_tree().paused = true
+
 	show_current_line()
 
 
@@ -160,8 +163,11 @@ func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String) -> 
 ## específica antes de abrir a caixa de missão. `no_inicial` é o id do
 ## primeiro nó dessa missão em dialogues.json (ex: "missao1_1").
 func iniciar_dialogo_da_missao(no_inicial: String) -> void:
-	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", no_inicial)
+	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", no_inicial, true)
 
+
+func iniciar_dialogo_dica(no_inicial: String) -> void:
+	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", no_inicial, false)
 
 func show_current_line() -> void:
 	var blocos = dialogue_data.get("dialogos", {})
@@ -186,9 +192,15 @@ func show_current_line() -> void:
 func atualizar_autor_e_portrait(autor_id: String) -> void:
 	if author_label:
 		author_label.text = tr(autor_id)
+		
+	if painel_nome:
+		painel_nome.visible = (autor_id != "")
 	
 	if autor_id == "" or not PORTRAIT_MAP.has(autor_id):
-		portrait.hide()
+		if portrait_frame:
+			portrait_frame.hide()
+		else:
+			portrait.hide()
 		return
 		
 	var caminho_imagem = PORTRAIT_MAP[autor_id]
@@ -202,8 +214,12 @@ func atualizar_autor_e_portrait(autor_id: String) -> void:
 	var textura = loaded_portraits[caminho_imagem]
 	if textura != null:
 		portrait.texture = textura
+		if portrait_frame:
+			portrait_frame.show()
 		portrait.show()
 	else:
+		if portrait_frame:
+			portrait_frame.hide()
 		portrait.hide()
 
 
@@ -316,10 +332,12 @@ func end_dialogue() -> void:
 	var ultimo_no := current_node_id
 	is_dialogue_active = false
 	dialogue_box.visible = false
+	if painel_nome:
+		painel_nome.visible = false
 	choices_container.hide()
 	dialogue_text.text = ""
 	get_tree().paused = false
-	visible = false  # desativa a cena inteira até o próximo diálogo ser chamado
+	visible = false  
 	dialogo_finalizado.emit(ultimo_no)
 
 

@@ -585,7 +585,7 @@ func _on_button_financas_pressed() -> void:
 # EVENTOS DO SISTEMA DE DICAS DO GABINETE
 # ============================================================
 
-## Abre e fecha a aba lateral de conselhos com efeito animado de deslize e opacidade
+## Abre e fecha a aba lateral de conselhos deslizando de/para a borda esquerda (efeito gaveta)
 func _on_botao_gabinete_pressed() -> void:
 	if painel_aba_dicas == null:
 		return
@@ -596,7 +596,7 @@ func _on_botao_gabinete_pressed() -> void:
 
 	_tween_aba_dicas = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC)
 
-	# Se a aba já estiver aberta e visível, executa a animação de FECHAR
+	# Se a aba já estiver aberta e visível, desliza de volta para fora da tela (-260px)
 	if painel_aba_dicas.visible and painel_aba_dicas.modulate.a > 0.1:
 		_tween_aba_dicas.set_ease(Tween.EASE_IN)
 		_tween_aba_dicas.tween_property(painel_aba_dicas, "position:x", -260.0, 0.25)
@@ -605,14 +605,14 @@ func _on_botao_gabinete_pressed() -> void:
 			painel_aba_dicas.visible = false
 		)
 	else:
-		# Animação de ABRIR
+		# Animação de ABRIR: inicia fora da tela (-260px) e desliza até encostar na borda (0px)
 		_atualizar_interface_dicas()
 		painel_aba_dicas.visible = true
 		painel_aba_dicas.position.x = -260.0
 		painel_aba_dicas.modulate.a = 0.0
 
 		_tween_aba_dicas.set_ease(Tween.EASE_OUT)
-		_tween_aba_dicas.tween_property(painel_aba_dicas, "position:x", 15.0, 0.3)
+		_tween_aba_dicas.tween_property(painel_aba_dicas, "position:x", 0.0, 0.3)
 		_tween_aba_dicas.tween_property(painel_aba_dicas, "modulate:a", 1.0, 0.25)
 
 
