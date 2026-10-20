@@ -140,7 +140,7 @@ TXT_TUTORIAL_23,Boa gestão!,Good management!
 
 # --- DICAS FINANCEIRAS E EDUCATIVAS ---
 DICA_HISTORICO_VAZIO,Nenhuma dica registrada até o momento.,No hints recorded so far.
-DICA_TURNO_PREFIXO,• Turno %d:,• Turn %d:
+DICA_TURNO_PREFIXO,• Semana %d:,• Week %d:
 DICA_DEFICIT,"[color=#ff6666]Déficit Financeiro:[/color] Gastos superiores à arrecadação comprometem o município. Ampliar a área residencial ajuda a reequilibrar o orçamento.","[color=#ff6666]Financial Deficit:[/color] Spending above tax revenue harms the municipality. Expanding residential areas helps balance the budget."
 DICA_RECONSTRUCAO,"[color=#ffbb33]Gestão de Crise:[/color] Reconstruir moradias após salvar os moradores restabelece os tributos e a estabilidade da cidade.","[color=#ffbb33]Crisis Management:[/color] Rebuilding housing after saving residents restores tax revenue and city stability."
 DICA_SEM_BOMBEIROS,"[color=#ff6666]Prevenção de Riscos:[/color] Serviços de emergência ativos reduzem o tempo de resposta e evitam perdas graves em desastres.","[color=#ff6666]Risk Prevention:[/color] Active emergency services reduce response times and prevent severe losses during disasters."

@@ -124,7 +124,6 @@ theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
-text = "999999999"
 vertical_alignment = 1
 
 [node name="Popularidade" type="NinePatchRect" parent="PainelExibição/Exibição" unique_id=1986681808]
@@ -144,7 +143,6 @@ theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
-text = "99999999"
 vertical_alignment = 1
 
 [node name="População" type="NinePatchRect" parent="PainelExibição/Exibição" unique_id=526860094]
@@ -165,7 +163,6 @@ theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
-text = "999999999"
 vertical_alignment = 1
 
 [node name="Desabrigados" type="NinePatchRect" parent="PainelExibição/Exibição" unique_id=1835060316]
@@ -186,7 +183,6 @@ theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
-text = "999999999"
 vertical_alignment = 1
 
 [node name="PainelBotoes" type="PanelContainer" parent="." unique_id=1135250201]
@@ -260,7 +256,6 @@ theme_override_constants/shadow_outline_size = 4
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/normal_font_size = 30
-text = "999"
 vertical_alignment = 1
 
 [node name="TurnoTexto" type="RichTextLabel" parent="PainelTurnos/Turnos/Turno" unique_id=1610462845]

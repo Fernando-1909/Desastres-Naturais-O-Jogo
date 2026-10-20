@@ -230,35 +230,46 @@ func _atualizar_valores_financeiros(main_game: Node2D) -> void:
 func _gerar_dica_contextual(main_game: Node2D) -> String:
 	var turno_atual: int = Global.turno if "turno" in Global else 0
 
-	# 1. Déficit Financeiro (Manutenção maior que receita)
+	# 1. Sem Prefeitura no início (Turno 1 a 8)
+	var tem_prefeitura = main_game._tem_prefeitura_construida() if main_game.has_method("_tem_prefeitura_construida") else true
+	if turno_atual >= 1 and turno_atual < 9 and not tem_prefeitura:
+		return "Construa a Prefeitura o quanto antes! Sem ela, nossa gestão não terá legitimidade para enfrentar a primeira enchente do turno 9."
+
+	# 2. Déficit Financeiro (Manutenção maior que receita)
 	var receita: int = main_game.calcular_renda_com_multiplicadores_de_zona() if main_game.has_method("calcular_renda_com_multiplicadores_de_zona") else 0
 	var despesa: int = main_game.calcular_custo_manutencao_construcoes() if main_game.has_method("calcular_custo_manutencao_construcoes") else 0
-	if (receita - despesa) < 0:
+	if (receita - despesa) < 0 or Global.dinheiro < 100:
 		return tr("DICA_DEFICIT")
 
-	# 2. Reconstrução Pós-Enchente (Apenas se houver casas destruídas pendentes)
-	var danos: float = Global.dano_total if "dano_total" in Global else 0.0
+	# 3. Reconstrução Pós-Enchente (Apenas se houver desabrigados ou casas destruídas)
+	var desabrigados: int = Global.pessoas_desabrigadas if "pessoas_desabrigadas" in Global else 0
 	var casas_destruidas: int = Global.casas_destruidas if "casas_destruidas" in Global else 0
-	if danos > 0 and casas_destruidas > 0:
+	if desabrigados > 0 or casas_destruidas > 0:
 		return tr("DICA_RECONSTRUCAO")
 
-	# 3. Sem Bombeiros (SÓ SUGERE SE TURNO >= 2, quando a zona de serviços/missão 1 fica disponível)
+	# 4. Sem Bombeiros (SÓ SUGERE SE TURNO >= 2, com a Missão 1)
 	if turno_atual >= 2:
 		if main_game.has_method("contar_estacoes_bombeiro_construidas") and main_game.contar_estacoes_bombeiro_construidas() == 0:
 			return tr("DICA_SEM_BOMBEIROS")
 
-	# 4. Sem Abrigos (SÓ SUGERE SE TURNO >= 6, quando os abrigos/missão 2 ficam disponíveis)
+	# 5. Sem Abrigos (SÓ SUGERE SE TURNO >= 6, com a Missão 2 e aproximação da enchente)
 	if turno_atual >= 6:
 		if main_game.has_method("contar_abrigos_construidos") and main_game.contar_abrigos_construidos() == 0:
 			return tr("DICA_SEM_ABRIGOS")
 
-	# 5. Bombas sem Estação de Tratamento (SÓ SUGERE SE TURNO >= 16 ou se já houver bombas no mapa)
+	# 6. Alerta para Segunda Enchente / Bombas no Rio (Turno 15 a 20)
+	if turno_atual >= 15 and turno_atual <= 20:
+		var tem_bomba: bool = main_game.contar_construcoes_por_categoria("bomba") > 0 if main_game.has_method("contar_construcoes_por_categoria") else false
+		if not tem_bomba:
+			return "Instale Bombas de Drenagem na Zona do Rio até o turno 20 para defender a cidade da segunda enchente!"
+
+	# 7. Bombas sem Estação de Tratamento (SÓ SUGERE SE TURNO >= 16 ou se já houver bombas no mapa)
 	var tem_bomba: bool = main_game.contar_construcoes_por_categoria("bomba") > 0 if main_game.has_method("contar_construcoes_por_categoria") else false
 	var tem_tratamento: bool = main_game.contar_construcoes_por_categoria("estacao_tratamento") > 0 if main_game.has_method("contar_construcoes_por_categoria") else false
 	if (tem_bomba or turno_atual >= 16) and not tem_tratamento:
 		return tr("DICA_SEM_TRATAMENTO")
 
-	# 6. Dicas Gerais Educativas (Fallback de conceitos educativos de urbanismo/desastres)
+	# 8. Dicas Gerais Educativas (Fallback)
 	var lista_chaves_dicas: Array[String] = ["DICA_GERAL_1", "DICA_GERAL_2", "DICA_GERAL_3", "DICA_GERAL_4"]
 	var idx = randi() % lista_chaves_dicas.size()
 	return tr(lista_chaves_dicas[idx])

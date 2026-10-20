@@ -1,5 +1,50 @@
 {
   "dialogos": {
+	"dica_prefeitura_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Prefeito(a), a construção da Prefeitura é fundamental! Sem ela, nossa cidade não terá infraestrutura administrativa para gerenciar os serviços e enfrentar as tempestades que virão.",
+	  "proximo": "fim"
+	},
+	"dica_desastre_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Prefeito(a), as chuvas estão se intensificando e o risco de enchente no Rio é alto a partir do turno 8! Garanta que a Estação de Tratamento e as Bombas de Drenagem estejam prontas para evitar estragos graves.",
+	  "proximo": "fim"
+	},
+	"dica_desastre_2": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Prefeito(a), uma segunda tempestade ainda mais forte se aproxima! Precisamos ter Bombas de Drenagem instaladas na Zona do Rio impreterivelmente até o turno 20 para evitar o colapso da cidade.",
+	  "proximo": "fim"
+	},
+	"dica_reconstrucao_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Temos famílias desabrigadas e estruturas danificadas pela enchente. Conclua os resgates primeiro com as equipes de bombeiro para depois liberar a reconstrução das moradias.",
+	  "proximo": "fim"
+	},
+	"dica_deficit_1": {
+	  "autor": "TESOUREIRO",
+	  "texto_chave": "Prefeito(a), nossas contas estão no vermelho este mês. Que tal expandirmos a Zona Residencial para arrecadar mais tributos dos moradores?",
+	  "proximo": "fim"
+	},
+	"dica_sem_tratamento_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Prefeito(a), as bombas de drenagem estão prontas, mas sem a Estação de Tratamento a água contaminada vai continuar danificando as estruturas da orla!",
+	  "proximo": "fim"
+	},
+	"dica_bombeiros_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "A população das zonas mais distantes está preocupada com o tempo que os bombeiros levam para chegar lá em uma emergência.",
+	  "proximo": "fim"
+	},
+	"dica_abrigos_1": {
+	  "autor": "SECRETARIA",
+	  "texto_chave": "Precisamos construir abrigos de emergência logo. Se uma tempestade atingir a cidade agora, não teremos para onde levar as famílias!",
+	  "proximo": "fim"
+	},
+	"dica_expansao_1": {
+	  "autor": "TESOUREIRO",
+	  "texto_chave": "Manter os serviços públicos e bairros residenciais bem estruturados garante alta aprovação popular e boa arrecadação para o seu mandato.",
+	  "proximo": "fim"
+	},
 	"prefeitura_1": {
 	  "autor": "SECRETARIA",
 	  "texto_chave": "TXT_PREFEITURA_1",

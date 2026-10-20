@@ -18,6 +18,7 @@ var gerenciador_dicas: GerenciadorDicas = null
 
 signal toggle_freecam
 
+var _tween_atencao_gabinete: Tween
 var _tween_aba_dicas: Tween
 var freecam: Camera2D
 var scene_camera: Camera2D
@@ -590,6 +591,34 @@ func _on_button_financas_pressed() -> void:
 # EVENTOS DO SISTEMA DE DICAS DO GABINETE
 # ============================================================
 
+## Quando uma nova dica é liberada, ativa a badge e faz o botão do Gabinete piscar
+func _on_nova_dica_recebida(_id_dica: String) -> void:
+	if badge_novidade:
+		badge_novidade.visible = true
+	_chamar_atencao_gabinete()
+
+
+## Animação que faz o botão do Gabinete piscar suavemente para chamar atenção
+func _chamar_atencao_gabinete() -> void:
+	_parar_atencao_gabinete()
+	if botao_gabinete == null:
+		return
+
+	_tween_atencao_gabinete = create_tween().set_loops().set_trans(Tween.TRANS_SINE)
+	_tween_atencao_gabinete.tween_property(botao_gabinete, "modulate", Color(1.3, 1.3, 0.8), 0.5)
+	_tween_atencao_gabinete.parallel().tween_property(botao_gabinete, "scale", Vector2(1.08, 1.08), 0.5)
+	_tween_atencao_gabinete.tween_property(botao_gabinete, "modulate", Color.WHITE, 0.5)
+	_tween_atencao_gabinete.parallel().tween_property(botao_gabinete, "scale", Vector2.ONE, 0.5)
+
+
+func _parar_atencao_gabinete() -> void:
+	if _tween_atencao_gabinete:
+		_tween_atencao_gabinete.kill()
+	if botao_gabinete:
+		botao_gabinete.modulate = Color.WHITE
+		botao_gabinete.scale = Vector2.ONE
+
+
 ## Abre e fecha a aba lateral de conselhos deslizando de/para a borda esquerda (efeito gaveta)
 func _on_botao_gabinete_pressed() -> void:
 	if painel_aba_dicas == null:
@@ -621,16 +650,15 @@ func _on_botao_gabinete_pressed() -> void:
 		_tween_aba_dicas.tween_property(painel_aba_dicas, "modulate:a", 1.0, 0.25)
 
 
-## Ativa a bolinha/badge de novidade
-func _on_nova_dica_recebida(_id_dica: String) -> void:
-	if badge_novidade:
-		badge_novidade.visible = true
-
-
-## Gera e atualiza a lista de botões de tópicos dentro da aba
+## Gera a lista de botões com as dicas novas NO TOPO, indicativo visual e nome do autor
 func _atualizar_interface_dicas() -> void:
-	if badge_novidade and gerenciador_dicas:
-		badge_novidade.visible = gerenciador_dicas.tem_dica_nao_lida()
+	var tem_nao_lida = gerenciador_dicas and gerenciador_dicas.tem_dica_nao_lida()
+	
+	if badge_novidade:
+		badge_novidade.visible = tem_nao_lida
+		
+	if not tem_nao_lida:
+		_parar_atencao_gabinete()
 
 	if lista_topicos_vbox == null or gerenciador_dicas == null:
 		return
@@ -638,15 +666,22 @@ func _atualizar_interface_dicas() -> void:
 	for child in lista_topicos_vbox.get_children():
 		child.queue_free()
 
+	# Dicas vêm ordenadas com as NÃO LIDAS no topo
 	var lista = gerenciador_dicas.obter_dicas_filtradas()
 	for dica in lista:
 		var btn = Button.new()
-		btn.custom_minimum_size = Vector2(0, 35)
+		btn.custom_minimum_size = Vector2(0, 38)
 		btn.focus_mode = Control.FOCUS_NONE
 
-		var icone = "🟡 " if dica["categoria"] == GerenciadorDicas.CategoriaDica.ALERTA else "🟢 "
+		# Formatação do Autor
+		var autor_nome = "Secretária" if dica.get("autor", "") == "SECRETARIA" else "Tesoureiro"
+		
+		# Indicativo de dica nova vs dica antiga/lida
+		var prefixo = "🔴 [NOVA] " if dica["nao_lida"] else "✓ "
 		var titulo = tr(dica["titulo_chave"])
-		btn.text = icone + titulo
+
+		btn.text = prefixo + autor_nome + ": " + titulo
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 
 		var no_dialogo = dica["no_dialogo"]
 		var id_dica = dica["id"]
@@ -655,10 +690,12 @@ func _atualizar_interface_dicas() -> void:
 		lista_topicos_vbox.add_child(btn)
 
 
-## Marca o tópico como lido e chama a conversa com a secretária no DialogueManager
+## Marca a dica como lida e dispara o diálogo na tela com a Secretária ou Tesoureiro
 func _on_topico_dica_clicado(id_dica: String, no_dialogo: String) -> void:
 	if gerenciador_dicas:
 		gerenciador_dicas.marcar_como_lida(id_dica)
+
+	_atualizar_interface_dicas()
 
 	if main_game and "dialogue_manager" in main_game and main_game.dialogue_manager:
 		if main_game.dialogue_manager.has_method("iniciar_dialogo_dica"):
