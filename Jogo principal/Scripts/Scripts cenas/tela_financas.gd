@@ -47,12 +47,15 @@ func _ready() -> void:
 
 	_resolver_falhas_de_nos()
 
+	# Remove programmaticamente o CheckBox antigo da tela de finanças
+	if check_box_dicas:
+		check_box_dicas.visible = false
+		check_box_dicas.queue_free()
+
 	if botao_fechar and not botao_fechar.pressed.is_connected(fechar_tela):
 		botao_fechar.pressed.connect(fechar_tela)
 	if botao_ok and not botao_ok.pressed.is_connected(fechar_tela):
 		botao_ok.pressed.connect(fechar_tela)
-	if check_box_dicas and not check_box_dicas.toggled.is_connected(_on_check_box_dicas_toggled):
-		check_box_dicas.toggled.connect(_on_check_box_dicas_toggled)
 
 	_conectar_eventos_mouse_dicas()
 	_atualizar_visibilidade_dicas()
@@ -63,6 +66,7 @@ func abrir_tela(main_game: Node2D) -> void:
 	if main_game == null:
 		return
 		
+	_atualizar_visibilidade_dicas()
 	_atualizar_valores_financeiros(main_game)
 	_atualizar_historico_dicas(main_game)
 	
@@ -80,9 +84,8 @@ func fechar_tela() -> void:
 
 
 func definir_modo_pesquisa_dicas(ativado: bool) -> void:
-	_dicas_habilitadas = ativado
-	if check_box_dicas:
-		check_box_dicas.button_pressed = ativado
+	if typeof(Global) != TYPE_NIL:
+		Global.dicas_habilitadas = ativado
 	_atualizar_visibilidade_dicas()
 
 
@@ -364,7 +367,6 @@ func _resolver_falhas_de_nos() -> void:
 	if not scroll_dicas: scroll_dicas = find_child("*ScrollDicas*", true, false) as ScrollContainer
 	if not botao_fechar: botao_fechar = find_child("*Fechar*", true, false) as Button
 	if not botao_ok: botao_ok = find_child("*Ok*", true, false) as Button
-	if not check_box_dicas: check_box_dicas = find_child("*Check*", true, false) as CheckBox
 
 
 func _on_check_box_dicas_toggled(toggled_on: bool) -> void:
@@ -373,8 +375,9 @@ func _on_check_box_dicas_toggled(toggled_on: bool) -> void:
 
 
 func _atualizar_visibilidade_dicas() -> void:
+	var ativado = Global.dicas_habilitadas if ("dicas_habilitadas" in Global and Global.dicas_habilitadas != null) else true
 	if coluna_dicas_v_box:
-		coluna_dicas_v_box.visible = _dicas_habilitadas
+		coluna_dicas_v_box.visible = ativado
 
 
 ## Define texto com segurança tanto para Label quanto para RichTextLabel

@@ -11,6 +11,7 @@ class_name MenuPausa
 @onready var button_continuar: Button = $CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonContinuar
 @onready var button_opcoes: Button = $CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonOpcoes
 @onready var button_menu: Button = $CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonMenu
+@onready var button_dicas: Button = $CenterContainer/PainelCentral/MargemExterna/ColunaPrincipal/CaixaBotoes/MargemInterna/ColunaBotoes/ButtonDicas
 
 # Instância da cena de opções reutilizável
 @onready var menu_opcoes: MenuOpcoes = $MenuOpcoes
@@ -58,6 +59,7 @@ func toggle_pause() -> void:
 
 func _conectar_sinais() -> void:
 	if button_continuar: button_continuar.pressed.connect(_on_continuar_pressed)
+	if button_dicas: button_dicas.pressed.connect(_on_dicas_pressed)
 	if button_opcoes: button_opcoes.pressed.connect(_on_opcoes_pressed)
 	if button_menu: button_menu.pressed.connect(_on_menu_pressed)
 
@@ -73,6 +75,24 @@ func _on_opcoes_pressed() -> void:
 	if menu_opcoes:
 		menu_opcoes.abrir()
 
+## Alterna o estado global das dicas entre ativado e desativado
+func _on_dicas_pressed() -> void:
+	var estado_atual: bool = Global.get("dicas_habilitadas") if Global.get("dicas_habilitadas") != null else true
+	Global.set("dicas_habilitadas", not estado_atual)
+	_atualizar_texto_dicas()
+
+## Atualiza o RichTextLabel do botão de dicas com o status atual
+func _atualizar_texto_dicas() -> void:
+	if button_dicas == null:
+		return
+	var rtl = button_dicas.get_node_or_null("RichTextLabel") as RichTextLabel
+	var ativado: bool = Global.get("dicas_habilitadas") if Global.get("dicas_habilitadas") != null else true
+	var texto = "DICAS: ATIVADAS" if ativado else "DICAS: DESATIVADAS"
+	if rtl:
+		rtl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		rtl.text = "[center]" + tr(texto) + "[/center]"
+	else:
+		button_dicas.text = tr(texto)
 
 func _on_menu_pressed() -> void:
 	get_tree().paused = false
@@ -105,3 +125,5 @@ func _atualizar_textos_botoes() -> void:
 		if rtl:
 			rtl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			rtl.text = "[center]" + tr(chave) + "[/center]"
+			
+	_atualizar_texto_dicas()

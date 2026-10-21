@@ -6,6 +6,7 @@ var popularidade: int = 0:
 	set(value):
 		popularidade = min(value, 100)
 var populacao: int
+var dicas_habilitadas: bool = true
 
 # Motivo da derrota por popularidade
 var missaoderrota: bool = false

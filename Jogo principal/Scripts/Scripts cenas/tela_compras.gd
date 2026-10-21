@@ -367,7 +367,7 @@ func abrir_modo_compra(id_or_nome: String, categoria: String, descricao: String,
 	_definir_texto_botao(button_comprar, txt_comprar + " ($" + str(custo) + ")")
 
 
-func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabilidade_pct: float, custo_upgrade: int, tex: Texture2D, descricao: String, texto_detalhes: String, pode_aprimorar: bool, texto_stats_customizado: String = "") -> void:
+func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: Variant, durabilidade_pct: float, custo_upgrade: int, tex: Texture2D, descricao: String, texto_detalhes: String, pode_aprimorar: bool, texto_stats_customizado: String = "") -> void:
 	_modo_atual = ModoTela.UPGRADE
 	get_tree().paused = true
 	_veio_da_selecao = false
@@ -384,7 +384,6 @@ func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabili
 	if container_upgrade: container_upgrade.visible = true
 	if coluna_stats: coluna_stats.visible = true
 
-	# Detecta o idioma atual ("en", "pt", etc.)
 	var lang = TranslationServer.get_locale().left(2).to_lower()
 
 	if label_ganhos:
@@ -392,7 +391,6 @@ func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabili
 		if texto_stats_customizado != "":
 			var txt_final = texto_stats_customizado
 			
-			# Substitui chave de vagas com fallback por idioma
 			if txt_final.contains("UI_VAGAS_ABRIGO"):
 				var trad = tr("UI_VAGAS_ABRIGO")
 				if trad == "UI_VAGAS_ABRIGO":
@@ -409,7 +407,12 @@ func abrir_modo_upgrade(nome_edificio: String, nivel: int, ganhos: int, durabili
 			var txt_ganhos = tr("UI_GANHOS")
 			if txt_ganhos == "UI_GANHOS":
 				txt_ganhos = "Earnings" if lang == "en" else "Ganhos"
-			label_ganhos.text = "[center]" + txt_ganhos + ": $" + str(ganhos) + "[/center]"
+			
+			# Formatação monetária limpa: exibe $0.80, $1.00, $1.50 ou $2.00 por turno
+			var val_num = float(ganhos)
+			var texto_ganho_formatado: String = String.num(val_num, 2)
+				
+			label_ganhos.text = "[center]" + txt_ganhos + ": +$" + texto_ganho_formatado + "/turno[/center]"
 
 	if barra_infra: barra_infra.value = durabilidade_pct
 

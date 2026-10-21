@@ -28,6 +28,9 @@ const IndicadorSetaScript = preload("res://Jogo principal/Scripts/Scripts gerais
 const PONTO_RESGATE_SCENE = preload("res://Jogo principal/UI/ponto_resgate.tscn")
 var _popup_missao_instance: Node = null
 
+# Controle de visibilidade das setas durante diálogos
+var _dialogo_em_andamento: bool = false
+
 # REFERENCIA A TELA DE COMPRAS E AO TILEMAP (Suporta TileMapLayer e TileMap)
 @onready var tela_compras: TelaCompras = $TelaCompras
 @onready var tilemap_constructions: TileMapLayer = $TileMapConstructions
@@ -406,6 +409,10 @@ func _adicionar_seta_indicadora_na_zona(zona: Node) -> void:
 	var seta = IndicadorSetaScript.new()
 	add_child(seta)
 	seta.inicializar(tile_vazio, pos_global, zona)
+	
+	# Se houver um diálogo em andamento, oculta a seta imediatamente
+	if _dialogo_em_andamento:
+		seta.visible = false
 	
 	_setas_indicadoras[zona] = seta
 	print("[INDICADOR] Seta criada para a zona: ", zona.name, " no tile ", tile_vazio)
@@ -2242,22 +2249,44 @@ func _iniciar_fluxo_da_missao(missao: MissionData) -> void:
 	var no_inicial: String = DIALOGO_INICIAL_POR_MISSAO.get(missao.id, "")
 
 	if dialogue_manager and no_inicial != "" and dialogue_manager.has_method("iniciar_dialogo_da_missao"):
+		_dialogo_em_andamento = true
+		
+		# Oculta a UI e as setas do mapa durante o diálogo
+		if hud:
+			hud.visible = false
+		_definir_visibilidade_setas(false)
+
 		if not dialogue_manager.dialogo_finalizado.is_connected(_on_dialogo_da_missao_finalizado):
 			dialogue_manager.dialogo_finalizado.connect(_on_dialogo_da_missao_finalizado, CONNECT_ONE_SHOT)
 		dialogue_manager.iniciar_dialogo_da_missao(no_inicial)
 	else:
 		if not dialogue_manager:
 			print("[AVISO] DialogueManager não encontrado na cena — abrindo a missão direto na caixa.")
+		_dialogo_em_andamento = false
+		if hud:
+			hud.visible = true
+		_definir_visibilidade_setas(true)
 		_abrir_container_missao()
 
 
 ## Chamado quando o DialogueManager termina o diálogo da missão (conectado
 ## como CONNECT_ONE_SHOT em _iniciar_fluxo_da_missao). A cena do diálogo já
-## se desativa sozinha (ver dialogue_manager.gd -> end_dialogue); aqui só
-## precisamos mostrar a caixa de missão de sempre.
+## se desativa sozinha; aqui liberamos e exibimos a UI do jogo.
 func _on_dialogo_da_missao_finalizado(_ultimo_no_id: String) -> void:
+	_dialogo_em_andamento = false
+	
+	# Restaura a visibilidade da UI e das setas do mapa
+	if hud:
+		hud.visible = true
+	_definir_visibilidade_setas(true)
+	
 	_abrir_container_missao()
 
+func _definir_visibilidade_setas(visivel: bool) -> void:
+	for zona in _setas_indicadoras.keys():
+		var seta = _setas_indicadoras[zona]
+		if is_instance_valid(seta):
+			seta.visible = visivel
 
 func processar_missao_no_turno() -> void:
 	if Global.missao_escolhida != null and Global.missao_aceita:
@@ -2504,10 +2533,10 @@ func _abrir_modo_upgrade_instancia(predio: BuildingInstance) -> void:
 		if pode_up and edificios_bloqueados_inicialmente.has(id_predio):
 			pode_up = edificios_desbloqueados.has(id_predio)
 		
-		# Aplica o bônus da zona e o bônus de 10% da Prefeitura sobre os ganhos base.
-		var ganho_base = predio.get_ganhos_atuais() if predio.has_method("get_ganhos_atuais") else 0
-		var multiplicador_receita_zona := _obter_multiplicador_receita_zona(_celula_selecionada)
-		var ganho_final = int(round(ganho_base * multiplicador_receita_zona * obter_multiplicador_prefeitura()))
+		# Aplica o bônus de zona e o bônus da Prefeitura mantendo precisão decimal (float)
+		var ganho_base: float = predio.get_ganhos_atuais() if predio.has_method("get_ganhos_atuais") else 0.0
+		var multiplicador_receita_zona: float = _obter_multiplicador_receita_zona(_celula_selecionada)
+		var ganho_final: float = ganho_base * multiplicador_receita_zona * obter_multiplicador_prefeitura()
 		var custo_upgrade_zona = calcular_custo_upgrade_com_zona(predio)
 		
 		tela_compras.abrir_modo_upgrade(
@@ -2943,9 +2972,6 @@ func calcular_custo_upgrade_com_zona(predio: BuildingInstance) -> int:
 
 
 func calcular_renda_com_multiplicadores_de_zona() -> int:
-	# A renda original é baseada na população. Para que as zonas residenciais
-	# realmente alterem o dinheiro gerado, a população proveniente de cada casa
-	# é ponderada pelo multiplicador de receita da zona onde ela está.
 	var populacao_residencial_base: float = 0.0
 	var populacao_residencial_ponderada: float = 0.0
 
@@ -2959,19 +2985,18 @@ func calcular_renda_com_multiplicadores_de_zona() -> int:
 			continue
 
 		var categoria = str(predio.data.categoria).to_lower().strip_edges()
-		var moradores = float(predio.data.bonus_populacao) if "bonus_populacao" in predio else 0.0
+		var moradores = (float(predio.data.bonus_populacao) * float(predio.nivel_atual)) if ("bonus_populacao" in predio.data and predio.data.bonus_populacao != null) else 0.0
 		if moradores <= 0.0 or categoria != "residencial":
 			continue
 
 		populacao_residencial_base += moradores
 		populacao_residencial_ponderada += moradores * _obter_multiplicador_receita_zona(pos)
 
-	# Mantém população que não veio de casas sem alteração.
+	# Aplica o multiplicador da prefeitura no total arrecadado
+	var mult_prefeitura = obter_multiplicador_prefeitura()
 	var populacao_outras_fontes = max(0.0, float(Global.populacao) - populacao_residencial_base)
-	var populacao_efetiva = populacao_outras_fontes + populacao_residencial_ponderada
+	var populacao_efetiva = (populacao_outras_fontes + populacao_residencial_ponderada) * mult_prefeitura
 
-	# Cada 10 habitantes correspondem a 1 unidade de renda,
-	# igual à regra original do jogo.
 	return int(populacao_efetiva / 10.0)
 
 

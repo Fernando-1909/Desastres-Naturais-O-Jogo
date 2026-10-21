@@ -293,6 +293,7 @@ func _process(_delta: float) -> void:
 	_update_missao_botoes()
 	_update_populacao_label()
 	_update_desabrigados_label()
+	_update_visibilidade_dicas()
 
 
 # ============================================================
@@ -557,6 +558,14 @@ func _on_missao_close_pressed() -> void:
 	main_game.fechar_checagem_missao()
 
 
+## Atualiza a visibilidade do botão e aba lateral do Gabinete com base na configuração global
+func _update_visibilidade_dicas() -> void:
+	var ativado = Global.dicas_habilitadas if ("dicas_habilitadas" in Global and Global.dicas_habilitadas != null) else true
+	if botao_gabinete:
+		botao_gabinete.visible = ativado
+	if not ativado and painel_aba_dicas and painel_aba_dicas.visible:
+		painel_aba_dicas.visible = false
+
 # ============================================================
 # PAUSA
 # ============================================================
@@ -593,6 +602,9 @@ func _on_button_financas_pressed() -> void:
 
 ## Quando uma nova dica é liberada, ativa a badge e faz o botão do Gabinete piscar
 func _on_nova_dica_recebida(_id_dica: String) -> void:
+	var ativado = Global.dicas_habilitadas if ("dicas_habilitadas" in Global and Global.dicas_habilitadas != null) else true
+	if not ativado:
+		return
 	if badge_novidade:
 		badge_novidade.visible = true
 	_chamar_atencao_gabinete()
@@ -621,16 +633,15 @@ func _parar_atencao_gabinete() -> void:
 
 ## Abre e fecha a aba lateral de conselhos deslizando de/para a borda esquerda (efeito gaveta)
 func _on_botao_gabinete_pressed() -> void:
-	if painel_aba_dicas == null:
+	var ativado = Global.dicas_habilitadas if ("dicas_habilitadas" in Global and Global.dicas_habilitadas != null) else true
+	if not ativado or painel_aba_dicas == null:
 		return
 
-	# Interrompe qualquer animação em andamento para evitar conflitos de clique rápido
 	if _tween_aba_dicas and _tween_aba_dicas.is_running():
 		_tween_aba_dicas.kill()
 
 	_tween_aba_dicas = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC)
 
-	# Se a aba já estiver aberta e visível, desliza de volta para fora da tela (-260px)
 	if painel_aba_dicas.visible and painel_aba_dicas.modulate.a > 0.1:
 		_tween_aba_dicas.set_ease(Tween.EASE_IN)
 		_tween_aba_dicas.tween_property(painel_aba_dicas, "position:x", -260.0, 0.25)
@@ -639,7 +650,6 @@ func _on_botao_gabinete_pressed() -> void:
 			painel_aba_dicas.visible = false
 		)
 	else:
-		# Animação de ABRIR: inicia fora da tela (-260px) e desliza até encostar na borda (0px)
 		_atualizar_interface_dicas()
 		painel_aba_dicas.visible = true
 		painel_aba_dicas.position.x = -260.0

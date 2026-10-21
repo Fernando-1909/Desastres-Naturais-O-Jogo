@@ -29,6 +29,21 @@ func get_durabilidade_pct() -> float:
 func get_custo_upgrade() -> float:
 	return data.custo_base * (data.multiplicador_custo_upgrade ** nivel_atual)
 
-# Calcula os ganhos atuais baseados no nível
+# Calcula os ganhos atuais baseados no nível e tipo de construção
 func get_ganhos_atuais() -> float:
-	return data.ganhos_base * nivel_atual
+	if not data:
+		return 0.0
+
+	# 1. Se o prédio tem ganhos diretos definidos no .tres (ex: comércios/indústrias)
+	if data.ganhos_base > 0.0:
+		return data.ganhos_base * float(nivel_atual)
+
+	# 2. Se for residencial/gerar população, calcula a arrecadação base de tributos
+	var cat_lower = str(data.categoria).to_lower().strip_edges() if "categoria" in data and data.categoria != null else ""
+	var id_lower = str(data.id).to_lower().strip_edges() if "id" in data and data.id != null else ""
+
+	if cat_lower == "residencial" or "casa" in id_lower or "residenc" in id_lower or data.bonus_populacao > 0:
+		var moradores_totais = float(data.bonus_populacao) * float(nivel_atual)
+		return moradores_totais / 10.0
+
+	return 0.0
