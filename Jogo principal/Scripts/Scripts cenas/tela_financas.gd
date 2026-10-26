@@ -33,7 +33,7 @@ extends Control
 @onready var texto_dica_label: Node = %TextoDicaLabel if has_node("%TextoDicaLabel") else null
 @onready var check_box_dicas: CheckBox = %CheckBoxDicas if has_node("%CheckBoxDicas") else null
 
-@onready var botao_fechar: Button = $PainelCentral/ContainerMargem/ConteudoVBox/CabecalhoHBox/BotaoFechar if has_node("PainelCentral/ContainerMargem/ConteudoVBox/CabecalhoHBox/BotaoFechar") else null
+@onready var botao_fechar: TextureButton = $PainelCentral/ContainerMargem/ConteudoVBox/CabecalhoHBox/BotaoFechar if has_node("PainelCentral/ContainerMargem/ConteudoVBox/CabecalhoHBox/BotaoFechar") else null
 @onready var botao_ok: Button = %BotaoOk if has_node("%BotaoOk") else null
 
 var _historico_dicas: Array[String] = []
@@ -365,7 +365,7 @@ func _resolver_falhas_de_nos() -> void:
 	if not coluna_dicas_v_box: coluna_dicas_v_box = find_child("*ColunaDicas*", true, false) as VBoxContainer
 	if not painel_dica: painel_dica = find_child("*PainelDica*", true, false) as PanelContainer
 	if not scroll_dicas: scroll_dicas = find_child("*ScrollDicas*", true, false) as ScrollContainer
-	if not botao_fechar: botao_fechar = find_child("*Fechar*", true, false) as Button
+	if not botao_fechar: botao_fechar = find_child("*Fechar*", true, false) as TextureButton
 	if not botao_ok: botao_ok = find_child("*Ok*", true, false) as Button
 
 

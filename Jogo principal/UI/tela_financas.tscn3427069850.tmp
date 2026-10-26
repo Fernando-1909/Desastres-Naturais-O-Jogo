@@ -1,0 +1,412 @@
+[gd_scene format=3 uid="uid://caelpiibc8573"]
+
+[ext_resource type="Script" uid="uid://dnybsan5g3hal" path="res://Jogo principal/Scripts/Scripts cenas/tela_financas.gd" id="1_axlhg"]
+[ext_resource type="Texture2D" uid="uid://7amum8l3dh33" path="res://Jogo principal/UI/Assets/Rebecafalse.png" id="2_pnc64"]
+[ext_resource type="FontFile" uid="uid://c36c32wmrsnd1" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBold.ttf" id="3_31fsw"]
+[ext_resource type="Texture2D" uid="uid://5208k37kpkp7" path="res://Jogo principal/UI/Assets/allmenusprites.png" id="4_jdunr"]
+[ext_resource type="Texture2D" uid="uid://b1wfg4gax3gf" path="res://Jogo principal/UI/Assets/allmenuspritesselected.png" id="5_0w1yx"]
+[ext_resource type="Texture2D" uid="uid://dc572evvi068q" path="res://Jogo principal/UI/Assets/allmenuspriteshover.png" id="6_6jywm"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vcj6e"]
+texture = ExtResource("2_pnc64")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x61nn"]
+atlas = ExtResource("4_jdunr")
+region = Rect2(0.91991043, 0.9298247, 49.252483, 37.219685)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2jtug"]
+atlas = ExtResource("5_0w1yx")
+region = Rect2(0.91991043, 0.9298247, 49.252483, 37.219685)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tu8ns"]
+atlas = ExtResource("6_6jywm")
+region = Rect2(0.91991043, 0.9298247, 49.252483, 37.219685)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hmmes"]
+texture = ExtResource("2_pnc64")
+
+[node name="TelaFinancas" type="Control" unique_id=1726936955]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_axlhg")
+
+[node name="FundoEscuro" type="ColorRect" parent="." unique_id=771522245]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.047058824, 0.047058824, 0.047058824, 0.76862746)
+
+[node name="PainelCentral" type="PanelContainer" parent="." unique_id=1867095683]
+custom_minimum_size = Vector2(780, 500)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -390.0
+offset_top = -250.0
+offset_right = 390.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_vcj6e")
+
+[node name="ContainerMargem" type="MarginContainer" parent="PainelCentral" unique_id=1161504890]
+layout_mode = 2
+theme_override_constants/margin_left = 35
+theme_override_constants/margin_top = 35
+theme_override_constants/margin_right = 35
+theme_override_constants/margin_bottom = 35
+
+[node name="ConteudoVBox" type="VBoxContainer" parent="PainelCentral/ContainerMargem" unique_id=1321006006]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="CabecalhoHBox" type="HBoxContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox" unique_id=1506648742]
+layout_mode = 2
+
+[node name="TituloLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CabecalhoHBox" unique_id=1291161822]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/shadow_outline_size = 8
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 7
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "Relatório de Finanças e Desempenho"
+fit_content = true
+
+[node name="Pausa" type="TextureButton" parent="PainelCentral/ContainerMargem/ConteudoVBox/CabecalhoHBox" unique_id=1113407004]
+custom_minimum_size = Vector2(80, 60)
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_x61nn")
+texture_pressed = SubResource("AtlasTexture_2jtug")
+texture_hover = SubResource("AtlasTexture_tu8ns")
+stretch_mode = 0
+
+[node name="HSeparator1" type="HSeparator" parent="PainelCentral/ContainerMargem/ConteudoVBox" unique_id=1900829875]
+layout_mode = 2
+
+[node name="CorpoHBox" type="HBoxContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox" unique_id=1132076564]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="ColunaFinancasVBox" type="VBoxContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox" unique_id=746125348]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TituloFinancasLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox" unique_id=240720281]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+text = "Balanço Financeiro"
+fit_content = true
+
+[node name="GridValores" type="GridContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox" unique_id=1188046529]
+layout_mode = 2
+columns = 2
+
+[node name="Label1" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=1872372857]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "Saldo Atual:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="SaldoValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=1343843631]
+unique_name_in_owner = true
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "$ 0"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Label2" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=368960200]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "Receita (Tributos/Turno):"
+fit_content = true
+autowrap_mode = 0
+
+[node name="ReceitaValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=1703784871]
+unique_name_in_owner = true
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "+$ 0"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Label3" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=138453786]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "Manutenção Prédios/Turno:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="DespesaValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=585097734]
+unique_name_in_owner = true
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "-$ 0"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Label4" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=1290616328]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "Balanço Líquido (Renda - Custo):"
+fit_content = true
+autowrap_mode = 0
+
+[node name="BalancoValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=1669734424]
+unique_name_in_owner = true
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "$ 0"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Label5" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=1105810175]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "Gastos Totais em Obras:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="GastoObrasValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=370570323]
+unique_name_in_owner = true
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "$ 0"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Label6" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=1266043607]
+clip_contents = false
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "Prejuízo Total por Enchentes:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="DanosValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/GridValores" unique_id=866090801]
+unique_name_in_owner = true
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+text = "$ 0"
+fit_content = true
+autowrap_mode = 0
+
+[node name="MargemResumo" type="MarginContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox" unique_id=2109847126]
+layout_mode = 2
+theme_override_constants/margin_top = 18
+
+[node name="VBoxAvaliacao" type="VBoxContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo" unique_id=2109847127]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HBoxAvaliacao" type="HBoxContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo/VBoxAvaliacao" unique_id=2109847128]
+layout_mode = 2
+
+[node name="Label7" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo/VBoxAvaliacao/HBoxAvaliacao" unique_id=2109847123]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 18
+text = "Avaliação da Gestão:"
+fit_content = true
+autowrap_mode = 0
+
+[node name="StatusDesempenhoValor" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo/VBoxAvaliacao/HBoxAvaliacao" unique_id=2109847124]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+text = "[b][color=#4CAF50]EXCELENTE (100/100)[/color][/b]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="ResumoDesempenhoLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaFinancasVBox/MargemResumo/VBoxAvaliacao" unique_id=2109847125]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+bbcode_enabled = true
+text = "[font_size=13][color=#dddddd]Sua gestão está impecável! Cofres saudáveis, alta aprovação popular e cidade segura.[/color][/font_size]"
+fit_content = true
+autowrap_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox" unique_id=2057876336]
+layout_mode = 2
+
+[node name="ColunaDicasVBox" type="VBoxContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox" unique_id=78731236]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TituloDicasLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox" unique_id=269970725]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+text = "Histórico de Dicas"
+fit_content = true
+
+[node name="PainelDica" type="PanelContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox" unique_id=577279642]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_hmmes")
+
+[node name="MargemDica" type="MarginContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox/PainelDica" unique_id=2076536339]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 30
+
+[node name="ScrollDicas" type="ScrollContainer" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox/PainelDica/MargemDica" unique_id=301928374]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="TextoDicaLabel" type="RichTextLabel" parent="PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox/PainelDica/MargemDica/ScrollDicas" unique_id=1092727710]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("3_31fsw")
+theme_override_font_sizes/normal_font_size = 15
+bbcode_enabled = true
+text = "Nenhuma dica no histórico."
+fit_content = true
+autowrap_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="PainelCentral/ContainerMargem/ConteudoVBox" unique_id=18112855]
+layout_mode = 2
+
+[node name="BotaoOk" type="Button" parent="PainelCentral/ContainerMargem/ConteudoVBox" unique_id=951697264]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+text = "Entendido"
