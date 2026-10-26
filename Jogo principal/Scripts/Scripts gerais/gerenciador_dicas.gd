@@ -160,8 +160,8 @@ func obter_dicas_filtradas() -> Array:
 
 	lista.sort_custom(func(a, b):
 		# 1º Critério: Não lidas vêm antes de lidas
-		if a["nao_lida"] != b["nao_lida"]:
-			return a["nao_lida"] # true vem antes de false
+		if a.get("nao_lida", false) != b.get("nao_lida", false):
+			return a.get("nao_lida", false) # true vem antes de false
 		# 2º Critério: ALERTAS (0) vêm antes de CONSELHOS (1)
 		if a["categoria"] != b["categoria"]:
 			return a["categoria"] < b["categoria"]
@@ -179,6 +179,6 @@ func marcar_como_lida(id_dica: String) -> void:
 
 func tem_dica_nao_lida() -> bool:
 	for key in dicas_disponiveis.keys():
-		if dicas_disponiveis[key]["nao_lida"]:
+		if dicas_disponiveis[key].get("nao_lida", false):
 			return true
 	return false

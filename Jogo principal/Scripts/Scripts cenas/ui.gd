@@ -687,7 +687,7 @@ func _atualizar_interface_dicas() -> void:
 		var autor_nome = "Secretária" if dica.get("autor", "") == "SECRETARIA" else "Tesoureiro"
 		
 		# Indicativo de dica nova vs dica antiga/lida
-		var prefixo = "🔴 [NOVA] " if dica["nao_lida"] else "✓ "
+		var prefixo = "🔴 [NOVA] " if dica.get("nao_lida", false) else "✓ "
 		var titulo = tr(dica["titulo_chave"])
 
 		btn.text = prefixo + autor_nome + ": " + titulo

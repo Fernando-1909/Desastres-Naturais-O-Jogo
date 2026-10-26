@@ -1,7 +1,9 @@
 extends Node
 
 # Variáveis gerais
-var dinheiro: int
+var dinheiro: int = 0:
+	set(value):
+		dinheiro = max(0, value)
 var popularidade: int = 0:
 	set(value):
 		popularidade = min(value, 100)
