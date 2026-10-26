@@ -1,8 +1,12 @@
 [gd_scene format=3 uid="uid://l4ep5qwntoxq"]
 
 [ext_resource type="Script" uid="uid://chvjmq6eve2uc" path="res://Jogo principal/Scripts/Scripts gerais/dialogue_manager.gd" id="1_5rgap"]
-[ext_resource type="Texture2D" uid="uid://dhb2ssnr2ks0a" path="res://Jogo principal/UI/Assets/Rebecatrue3.png" id="2_lutnh"]
+[ext_resource type="FontFile" uid="uid://coi21ikrr11wj" path="res://Jogo principal/UI/Temas/fontes/upheavtt.ttf" id="2_e4owv"]
+[ext_resource type="Texture2D" uid="uid://b1ndrjvsb5c4h" path="res://Jogo principal/UI/Assets/Rebecatrue4.png" id="3_re3la"]
 [ext_resource type="FontFile" uid="uid://br5wb2vq7vbqx" path="res://Jogo principal/UI/Temas/fontes/JetBrainsMono-ExtraBoldItalic.ttf" id="3_xunkx"]
+[ext_resource type="Texture2D" uid="uid://5208k37kpkp7" path="res://Jogo principal/UI/Assets/allmenusprites.png" id="5_opthc"]
+[ext_resource type="Texture2D" uid="uid://b1wfg4gax3gf" path="res://Jogo principal/UI/Assets/allmenuspritesselected.png" id="6_ldpbo"]
+[ext_resource type="Texture2D" uid="uid://dc572evvi068q" path="res://Jogo principal/UI/Assets/allmenuspriteshover.png" id="7_gwg07"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nome"]
 bg_color = Color(0.12, 0.15, 0.22, 0.95)
@@ -14,7 +18,7 @@ corner_radius_top_left = 6
 corner_radius_top_right = 6
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jpfya"]
-texture = ExtResource("2_lutnh")
+texture = ExtResource("3_re3la")
 expand_margin_top = 20.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_portrait"]
@@ -29,6 +33,18 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_av63l"]
+atlas = ExtResource("5_opthc")
+region = Rect2(54.85831, 0.012067795, 49.246243, 37.182175)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e5sb0"]
+atlas = ExtResource("6_ldpbo")
+region = Rect2(54.991302, 0, 49.109283, 37.851387)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_by5j4"]
+atlas = ExtResource("7_gwg07")
+region = Rect2(54.80808, 0, 49.443043, 37.3515)
+
 [node name="DialogueManager" type="CanvasLayer" unique_id=1420897856]
 process_mode = 3
 script = ExtResource("1_5rgap")
@@ -39,20 +55,27 @@ anchor_left = 0.05
 anchor_top = 0.66
 anchor_right = 0.95
 anchor_bottom = 0.97
+offset_left = 2.3999977
+offset_top = -77.68002
+offset_right = 1.5999756
+offset_bottom = 1.4400024
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/separation = -2
-alignment = 2
+theme_override_constants/separation = -19
 
 [node name="NomeMarginContainer" type="MarginContainer" parent="DialogueContainer" unique_id=884920100]
+custom_maximum_size = Vector2(300, -1)
 layout_mode = 2
-theme_override_constants/margin_left = 35
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 45
 
 [node name="PainelNome" type="PanelContainer" parent="DialogueContainer/NomeMarginContainer" unique_id=884920101]
 unique_name_in_owner = true
 z_index = 1
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_horizontal = 4
+offset_transform_position = Vector2(11.94, 15.45)
 theme_override_styles/panel = SubResource("StyleBoxFlat_nome")
 
 [node name="MargemNome" type="MarginContainer" parent="DialogueContainer/NomeMarginContainer/PainelNome" unique_id=884920102]
@@ -65,12 +88,20 @@ theme_override_constants/margin_bottom = 4
 [node name="NomeLabel" type="RichTextLabel" parent="DialogueContainer/NomeMarginContainer/PainelNome/MargemNome" unique_id=386681428]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_fonts/normal_font = ExtResource("3_xunkx")
+theme_override_colors/font_outline_color = Color(0.1666, 0.22728999, 0.34, 1)
+theme_override_colors/font_shadow_color = Color(0.17390001, 0.27195, 0.37, 1)
+theme_override_constants/shadow_outline_size = 6
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_fonts/normal_font = ExtResource("2_e4owv")
 theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
-text = "Nome do Personagem"
+text = "Secretaria"
 fit_content = true
 autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CaixaDialogo" type="PanelContainer" parent="DialogueContainer" unique_id=1361950575]
 unique_name_in_owner = true
@@ -83,21 +114,22 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_jpfya")
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 45
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 45
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_bottom = 62
 
 [node name="ContentHBox" type="HBoxContainer" parent="DialogueContainer/CaixaDialogo/ContainerDialogo" unique_id=1722960342]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 23
 
 [node name="PortraitFrame" type="PanelContainer" parent="DialogueContainer/CaixaDialogo/ContainerDialogo/ContentHBox" unique_id=1341902351]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 100)
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 2
 size_flags_vertical = 4
+offset_transform_enabled = true
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_portrait")
 
@@ -116,11 +148,12 @@ size_flags_vertical = 3
 mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0.1666, 0.22728999, 0.34, 1)
 theme_override_colors/font_shadow_color = Color(0.17390001, 0.27195, 0.37, 1)
-theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_outline_size = 6
 theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
 theme_override_fonts/normal_font = ExtResource("3_xunkx")
-theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
 text = "Texto do diálogo..."
 autowrap_mode = 2
@@ -131,12 +164,16 @@ unique_name_in_owner = true
 wait_time = 0.03
 one_shot = true
 
-[node name="BotaoPular" type="Button" parent="DialogueContainer/CaixaDialogo" unique_id=1407988859]
+[node name="BotaoPular" type="TextureButton" parent="DialogueContainer/CaixaDialogo" unique_id=828432664]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 60)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
-text = " >> "
+texture_normal = SubResource("AtlasTexture_av63l")
+texture_pressed = SubResource("AtlasTexture_e5sb0")
+texture_hover = SubResource("AtlasTexture_by5j4")
+stretch_mode = 0
 
 [node name="ChoicesContainer" type="VBoxContainer" parent="." unique_id=564451377]
 unique_name_in_owner = true

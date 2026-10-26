@@ -53,6 +53,15 @@ region = Rect2(54.80808, 0, 49.443043, 37.3515)
 atlas = ExtResource("1_fmcfc")
 region = Rect2(146.6458, 45.865997, 140.49828, 37.279976)
 
+[sub_resource type="CanvasTexture" id="CanvasTexture_xvofd"]
+diffuse_texture = ExtResource("4_hdnfl")
+normal_texture = ExtResource("4_hdnfl")
+specular_texture = ExtResource("4_hdnfl")
+specular_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_aighh"]
+texture = ExtResource("3_p88rf")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header"]
 bg_color = Color(0.12, 0.15, 0.22, 0.95)
 border_width_left = 2
@@ -71,12 +80,6 @@ texture = ExtResource("3_p88rf")
 [sub_resource type="AtlasTexture" id="AtlasTexture_riqys"]
 atlas = ExtResource("1_fmcfc")
 region = Rect2(0.6737709, 0.9998293, 49.728035, 37.566288)
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_xvofd"]
-diffuse_texture = ExtResource("4_hdnfl")
-normal_texture = ExtResource("4_hdnfl")
-specular_texture = ExtResource("4_hdnfl")
-specular_color = Color(1.8247963, 1.8247963, 1.8247963, 1)
 
 [node name="Ui" type="Control" unique_id=13768816]
 layout_mode = 3
@@ -273,20 +276,42 @@ text = "Semana"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BotaoGabinete" type="TextureButton" parent="." unique_id=808080801]
+[node name="PaineisEsquerda" type="VBoxContainer" parent="." unique_id=1251821062]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = -145.0
-offset_right = 75.0
-offset_bottom = -85.0
+offset_top = -60.0
+offset_right = 94.0
 grow_vertical = 0
-texture_normal = ExtResource("4_hdnfl")
-stretch_mode = 0
+theme_override_constants/separation = 5
+alignment = 2
 
-[node name="BadgeNovidade" type="ColorRect" parent="BotaoGabinete" unique_id=808080802]
+[node name="BotaoGabinete" type="TextureButton" parent="PaineisEsquerda" unique_id=808080801]
+custom_minimum_size = Vector2(150, 60)
+layout_mode = 2
+texture_normal = ExtResource("4_hdnfl")
+stretch_mode = 4
+
+[node name="MissaoRichTextButton" type="RichTextLabel" parent="PaineisEsquerda/BotaoGabinete" unique_id=1065968699]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -5.585022
+offset_bottom = -5.585022
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/normal_font_size = 26
+text = "GABINETE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BadgeNovidade" type="ColorRect" parent="PaineisEsquerda/BotaoGabinete" unique_id=808080802]
 visible = false
 layout_mode = 1
 anchors_preset = 1
@@ -299,28 +324,54 @@ offset_bottom = 12.0
 grow_horizontal = 0
 color = Color(0.9, 0.2, 0.2, 1)
 
+[node name="ButtonMissaoCheck" type="TextureButton" parent="PaineisEsquerda" unique_id=2037941975]
+custom_minimum_size = Vector2(150, 60)
+layout_mode = 2
+texture_normal = ExtResource("4_hdnfl")
+texture_pressed = SubResource("CanvasTexture_xvofd")
+stretch_mode = 0
+
+[node name="MissaoRichTextButton" type="RichTextLabel" parent="PaineisEsquerda/ButtonMissaoCheck" unique_id=1921811219]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -5.585
+offset_bottom = -5.584999
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/shadow_outline_size = 4
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/normal_font_size = 30
+text = "MISSÃO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="PainelAbaDicas" type="PanelContainer" parent="." unique_id=808080803]
 visible = false
 custom_minimum_size = Vector2(260, 310)
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -470.0
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -155.0
 offset_right = 260.0
-offset_bottom = -160.0
-grow_vertical = 0
+offset_bottom = 155.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_aighh")
 
 [node name="MargemAba" type="MarginContainer" parent="PainelAbaDicas" unique_id=808080804]
 layout_mode = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
+theme_override_constants/margin_top = 15
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_bottom = 25
 
 [node name="VBoxDicas" type="VBoxContainer" parent="PainelAbaDicas/MargemAba" unique_id=808080805]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 5
 
 [node name="HeaderContainer" type="PanelContainer" parent="PainelAbaDicas/MargemAba/VBoxDicas" unique_id=808080809]
 layout_mode = 2
@@ -336,9 +387,17 @@ theme_override_constants/margin_bottom = 4
 [node name="TituloAba" type="RichTextLabel" parent="PainelAbaDicas/MargemAba/VBoxDicas/HeaderContainer/MargemHeader" unique_id=808080806]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 5
+theme_override_constants/text_highlight_h_padding = 1
+theme_override_fonts/normal_font = ExtResource("7_8v3q5")
+theme_override_font_sizes/normal_font_size = 15
 bbcode_enabled = true
-text = "[center][b]Conselhos do Gabinete[/b][/center]"
+text = "Conselhos do Gabinete"
 fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ScrollAba" type="ScrollContainer" parent="PainelAbaDicas/MargemAba/VBoxDicas" unique_id=808080807]
 layout_mode = 2
@@ -499,39 +558,6 @@ text = "Recusar"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ButtonMissaoCheck" type="TextureButton" parent="." unique_id=2037941975]
-visible = false
-custom_minimum_size = Vector2(150, 60)
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.90700006
-anchor_right = 0.13000001
-anchor_bottom = 1.0
-offset_top = 20.263977
-offset_right = -109.76001
-grow_vertical = 0
-texture_normal = ExtResource("4_hdnfl")
-texture_pressed = SubResource("CanvasTexture_xvofd")
-stretch_mode = 0
-
-[node name="MissaoRichTextButton" type="RichTextLabel" parent="ButtonMissaoCheck" unique_id=1921811219]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -5.585
-offset_bottom = -5.584999
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/shadow_outline_size = 4
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/normal_font_size = 30
-text = "MISSÃO"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Avisos" type="RichTextLabel" parent="." unique_id=139656456]
 visible = false
 layout_mode = 1
@@ -563,20 +589,13 @@ vertical_alignment = 1
 visible = false
 layout_mode = 1
 
-[node name="CheckBoxDicas" parent="TelaFinancas/PainelCentral/ContainerMargem/ConteudoVBox/CorpoHBox/ColunaDicasVBox" parent_id_path=PackedInt32Array(1726936955, 78731236) index="2" unique_id=1430865541]
-unique_name_in_owner = true
-layout_mode = 2
-focus_mode = 0
-button_pressed = true
-text = "Exibir Dicas Educativas"
-
 [connection signal="pressed" from="PainelExibição/Exibição/Dinheiro/ButtonFinancas" to="." method="_on_button_financas_pressed"]
 [connection signal="pressed" from="PainelBotoes/Botoes/Pausa" to="." method="_on_pausa_pressed"]
 [connection signal="pressed" from="PainelTurnos/Turnos/PularTurno" to="." method="_on_pular_turno_pressed"]
-[connection signal="pressed" from="BotaoGabinete" to="." method="_on_botao_gabinete_pressed"]
+[connection signal="pressed" from="PaineisEsquerda/BotaoGabinete" to="." method="_on_botao_gabinete_pressed"]
+[connection signal="pressed" from="PaineisEsquerda/ButtonMissaoCheck" to="." method="_on_texture_button_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer2/MissaoClose" to="." method="_on_missao_close_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Aceitar" to="." method="_on_aceitar_pressed"]
 [connection signal="pressed" from="MissaoContainer/MarginContainer/VBoxContainer/HBoxContainer/Recusar" to="." method="_on_recusar_pressed"]
-[connection signal="pressed" from="ButtonMissaoCheck" to="." method="_on_texture_button_pressed"]
 
 [editable path="TelaFinancas"]
