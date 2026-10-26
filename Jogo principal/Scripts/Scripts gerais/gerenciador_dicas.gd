@@ -126,6 +126,21 @@ func avaliar_condicoes_cidade(main_game: Node2D) -> void:
 			"TESOUREIRO"
 		)
 
+	# 9. Dicas educativas da primeira enchente: entram no Gabinete de Dicas
+	# em turnos separados, sem abrir diálogos automaticamente.	
+	if Global.enchente == 1:
+		match Global.turno:
+			9:
+				adicionar_dica("dica_enchente_real_1", "DICA_ENCHENTE_TITULO_1", "dica_enchente_real_1", CategoriaDica.ALERTA, "SECRETARIA")
+			10:
+				adicionar_dica("dica_enchente_real_2", "DICA_ENCHENTE_TITULO_2", "dica_enchente_real_2", CategoriaDica.CONSELHO, "TESOUREIRO")
+			11:
+				adicionar_dica("dica_enchente_real_3", "DICA_ENCHENTE_TITULO_3", "dica_enchente_real_3", CategoriaDica.ALERTA, "SECRETARIA")
+			12:
+				adicionar_dica("dica_enchente_real_4", "DICA_ENCHENTE_TITULO_4", "dica_enchente_real_4", CategoriaDica.ALERTA, "TESOUREIRO")
+			13:
+				adicionar_dica("dica_enchente_real_5", "DICA_ENCHENTE_TITULO_5", "dica_enchente_real_5", CategoriaDica.CONSELHO, "SECRETARIA")
+
 	# 9. Conselho Geral do Tesoureiro (Apenas a partir do Turno 3)
 	if Global.turno >= 3:
 		adicionar_dica(

@@ -20,8 +20,6 @@ extends Node2D
 # procuramos automaticamente por qualquer node que tenha o método
 # iniciar_dialogo_da_missao (ver _encontrar_dialogue_manager, chamado no _ready).
 var dialogue_manager: Node = null
-var _dicas_primeira_enchente_disparadas: bool = false
-var _aguardando_dialogo_dicas_enchente: bool = false
 
 # Guarda as setas de indicação ativas por zona
 # Chave: Node (BuildingZone) | Valor: IndicadorSeta
@@ -252,8 +250,6 @@ func _ready() -> void:
 	dialogue_manager = _encontrar_dialogue_manager()
 	if dialogue_manager:
 		print("[DEBUG-DIALOGO] DialogueManager encontrado em: ", dialogue_manager.get_path())
-		if dialogue_manager.has_signal("dialogo_finalizado") and not dialogue_manager.dialogo_finalizado.is_connected(_ao_finalizar_dialogo_antes_das_dicas_enchente):
-			dialogue_manager.dialogo_finalizado.connect(_ao_finalizar_dialogo_antes_das_dicas_enchente)
 	else:
 		print("[AVISO] DialogueManager não encontrado na cena! Diálogos de missão não vão tocar.")
 
@@ -3177,54 +3173,6 @@ func _verificar_inicio_automatico_de_enchente() -> bool:
 	return false
 
 
-## Registra as cinco dicas no Gabinete e inicia a sequência de diálogos da primeira enchente.
-func _iniciar_dicas_educativas_primeira_enchente() -> void:
-	if _dicas_primeira_enchente_disparadas:
-		return
-	_dicas_primeira_enchente_disparadas = true
-
-	# Usa o gerenciador que pertence à interface, para as dicas também aparecerem no Gabinete.
-	var ui = get_node_or_null("CanvasLayer/Ui")
-	if ui and "gerenciador_dicas" in ui and ui.gerenciador_dicas:
-		var gerenciador = ui.gerenciador_dicas
-		var dicas_enchente: Array[Dictionary] = [
-			{"id": "dica_enchente_real_1", "titulo": "Enchente: documentos e medicamentos", "no": "dica_enchente_real_1", "autor": "SECRETARIA"},
-			{"id": "dica_enchente_real_2", "titulo": "Enchente: não atravesse áreas alagadas", "no": "dica_enchente_real_2", "autor": "TESOUREIRO"},
-			{"id": "dica_enchente_real_3", "titulo": "Enchente: evite contato com a água", "no": "dica_enchente_real_3", "autor": "SECRETARIA"},
-			{"id": "dica_enchente_real_4", "titulo": "Enchente: riscos elétricos", "no": "dica_enchente_real_4", "autor": "TESOUREIRO"},
-			{"id": "dica_enchente_real_5", "titulo": "Enchente: água e alimentos contaminados", "no": "dica_enchente_real_5", "autor": "SECRETARIA"}
-		]
-		for dica in dicas_enchente:
-			gerenciador.adicionar_dica(
-				dica["id"], dica["titulo"], dica["no"],
-				GerenciadorDicas.CategoriaDica.ALERTA, dica["autor"]
-			)
-	else:
-		print("[AVISO] Não foi possível acessar o GerenciadorDicas da interface.")
-
-	if dialogue_manager and dialogue_manager.has_method("iniciar_dialogo_dica"):
-		if dialogue_manager.is_dialogue_active:
-			# Não interrompe um diálogo de missão/tutorial que já esteja aberto.
-			_aguardando_dialogo_dicas_enchente = true
-		else:
-			_iniciar_sequencia_dialogos_dicas_enchente.call_deferred()
-	else:
-		print("[AVISO] DialogueManager indisponível para as dicas da primeira enchente.")
-
-
-func _ao_finalizar_dialogo_antes_das_dicas_enchente(_ultimo_no_id: String) -> void:
-	if _aguardando_dialogo_dicas_enchente:
-		_aguardando_dialogo_dicas_enchente = false
-		_iniciar_sequencia_dialogos_dicas_enchente.call_deferred()
-
-
-func _iniciar_sequencia_dialogos_dicas_enchente() -> void:
-	if dialogue_manager and dialogue_manager.has_method("iniciar_dialogo_dica") and not dialogue_manager.is_dialogue_active:
-		dialogue_manager.iniciar_dialogo_dica("dica_enchente_real_1")
-	elif dialogue_manager and dialogue_manager.is_dialogue_active:
-		_aguardando_dialogo_dicas_enchente = true
-
-
 ## Pausa o jogo, mostra "Alerta de enchente" piscando lentamente em vermelho
 ## no RichTextLabel de avisos por 5 segundos e, ao final, despausa e só então
 ## inicia a enchente de verdade.
@@ -3270,9 +3218,6 @@ func _mostrar_alerta_e_iniciar_enchente() -> void:
 	_alerta_enchente_em_andamento = false
 	_iniciar_enchente(duracao_enchente_turnos)
 
-	# As dicas e os diálogos educativos são liberados apenas na primeira enchente.
-	if Global.enchente == 1:
-		_iniciar_dicas_educativas_primeira_enchente()
 
 
 ## Igual à primeira, mas pra segunda enchente (mais brutal). Dispara uma
