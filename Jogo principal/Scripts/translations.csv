@@ -163,3 +163,10 @@ DICA_ENCHENTE_TITULO_2,Não atravesse áreas alagadas,Do not cross flooded areas
 DICA_ENCHENTE_TITULO_3,Evite contato com a água da enchente,Avoid contact with floodwater
 DICA_ENCHENTE_TITULO_4,Cuidados com eletricidade,Electrical safety precautions
 DICA_ENCHENTE_TITULO_5,Água e alimentos seguros,Safe water and food
+
+# --- DIÁLOGOS DO CIDADÃO (CORRIDA DA ENCHENTE) ---
+TXT_CIDADAO_ETAPA1,"A água do rio começou a subir rapidamente e a rua em frente à sua casa está alagando. O que você deve fazer antes de sair de casa?","The river water started rising quickly and the street in front of your house is flooding. What should you do before leaving home?"
+TXT_CIDADAO_ETAPA2,"Na rua alagada, você precisa avançar, mas há uma forte correnteza cruzando a via e bueiros destampados submersos. Como prosseguir?","On the flooded street, you need to advance, but there is a strong current crossing the road and submerged uncovered manholes. How to proceed?"
+TXT_CIDADAO_ETAPA3,"Ao passar perto da Escola Municipal, você se lembra dos itens para levar em uma evacuação de emergência. O que colocar na mochila?","Passing near the Municipal School, you remember the items to take in an emergency evacuation. What to pack in your backpack?"
+TXT_CIDADAO_ETAPA4,"A caminho do morro, a chuva forte derrubou fiação elétrica sobre uma poça d'água no caminho principal. O que fazer?","On the way to the hill, heavy rain knocked down electrical wiring over a puddle on the main path. What to do?"
+TXT_CIDADAO_ETAPA5,"Você chegou ao topo do morro onde fica o Abrigo Municipal, mas ainda há pessoas desorientadas na entrada. Como agir ao chegar?","You reached the top of the hill where the Municipal Shelter is, but there are still disoriented people at the entrance. How to act upon arrival?"

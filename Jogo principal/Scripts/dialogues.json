@@ -259,6 +259,31 @@
 	  "autor": "SECRETARIA",
 	  "texto_chave": "DICA_ENCHENTE_5",
 	  "proximo": "fim"
+	},
+	"cidadao_etapa1_inicio": {
+	  "autor": "CIDADÃO",
+	  "texto_chave": "TXT_CIDADAO_ETAPA1",
+	  "proximo": "fim"
+	},
+	"cidadao_etapa2_rua": {
+	  "autor": "CIDADÃO",
+	  "texto_chave": "TXT_CIDADAO_ETAPA2",
+	  "proximo": "fim"
+	},
+	"cidadao_etapa3_escola": {
+	  "autor": "CIDADÃO",
+	  "texto_chave": "TXT_CIDADAO_ETAPA3",
+	  "proximo": "fim"
+	},
+	"cidadao_etapa4_poste": {
+	  "autor": "CIDADÃO",
+	  "texto_chave": "TXT_CIDADAO_ETAPA4",
+	  "proximo": "fim"
+	},
+	"cidadao_etapa5_abrigo": {
+	  "autor": "CIDADÃO",
+	  "texto_chave": "TXT_CIDADAO_ETAPA5",
+	  "proximo": "fim"
 	}
   }
 }

@@ -1,0 +1,230 @@
+[gd_scene format=3 uid="uid://utcadahb3ip1"]
+
+[ext_resource type="Script" uid="uid://b55obr5ipg86w" path="res://Jogo principal/Scripts/Scripts cenas/fase_cidadao.gd" id="1_0yt4g"]
+
+[node name="FaseCidadao" type="Node2D" unique_id=917696330]
+script = ExtResource("1_0yt4g")
+
+[node name="Cenario2D" type="Node2D" parent="." unique_id=101010100]
+
+[node name="FundoCeu" type="ColorRect" parent="Cenario2D" unique_id=101010101]
+offset_right = 2400.0
+offset_bottom = 648.0
+color = Color(0.25, 0.31, 0.41, 1)
+
+[node name="MontanhasFundo" type="ColorRect" parent="Cenario2D" unique_id=101010102]
+offset_top = 320.0
+offset_right = 2400.0
+offset_bottom = 648.0
+color = Color(0.18, 0.22, 0.3, 1)
+
+[node name="PrediosFundo" type="Node2D" parent="Cenario2D" unique_id=101010103]
+
+[node name="CasaInicial" type="ColorRect" parent="Cenario2D/PrediosFundo" unique_id=101010104]
+offset_left = 80.0
+offset_top = 380.0
+offset_right = 220.0
+offset_bottom = 520.0
+color = Color(0.65, 0.45, 0.35, 1)
+
+[node name="TelhadoCasa" type="Polygon2D" parent="Cenario2D/PrediosFundo/CasaInicial" unique_id=101010105]
+color = Color(0.7, 0.25, 0.2, 1)
+polygon = PackedVector2Array(0, 0, 70, -40, 140, 0)
+
+[node name="PredioComercial" type="ColorRect" parent="Cenario2D/PrediosFundo" unique_id=101010108]
+offset_left = 480.0
+offset_top = 260.0
+offset_right = 650.0
+offset_bottom = 520.0
+color = Color(0.4, 0.45, 0.52, 1)
+
+[node name="Passarela" type="ColorRect" parent="Cenario2D/PrediosFundo/PredioComercial" unique_id=101010109]
+layout_mode = 0
+offset_left = -30.0
+offset_top = 110.0
+offset_right = 200.0
+offset_bottom = 125.0
+color = Color(0.25, 0.28, 0.32, 1)
+
+[node name="EscolaApoio" type="ColorRect" parent="Cenario2D/PrediosFundo" unique_id=101010201]
+offset_left = 880.0
+offset_top = 300.0
+offset_right = 1080.0
+offset_bottom = 520.0
+color = Color(0.5, 0.38, 0.28, 1)
+
+[node name="PosteFiacao" type="ColorRect" parent="Cenario2D/PrediosFundo" unique_id=101010202]
+offset_left = 1380.0
+offset_top = 310.0
+offset_right = 1395.0
+offset_bottom = 520.0
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="AbrigoElevado" type="ColorRect" parent="Cenario2D/PrediosFundo" unique_id=101010110]
+offset_left = 1900.0
+offset_top = 180.0
+offset_right = 2150.0
+offset_bottom = 460.0
+color = Color(0.28, 0.52, 0.38, 1)
+
+[node name="TerrenoChao" type="ColorRect" parent="Cenario2D" unique_id=101010111]
+offset_top = 520.0
+offset_right = 2400.0
+offset_bottom = 648.0
+color = Color(0.28, 0.24, 0.2, 1)
+
+[node name="MorroElevado" type="Polygon2D" parent="Cenario2D" unique_id=101010112]
+color = Color(0.22, 0.35, 0.22, 1)
+polygon = PackedVector2Array(1750, 520, 1850, 460, 2400, 460, 2400, 520)
+
+[node name="AguaEnchente" type="ColorRect" parent="Cenario2D" unique_id=101010113]
+offset_left = -600.0
+offset_top = 480.0
+offset_bottom = 648.0
+color = Color(0.12, 0.45, 0.75, 0.8)
+
+[node name="PontosCaminho" type="Node2D" parent="." unique_id=101010114]
+
+[node name="MarkerCasa" type="Marker2D" parent="PontosCaminho" unique_id=101010115]
+position = Vector2(150, 500)
+
+[node name="MarkerCasaErro" type="Marker2D" parent="PontosCaminho" unique_id=101010203]
+position = Vector2(150, 460)
+
+[node name="MarkerRua" type="Marker2D" parent="PontosCaminho" unique_id=101010116]
+position = Vector2(500, 500)
+
+[node name="MarkerRuaErro" type="Marker2D" parent="PontosCaminho" unique_id=101010204]
+position = Vector2(480, 510)
+
+[node name="MarkerEscola" type="Marker2D" parent="PontosCaminho" unique_id=101010205]
+position = Vector2(950, 500)
+
+[node name="MarkerEscolaErro" type="Marker2D" parent="PontosCaminho" unique_id=101010206]
+position = Vector2(950, 515)
+
+[node name="MarkerPoste" type="Marker2D" parent="PontosCaminho" unique_id=101010207]
+position = Vector2(1450, 460)
+
+[node name="MarkerPosteErro" type="Marker2D" parent="PontosCaminho" unique_id=101010208]
+position = Vector2(1380, 500)
+
+[node name="MarkerMorro" type="Marker2D" parent="PontosCaminho" unique_id=101010209]
+position = Vector2(1820, 450)
+
+[node name="MarkerAbrigo" type="Marker2D" parent="PontosCaminho" unique_id=101010118]
+position = Vector2(2000, 430)
+
+[node name="PersonagemCidadao" type="Node2D" parent="." unique_id=101010119]
+position = Vector2(150, 500)
+
+[node name="Corpo" type="ColorRect" parent="PersonagemCidadao" unique_id=101010120]
+offset_left = -12.0
+offset_top = -36.0
+offset_right = 12.0
+color = Color(0.9, 0.7, 0.2, 1)
+
+[node name="Cabeca" type="ColorRect" parent="PersonagemCidadao" unique_id=101010121]
+offset_left = -8.0
+offset_top = -52.0
+offset_right = 8.0
+offset_bottom = -36.0
+color = Color(0.95, 0.85, 0.75, 1)
+
+[node name="Camera2D" type="Camera2D" parent="PersonagemCidadao" unique_id=101010122]
+limit_left = 0
+limit_top = 0
+limit_right = 2400
+limit_bottom = 648
+position_smoothing_enabled = true
+
+[node name="CanvasUI" type="CanvasLayer" parent="." unique_id=101010123]
+layer = 10
+
+[node name="ControlUI" type="Control" parent="CanvasUI" unique_id=101010124]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MargemPrincipal" type="MarginContainer" parent="CanvasUI/ControlUI" unique_id=1212114133]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -240.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="ColunaConteudo" type="VBoxContainer" parent="CanvasUI/ControlUI/MargemPrincipal" unique_id=1687742733]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PainelNarrativa" type="PanelContainer" parent="CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo" unique_id=918615027]
+layout_mode = 2
+
+[node name="MargemTexto" type="MarginContainer" parent="CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/PainelNarrativa" unique_id=1207721355]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="TextoSituacao" type="RichTextLabel" parent="CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/PainelNarrativa/MargemTexto" unique_id=1252618167]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="ColunaOpcoes" type="VBoxContainer" parent="CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo" unique_id=529716107]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PainelFeedback" type="PanelContainer" parent="CanvasUI/ControlUI" unique_id=189764346]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -140.0
+offset_right = 280.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MargemFeedback" type="MarginContainer" parent="CanvasUI/ControlUI/PainelFeedback" unique_id=1822702393]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ColunaFeedback" type="VBoxContainer" parent="CanvasUI/ControlUI/PainelFeedback/MargemFeedback" unique_id=130066329]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TituloFeedback" type="RichTextLabel" parent="CanvasUI/ControlUI/PainelFeedback/MargemFeedback/ColunaFeedback" unique_id=270382700]
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="TextoFeedback" type="RichTextLabel" parent="CanvasUI/ControlUI/PainelFeedback/MargemFeedback/ColunaFeedback" unique_id=1935026484]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+
+[node name="BotaoContinuar" type="Button" parent="CanvasUI/ControlUI/PainelFeedback/MargemFeedback/ColunaFeedback" unique_id=1174198116]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Avançar"
