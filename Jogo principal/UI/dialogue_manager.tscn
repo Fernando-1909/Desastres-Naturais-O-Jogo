@@ -47,6 +47,7 @@ region = Rect2(54.80808, 0, 49.443043, 37.3515)
 
 [node name="DialogueManager" type="CanvasLayer" unique_id=1420897856]
 process_mode = 3
+layer = 20
 script = ExtResource("1_5rgap")
 
 [node name="DialogueContainer" type="VBoxContainer" parent="." unique_id=1361950574]
@@ -164,7 +165,31 @@ unique_name_in_owner = true
 wait_time = 0.03
 one_shot = true
 
-[node name="BotaoPular" type="TextureButton" parent="DialogueContainer/CaixaDialogo" unique_id=828432664]
+[node name="ContainerBotaoPular" type="VBoxContainer" parent="DialogueContainer/CaixaDialogo" unique_id=987654320]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme_override_constants/separation = 2
+alignment = 2
+
+[node name="IndicadorAvanco" type="Label" parent="DialogueContainer/CaixaDialogo/ContainerBotaoPular" unique_id=987654321]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.1, 0.1, 0.15, 0.8)
+theme_override_colors/font_outline_color = Color(0.12, 0.15, 0.22, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("2_e4owv")
+theme_override_font_sizes/font_size = 18
+text = "▼"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BotaoPular" type="TextureButton" parent="DialogueContainer/CaixaDialogo/ContainerBotaoPular" unique_id=828432664]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 60)
 layout_mode = 2

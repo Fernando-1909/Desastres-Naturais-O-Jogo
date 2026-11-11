@@ -9,10 +9,6 @@ const PORTRAIT_MAP: Dictionary = {
 
 var loaded_portraits: Dictionary = {}
 
-## Emitido sempre que um diálogo termina (o de idioma, o de uma missão, etc.),
-## com o id do último nó mostrado. Quem inicia um diálogo específico (ex:
-## main_game, antes de abrir a caixa de missão) escuta esse sinal pra saber
-## a hora certa de continuar o fluxo.
 signal dialogo_finalizado(ultimo_no_id: String)
 
 # --- REFERÊNCIAS AOS NÓS ---
@@ -26,6 +22,7 @@ signal dialogo_finalizado(ultimo_no_id: String)
 @onready var timer: Timer = %Timing
 @onready var margin_container: MarginContainer = %ContainerDialogo
 @onready var botao_pular: TextureButton = %BotaoPular
+@onready var indicador_avanco: Control = get_node_or_null("%IndicadorAvanco")
 
 @export var estilo_padrao: StyleBoxTexture      # StyleBox pra 16:9 ou mais estreito
 @export var estilo_widescreen: StyleBoxTexture  # StyleBox pra telas mais largas que 16:9
@@ -35,11 +32,11 @@ var dialogue_data: Dictionary = {}
 var current_node_id: String = ""        
 var is_dialogue_active: bool = false    
 var last_advance_frame: int = -1    
-	
+var _tween_indicador: Tween = null
+
 const RATIO_16_9 := 16.0 / 9.0 # para mudar sprite conforme ratio
 const NOME_STYLE := "panel"  # nome do slot de estilo
 
-# --- CONSTANTES DE ESCALA (AJUSTE PROS VALORES REAIS DO SEU PROJETO) ---
 const ALTURA_REFERENCIA := 648.0   # altura da resolução em que você desenhou o layout original
 const FONTE_BASE := 24              # tamanho de fonte atual do DialogueText/NameLabel nessa resolução
 
@@ -52,6 +49,9 @@ func _ready() -> void:
 		painel_nome.visible = false
 	choices_container.visible = false
 	dialogue_text.text = ""
+	
+	if indicador_avanco:
+		indicador_avanco.visible = false
 	
 	timer.one_shot = false
 	timer.wait_time = 0.03 
@@ -116,9 +116,6 @@ func carregar_e_iniciar_dialogo(caminho_arquivo: String, no_inicial: String, pau
 	show_current_line()
 
 
-## Ponto de entrada usado pelo main_game pra tocar o diálogo de uma missão
-## específica antes de abrir a caixa de missão. `no_inicial` é o id do
-## primeiro nó dessa missão em dialogues.json (ex: "missao1_1").
 func iniciar_dialogo_da_missao(no_inicial: String) -> void:
 	carregar_e_iniciar_dialogo("res://Jogo principal/Scripts/dialogues.json", no_inicial, true)
 
@@ -131,6 +128,8 @@ func show_current_line() -> void:
 	if not blocos.has(current_node_id):
 		end_dialogue()
 		return
+		
+	_esconder_indicador()
 		
 	var dados_fala = blocos[current_node_id]
 	var autor_id = dados_fala.get("autor", "")
@@ -189,7 +188,10 @@ func advance_dialogue() -> void:
 	if not timer.is_stopped():
 		timer.stop()                            
 		dialogue_text.visible_characters = -1   
+		_mostrar_indicador()
 		return
+	
+	_esconder_indicador()
 	
 	var blocos = dialogue_data.get("dialogos", {})
 	var dados_fala = blocos[current_node_id]
@@ -207,6 +209,7 @@ func advance_dialogue() -> void:
 
 
 func mostrar_menu_escolhas(opcoes: Array) -> void:
+	_esconder_indicador()
 	if botao_pular:
 		botao_pular.visible = false
 
@@ -217,15 +220,12 @@ func mostrar_menu_escolhas(opcoes: Array) -> void:
 	
 	for opcao in opcoes:
 		var btn = Button.new()
-		# Define a largura (ex: 360px) e altura (ex: 48px) do botão
 		btn.custom_minimum_size = Vector2(360, 48)
-		# Impede que o botão estique em 100% da tela, mantendo-o centralizado
 		btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		btn.focus_mode = Control.FOCUS_NONE
 		
 		var rtl = RichTextLabel.new()
 		rtl.bbcode_enabled = true
-		# Centralização nativa (evita erros com tags [center])
 		rtl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		rtl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		rtl.text = tr(opcao.get("texto_chave", ""))
@@ -254,14 +254,14 @@ func _on_botao_pular_pressed() -> void:
 	pular_dialogo()
 
 
-## Avança automaticamente todo o fluxo de diálogos até encontrar uma escolha
-## de respostas ou até chegar ao fim do diálogo atual.
 func pular_dialogo() -> void:
 	if not is_dialogue_active:
 		return
 		
 	if timer and not timer.is_stopped():
 		timer.stop()
+		
+	_esconder_indicador()
 		
 	while is_dialogue_active:
 		var blocos = dialogue_data.get("dialogos", {})
@@ -271,7 +271,6 @@ func pular_dialogo() -> void:
 			
 		var dados_fala = blocos[current_node_id]
 		
-		# Se a fala atual tiver menu de escolhas, interrompe o 'pular' e exibe as escolhas
 		if dados_fala.has("escolhas") and not dados_fala["escolhas"].is_empty():
 			show_current_line()
 			dialogue_text.visible_characters = -1
@@ -288,6 +287,7 @@ func pular_dialogo() -> void:
 func end_dialogue() -> void:
 	var ultimo_no := current_node_id
 	is_dialogue_active = false
+	_esconder_indicador()
 	dialogue_box.visible = false
 	if painel_nome:
 		painel_nome.visible = false
@@ -298,9 +298,34 @@ func end_dialogue() -> void:
 	dialogo_finalizado.emit(ultimo_no)
 
 
+func _mostrar_indicador() -> void:
+	if not indicador_avanco or choices_container.visible:
+		return
+		
+	indicador_avanco.visible = true
+	indicador_avanco.modulate.a = 1.0
+	
+	if _tween_indicador and _tween_indicador.is_valid():
+		_tween_indicador.kill()
+		
+	_tween_indicador = create_tween().set_loops().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_tween_indicador.tween_property(indicador_avanco, "modulate:a", 0.25, 0.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_tween_indicador.tween_property(indicador_avanco, "modulate:a", 1.0, 0.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _esconder_indicador() -> void:
+	if _tween_indicador and _tween_indicador.is_valid():
+		_tween_indicador.kill()
+		
+	if indicador_avanco:
+		indicador_avanco.visible = false
+		indicador_avanco.modulate.a = 1.0
+
+
 # --- SINAIS ---
 
 func _on_timer_timeout() -> void:
 	dialogue_text.visible_characters += 1
 	if dialogue_text.visible_ratio >= 1.0:
 		timer.stop()
+		_mostrar_indicador()

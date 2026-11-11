@@ -260,6 +260,16 @@
 	  "texto_chave": "DICA_ENCHENTE_5",
 	  "proximo": "fim"
 	},
+	"cidadao_intro_alerta": {
+	  "autor": "DEFESA CIVIL",
+	  "texto_chave": "TXT_CIDADAO_INTRO_ALERTA",
+	  "proximo": "cidadao_intro_reacao"
+	},
+	"cidadao_intro_reacao": {
+	  "autor": "CIDADÃO",
+	  "texto_chave": "TXT_CIDADAO_INTRO_REACAO",
+	  "proximo": "fim"
+	},
 	"cidadao_etapa1_inicio": {
 	  "autor": "CIDADÃO",
 	  "texto_chave": "TXT_CIDADAO_ETAPA1",

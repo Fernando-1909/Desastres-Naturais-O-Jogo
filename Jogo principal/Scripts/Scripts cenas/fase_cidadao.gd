@@ -3,11 +3,11 @@ class_name FaseCidadao
 
 signal fase_concluida(sucesso: bool)
 
-# Referências dos nós da interface
-@onready var margem_principal: MarginContainer = $CanvasUI/ControlUI/MargemPrincipal if has_node("CanvasUI/ControlUI/MargemPrincipal") else null
-@onready var texto_situacao: RichTextLabel = $CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/PainelNarrativa/MargemTexto/TextoSituacao if has_node("CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/PainelNarrativa/MargemTexto/TextoSituacao") else null
+# Referência do DialogueManager instanciado na cena
+@onready var dialogue_manager: CanvasLayer = $DialogueManager if has_node("DialogueManager") else null
 
-# Botões estáticos compactos da UI
+# Referências dos nós da interface de escolhas e feedback
+@onready var margem_principal: MarginContainer = $CanvasUI/ControlUI/MargemPrincipal if has_node("CanvasUI/ControlUI/MargemPrincipal") else null
 @onready var botoes_opcoes: Array[Button] = [
 	$CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/ColunaOpcoes/BotaoOpcao1 if has_node("CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/ColunaOpcoes/BotaoOpcao1") else null,
 	$CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/ColunaOpcoes/BotaoOpcao2 if has_node("CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/ColunaOpcoes/BotaoOpcao2") else null,
@@ -19,11 +19,17 @@ signal fase_concluida(sucesso: bool)
 @onready var texto_feedback: RichTextLabel = $CanvasUI/ControlUI/PainelFeedback/MargemFeedback/ColunaFeedback/TextoFeedback if has_node("CanvasUI/ControlUI/PainelFeedback/MargemFeedback/ColunaFeedback/TextoFeedback") else null
 @onready var botao_continuar: Button = $CanvasUI/ControlUI/PainelFeedback/MargemFeedback/ColunaFeedback/BotaoContinuar if has_node("CanvasUI/ControlUI/PainelFeedback/MargemFeedback/ColunaFeedback/BotaoContinuar") else null
 
+# Nós da introdução e efeitos visuais
+@onready var painel_intro_contexto: ColorRect = $CanvasUI/ControlUI/PainelIntroContexto if has_node("CanvasUI/ControlUI/PainelIntroContexto") else null
+@onready var botao_iniciar_intro: Button = $CanvasUI/ControlUI/PainelIntroContexto/MargemIntro/ColunaIntro/BotaoIniciarIntro if has_node("CanvasUI/ControlUI/PainelIntroContexto/MargemIntro/ColunaIntro/BotaoIniciarIntro") else null
+@onready var alerta_vermelho: ColorRect = $CanvasUI/ControlUI/AlertaVermelho if has_node("CanvasUI/ControlUI/AlertaVermelho") else null
+@onready var efeito_chuva: CPUParticles2D = $Cenario2D/EfeitoChuva if has_node("Cenario2D/EfeitoChuva") else null
+
 # Referências do cenário 2D
 @onready var agua_enchente: ColorRect = $Cenario2D/AguaEnchente if has_node("Cenario2D/AguaEnchente") else null
 @onready var personagem: Node2D = $PersonagemCidadao if has_node("PersonagemCidadao") else null
 
-# Waypoints do percurso alinhados com a narrativa
+# Waypoints do percurso
 @onready var marker_casa: Marker2D = $PontosCaminho/MarkerCasa if has_node("PontosCaminho/MarkerCasa") else null
 @onready var marker_casa_moveis: Marker2D = $PontosCaminho/MarkerCasaMoveis if has_node("PontosCaminho/MarkerCasaMoveis") else null
 @onready var marker_rua: Marker2D = $PontosCaminho/MarkerRua if has_node("PontosCaminho/MarkerRua") else null
@@ -38,25 +44,25 @@ signal fase_concluida(sucesso: bool)
 @onready var marker_retorno_casa: Marker2D = $PontosCaminho/MarkerRetornoCasa if has_node("PontosCaminho/MarkerRetornoCasa") else null
 @onready var marker_abrigo: Marker2D = $PontosCaminho/MarkerAbrigo if has_node("PontosCaminho/MarkerAbrigo") else null
 
-# Estrutura Narrativa Sequencial em 5 Atos com tom de PENSAMENTO DO PERSONAGEM
+# Mapeamento dos 5 Atos com marcadores, níveis de água e textos resumidos nas escolhas
 var _etapas: Array[Dictionary] = [
 	{
 		"id": 0,
+		"chave_dialogo": "cidadao_etapa1_inicio",
 		"marcador_inicial": "marker_casa",
 		"marcador_sucesso": "marker_rua",
 		"marcador_erro": "marker_casa_moveis",
 		"nivel_agua_inicial": 0.0,
 		"nivel_agua_sucesso": 350.0,
 		"nivel_agua_erro": 550.0,
-		"texto": "[b]Ato I - O Começo da Inundação[/b]\nA água começou a subir rápido no portão da minha casa. Sinto a urgência aumentando. O que devo fazer primeiro?",
 		"opcoes": [
 			{
-				"texto": "\"Preciso correndo subir os móveis e salvar as fotos da família antes que a água estrague tudo!\"",
+				"texto": "Salvar bens materiais e móveis primeiro",
 				"correta": false,
 				"feedback": "[color=#F44336][b]Decisão Perigosa![/b][/color]\nPerder minutos preciosos salvando bens materiais durante uma inundação rápida pode deixar você ilhado dentro de casa. Sua vida é a prioridade!"
 			},
 			{
-				"texto": "\"Vou desligar a chave geral de luz, fechar o registro de gás e sair imediatamente com o kit de emergência!\"",
+				"texto": "Desligar luz/gás e evacuar com kit de emergência",
 				"correta": true,
 				"feedback": "[color=#4CAF50][b]Decisão Segura![/b][/color]\nDesligar energia e gás evita curtos-circuitos, choques elétricos e explosões quando a água atinge tomadas e tubulações."
 			}
@@ -64,21 +70,21 @@ var _etapas: Array[Dictionary] = [
 	},
 	{
 		"id": 1,
+		"chave_dialogo": "cidadao_etapa2_rua",
 		"marcador_inicial": "marker_rua",
 		"marcador_sucesso": "marker_passarela",
 		"marcador_erro": "marker_carro",
 		"nivel_agua_inicial": 350.0,
 		"nivel_agua_sucesso": 800.0,
 		"nivel_agua_erro": 950.0,
-		"texto": "[b]Ato II - A Enxurrada na Avenida[/b]\nConsegui sair de casa, mas a rua virou um rio de água marrom. Um vizinho passou devagar de carro e acenou me chamando.",
 		"opcoes": [
 			{
-				"texto": "\"O carro dele é pesado. Se eu entrar no banco do passageiro, a gente atravessa a enxurrada bem mais rápido!\"",
+				"texto": "Atravessar a enxurrada de carona no carro",
 				"correta": false,
 				"feedback": "[color=#F44336][b]Decisão Perigosa![/b][/color]\nApenas 30 cm de água em movimento conseguem fazer um carro flutuar e ser arrastado. Entrar em veículos alagados é uma das principais causas de afogamento."
 			},
 			{
-				"texto": "\"Entrar em carro na enxurrada é arriscado. É melhor eu subir as escadas da passarela e cruzar por cima!\"",
+				"texto": "Subir as escadas da passarela para cruzar por cima",
 				"correta": true,
 				"feedback": "[color=#4CAF50][b]Decisão Segura![/b][/color]\nCaminhar por estruturas e passarelas elevadas, longe do leito de enxurradas e de veículos imersos, é a rota mais protegida."
 			}
@@ -86,21 +92,21 @@ var _etapas: Array[Dictionary] = [
 	},
 	{
 		"id": 2,
+		"chave_dialogo": "cidadao_etapa3_escola",
 		"marcador_inicial": "marker_passarela",
 		"marcador_sucesso": "marker_desvio_bueiro",
 		"marcador_erro": "marker_bueiro_buraco",
 		"nivel_agua_inicial": 800.0,
 		"nivel_agua_sucesso": 1250.0,
 		"nivel_agua_erro": 1400.0,
-		"texto": "[b]Ato III - A Armadilha Oculta na Água[/b]\nDesci da passarela, mas a rua à frente virou uma lâmina de água escura com redemoinhos. Não consigo enxergar o chão abaixo da água.",
 		"opcoes": [
 			{
-				"texto": "\"A água parece rasa, abaixo do joelho. Vou atravessar direto andando rápido pela água barrenta para ganhar tempo!\"",
+				"texto": "Atravessar direto andando rápido pela água barrenta",
 				"correta": false,
 				"feedback": "[color=#F44336][b]Decisão Perigosa![/b][/color]\nEm enchentes, a força da enxurrada costuma arrancar tampas de bueiros e esconder buracos profundos. Pisar em água turva sem enxergar o chão pode causar quedas fatais em galerias de esgoto ou afogamento!"
 			},
 			{
-				"texto": "\"Água barrenta pode esconder bueiros abertos e buracos. Vou caminhar com cuidado pela mureta elevada e testar o solo antes de pisar!\"",
+				"texto": "Caminhar pela mureta elevada e testar o solo antes",
 				"correta": true,
 				"feedback": "[color=#4CAF50][b]Decisão Segura![/b][/color]\nA Defesa Civil orienta jamais caminhar em áreas alagadas sem visibilidade do piso. Prefira sempre passeios elevados ou use apoio para testar a profundidade antes de avançar."
 			}
@@ -108,21 +114,21 @@ var _etapas: Array[Dictionary] = [
 	},
 	{
 		"id": 3,
+		"chave_dialogo": "cidadao_etapa4_poste",
 		"marcador_inicial": "marker_desvio_bueiro",
 		"marcador_sucesso": "marker_desvio_poste",
 		"marcador_erro": "marker_poca_poste",
 		"nivel_agua_inicial": 1250.0,
 		"nivel_agua_sucesso": 1700.0,
 		"nivel_agua_erro": 1850.0,
-		"texto": "[b]Ato IV - A Fiação Elétrica Caída[/b]\nRetomei a subida em direção ao morro, mas um poste caiu e o cabo elétrico está faiscando numa poça perto do caminho principal.",
 		"opcoes": [
 			{
-				"texto": "\"Estou de galocha alta de borracha. Se eu passar dando passos rápidos perto do poste, a borracha me isola!\"",
+				"texto": "Passar perto do poste contando com a galocha",
 				"correta": false,
 				"feedback": "[color=#F44336][b]Decisão Perigosa![/b][/color]\nCalçados comuns de borracha não isolam alta tensão. A água conduz eletricidade a metros de distância e o choque em meio aquoso é fatal."
 			},
 			{
-				"texto": "\"Não dá pra confiar em calçado na água energizada. Vou recuar e dar a volta pelo caminho seco de cima!\"",
+				"texto": "Recuar e dar a volta pelo caminho seco de cima",
 				"correta": true,
 				"feedback": "[color=#4CAF50][b]Decisão Segura![/b][/color]\nMantenha distância mínima de 15 metros de fiação caída. A água ao redor cria uma zona invisível de eletrificação."
 			}
@@ -130,21 +136,21 @@ var _etapas: Array[Dictionary] = [
 	},
 	{
 		"id": 4,
+		"chave_dialogo": "cidadao_etapa5_abrigo",
 		"marcador_inicial": "marker_desvio_poste",
 		"marcador_sucesso": "marker_abrigo",
 		"marcador_erro": "marker_retorno_casa",
 		"nivel_agua_inicial": 1700.0,
 		"nivel_agua_sucesso": 2200.0,
 		"nivel_agua_erro": 2200.0,
-		"texto": "[b]Ato V - Chegada ao Abrigo Seguro[/b]\nCheguei ao Abrigo Municipal no topo do morro. Lá embaixo, a enxurrada continua forte e o nível da água não para de subir. Alguns moradores assustados cogitam descer para tentar resgatar pertences.",
 		"opcoes": [
 			{
-				"texto": "\"Minha casa ficou lá embaixo. Vou descer correndo agora antes que a água suba mais para tentar resgatar o resto das minhas coisas!\"",
+				"texto": "Voltar para casa tentando resgatar pertences",
 				"correta": false,
 				"feedback": "[color=#F44336][b]Decisão Perigosa![/b][/color]\nEnquanto a tempestade continua e o nível da água se eleva, retornar a áreas alagadas traz risco mortal de afogamento. Pertences materiais podem ser repostos, a vida não!"
 			},
 			{
-				"texto": "\"A enxurrada continua subindo e o risco é alto. Vou me manter em local elevado no abrigo, me registrar com a Defesa Civil e aguardar orientações!\"",
+				"texto": "Permanecer no abrigo elevado e aguardar orientações",
 				"correta": true,
 				"feedback": "[color=#4CAF50][b]Parabéns! Jornada Concluída com Segurança![/b][/color]\nRegistrar-se nos abrigos e aguardar em ponto elevado até a avaliação técnica das autoridades garante a proteção de todos e facilita o trabalho das equipes de resgate."
 			}
@@ -155,21 +161,28 @@ var _etapas: Array[Dictionary] = [
 var _etapa_atual_index: int = 0
 var _escolha_correta_feita: bool = false
 var _executando_acao: bool = false
+var _tween_alerta: Tween = null
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if painel_feedback:
 		painel_feedback.visible = false
+	if margem_principal:
+		margem_principal.visible = false
+	if alerta_vermelho:
+		alerta_vermelho.visible = false
 
 	if botao_continuar and not botao_continuar.pressed.is_connected(_on_botao_continuar_pressed):
 		botao_continuar.pressed.connect(_on_botao_continuar_pressed)
+
+	if botao_iniciar_intro and not botao_iniciar_intro.pressed.is_connected(_on_botao_iniciar_intro_pressed):
+		botao_iniciar_intro.pressed.connect(_on_botao_iniciar_intro_pressed)
 
 	if get_tree().current_scene == self:
 		iniciar_fase()
 
 
-## Inicia a fase interativa do cidadão
 func iniciar_fase() -> void:
 	_etapa_atual_index = 0
 	_executando_acao = false
@@ -180,7 +193,56 @@ func iniciar_fase() -> void:
 		personagem.position = marker_casa.position
 
 	_definir_posicao_agua_direta(0.0)
-	_carregar_etapa(_etapa_atual_index)
+
+	if efeito_chuva:
+		efeito_chuva.emitting = true
+		efeito_chuva.amount = 60
+
+	if painel_intro_contexto:
+		painel_intro_contexto.visible = true
+		painel_intro_contexto.modulate.a = 1.0
+
+
+func _on_botao_iniciar_intro_pressed() -> void:
+	if painel_intro_contexto:
+		var tw_fade = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		tw_fade.tween_property(painel_intro_contexto, "modulate:a", 0.0, 0.8)
+		await tw_fade.finished
+		painel_intro_contexto.visible = false
+
+	_executar_sequencia_alerta_intro()
+
+
+func _executar_sequencia_alerta_intro() -> void:
+	_iniciar_efeito_alerta_piscando()
+	await _exibir_dialogo_sistema("cidadao_intro_alerta")
+
+	if efeito_chuva:
+		var tw_chuva = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		tw_chuva.tween_property(efeito_chuva, "amount", 350, 2.5)
+
+	_animar_agua(350.0, 2.5)
+	await get_tree().create_timer(2.5).timeout
+
+	_parar_efeito_alerta()
+	_carregar_etapa(0)
+
+
+func _exibir_dialogo_sistema(chave_dialogo: String) -> void:
+	if not dialogue_manager:
+		await get_tree().create_timer(0.5).timeout
+		return
+
+	dialogue_manager.layer = 20
+
+	if margem_principal:
+		margem_principal.visible = false
+
+	if dialogue_manager.has_method("iniciar_dialogo_dica"):
+		dialogue_manager.iniciar_dialogo_dica(chave_dialogo)
+		await dialogue_manager.dialogo_finalizado
+	else:
+		await get_tree().create_timer(0.5).timeout
 
 
 func _carregar_etapa(index: int) -> void:
@@ -191,23 +253,26 @@ func _carregar_etapa(index: int) -> void:
 	_executando_acao = false
 	if painel_feedback:
 		painel_feedback.visible = false
+	if margem_principal:
+		margem_principal.visible = false
 
 	var dados_etapa = _etapas[index]
 
-	# Movimentação fluida de transição entre atos no mapa 2D
+	# Movimentação do personagem até o ponto inicial da etapa
 	var start_marker: Marker2D = get(dados_etapa["marcador_inicial"])
 	if start_marker and personagem:
 		if personagem.position.distance_to(start_marker.position) > 10.0:
 			var tw_trans = _animar_personagem(start_marker.position, 1.2)
 			await tw_trans.finished
 
+	# Exibe o diálogo da fala inicial via DialogueManager
+	if dados_etapa.has("chave_dialogo") and not dados_etapa["chave_dialogo"].is_empty():
+		await _exibir_dialogo_sistema(dados_etapa["chave_dialogo"])
+
+	# Exibe as escolhas no HUD
 	if margem_principal:
 		margem_principal.visible = true
 
-	if texto_situacao:
-		texto_situacao.text = dados_etapa["texto"]
-
-	# Configura os botões estáticos com os pensamentos do personagem
 	var opcoes: Array = dados_etapa["opcoes"]
 	for i in range(botoes_opcoes.size()):
 		var btn = botoes_opcoes[i]
@@ -235,11 +300,10 @@ func _on_opcao_selecionada(opcao: Dictionary) -> void:
 	_escolha_correta_feita = opcao["correta"]
 	var dados_etapa = _etapas[_etapa_atual_index]
 
-	# Esconde a interface para o jogador acompanhar a ação no mapa
 	if margem_principal:
 		margem_principal.visible = false
 
-	# Executa a ação visual no cenário 2D
+	# Executa a movimentação do personagem e a elevação da água
 	if _escolha_correta_feita:
 		var target_marker: Marker2D = get(dados_etapa["marcador_sucesso"])
 		if target_marker and personagem:
@@ -255,7 +319,7 @@ func _on_opcao_selecionada(opcao: Dictionary) -> void:
 
 	await get_tree().create_timer(0.4).timeout
 
-	# Exibe o container de feedback educativo
+	# Apresenta o painel de feedback
 	if titulo_feedback:
 		titulo_feedback.text = "[center]" + ("[color=#4CAF50]DECISÃO SEGURA[/color]" if _escolha_correta_feita else "[color=#F44336]DECISÃO INCORRETA[/color]") + "[/center]"
 
@@ -281,7 +345,6 @@ func _on_botao_continuar_pressed() -> void:
 		if painel_feedback:
 			painel_feedback.visible = false
 
-		# Rewind suave para o início da etapa atual
 		var start_marker: Marker2D = get(dados_etapa["marcador_inicial"])
 		if start_marker and personagem:
 			var t_rewind = _animar_personagem(start_marker.position, 1.2)
@@ -289,6 +352,31 @@ func _on_botao_continuar_pressed() -> void:
 			await t_rewind.finished
 
 		_carregar_etapa(_etapa_atual_index)
+
+
+func _iniciar_efeito_alerta_piscando() -> void:
+	if not alerta_vermelho:
+		return
+	alerta_vermelho.visible = true
+	alerta_vermelho.color.a = 0.0
+
+	if _tween_alerta and _tween_alerta.is_valid():
+		_tween_alerta.kill()
+
+	_tween_alerta = create_tween().set_loops().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	_tween_alerta.tween_property(alerta_vermelho, "color:a", 0.22, 0.75).set_trans(Tween.TRANS_SINE)
+	_tween_alerta.tween_property(alerta_vermelho, "color:a", 0.04, 0.75).set_trans(Tween.TRANS_SINE)
+
+
+func _parar_efeito_alerta() -> void:
+	if _tween_alerta and _tween_alerta.is_valid():
+		_tween_alerta.kill()
+
+	if alerta_vermelho:
+		var tw_stop = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		tw_stop.tween_property(alerta_vermelho, "color:a", 0.0, 1.0)
+		await tw_stop.finished
+		alerta_vermelho.visible = false
 
 
 func _animar_personagem(destino: Vector2, duracao: float) -> Tween:
@@ -302,7 +390,8 @@ func _animar_agua(pos_x_direita: float, duracao: float) -> Tween:
 	var largura_calculada = pos_x_direita - x_inicio
 	var tw = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	if agua_enchente:
-		tw.tween_property(agua_enchente, "size:x", largura_calculada, duracao).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		var novo_tamanho = Vector2(largura_calculada, agua_enchente.size.y)
+		tw.tween_property(agua_enchente, "size", novo_tamanho, duracao).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	return tw
 
 

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://utcadahb3ip1"]
 
 [ext_resource type="Script" uid="uid://b55obr5ipg86w" path="res://Jogo principal/Scripts/Scripts cenas/fase_cidadao.gd" id="1_0yt4g"]
+[ext_resource type="PackedScene" uid="uid://l4ep5qwntoxq" path="res://Jogo principal/UI/dialogue_manager.tscn" id="2_xwqnw"]
 
 [node name="FaseCidadao" type="Node2D" unique_id=917696330]
 script = ExtResource("1_0yt4g")
@@ -287,6 +288,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="AlertaVermelho" type="ColorRect" parent="CanvasUI/ControlUI" unique_id=101010500]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.9, 0.1, 0.1, 0)
+
 [node name="MargemPrincipal" type="MarginContainer" parent="CanvasUI/ControlUI" unique_id=1212114133]
 layout_mode = 1
 anchors_preset = 12
@@ -304,21 +316,6 @@ theme_override_constants/margin_bottom = 12
 [node name="ColunaConteudo" type="VBoxContainer" parent="CanvasUI/ControlUI/MargemPrincipal" unique_id=1687742733]
 layout_mode = 2
 theme_override_constants/separation = 6
-
-[node name="PainelNarrativa" type="PanelContainer" parent="CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo" unique_id=918615027]
-layout_mode = 2
-
-[node name="MargemTexto" type="MarginContainer" parent="CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/PainelNarrativa" unique_id=1207721355]
-layout_mode = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 6
-
-[node name="TextoSituacao" type="RichTextLabel" parent="CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo/PainelNarrativa/MargemTexto" unique_id=1252618167]
-layout_mode = 2
-bbcode_enabled = true
-fit_content = true
 
 [node name="ColunaOpcoes" type="VBoxContainer" parent="CanvasUI/ControlUI/MargemPrincipal/ColunaConteudo" unique_id=529716107]
 layout_mode = 2
@@ -385,3 +382,53 @@ custom_minimum_size = Vector2(140, 36)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Avançar"
+
+[node name="PainelIntroContexto" type="ColorRect" parent="CanvasUI/ControlUI" unique_id=101010501]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.078431375, 0.101960786, 0.14117648, 1)
+
+[node name="MargemIntro" type="MarginContainer" parent="CanvasUI/ControlUI/PainelIntroContexto" unique_id=101010502]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -160.0
+offset_right = 320.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColunaIntro" type="VBoxContainer" parent="CanvasUI/ControlUI/PainelIntroContexto/MargemIntro" unique_id=101010503]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TituloIntro" type="RichTextLabel" parent="CanvasUI/ControlUI/PainelIntroContexto/MargemIntro/ColunaIntro" unique_id=101010504]
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][b][color=#FFC107]MODO CIDADÃO: EVACUAÇÃO EM EMERGÊNCIA[/color][/b][/center]"
+fit_content = true
+
+[node name="TextoIntro" type="RichTextLabel" parent="CanvasUI/ControlUI/PainelIntroContexto/MargemIntro/ColunaIntro" unique_id=101010505]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "[center]Neste momento, você assume o controle da jornada de um [b]Cidadão[/b] no epicentro da enchente.
+
+Sua missão é tomar decisões conscientes de autoproteção à medida que o nível da água avança, desviando de armadilhas mortais até alcançar o abrigo seguro da Defesa Civil no morro.[/center]"
+fit_content = true
+
+[node name="BotaoIniciarIntro" type="Button" parent="CanvasUI/ControlUI/PainelIntroContexto/MargemIntro/ColunaIntro" unique_id=101010506]
+custom_minimum_size = Vector2(180, 42)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Iniciar Evacuação"
+
+[node name="DialogueManager" parent="." unique_id=1420897856 instance=ExtResource("2_xwqnw")]
