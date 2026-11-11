@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://d0q1wqnavhphj" path="res://Casas.png" id="5_a6fgx"]
 [ext_resource type="Texture2D" uid="uid://dd22ja8qdic4e" path="res://Jogo principal/tilesheets/Prefeitura_level2.png" id="5_k6eoj"]
 [ext_resource type="Script" uid="uid://byefxxwel3j8m" path="res://Jogo principal/Scripts/Scripts gerais/tile_map_base.gd" id="6_3brof"]
+[ext_resource type="Texture2D" uid="uid://c8n08o7mhkj2c" path="res://Jogo principal/tilesheets/Aqua-animada-Aqua.png" id="6_s6pm0"]
 [ext_resource type="Texture2D" uid="uid://cumrysl7bg33e" path="res://Jogo principal/tilesheets/TrocaPlaceholder.png" id="7_2cq4x"]
 [ext_resource type="PackedScene" uid="uid://cxpkd6cw4qwt5" path="res://Jogo principal/UI/building_hud.tscn" id="7_botex"]
 [ext_resource type="Texture2D" uid="uid://dmturgo7w0jr5" path="res://Jogo principal/tilesheets/Cons_Funções.png" id="7_gjpgg"]
@@ -316,6 +317,16 @@ texture = ExtResource("4_fj0mr")
 1:1/0 = 0
 0:1/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c1ja1"]
+texture = ExtResource("6_s6pm0")
+0:0/size_in_atlas = Vector2i(2, 2)
+0:0/animation_columns = 4
+0:0/animation_frame_0/duration = 1.0
+0:0/animation_frame_1/duration = 1.0
+0:0/animation_frame_2/duration = 1.0
+0:0/animation_frame_3/duration = 1.0
+0:0/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_k7th3"]
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "Grama"
@@ -324,6 +335,7 @@ sources/1 = SubResource("TileSetAtlasSource_61lwm")
 sources/0 = SubResource("TileSetAtlasSource_sufiw")
 sources/2 = SubResource("TileSetAtlasSource_pnfwx")
 sources/3 = SubResource("TileSetAtlasSource_okcf2")
+sources/5 = SubResource("TileSetAtlasSource_c1ja1")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k6eoj"]
 texture = ExtResource("4_fj0mr")

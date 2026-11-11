@@ -2852,17 +2852,14 @@ func _iniciar_enchente(duracao_customizada: int = -1, dano_customizado: float = 
 		enchente.duracao_turnos = duracao_customizada
 	if dano_customizado > 0.0 and "dano_infraestrutura" in enchente:
 		enchente.dano_infraestrutura = dano_customizado
-	add_child(enchente)
+	# Conecta antes de adicionar à árvore para receber também a primeira
+	# atualização da hitbox emitida no _ready() da cena de enchente.
 	if enchente.has_signal("enchente_iniciada"):
 		enchente.enchente_iniciada.connect(_on_enchente_iniciada)
 	if enchente.has_signal("enchente_terminada"):
 		enchente.enchente_terminada.connect(_on_enchente_terminada)
 	_enchente_ativa = enchente
-	
-	# Alaga o TileMapBase inteiro assim que a enchente começa — ele guarda
-	# o mapa original sozinho e restaura tudo quando ela terminar.
-	if tilemap_base and tilemap_base.has_method("alagar_mapa"):
-		tilemap_base.alagar_mapa()
+	add_child(enchente)
 	
 	# Troca o visual de TODAS as construções para o sprite alagado
 	_aplicar_alagamento_todas_construcoes()
@@ -3394,6 +3391,10 @@ func _tem_resgate_pendente(pos_tile: Vector2i, predio: BuildingInstance = null) 
 
 
 func _on_enchente_iniciada(area_pixels: Rect2, dano: float) -> void:
+	# Atualiza gradualmente os tiles alcançados pela hitbox da onda.
+	if tilemap_base and tilemap_base.has_method("atualizar_area_alagada"):
+		tilemap_base.atualizar_area_alagada(area_pixels)
+
 	# A enchente começou: TODOS os NPCs desaparecem imediatamente.
 	# O controle é feito aqui no main_game porque este sinal é garantidamente
 	# recebido pelo nó que criou a enchente.
